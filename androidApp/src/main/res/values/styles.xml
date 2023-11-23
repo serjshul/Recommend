@@ -1,0 +1,10 @@
+<resources>
+    <style name="AppTheme" parent="android:Theme.Material.NoActionBar"/>
+
+    <!-- Recommend palette -->
+    <color name="muesli">#A67A53</color>
+    <color name="tigereye">#B87446</color>
+    <color name="apple_red">#6E0103</color>
+
+    <!-- Ratings -->
+</resources>
