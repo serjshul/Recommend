@@ -38,7 +38,7 @@ import kotlin.math.absoluteValue
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun GalleryCategoryItem(title: String, data: List<MediaItemData>, context: Context) {
+fun GalleryCategoryItem(title: String, data: List<MediaItemData>) {
     Column(
         modifier = Modifier
             .padding(top = 10.dp, bottom = 10.dp)

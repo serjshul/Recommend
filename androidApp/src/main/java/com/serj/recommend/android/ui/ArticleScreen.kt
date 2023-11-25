@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.sp
 import com.serj.recommend.android.R
 
 @Composable
-fun MusicPlayer() {
+fun ArticleScreen() {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -91,7 +91,7 @@ fun Header() {
                 modifier = Modifier
                     .padding(20.dp)
                     .align(Alignment.TopEnd),
-                painter = painterResource(id = R.drawable.logo_saved),
+                painter = painterResource(id = R.drawable.icon_saved),
                 contentDescription = "like",
                 contentScale = ContentScale.Crop
             )
@@ -196,4 +196,4 @@ fun Paragraph() {
 
 @Preview
 @Composable
-fun PreviewMusicPlayer() = MusicPlayer()
+fun PreviewMusicPlayer() = ArticleScreen()

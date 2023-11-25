@@ -25,7 +25,7 @@ import com.serj.recommend.android.ui.recommendationItems.MusicItemData
 
 
 @Composable
-fun CrossingCategoryItem(title: String, data: List<MusicItemData>, context: Context) {
+fun CrossingCategoryItem(title: String, data: List<MusicItemData>) {
     Box(
         modifier = Modifier
             //.height(430.dp)
@@ -61,7 +61,7 @@ fun CrossingCategoryItem(title: String, data: List<MusicItemData>, context: Cont
                 } else {
                     Spacer(modifier = Modifier.size(15.dp))
                 }
-                MusicItem(data[i], context)
+                MusicItem(data[i])
                 //mediaItem(data[i])
                 //placesItem(data[i])
             }
