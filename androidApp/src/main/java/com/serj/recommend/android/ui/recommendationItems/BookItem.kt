@@ -1,4 +1,4 @@
-package com.serj.recommend.android.recommendationItems
+package com.serj.recommend.android.ui.recommendationItems
 
 import android.content.Context
 import android.content.Intent
@@ -20,7 +20,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.serj.recommend.android.ArticleActivity
+//import com.serj.recommend.android.ArticleActivity
 
 
 @Composable
@@ -28,7 +28,7 @@ fun BookItem(book: BookItemData, context: Context) {
     Column(
         modifier = Modifier
             .clickable {
-                context.startActivity(Intent(context, ArticleActivity::class.java))
+//                context.startActivity(Intent(context, ArticleActivity::class.java))
             }
     ) {
         Image(

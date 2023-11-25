@@ -1,11 +1,10 @@
-package com.serj.recommend.android.recommendationItems
+package com.serj.recommend.android.ui.recommendationItems
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,25 +23,22 @@ import com.serj.recommend.android.R
 
 
 @Composable
-fun PlacesItem(place: PlacesItemData) {
-    Column (
-        modifier = Modifier
-            .padding(top = 5.dp, bottom = 15.dp)
-    ) {
+fun MediaItem(media: MediaItemData) {
+    Column {
         Image(
             modifier = Modifier
                 .height(160.dp)
-                .width(270.dp)
+                .width(300.dp)
                 .clip(RoundedCornerShape(10.dp)),
-            painter = painterResource(id = place.cover),
-            contentDescription = place.title,
+            painter = painterResource(id = media.cover),
+            contentDescription = media.title,
             contentScale = ContentScale.Crop
         )
 
         Spacer(modifier = Modifier.size(5.dp))
 
         Text(
-            text = place.title,
+            text = media.title,
             color = Color.Black,
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold
@@ -50,7 +46,7 @@ fun PlacesItem(place: PlacesItemData) {
 
         Row {
             Text(
-                text = place.type,
+                text = media.type,
                 color = Color.Black,
                 fontSize = 12.sp
             )
@@ -58,17 +54,17 @@ fun PlacesItem(place: PlacesItemData) {
             Spacer(modifier = Modifier.size(10.dp))
 
             Text(
-                text = place.location,
-                color = colorResource(id = R.color.tigereye),
+                text = media.production,
+                color = colorResource(id = R.color.muesli),
                 fontSize = 12.sp
             )
         }
     }
 }
 
-data class PlacesItemData(
+data class MediaItemData(
     var title: String,
     var type: String,
-    var location: String,
+    var production: String,
     var cover: Int
 )

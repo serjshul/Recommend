@@ -1,4 +1,4 @@
-package com.serj.recommend.android.categories
+package com.serj.recommend.android.ui.categories
 
 import android.content.Context
 import androidx.compose.foundation.layout.Column
@@ -14,8 +14,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.serj.recommend.android.R
-import com.serj.recommend.android.recommendationItems.BookItem
-import com.serj.recommend.android.recommendationItems.BookItemData
+import com.serj.recommend.android.ui.recommendationItems.BookItem
+import com.serj.recommend.android.ui.recommendationItems.BookItemData
 
 
 @Composable
