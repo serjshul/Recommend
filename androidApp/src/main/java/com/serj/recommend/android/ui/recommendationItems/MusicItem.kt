@@ -1,8 +1,10 @@
-package com.serj.recommend.android.recommendationItems
+package com.serj.recommend.android.ui.recommendationItems
 
+import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
@@ -14,57 +16,51 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.serj.recommend.android.R
+//import com.serj.recommend.android.ArticleActivity
 
 
 @Composable
-fun MediaItem(media: MediaItemData) {
-    Column {
+fun MusicItem(music: MusicItemData, context: Context) {
+    Column(
+        modifier = Modifier
+            .clickable {
+//                context.startActivity(Intent(context, ArticleActivity::class.java))
+            }
+    ) {
         Image(
             modifier = Modifier
                 .height(160.dp)
-                .width(300.dp)
+                .width(160.dp)
                 .clip(RoundedCornerShape(10.dp)),
-            painter = painterResource(id = media.cover),
-            contentDescription = media.title,
+            painter = painterResource(id = music.cover),
+            contentDescription = music.title,
             contentScale = ContentScale.Crop
         )
 
         Spacer(modifier = Modifier.size(5.dp))
 
         Text(
-            text = media.title,
+            text = music.title,
             color = Color.Black,
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold
         )
 
-        Row {
-            Text(
-                text = media.type,
-                color = Color.Black,
-                fontSize = 12.sp
-            )
 
-            Spacer(modifier = Modifier.size(10.dp))
-
-            Text(
-                text = media.production,
-                color = colorResource(id = R.color.muesli),
-                fontSize = 12.sp
-            )
-        }
+        Text(
+            text = music.musician,
+            color = Color.Black,
+            fontSize = 12.sp
+        )
     }
 }
 
-data class MediaItemData(
+data class MusicItemData(
     var title: String,
-    var type: String,
-    var production: String,
+    var musician: String,
     var cover: Int
 )

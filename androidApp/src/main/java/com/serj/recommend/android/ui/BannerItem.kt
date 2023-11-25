@@ -1,4 +1,4 @@
-package com.serj.recommend.android
+package com.serj.recommend.android.ui
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -29,6 +29,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.serj.recommend.android.R
 
 
 data class BannerItemData(

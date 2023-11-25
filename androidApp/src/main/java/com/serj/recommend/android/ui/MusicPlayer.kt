@@ -1,9 +1,5 @@
-package com.serj.recommend.android
+package com.serj.recommend.android.ui
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.annotation.OptIn
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -30,28 +25,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.media3.common.util.UnstableApi
-
-
-class ArticleActivity : ComponentActivity() {
-    @OptIn(UnstableApi::class) override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            MyApplicationTheme {
-                // A surface container using the 'background' color from the theme
-                Scaffold { paddingValues ->
-                    Column(
-                        modifier = Modifier.padding(paddingValues)
-                    ) {
-                        MusicPlayer()
-                    }
-                }
-            }
-        }
-    }
-}
+import com.serj.recommend.android.R
 
 @Composable
 fun MusicPlayer() {
@@ -216,3 +193,7 @@ fun Paragraph() {
         )
     }
 }
+
+@Preview
+@Composable
+fun PreviewMusicPlayer() = MusicPlayer()

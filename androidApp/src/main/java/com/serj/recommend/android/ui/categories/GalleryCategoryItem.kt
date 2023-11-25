@@ -1,4 +1,4 @@
-package com.serj.recommend.android.categories
+package com.serj.recommend.android.ui.categories
 
 import android.content.Context
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -32,7 +32,7 @@ import androidx.compose.ui.util.lerp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.serj.recommend.android.R
-import com.serj.recommend.android.recommendationItems.MediaItemData
+import com.serj.recommend.android.ui.recommendationItems.MediaItemData
 import kotlin.math.absoluteValue
 
 

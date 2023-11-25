@@ -1,6 +1,5 @@
-package com.serj.recommend.android.screens
+package com.serj.recommend.android.ui.screens
 
-import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,11 +10,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import com.serj.recommend.android.R
 
 
 @Composable
-fun FeedScreen(context: Context) {
+fun FeedScreen() {
+    val context = LocalContext.current
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -23,7 +27,7 @@ fun FeedScreen(context: Context) {
             .wrapContentSize(Alignment.Center)
     ) {
         Text(
-            text = "Feed Screen",
+            text = stringResource(id = R.string.feed_screen_name),
             style = MaterialTheme.typography.titleLarge,
             color = Color.White,
             modifier = Modifier.align(Alignment.CenterHorizontally),

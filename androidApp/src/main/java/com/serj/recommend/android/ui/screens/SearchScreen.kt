@@ -1,6 +1,5 @@
-package com.serj.recommend.android.screens
+package com.serj.recommend.android.ui.screens
 
-import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,7 +14,7 @@ import androidx.compose.ui.text.style.TextAlign
 
 
 @Composable
-fun SearchScreen(context: Context) {
+fun SearchScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
