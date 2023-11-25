@@ -10,7 +10,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import com.serj.recommend.android.R
 
 
 @Composable
@@ -18,11 +20,11 @@ fun SearchScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color.Yellow)
+            .background(color = Color.Gray)
             .wrapContentSize(Alignment.Center)
     ) {
         Text(
-            text = "Search Screen",
+            text = stringResource(id = R.string.navigation_title_search_screen),
             style = MaterialTheme.typography.titleLarge,
             color = Color.White,
             modifier = Modifier.align(Alignment.CenterHorizontally),

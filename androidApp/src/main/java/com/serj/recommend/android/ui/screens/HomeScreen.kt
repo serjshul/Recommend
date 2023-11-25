@@ -29,6 +29,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import com.serj.recommend.android.ui.BannerIndicator
 import com.serj.recommend.android.ui.BannerItem
 import com.serj.recommend.android.R
+import com.serj.recommend.android.getBannersData
+import com.serj.recommend.android.getBooksData
+import com.serj.recommend.android.getMediaData
+import com.serj.recommend.android.getMusicData
+import com.serj.recommend.android.getPlacesData
 import com.serj.recommend.android.ui.BannerItemData
 import com.serj.recommend.android.ui.recommendationItems.BookItemData
 import com.serj.recommend.android.ui.recommendationItems.MediaItemData
@@ -42,110 +47,13 @@ import com.serj.recommend.android.ui.categories.GalleryCategoryItem
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen() {
-    val context = LocalContext.current
+    val banners = getBannersData()
+    val musicData = getMusicData()
+    val mediaData = getMediaData()
+    val placesData = getPlacesData()
+    val booksData = getBooksData()
 
-    val banners = arrayListOf(
-        BannerItemData(
-            "Super Weakness",
-            "There is Sirotkin's new EP about love, loneliness and tigers in dark glasses. It is just what you need on a lonely warm evenings",
-            R.drawable.banner_sirotkin
-        ),
-        BannerItemData(
-            "Goodbye, poor bitches!",
-            "Why is Doja Cat fighting with fans? What lies behind her new album \"Scarlett\"? And why do people on social media often say that she’s gone crazy?",
-            R.drawable.banner_doja_cat
-        ),
-        BannerItemData(
-            "Never Have I Ever",
-            "After a traumatic year, an Indian-American teen just wants to spruce up her social status — but everyone won't make it easy on her",
-            R.drawable.banner_never_have_i_ever
-        ),
-        BannerItemData(
-            "Aster",
-            "A cafe for every day with fresh pastries, a carefully selected wine list and coffee roasted for us by Gravitas.",
-            R.drawable.banner_aster
-        )
-    )
-    val newMusic = listOf(
-        MusicItemData(
-            "Saoko",
-            "Rosalia",
-            R.drawable.cover_music_rosalia_saoko
-        ),
-        MusicItemData(
-            "Matilda",
-            "Harry Styles",
-            R.drawable.cover_music_harry_styles_matilda
-        ),
-        MusicItemData(
-            "Пост-пост",
-            "Монеточка",
-            R.drawable.cover_music_monetochka_post_post
-        ),
-        MusicItemData(
-            "King of Everything",
-            "Dominic Fike",
-            R.drawable.cover_music_dominic_fike_king_of_everything
-        )
-    )
-    val mediaNetflix = listOf(
-        MediaItemData(
-            "Never Have I Ever",
-            "Series",
-            "Netflix",
-            R.drawable.cover_media_never_have_i_ever
-        ),
-        MediaItemData(
-            "Never Have I Ever",
-            "Series",
-            "Netflix",
-            R.drawable.cover_media_never_have_i_ever
-        ),
-        MediaItemData(
-            "Never Have I Ever",
-            "Series",
-            "Netflix",
-            R.drawable.cover_media_never_have_i_ever
-        )
-    )
-    val placesCategory = listOf(
-        PlacesItemData(
-            "Civil на Волынском",
-            "Кофейня",
-            "Санкт-Петербург",
-            R.drawable.cover_places_civil
-        ),
-        PlacesItemData(
-            "Aster",
-            "Кафе",
-            "Санкт-Петербург",
-            R.drawable.cover_places_aster
-        )
-    )
-
-    val booksCategory = listOf(
-        BookItemData(
-            "Norwegian Forest",
-            "Haruki Murakami",
-            R.drawable.cover_book_haruki_murakami_norwegian_forest
-        ),
-        BookItemData(
-            "The Night in Lisbon",
-            "Erich Maria Remarque",
-            R.drawable.cover_book_erich_maria_remarque_the_night_in_lisbon
-        ),
-        BookItemData(
-            "Book Thief",
-            "Markus Zusak",
-            R.drawable.cover_book_markus_zusak_book_thief
-        )
-    )
-
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
-
-    Scaffold (
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-    ) { paddingValues ->
+    Scaffold() { paddingValues ->
         Box {
             LazyColumn(
                 modifier = Modifier
@@ -167,47 +75,17 @@ fun HomeScreen() {
                 }
 
                 item {
-                    CasualCategoryItem("Cool books", booksCategory, context)
+                    CrossingCategoryItem("Serj's New Music", musicData[0])
                 }
 
                 item {
-                    CrossingCategoryItem("Serj's New Music", newMusic, context)
+                    CasualCategoryItem("Cool books", booksData[0])
                 }
 
                 item {
-                    GalleryCategoryItem(title = "Netflix and Chill", data = mediaNetflix, context)
+                    GalleryCategoryItem(title = "Netflix and Chill", data = mediaData[0])
                 }
             }
-
-            TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent,
-                    titleContentColor = Color.White,
-                    navigationIconContentColor = Color.White
-                ),
-                title = {
-                    Text(
-                        "Home",
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        fontWeight = FontWeight.Bold
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = { /* do something */ }) {
-                        Icon(
-                            imageVector = Icons.Filled.Menu,
-                            contentDescription = "Localized description"
-                        )
-                    }
-                },
-                scrollBehavior = scrollBehavior
-            )
         }
     }
-}
-
-@Composable
-private fun FeatureOne() {
-
 }

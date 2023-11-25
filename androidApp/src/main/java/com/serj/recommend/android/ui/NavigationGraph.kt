@@ -1,32 +1,38 @@
 package com.serj.recommend.android.ui
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.serj.recommend.android.BottomNavigationItem
 import com.serj.recommend.android.ui.screens.FeedScreen
 import com.serj.recommend.android.ui.screens.HomeScreen
-import com.serj.recommend.android.ui.screens.SavedScreen
+import com.serj.recommend.android.ui.screens.ProfileScreen
 import com.serj.recommend.android.ui.screens.SearchScreen
 
 @Composable
 fun NavigationGraph(navController: NavHostController) {
+    val routeHome = stringResource(id = BottomNavigationItem.Home.route)
+    val routeFeed = stringResource(id = BottomNavigationItem.Feed.route)
+    val routeSearch = stringResource(id = BottomNavigationItem.Search.route)
+    val routeProfile = stringResource(id = BottomNavigationItem.Profile.route)
+
     NavHost(
         navController,
-        startDestination = BottomNavigationItem.Home.route
+        startDestination = routeHome
     ) {
-        composable(BottomNavigationItem.Home.route) {
+        composable(routeHome) {
             HomeScreen()
         }
-        composable(BottomNavigationItem.Feed.route) {
+        composable(routeFeed) {
             FeedScreen()
         }
-        composable(BottomNavigationItem.Search.route) {
+        composable(routeSearch) {
             SearchScreen()
         }
-        composable(BottomNavigationItem.Saved.route) {
-            SavedScreen()
+        composable(routeProfile) {
+            ProfileScreen()
         }
     }
 }

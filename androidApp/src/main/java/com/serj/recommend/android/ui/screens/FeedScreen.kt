@@ -18,8 +18,6 @@ import com.serj.recommend.android.R
 
 @Composable
 fun FeedScreen() {
-    val context = LocalContext.current
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -27,7 +25,7 @@ fun FeedScreen() {
             .wrapContentSize(Alignment.Center)
     ) {
         Text(
-            text = stringResource(id = R.string.feed_screen_name),
+            text = stringResource(id = R.string.navigation_title_feed_screen),
             style = MaterialTheme.typography.titleLarge,
             color = Color.White,
             modifier = Modifier.align(Alignment.CenterHorizontally),

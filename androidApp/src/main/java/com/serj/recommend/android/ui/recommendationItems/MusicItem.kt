@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -24,7 +25,7 @@ import androidx.compose.ui.unit.sp
 
 
 @Composable
-fun MusicItem(music: MusicItemData, context: Context) {
+fun MusicItem(music: MusicItemData) {
     Column(
         modifier = Modifier
             .clickable {
@@ -49,7 +50,6 @@ fun MusicItem(music: MusicItemData, context: Context) {
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold
         )
-
 
         Text(
             text = music.musician,

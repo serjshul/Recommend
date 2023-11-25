@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="navigation_title_home_screen">Главная</string>
+    <string name="navigation_title_feed_screen">Лента</string>
+    <string name="navigation_title_search_screen">Поиск</string>
+    <string name="navigation_title_profile_screen">Профиль</string>
+</resources>

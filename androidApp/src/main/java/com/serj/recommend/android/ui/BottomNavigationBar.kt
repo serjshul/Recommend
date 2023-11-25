@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -29,7 +30,7 @@ fun BottomNavigationBar(
         BottomNavigationItem.Home,
         BottomNavigationItem.Feed,
         BottomNavigationItem.Search,
-        BottomNavigationItem.Saved
+        BottomNavigationItem.Profile
     )
 
     NavigationBar(
@@ -40,19 +41,22 @@ fun BottomNavigationBar(
         val currentRoute = navBackStackEntry?.destination?.route
 
         screens.forEach { screen ->
+            val screenTitle = stringResource(id = screen.title)
+            val screenRoute = stringResource(id = screen.route)
+
             NavigationBarItem(
                 label = {
-                    Text(text = screen.title)
+                    Text(text = stringResource(id = screen.title))
                 },
                 icon = {
                     Icon(
                         imageVector = ImageVector.vectorResource(screen.icon),
-                        contentDescription = screen.title
+                        contentDescription = screenTitle
                     )
                 },
-                selected = currentRoute == screen.route,
+                selected = currentRoute == screenRoute,
                 onClick = {
-                    navController.navigate(screen.route) {
+                    navController.navigate(screenRoute) {
                         popUpTo(navController.graph.findStartDestination().id) {
                             saveState = true
                         }

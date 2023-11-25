@@ -1,6 +1,5 @@
 package com.serj.recommend.android.ui.categories
 
-import android.content.Context
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
@@ -19,7 +18,7 @@ import com.serj.recommend.android.ui.recommendationItems.BookItemData
 
 
 @Composable
-fun CasualCategoryItem(title: String, data: List<BookItemData>, context: Context) {
+fun CasualCategoryItem(title: String, data: List<BookItemData>) {
     Column {
         Text(
             modifier = Modifier
@@ -39,7 +38,7 @@ fun CasualCategoryItem(title: String, data: List<BookItemData>, context: Context
                 //musicItem(data[i])
                 //mediaItem(data[i])
                 //placesItem(data[i])
-                BookItem(data[i], context)
+                BookItem(data[i])
             }
             item {
                 Spacer(modifier = Modifier.size(15.dp))

@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.sp
 
 
 @Composable
-fun BookItem(book: BookItemData, context: Context) {
+fun BookItem(book: BookItemData) {
     Column(
         modifier = Modifier
             .clickable {

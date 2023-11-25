@@ -1,3 +1,13 @@
 <resources>
-    <string name="feed_screen_name">Feed Screen</string>
+
+    <!-- Navigation -->
+    <string name="navigation_title_home_screen">Home</string>
+    <string name="navigation_title_feed_screen">Feed</string>
+    <string name="navigation_title_search_screen">Search</string>
+    <string name="navigation_title_profile_screen">Profile</string>
+    <string name="navigation_route_home_screen" translatable="false">home_screen</string>
+    <string name="navigation_route_feed_screen" translatable="false">feed_screen</string>
+    <string name="navigation_route_search_screen" translatable="false">search_screen</string>
+    <string name="navigation_route_profile_screen" translatable="false">profile_screen</string>
+
 </resources>
