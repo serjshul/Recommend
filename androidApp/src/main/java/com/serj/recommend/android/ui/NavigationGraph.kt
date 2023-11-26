@@ -18,7 +18,7 @@ fun NavigationGraph(navController: NavHostController) {
         startDestination = BottomNavigationItem.Home.route
     ) {
         composable(BottomNavigationItem.Home.route) {
-            HomeScreen(navController)
+            HomeScreen(navController = navController)
         }
         composable(BottomNavigationItem.Feed.route) {
             FeedScreen()
@@ -30,7 +30,7 @@ fun NavigationGraph(navController: NavHostController) {
             ProfileScreen()
         }
         composable(Navigation.ArticleScreen.name) {
-            ArticleScreen()
+            ArticleScreen(navController = navController)
         }
     }
 }

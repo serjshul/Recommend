@@ -1,6 +1,9 @@
 package com.serj.recommend.android.ui
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,8 +16,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
@@ -28,39 +39,52 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.serj.recommend.android.R
+import com.serj.recommend.datalayer.navigation.Navigation
 
 @Composable
-fun ArticleScreen() {
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        item {
-            Header()
-        }
-        item {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .padding(start = 15.dp, top = 30.dp, end = 15.dp, bottom = 20.dp)
-            ){
-                Text(
-                    text = "“SAOKO” is the second single from ROSALÍA's MOTOMAMI album, and the first song officially released by her during 2022",
-                    color = Color.Black,
-                    fontSize = 14.sp
-                )
+fun ArticleScreen(
+    modifier: Modifier = Modifier,
+    navController: NavHostController
+) {
+    Scaffold {paddingValues ->
+        LazyColumn(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(paddingValues = paddingValues)
+        ) {
+            item {
+                Header(navController = navController)
             }
-        }
-        items(1) {
-            Paragraph()
+            item {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                        .padding(start = 15.dp, top = 30.dp, end = 15.dp, bottom = 20.dp)
+                ){
+                    Text(
+                        text = "“SAOKO” is the second single from ROSALÍA's MOTOMAMI album, and the first song officially released by her during 2022",
+                        color = Color.Black,
+                        fontSize = 14.sp
+                    )
+                }
+            }
+            items(1) {
+                Paragraph()
+            }
         }
     }
 }
 
 @Composable
-fun Header() {
+fun Header(
+    modifier: Modifier = Modifier,
+    navController: NavHostController
+) {
+    var isSaved by rememberSaveable { mutableStateOf<Boolean>(false) }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -68,7 +92,9 @@ fun Header() {
             .paint(
                 painterResource(id = R.drawable.background_music_rosalia_saoko),
                 colorFilter = ColorFilter.colorMatrix(
-                    ColorMatrix().apply { setToScale(0.7f, 0.7f, 0.7f, 1f) }
+                    ColorMatrix().apply {
+                        setToScale(0.7f, 0.7f, 0.7f, 1f)
+                    }
                 ),
                 contentScale = ContentScale.Crop
             )
@@ -81,7 +107,8 @@ fun Header() {
             Image(
                 modifier = Modifier
                     .padding(20.dp)
-                    .align(Alignment.TopStart),
+                    .align(Alignment.TopStart)
+                    .clickable { navController.popBackStack() },
                 painter = painterResource(id = R.drawable.icon_arrow_back),
                 contentDescription = "back",
                 contentScale = ContentScale.Crop
@@ -90,9 +117,13 @@ fun Header() {
             Image(
                 modifier = Modifier
                     .padding(20.dp)
-                    .align(Alignment.TopEnd),
-                painter = painterResource(id = R.drawable.icon_saved),
-                contentDescription = "like",
+                    .align(Alignment.TopEnd)
+                    .clickable { isSaved = !isSaved },
+                painter = if (isSaved)
+                    painterResource(id = R.drawable.icon_saved)
+                else
+                    painterResource(id = R.drawable.icon_unsaved),
+                contentDescription = "Unsaved",
                 contentScale = ContentScale.Crop
             )
         }
@@ -193,7 +224,3 @@ fun Paragraph() {
         )
     }
 }
-
-@Preview
-@Composable
-fun PreviewMusicPlayer() = ArticleScreen()

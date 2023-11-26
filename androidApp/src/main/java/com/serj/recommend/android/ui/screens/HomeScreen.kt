@@ -30,7 +30,10 @@ import com.serj.recommend.datalayer.navigation.Navigation
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(navController: NavHostController) {
+fun HomeScreen(
+    modifier: Modifier = Modifier,
+    navController: NavHostController
+) {
     val banners = getBannersData()
     val musicData = getMusicData()
     val mediaData = getMediaData()
