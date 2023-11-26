@@ -26,6 +26,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.navigation.NavHostController
 import com.serj.recommend.android.ui.BannerIndicator
 import com.serj.recommend.android.ui.BannerItem
 import com.serj.recommend.android.R
@@ -37,11 +38,12 @@ import com.serj.recommend.android.ui.recommendationItems.PlacesItemData
 import com.serj.recommend.android.ui.categories.CasualCategoryItem
 import com.serj.recommend.android.ui.categories.CrossingCategoryItem
 import com.serj.recommend.android.ui.categories.GalleryCategoryItem
+import com.serj.recommend.datalayer.navigation.Navigation
 
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen() {
+fun HomeScreen(navController: NavHostController) {
     val context = LocalContext.current
 
     val banners = arrayListOf(
@@ -141,9 +143,10 @@ fun HomeScreen() {
         )
     )
 
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    val scrollBehavior =
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
-    Scaffold (
+    Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
     ) { paddingValues ->
         Box {
@@ -171,7 +174,11 @@ fun HomeScreen() {
                 }
 
                 item {
-                    CrossingCategoryItem("Serj's New Music", newMusic, context)
+                    CrossingCategoryItem(
+                        "Serj's New Music", newMusic, context
+                    ) {
+                        navController.navigate(Navigation.ACTICLES_SCREEN.name)
+                    }
                 }
 
                 item {

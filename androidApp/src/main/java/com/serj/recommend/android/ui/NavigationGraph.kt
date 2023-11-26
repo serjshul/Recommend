@@ -1,5 +1,8 @@
 package com.serj.recommend.android.ui
 
+import android.icu.lang.UCharacter.IndicPositionalCategory.NA
+import android.util.Log
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -9,6 +12,7 @@ import com.serj.recommend.android.ui.screens.FeedScreen
 import com.serj.recommend.android.ui.screens.HomeScreen
 import com.serj.recommend.android.ui.screens.SavedScreen
 import com.serj.recommend.android.ui.screens.SearchScreen
+import com.serj.recommend.datalayer.navigation.Navigation
 
 @Composable
 fun NavigationGraph(navController: NavHostController) {
@@ -17,7 +21,7 @@ fun NavigationGraph(navController: NavHostController) {
         startDestination = BottomNavigationItem.Home.route
     ) {
         composable(BottomNavigationItem.Home.route) {
-            HomeScreen()
+            HomeScreen(navController)
         }
         composable(BottomNavigationItem.Feed.route) {
             FeedScreen()
@@ -27,6 +31,11 @@ fun NavigationGraph(navController: NavHostController) {
         }
         composable(BottomNavigationItem.Saved.route) {
             SavedScreen()
+        }
+        composable(Navigation.ACTICLES_SCREEN.name) {
+            Log.d("TEST", "Navigation to ${Navigation.ACTICLES_SCREEN.name}}")
+//            ActiclesScreen()
+            Text("ACTICLES SCREEN")
         }
     }
 }

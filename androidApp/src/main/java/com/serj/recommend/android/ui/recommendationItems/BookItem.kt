@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -35,13 +36,12 @@ fun BookItem(book: BookItemData, context: Context) {
             modifier = Modifier
                 .height(240.dp)
                 .width(150.dp)
-                .clip(RoundedCornerShape(10.dp)),
+                .clip(RoundedCornerShape(10.dp))
+                .padding(bottom = 5.dp),
             painter = painterResource(id = book.cover),
             contentDescription = book.title,
             contentScale = ContentScale.Crop
         )
-
-        Spacer(modifier = Modifier.size(5.dp))
 
         Text(
             text = book.title,
