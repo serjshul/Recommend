@@ -1,5 +1,8 @@
 package com.serj.recommend.android.ui
 
+import android.icu.lang.UCharacter.IndicPositionalCategory.NA
+import android.util.Log
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
@@ -10,29 +13,30 @@ import com.serj.recommend.android.ui.screens.FeedScreen
 import com.serj.recommend.android.ui.screens.HomeScreen
 import com.serj.recommend.android.ui.screens.ProfileScreen
 import com.serj.recommend.android.ui.screens.SearchScreen
+import com.serj.recommend.datalayer.navigation.Navigation
 
 @Composable
 fun NavigationGraph(navController: NavHostController) {
-    val routeHome = stringResource(id = BottomNavigationItem.Home.route)
-    val routeFeed = stringResource(id = BottomNavigationItem.Feed.route)
-    val routeSearch = stringResource(id = BottomNavigationItem.Search.route)
-    val routeProfile = stringResource(id = BottomNavigationItem.Profile.route)
-
     NavHost(
         navController,
-        startDestination = routeHome
+        startDestination = BottomNavigationItem.Home.route
     ) {
-        composable(routeHome) {
-            HomeScreen()
+        composable(BottomNavigationItem.Home.route) {
+            HomeScreen(navController)
         }
-        composable(routeFeed) {
+        composable(BottomNavigationItem.Feed.route) {
             FeedScreen()
         }
-        composable(routeSearch) {
+        composable(BottomNavigationItem.Search.route) {
             SearchScreen()
         }
-        composable(routeProfile) {
+        composable(BottomNavigationItem.Profile.route) {
             ProfileScreen()
+        }
+        composable(Navigation.ACTICLES_SCREEN.name) {
+            Log.d("TEST", "Navigation to ${Navigation.ACTICLES_SCREEN.name}}")
+//            ActiclesScreen()
+            Text("ACTICLES SCREEN")
         }
     }
 }

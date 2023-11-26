@@ -25,11 +25,16 @@ import androidx.compose.ui.unit.sp
 
 
 @Composable
-fun MusicItem(music: MusicItemData) {
+fun MusicItem(
+    music: MusicItemData,
+    navigateToArticleScreen: () -> Unit
+) {
+    val context = LocalContext.current
+
     Column(
         modifier = Modifier
             .clickable {
-//                context.startActivity(Intent(context, ArticleActivity::class.java))
+                navigateToArticleScreen.invoke()
             }
     ) {
         Image(
