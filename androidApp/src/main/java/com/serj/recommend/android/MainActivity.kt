@@ -44,37 +44,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
-sealed class BottomNavigationItem(
-    val route: Int,
-    var title: Int,
-    var icon: Int
-) {
-    data object Home :
-        BottomNavigationItem(
-            R.string.navigation_route_home_screen,
-            R.string.navigation_title_home_screen,
-            R.drawable.icon_home
-        )
-
-    data object Feed :
-        BottomNavigationItem(
-            R.string.navigation_route_feed_screen,
-            R.string.navigation_title_feed_screen,
-            R.drawable.icon_feed
-        )
-
-    data object Search :
-        BottomNavigationItem(
-            R.string.navigation_route_search_screen,
-            R.string.navigation_title_search_screen,
-            R.drawable.icon_search
-        )
-
-    data object Profile :
-        BottomNavigationItem(
-            R.string.navigation_route_profile_screen,
-            R.string.navigation_title_profile_screen,
-            R.drawable.icon_profile
-        )
-}

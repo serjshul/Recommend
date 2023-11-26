@@ -1,6 +1,5 @@
 package com.serj.recommend.android.ui.categories
 
-import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
@@ -28,7 +27,6 @@ import com.serj.recommend.android.ui.recommendationItems.MusicItemData
 fun CrossingCategoryItem(
     title: String,
     data: List<MusicItemData>,
-    context: Context,
     navigateToArticleScreen: () -> Unit
 ) {
     Box(

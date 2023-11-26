@@ -17,8 +17,8 @@ import androidx.compose.ui.res.vectorResource
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.serj.recommend.android.BottomNavigationItem
 import com.serj.recommend.android.R
+import com.serj.recommend.android.datalayer.navigation.BottomNavigationItem
 
 @Composable
 fun BottomNavigationBar(
@@ -42,7 +42,7 @@ fun BottomNavigationBar(
 
         screens.forEach { screen ->
             val screenTitle = stringResource(id = screen.title)
-            val screenRoute = stringResource(id = screen.route)
+            val screenRoute = screen.route
 
             NavigationBarItem(
                 label = {
