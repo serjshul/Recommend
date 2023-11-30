@@ -20,6 +20,8 @@ androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navig
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-media3-common = { group = "androidx.media3", name = "media3-common", version = "1.2.0" }
+firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx", version = "22.3.0" }
+firebase-messaging-ktx = { group = "com.google.firebase", name = "firebase-messaging-ktx", version = "23.3.1" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
