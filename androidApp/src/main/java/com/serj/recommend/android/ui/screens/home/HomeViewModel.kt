@@ -9,7 +9,7 @@ import com.serj.recommend.android.model.service.ConfigurationService
 import com.serj.recommend.android.model.service.LogService
 import com.serj.recommend.android.model.service.StorageService
 import com.serj.recommend.android.ui.screens.RecommendViewModel
-import com.serj.recommend.android.ui.screens.article.ArticleActionOption
+import com.serj.recommend.android.ui.screens.recommendation.RecommendationActionOption
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -26,7 +26,7 @@ class HomeViewModel @Inject constructor(
 
     fun loadArticleOptions() {
         val hasEditOption = configurationService.isShowTaskEditButtonConfig
-        options.value = ArticleActionOption.getOptions(hasEditOption)
+        options.value = RecommendationActionOption.getOptions(hasEditOption)
     }
 
     fun onArticleCheckChange(article: Article) {
@@ -38,10 +38,10 @@ class HomeViewModel @Inject constructor(
     fun onSettingsClick(openScreen: (String) -> Unit) = openScreen(SETTINGS_SCREEN)
 
     fun onArticleActionClick(openScreen: (String) -> Unit, article: Article, action: String) {
-        when (ArticleActionOption.getByTitle(action)) {
-            ArticleActionOption.EditArticle -> openScreen(ARTICLE_SCREEN)
-            ArticleActionOption.ToggleFlag -> onFlagArticleClick(article)
-            ArticleActionOption.DeleteArticle -> onDeleteArticleClick(article)
+        when (RecommendationActionOption.getByTitle(action)) {
+            RecommendationActionOption.EditArticle -> openScreen(ARTICLE_SCREEN)
+            RecommendationActionOption.ToggleFlag -> onFlagArticleClick(article)
+            RecommendationActionOption.DeleteArticle -> onDeleteArticleClick(article)
         }
     }
 

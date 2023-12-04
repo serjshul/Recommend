@@ -65,43 +65,41 @@ fun HomeScreenContent(
     val booksData = getBooksData()
 
     Scaffold() { paddingValues ->
-        Box {
-            LazyColumn(
-                modifier = modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-                    .background(color = Color.White)
-            ) {
-                item {
-                    Box() {
-                        val pagerState = rememberPagerState(pageCount = { banners.size })
-                        HorizontalPager(
-                            state = pagerState,
-                            verticalAlignment = Alignment.Top
-                        ) { page ->
-                            BannerItem(banners[page])
-                        }
-                        BannerIndicator(pagerState = pagerState)
+        LazyColumn(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .background(color = Color.White)
+        ) {
+            item {
+                Box() {
+                    val pagerState = rememberPagerState(pageCount = { banners.size })
+                    HorizontalPager(
+                        state = pagerState,
+                        verticalAlignment = Alignment.Top
+                    ) { page ->
+                        BannerItem(banners[page])
                     }
+                    BannerIndicator(pagerState = pagerState)
                 }
+            }
 
-                item {
-                    CrossingCategoryItem(
-                        title = "Serj's New Music",
-                        data = musicData[0],
-                        openScreen = openScreen
-                    )
-                }
+            item {
+                CrossingCategoryItem(
+                    title = "Serj's New Music",
+                    data = musicData[0],
+                    openScreen = openScreen
+                )
+            }
 
-                item {
-                    OrdinaryCategoryItem(
-                        "Cool books", booksData[0]
-                    )
-                }
+            item {
+                OrdinaryCategoryItem(
+                    "Cool books", booksData[0]
+                )
+            }
 
-                item {
-                    GalleryCategoryItem(title = "Netflix and Chill", data = mediaData[0])
-                }
+            item {
+                GalleryCategoryItem(title = "Netflix and Chill", data = mediaData[0])
             }
         }
     }

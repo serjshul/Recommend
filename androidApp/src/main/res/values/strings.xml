@@ -11,6 +11,8 @@
     <string name="try_again">Try again</string>
     <string name="ok">OK</string>
 
+    <string name="rec_screen">Rec</string>
+
     <!-- LoginScreen -->
     <string name="sign_in">Sign in</string>
     <string name="login_details">Enter your login details</string>

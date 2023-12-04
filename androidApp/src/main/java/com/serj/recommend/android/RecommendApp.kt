@@ -37,9 +37,10 @@ import com.serj.recommend.android.common.composable.PermissionDialog
 import com.serj.recommend.android.common.composable.RationaleDialog
 import com.serj.recommend.android.ui.BottomNavigationBar
 import com.serj.recommend.android.ui.screens.FeedScreen
-import com.serj.recommend.android.ui.screens.article.ArticleScreen
 import com.serj.recommend.android.ui.screens.home.HomeScreen
 import com.serj.recommend.android.ui.screens.profile.ProfileScreen
+import com.serj.recommend.android.ui.screens.rec.RecScreen
+import com.serj.recommend.android.ui.screens.recommendation.RecommendationScreen
 import com.serj.recommend.android.ui.screens.search.SearchScreen
 import com.serj.recommend.android.ui.snackbar.SnackbarManager
 import com.serj.recommend.android.ui.styles.MyApplicationTheme
@@ -134,6 +135,9 @@ fun NavGraphBuilder.recommendGraph(
     composable(FEED_SCREEN) {
         FeedScreen()
     }
+    composable(REC_SCREEN) {
+        RecScreen()
+    }
     composable(SEARCH_SCREEN) {
         SearchScreen()
     }
@@ -147,7 +151,7 @@ fun NavGraphBuilder.recommendGraph(
             defaultValue = null
         })
     ) {
-        ArticleScreen(
+        RecommendationScreen(
             popUpScreen = { appState.popUp() }
         )
     }
