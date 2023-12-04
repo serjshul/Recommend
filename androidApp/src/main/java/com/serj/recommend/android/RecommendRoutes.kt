@@ -7,6 +7,7 @@ const val EDIT_TASK_SCREEN = "EditTaskScreen"
 
 const val HOME_SCREEN = "HomeScreen"
 const val FEED_SCREEN = "FeedScreen"
+const val REC_SCREEN = "RecScreen"
 const val SEARCH_SCREEN = "SearchScreen"
 const val PROFILE_SCREEN = "ProfileScreen"
 
