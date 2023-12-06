@@ -1,5 +1,6 @@
 package com.serj.recommend.android.ui.screens.home.categories
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
@@ -14,13 +15,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.serj.recommend.android.R
 import com.serj.recommend.android.model.Category
-import com.serj.recommend.android.ui.screens.home.categories.recommendations.VerticalRectangleRecItem
+import com.serj.recommend.android.model.Recommendation
+import com.serj.recommend.android.ui.screens.home.categories.recommendations.SquareRecItem
 
 
 @Composable
 fun OrdinaryCategory(
     modifier: Modifier = Modifier,
-    category: Category
+    covers: List<Bitmap?>?,
+    category: Category,
+    openScreen: (String) -> Unit,
+    onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
 ) {
     Column {
         Text(
@@ -38,12 +43,27 @@ fun OrdinaryCategory(
         LazyRow {
             items(category.content.size) {i ->
                 Spacer(modifier = Modifier.size(15.dp))
-                //musicItem(data[i])
+
+                if (category.content[i]["coverType"] == "Square") {
+                    SquareRecItem(
+                        recommendationId = category.content[i]["recommendationId"] ?: "",
+                        title = category.content[i]["title"] ?: "",
+                        creator = category.content[i]["creator"] ?: "",
+                        type = category.content[i]["type"] ?: "",
+                        cover = covers?.get(i),
+                        openScreen = openScreen,
+                        onRecommendationClick = onRecommendationClick
+                    )
+                }
+
                 //mediaItem(data[i])
                 //placesItem(data[i])
+
+                /*
                 VerticalRectangleRecItem(
                     content = category.content[i]
                 )
+                */
             }
             item {
                 Spacer(modifier = Modifier.size(15.dp))

@@ -1,5 +1,9 @@
 package com.serj.recommend.android.ui.screens.home
 
+import android.content.ContentValues.TAG
+import android.graphics.Bitmap
+import android.util.Log
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import com.serj.recommend.android.RECOMMENDATION_ID
@@ -22,13 +26,22 @@ class HomeViewModel @Inject constructor(
     val options = mutableStateOf<List<String>>(listOf())
 
     val categories = storageService.categories
+    val categoriesImages = mutableStateMapOf<String?, List<Bitmap?>?>(null to null)
 
-    val image = mutableStateOf("")
-
-    fun download() {
+    init {
         launchCatching {
-            image.value =
-                storageService.downloadImage("gs://recommend-27827.appspot.com/recommendations/covers/cover_Peggy_gou_Nanana.jpg")
+            categories.collect { categories ->
+                for (category in categories) {
+                    val images = arrayListOf<Bitmap?>()
+                    for (item in category.content) {
+                        images.add(
+                            item["coverReference"]?.let { storageService.downloadImage(it) }
+                        )
+                    }
+                    categoriesImages[category.title] = images
+                    Log.v(TAG, images.joinToString())
+                }
+            }
         }
     }
 

@@ -1,7 +1,6 @@
 package com.serj.recommend.android.ui.screens.recommendation
 
-import android.content.ContentValues.TAG
-import android.util.Log
+import android.graphics.Bitmap
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,7 +16,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,13 +31,15 @@ fun RecommendationScreen(
     val options by viewModel.options
 
     val recommendation by viewModel.recommendation
-
-    Log.v(TAG, recommendation.toString())
+    val backgroundImage = viewModel.backgroundImage.value
+    val paragraphsImages = viewModel.paragraphsImages
 
     RecommendationScreenContent(
         recommendation = recommendation,
+        backgroundImage = backgroundImage,
+        paragraphsImages = paragraphsImages,
+        popUpScreen = popUpScreen,
         options = options,
-        popUpScreen = popUpScreen
     )
 
     //LaunchedEffect(viewModel) { viewModel.loadArticleOptions() }
@@ -50,11 +50,12 @@ fun RecommendationScreen(
 fun RecommendationScreenContent(
     modifier: Modifier = Modifier,
     recommendation: Recommendation,
-    options: List<String>,
+    backgroundImage: Bitmap?,
+    paragraphsImages: Map<Int?, Bitmap?>,
     popUpScreen: () -> Unit,
+    options: List<String>
 ) {
     val sheetState = rememberModalBottomSheetState()
-    val scope = rememberCoroutineScope()
     var showBottomSheet by remember { mutableStateOf(false) }
 
     Scaffold() {paddingValues ->
@@ -73,6 +74,7 @@ fun RecommendationScreenContent(
                         creator = recommendation.creator,
                         tags = recommendation.tags,
                         year = recommendation.year,
+                        backgroundImage = backgroundImage,
                         popUpScreen = popUpScreen
                     )
                     Column(
@@ -85,13 +87,13 @@ fun RecommendationScreenContent(
                             modifier = modifier,
                             description = recommendation.description
                         )
-                        for (paragraph in recommendation.paragraphs) {
+                        for (i in recommendation.paragraphs.indices) {
                             Paragraph(
                                 modifier = modifier,
-                                title = paragraph["title"] ?: "",
-                                image = paragraph["image"],
-                                video = paragraph["video"],
-                                text = paragraph["text"] ?: "",
+                                title = recommendation.paragraphs[i]["title"] ?: "",
+                                image = paragraphsImages[i],
+                                video = recommendation.paragraphs[i]["video"],
+                                text = recommendation.paragraphs[i]["text"] ?: "",
                                 color = recommendation.color
                             )
                         }

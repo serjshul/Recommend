@@ -1,6 +1,8 @@
 package com.serj.recommend.android.model.service.impl
 
 import android.content.ContentValues
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Log
 import com.google.android.gms.tasks.Continuation
@@ -45,18 +47,22 @@ class StorageServiceImpl @Inject constructor(
             .await()
             .toObject()
 
-    override suspend fun downloadImage(gsReference: String): String {
+    override suspend fun downloadImage(gsReference: String): Bitmap? {
+        var bmp: Bitmap? = null
+
         storage
             .getReferenceFromUrl(gsReference)
-            .getBytes(ONE_MEGABYTE).addOnSuccessListener {
+            .getBytes(ONE_MEGABYTE)
+            .addOnSuccessListener {
                 // Data for "images/island.jpg" is returned, use this as needed
-                Log.v(ContentValues.TAG, it.javaClass.name.toString())
+                bmp = BitmapFactory.decodeByteArray(it, 0, it.size)
             }.addOnFailureListener {
                 // Handle any errors
                 Log.v(ContentValues.TAG, "not downloaded !!!")
             }
+            .await()
 
-        return "yeah"
+        return bmp
     }
 
     override suspend fun uploadImage(uri: Uri, folderName: String, fileName: String): String {

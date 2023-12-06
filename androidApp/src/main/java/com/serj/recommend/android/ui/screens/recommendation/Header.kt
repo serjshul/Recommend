@@ -1,6 +1,8 @@
 package com.serj.recommend.android.ui.screens.recommendation
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,18 +20,20 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.serj.recommend.android.R
+import com.serj.recommend.android.ui.styles.Muesli
 
 @Composable
 fun Header(
@@ -39,57 +43,27 @@ fun Header(
     creator: String,
     tags: List<String>,
     year: Int,
+    backgroundImage: Bitmap?,
     popUpScreen: () -> Unit
 ) {
     // TODO: save like / unlike by user
     var isSaved by rememberSaveable { mutableStateOf(false) }
 
-    Column(
+    Box(
         modifier = modifier
             .fillMaxWidth()
             .height(300.dp)
-            .paint(
-                painterResource(id = R.drawable.background_music_rosalia_saoko),
+            .background(Muesli)
+    ) {
+        if (backgroundImage != null) {
+            Image(
+                modifier = Modifier
+                    .fillMaxSize(),
+                bitmap = backgroundImage.asImageBitmap(),
                 colorFilter = ColorFilter.colorMatrix(
                     ColorMatrix().apply { setToScale(0.7f, 0.7f, 0.7f, 1f) }
                 ),
-                contentScale = ContentScale.Crop
-            )
-    ) {
-        Box(
-            modifier = modifier
-                .fillMaxWidth()
-                .height(64.dp)
-        ) {
-            Image(
-                modifier = modifier
-                    .padding(20.dp)
-                    .align(Alignment.TopStart)
-                    .clickable { popUpScreen() },
-                painter = painterResource(id = R.drawable.icon_arrow_back),
-                contentDescription = "back",
-                contentScale = ContentScale.Crop
-            )
-
-            Text(
-                modifier = modifier
-                    .align(Alignment.Center),
-                text = type,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center,
-                color = Color.White,
-                fontSize = 14.sp
-            )
-
-            Image(
-                modifier = modifier
-                    .padding(20.dp)
-                    .align(Alignment.TopEnd)
-                    .clickable { isSaved = !isSaved },
-                painter = if (isSaved) painterResource(id = R.drawable.icon_saved)
-                else painterResource(id = R.drawable.icon_unsaved),
-                contentDescription = if (isSaved) "saved"
-                else "unsaved",
+                contentDescription = "background",
                 contentScale = ContentScale.Crop
             )
         }
@@ -97,75 +71,120 @@ fun Header(
         Column(
             modifier = modifier
                 .fillMaxSize()
-                .padding(30.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Bottom
         ) {
-            Text(
+            Box(
                 modifier = modifier
-                    .padding(bottom = 10.dp),
-                text = title,
-                color = Color.White,
-                fontSize = 24.sp,
-                maxLines = 2,
-                fontWeight = FontWeight.Bold
-            )
-
-            Row(
-                modifier = modifier
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
+                    .fillMaxWidth()
+                    .height(64.dp)
             ) {
+                Image(
+                    modifier = modifier
+                        .padding(20.dp)
+                        .align(Alignment.TopStart)
+                        .clickable { popUpScreen() },
+                    painter = painterResource(id = R.drawable.icon_arrow_back),
+                    contentDescription = "back",
+                    contentScale = ContentScale.Crop
+                )
+
                 Text(
                     modifier = modifier
-                        .weight(1f),
-                    text = creator,
-                    overflow = TextOverflow.Ellipsis,
+                        .align(Alignment.Center),
+                    text = type,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
                     color = Color.White,
-                    fontSize = 14.sp,
-                    maxLines = 3
+                    fontSize = 14.sp
                 )
 
+                Image(
+                    modifier = modifier
+                        .padding(20.dp)
+                        .align(Alignment.TopEnd)
+                        .clickable { isSaved = !isSaved },
+                    painter = if (isSaved) painterResource(id = R.drawable.icon_saved)
+                    else painterResource(id = R.drawable.icon_unsaved),
+                    contentDescription = if (isSaved) "saved"
+                    else "unsaved",
+                    contentScale = ContentScale.Crop
+                )
+            }
+
+            Column(
+                modifier = modifier
+                    .fillMaxSize()
+                    .padding(35.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Bottom
+            ) {
                 Text(
                     modifier = modifier
-                        .padding(start = 10.dp, end = 10.dp),
-                    text = "/",
+                        .padding(bottom = 10.dp),
+                    text = title,
                     color = Color.White,
-                    fontSize = 23.sp
+                    fontSize = 24.sp,
+                    maxLines = 2,
+                    fontWeight = FontWeight.Bold
                 )
 
-                Text(
+                Row(
                     modifier = modifier
-                        .weight(1f),
-                    text = tags.joinToString(),
-                    overflow = TextOverflow.Ellipsis,
-                    textAlign = TextAlign.Center,
-                    color = Color.White,
-                    fontSize = 14.sp,
-                    maxLines = 3
-                )
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        modifier = modifier
+                            .weight(1f),
+                        text = creator,
+                        overflow = TextOverflow.Ellipsis,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        color = Color.White,
+                        lineHeight = 1.2.em,
+                        fontSize = 14.sp,
+                        maxLines = 3
+                    )
 
-                Text(
-                    modifier = modifier
-                        .padding(start = 10.dp, end = 10.dp),
-                    text = "/",
-                    color = Color.White,
-                    fontSize = 23.sp
-                )
+                    Text(
+                        modifier = modifier
+                            .padding(start = 10.dp, end = 10.dp),
+                        text = "/",
+                        color = Color.White,
+                        fontSize = 23.sp
+                    )
 
-                Text(
-                    modifier = modifier
-                        .weight(1f),
-                    text = year.toString(),
-                    overflow = TextOverflow.Ellipsis,
-                    textAlign = TextAlign.Center,
-                    color = Color.White,
-                    fontSize = 14.sp,
-                    maxLines = 3
-                )
+                    Text(
+                        modifier = modifier
+                            .weight(1f),
+                        text = tags.joinToString(),
+                        overflow = TextOverflow.Ellipsis,
+                        textAlign = TextAlign.Center,
+                        color = Color.White,
+                        lineHeight = 1.2.em,
+                        fontSize = 14.sp,
+                        maxLines = 3
+                    )
+
+                    Text(
+                        modifier = modifier
+                            .padding(start = 10.dp, end = 10.dp),
+                        text = "/",
+                        color = Color.White,
+                        fontSize = 23.sp
+                    )
+
+                    Text(
+                        modifier = modifier
+                            .weight(1f),
+                        text = year.toString(),
+                        overflow = TextOverflow.Ellipsis,
+                        textAlign = TextAlign.Center,
+                        color = Color.White,
+                        fontSize = 14.sp,
+                        maxLines = 3
+                    )
+                }
             }
         }
     }

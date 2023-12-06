@@ -20,14 +20,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.serj.recommend.android.R
 import com.serj.recommend.android.model.Recommendation
-import com.serj.recommend.android.ui.screens.home.categories.recommendations.MusicItemData
-import com.serj.recommend.android.ui.screens.home.categories.recommendations.SquareRecItem
 
 
 @Composable
 fun CrossingCategoryItem(
     title: String,
-    data: List<MusicItemData>,
+    //data: List<MusicItemData>,
     openScreen: (String) -> Unit,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
 ) {
@@ -60,17 +58,20 @@ fun CrossingCategoryItem(
             modifier = Modifier
                 .padding(top = 160.dp)
         ) {
-            items(data.size) { i ->
+            items(1) { i ->
                 if (i == 0) {
                     Spacer(modifier = Modifier.size(30.dp))
                 } else {
                     Spacer(modifier = Modifier.size(15.dp))
                 }
+                /*
                 SquareRecItem(
                     music = data[i],
                     openScreen = openScreen,
                     onRecommendationClick = onRecommendationClick
                 )
+
+                 */
                 //mediaItem(data[i])
                 //placesItem(data[i])
             }

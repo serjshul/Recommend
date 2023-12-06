@@ -1,5 +1,6 @@
 package com.serj.recommend.android.ui.screens.recommendation
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,18 +13,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.serj.recommend.android.R
 
 @Composable
 fun Paragraph(
     modifier: Modifier = Modifier,
     title: String,
-    image: String?,
+    image: Bitmap?,
     video: String?,
     text: String,
     color: String
@@ -52,8 +52,9 @@ fun Paragraph(
                 modifier = Modifier
                     .height(180.dp)
                     .fillMaxWidth()
+                    .padding(bottom = 15.dp)
                     .clip(RoundedCornerShape(10.dp)),
-                painter = painterResource(id = R.drawable.music_paragraph_1),
+                bitmap = image.asImageBitmap(),
                 contentDescription = "paragraph",
                 contentScale = ContentScale.Crop
             )
@@ -61,11 +62,8 @@ fun Paragraph(
 
         for (i in paragraphs.indices) {
             Text(
-                modifier = when (i) {
-                    0 -> modifier.padding(top = 15.dp, bottom = 12.dp)
-                    paragraphs.size - 1 -> modifier
-                    else -> modifier.padding(bottom = 12.dp)
-                },
+                modifier = if (i != paragraphs.size - 1) modifier.padding(bottom = 12.dp)
+                    else modifier,
                 text = paragraphs[i],
                 color = Color.Black,
                 fontSize = 14.sp
