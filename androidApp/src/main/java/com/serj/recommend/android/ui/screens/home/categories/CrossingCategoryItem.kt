@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.serj.recommend.android.R
+import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.ui.screens.home.categories.recommendations.MusicItemData
 import com.serj.recommend.android.ui.screens.home.categories.recommendations.SquareRecItem
 
@@ -27,7 +28,8 @@ import com.serj.recommend.android.ui.screens.home.categories.recommendations.Squ
 fun CrossingCategoryItem(
     title: String,
     data: List<MusicItemData>,
-    openScreen: (String) -> Unit
+    openScreen: (String) -> Unit,
+    onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -66,7 +68,8 @@ fun CrossingCategoryItem(
                 }
                 SquareRecItem(
                     music = data[i],
-                    openScreen = openScreen
+                    openScreen = openScreen,
+                    onRecommendationClick = onRecommendationClick
                 )
                 //mediaItem(data[i])
                 //placesItem(data[i])

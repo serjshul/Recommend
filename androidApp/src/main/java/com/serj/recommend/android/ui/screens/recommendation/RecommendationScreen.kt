@@ -14,7 +14,6 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,32 +23,33 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.serj.recommend.android.model.Recommendation
 
 @Composable
 fun RecommendationScreen(
     popUpScreen: () -> Unit,
     viewModel: RecommendationViewModel = hiltViewModel()
 ) {
-    val articles = viewModel.articles.collectAsStateWithLifecycle(emptyList())
     val options by viewModel.options
 
-    Log.v(TAG, articles.value.toString())
+    val recommendation by viewModel.recommendation
+
+    Log.v(TAG, recommendation.toString())
 
     RecommendationScreenContent(
-        //articles = articles.value,
+        recommendation = recommendation,
         options = options,
         popUpScreen = popUpScreen
     )
 
-    LaunchedEffect(viewModel) { viewModel.loadArticleOptions() }
+    //LaunchedEffect(viewModel) { viewModel.loadArticleOptions() }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecommendationScreenContent(
     modifier: Modifier = Modifier,
-    //articles: List<Article>,
+    recommendation: Recommendation,
     options: List<String>,
     popUpScreen: () -> Unit,
 ) {
@@ -68,6 +68,11 @@ fun RecommendationScreenContent(
                 ) {
                     Header(
                         modifier = modifier,
+                        title = recommendation.title,
+                        type = recommendation.type,
+                        creator = recommendation.creator,
+                        tags = recommendation.tags,
+                        year = recommendation.year,
                         popUpScreen = popUpScreen
                     )
                     Column(
@@ -77,18 +82,33 @@ fun RecommendationScreenContent(
                             .background(Color.White, RoundedCornerShape(20.dp))
                     ) {
                         Description(
-                            modifier = modifier
+                            modifier = modifier,
+                            description = recommendation.description
                         )
-                        for (i in 0..0) {
+                        for (paragraph in recommendation.paragraphs) {
                             Paragraph(
-                                modifier = modifier
+                                modifier = modifier,
+                                title = paragraph["title"] ?: "",
+                                image = paragraph["image"],
+                                video = paragraph["video"],
+                                text = paragraph["text"] ?: "",
+                                color = recommendation.color
                             )
                         }
                         Quote(
-                            modifier = modifier
+                            modifier = modifier,
+                            quote = recommendation.quote,
+                            color = recommendation.color
                         )
                         Footer(
                             modifier = modifier,
+                            author = recommendation.authorId,
+                            date = recommendation.date,
+                            viewsCount = recommendation.viewsCount,
+                            likesCount = recommendation.likesCount,
+                            commentsCount = recommendation.commentsCount,
+                            repostsCount = recommendation.repostsCount,
+                            comments = recommendation.comments,
                             onCommentsClick = {
                                 showBottomSheet = true
                             }

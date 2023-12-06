@@ -34,15 +34,14 @@ import com.serj.recommend.android.R
 @Composable
 fun Header(
     modifier: Modifier = Modifier,
+    title: String,
+    type: String,
+    creator: String,
+    tags: List<String>,
+    year: Int,
     popUpScreen: () -> Unit
-    //article: Article
 ) {
-    val title = "Saoko"
-    val type = "Music"
-    val creator = "ROSALIA"
-    val tags = "Latino pop"
-    val year = "2023"
-
+    // TODO: save like / unlike by user
     var isSaved by rememberSaveable { mutableStateOf(false) }
 
     Column(
@@ -104,10 +103,10 @@ fun Header(
         ) {
             Text(
                 modifier = modifier
-                    .padding(bottom = 5.dp),
+                    .padding(bottom = 10.dp),
                 text = title,
                 color = Color.White,
-                fontSize = 30.sp,
+                fontSize = 24.sp,
                 maxLines = 2,
                 fontWeight = FontWeight.Bold
             )
@@ -141,7 +140,7 @@ fun Header(
                 Text(
                     modifier = modifier
                         .weight(1f),
-                    text = tags,
+                    text = tags.joinToString(),
                     overflow = TextOverflow.Ellipsis,
                     textAlign = TextAlign.Center,
                     color = Color.White,
@@ -160,7 +159,7 @@ fun Header(
                 Text(
                     modifier = modifier
                         .weight(1f),
-                    text = year,
+                    text = year.toString(),
                     overflow = TextOverflow.Ellipsis,
                     textAlign = TextAlign.Center,
                     color = Color.White,

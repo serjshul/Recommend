@@ -13,11 +13,8 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun Description(
     modifier: Modifier = Modifier,
-    //article: Article
+    description: String
 ) {
-    val description = "“SAOKO” is the second single from ROSALÍA's MOTOMAMI album, and the " +
-            "first song officially released by her during 2022"
-
     Text(
         modifier = modifier
             .fillMaxWidth()

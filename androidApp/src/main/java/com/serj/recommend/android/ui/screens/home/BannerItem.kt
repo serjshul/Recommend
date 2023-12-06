@@ -13,12 +13,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
@@ -38,8 +41,25 @@ data class BannerItemData(
     var cover: Int
 )
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun BannerItem(banner: BannerItemData) {
+fun BannerItem(
+    banners: ArrayList<BannerItemData>
+) {
+    Box() {
+        val pagerState = rememberPagerState(pageCount = { banners.size })
+        HorizontalPager(
+            state = pagerState,
+            verticalAlignment = Alignment.Top
+        ) { page ->
+            BannerLayout(banners[page])
+        }
+        BannerIndicator(pagerState = pagerState)
+    }
+}
+
+@Composable
+fun BannerLayout(banner: BannerItemData) {
     Column(
         modifier = Modifier
             .fillMaxWidth()

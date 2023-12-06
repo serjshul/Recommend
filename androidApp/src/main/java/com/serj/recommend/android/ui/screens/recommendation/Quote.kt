@@ -13,23 +13,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.graphics.toColorInt
 
 @Composable
 fun Quote(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    quote: String,
+    color: String
 ) {
-    val quote = "Yo soy muy mía, yo me transformo\n" +
-            "Una mariposa, yo me transformo\n" +
-            "Makeup de drag queen, yo me transformo\n" +
-            "Lluvia de estrеlla', yo me transformo"
-    val color = "#E03038"
-
     Column(
         modifier = modifier
             .fillMaxWidth()
             .padding(start = 15.dp, end = 15.dp, bottom = 25.dp)
-            .background(Color(color.toColorInt()), RoundedCornerShape(15.dp))
+            .background(color.toColor(), RoundedCornerShape(15.dp))
     ) {
         Text(
             modifier = modifier
@@ -42,7 +37,7 @@ fun Quote(
 
         Text(
             modifier = modifier.padding(start = 15.dp, end = 15.dp, bottom = 15.dp),
-            text = quote,
+            text = quote.replace("\\n", "\n"),
             fontWeight = FontWeight.Bold,
             color = Color.White,
             fontSize = 17.sp

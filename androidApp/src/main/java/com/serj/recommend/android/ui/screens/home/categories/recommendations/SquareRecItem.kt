@@ -19,7 +19,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.serj.recommend.android.ARTICLE_SCREEN
+import com.serj.recommend.android.model.Recommendation
 
 //import com.serj.recommend.android.ArticleActivity
 
@@ -27,14 +27,18 @@ import com.serj.recommend.android.ARTICLE_SCREEN
 @Composable
 fun SquareRecItem(
     music: MusicItemData,
-    openScreen: (String) -> Unit
+    openScreen: (String) -> Unit,
+    onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
 ) {
     val context = LocalContext.current
 
     Column(
         modifier = Modifier
             .clickable {
-                openScreen(ARTICLE_SCREEN)
+                onRecommendationClick(
+                    openScreen,
+                    Recommendation(id = "4s5fTvgODBQPRKYOHkkc")
+                )
             }
     ) {
         Image(

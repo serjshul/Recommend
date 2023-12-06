@@ -145,8 +145,8 @@ fun NavGraphBuilder.recommendGraph(
         ProfileScreen()
     }
     composable(
-        route = ARTICLE_SCREEN,
-        arguments = listOf(navArgument(ARTICLE_ID) {
+        route = "$RECOMMENDATION_SCREEN$RECOMMENDATION_ID_ARG",
+        arguments = listOf(navArgument(RECOMMENDATION_ID) {
             nullable = true
             defaultValue = null
         })

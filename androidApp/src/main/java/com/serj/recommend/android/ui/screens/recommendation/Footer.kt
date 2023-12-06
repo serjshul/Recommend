@@ -28,25 +28,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.serj.recommend.android.R
+import java.sql.Timestamp
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Composable
 fun Footer(
     modifier: Modifier = Modifier,
-    onCommentsClick: () -> Unit
+    author: String,
+    date: Date,
+    viewsCount: Int,
+    likesCount: Int,
+    commentsCount: Int,
+    repostsCount: Int,
+    comments: List<HashMap<String, String>>,
+    onCommentsClick: () -> Unit,
 ) {
-    val author = "@serjshul"
-    val date = "04/12/2023 21:36"
-    val views = "52"
-    val likes = "15"
-    val comments = "3"
-    val reposts = "2"
-    //val comments =
-    val color = "#E03038"
-
     Info(
         modifier = modifier,
         author = author,
-        date = date
+        date = date.toString()
     )
 
     Divider(
@@ -57,20 +59,25 @@ fun Footer(
 
     InteractionPanel(
         modifier = modifier,
-        views = views,
-        likes = likes,
-        comments = comments,
-        reposts = reposts
+        views = viewsCount.toString(),
+        likes = likesCount.toString(),
+        comments = commentsCount.toString(),
+        reposts = repostsCount.toString()
     )
 
-    Column (
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(start = 15.dp, end = 15.dp, bottom = 15.dp)
-            .clickable { onCommentsClick() },
-    ) {
-        for (i in 0..2) {
-            ShortCommentItem(user = "@lalala", comment = "wow! so cool")
+    if (comments.isNotEmpty()) {
+        Column (
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(start = 15.dp, end = 15.dp, bottom = 15.dp)
+                .clickable { onCommentsClick() },
+        ) {
+            for (comment in comments) {
+                ShortCommentItem(
+                    user = comment["userId"] ?: "",
+                    comment = comment["text"] ?: ""
+                )
+            }
         }
     }
 }
@@ -214,4 +221,9 @@ fun ShortCommentItem(
         lineHeight = 1.2.em,
         overflow = TextOverflow.Ellipsis
     )
+}
+
+private fun getDateString(timestamp: Timestamp): String {
+    val simpleDateFormat = SimpleDateFormat("dd/MMMM/yyyy HH:mm:ss", Locale.ENGLISH)
+    return simpleDateFormat.format(timestamp.time * 1000L)
 }

@@ -64,6 +64,7 @@ dependencies {
     implementation("androidx.media3:media3-exoplayer:1.1.0")
     implementation("androidx.media3:media3-session:1.1.0")
     implementation("androidx.media3:media3-ui:1.1.0")
+    implementation("io.coil-kt:coil-compose:2.5.0")
     implementation(libs.androidx.media3.common)
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.messaging.ktx)
@@ -78,11 +79,10 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
     implementation(platform("com.google.firebase:firebase-bom:32.6.0"))
-    // TODO: Add the dependencies for Firebase products you want to use
-    // https://firebase.google.com/docs/android/setup#available-libraries
     implementation("com.google.firebase:firebase-crashlytics")
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-storage")
     implementation("com.google.firebase:firebase-perf")
 
     implementation("com.google.dagger:hilt-android:2.47")

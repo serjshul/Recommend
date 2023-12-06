@@ -4,27 +4,23 @@ import android.content.ContentValues
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.serj.recommend.android.R
-import com.serj.recommend.android.model.Article
 import com.serj.recommend.android.model.Category
+import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.ui.screens.home.categories.CrossingCategoryItem
 import com.serj.recommend.android.ui.screens.home.categories.GalleryCategoryItem
-import com.serj.recommend.android.ui.screens.home.categories.OrdinaryCategoryItem
+import com.serj.recommend.android.ui.screens.home.categories.OrdinaryCategory
 import com.serj.recommend.android.ui.screens.home.categories.recommendations.BookItemData
 import com.serj.recommend.android.ui.screens.home.categories.recommendations.MediaItemData
 import com.serj.recommend.android.ui.screens.home.categories.recommendations.MusicItemData
@@ -36,28 +32,28 @@ fun HomeScreen(
     openScreen: (String) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
-    //val articles = viewModel.articles.collectAsStateWithLifecycle(emptyList())
     val categories = viewModel.categories.collectAsStateWithLifecycle(emptyList())
-    val options by viewModel.options
-
     Log.v(ContentValues.TAG, categories.value.toString())
 
+    viewModel.download()
+
+    val options by viewModel.options
+
     HomeScreenContent(
-        articles = categories.value,
+        categories = categories.value,
         options = options,
-        onArticleClick = viewModel::onArticleActionClick,
-        openScreen = openScreen
+        openScreen = openScreen,
+        onRecommendationClick = viewModel::onRecommendationClick
     )
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreenContent(
     modifier: Modifier = Modifier,
-    articles: List<Category>,
+    categories: List<Category>,
     options: List<String>,
-    onArticleClick: ((String) -> Unit, Article, String) -> Unit,
-    openScreen: (String) -> Unit
+    openScreen: (String) -> Unit,
+    onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
 ) {
     val banners = getBannersData()
     val musicData = getMusicData()
@@ -72,30 +68,26 @@ fun HomeScreenContent(
                 .background(color = Color.White)
         ) {
             item {
-                Box() {
-                    val pagerState = rememberPagerState(pageCount = { banners.size })
-                    HorizontalPager(
-                        state = pagerState,
-                        verticalAlignment = Alignment.Top
-                    ) { page ->
-                        BannerItem(banners[page])
-                    }
-                    BannerIndicator(pagerState = pagerState)
-                }
+                BannerItem(
+                    banners = banners
+                )
             }
 
             item {
                 CrossingCategoryItem(
                     title = "Serj's New Music",
                     data = musicData[0],
-                    openScreen = openScreen
+                    openScreen = openScreen,
+                    onRecommendationClick = onRecommendationClick
                 )
             }
 
-            item {
-                OrdinaryCategoryItem(
-                    "Cool books", booksData[0]
-                )
+            for (category in categories) {
+                item {
+                    OrdinaryCategory(
+                        category = category
+                    )
+                }
             }
 
             item {
