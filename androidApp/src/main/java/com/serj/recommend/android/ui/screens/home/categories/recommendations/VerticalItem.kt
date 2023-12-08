@@ -4,9 +4,8 @@ import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -27,11 +26,11 @@ import com.serj.recommend.android.model.Recommendation
 
 
 @Composable
-fun SquareRecItem(
+fun VerticalItem(
+    modifier: Modifier = Modifier,
     recommendationId: String,
     title: String,
     creator: String,
-    type: String,
     cover: Bitmap?,
     openScreen: (String) -> Unit,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
@@ -47,9 +46,10 @@ fun SquareRecItem(
     ) {
         if (cover != null) {
             Image(
-                modifier = Modifier
-                    .height(160.dp)
-                    .width(160.dp)
+                modifier = modifier
+                    .height(240.dp)
+                    .width(150.dp)
+                    .padding(bottom = 5.dp)
                     .clip(RoundedCornerShape(10.dp)),
                 bitmap = cover.asImageBitmap(),
                 contentDescription = title,
@@ -57,17 +57,16 @@ fun SquareRecItem(
             )
         } else {
             Image(
-                modifier = Modifier
-                    .height(160.dp)
-                    .width(160.dp)
+                modifier = modifier
+                    .height(240.dp)
+                    .width(150.dp)
+                    .padding(bottom = 5.dp)
                     .clip(RoundedCornerShape(10.dp)),
-                painter = painterResource(id = R.drawable.cover_music_monetochka_post_post),
+                painter = painterResource(id = R.drawable.gradient),
                 contentDescription = title,
                 contentScale = ContentScale.Crop
             )
         }
-
-        Spacer(modifier = Modifier.size(5.dp))
 
         Text(
             text = title,

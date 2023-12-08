@@ -1,13 +1,12 @@
 package com.serj.recommend.android.ui.screens.home
 
-import android.content.ContentValues.TAG
 import android.graphics.Bitmap
-import android.util.Log
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import com.serj.recommend.android.RECOMMENDATION_ID
 import com.serj.recommend.android.RECOMMENDATION_SCREEN
+import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.service.ConfigurationService
 import com.serj.recommend.android.model.service.LogService
@@ -27,10 +26,20 @@ class HomeViewModel @Inject constructor(
 
     val categories = storageService.categories
     val categoriesImages = mutableStateMapOf<String?, List<Bitmap?>?>(null to null)
+    val banner = mutableStateOf<Category?>(null)
+    val bannerBackground = mutableStateOf<Bitmap?>(null)
 
     init {
         launchCatching {
             categories.collect { categories ->
+                val banners = categories.filter { category -> category.type == "Banner" }
+                banner.value = if (banners.isNotEmpty()) banners.random() else null
+                if (banner.value != null) {
+                    bannerBackground.value = banner.value!!.background["reference"]?. let {
+                        storageService.downloadImage(it)
+                    }
+                }
+
                 for (category in categories) {
                     val images = arrayListOf<Bitmap?>()
                     for (item in category.content) {
@@ -39,7 +48,6 @@ class HomeViewModel @Inject constructor(
                         )
                     }
                     categoriesImages[category.title] = images
-                    Log.v(TAG, images.joinToString())
                 }
             }
         }

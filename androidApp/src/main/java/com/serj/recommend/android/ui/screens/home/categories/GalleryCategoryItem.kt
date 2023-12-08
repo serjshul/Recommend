@@ -31,15 +31,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.lerp
 import com.serj.recommend.android.R
-import com.serj.recommend.android.ui.screens.home.categories.recommendations.MediaItemData
 import kotlin.math.absoluteValue
 
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun GalleryCategoryItem(
-    title: String,
-    data: List<MediaItemData>
+    title: String
 ) {
     Column(
         modifier = Modifier
@@ -58,24 +56,24 @@ fun GalleryCategoryItem(
 
         Spacer(modifier = Modifier.size(5.dp))
 
-        val pagerState = rememberPagerState(pageCount = { data.size })
+        val pagerState = rememberPagerState(pageCount = { 1 })
         val fling = PagerDefaults.flingBehavior(
             state = pagerState,
-            pagerSnapDistance = PagerSnapDistance.atMost(data.size)
+            pagerSnapDistance = PagerSnapDistance.atMost(1)
         )
         HorizontalPager(
             state = pagerState,
             beyondBoundsPageCount = 10,
             flingBehavior = fling
         ) { page ->
-            MediaGalleryItem(data[page], pagerState, page)
+            MediaGalleryItem(pagerState, page)
         }
     }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MediaGalleryItem(media: MediaItemData, pagerState: PagerState, page: Int) {
+fun MediaGalleryItem(pagerState: PagerState, page: Int) {
     Column(
         modifier = Modifier
             .width(390.dp)
@@ -99,15 +97,15 @@ fun MediaGalleryItem(media: MediaItemData, pagerState: PagerState, page: Int) {
                 .height(210.dp)
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(10.dp)),
-            painter = painterResource(id = media.cover),
-            contentDescription = media.title,
+            painter = painterResource(id = R.drawable.cover_media_never_have_i_ever),
+            contentDescription = "",
             contentScale = ContentScale.Crop
         )
 
         Spacer(modifier = Modifier.size(5.dp))
 
         Text(
-            text = media.title,
+            text = "media.title",
             color = Color.Black,
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold
@@ -115,7 +113,7 @@ fun MediaGalleryItem(media: MediaItemData, pagerState: PagerState, page: Int) {
 
         Row {
             Text(
-                text = media.type,
+                text = "media.type",
                 color = Color.Black,
                 fontSize = 12.sp
             )
@@ -123,7 +121,7 @@ fun MediaGalleryItem(media: MediaItemData, pagerState: PagerState, page: Int) {
             Spacer(modifier = Modifier.size(10.dp))
 
             Text(
-                text = media.production,
+                text = "media.production",
                 color = colorResource(id = R.color.muesli),
                 fontSize = 12.sp
             )

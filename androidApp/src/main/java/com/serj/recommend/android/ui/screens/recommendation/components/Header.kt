@@ -160,7 +160,7 @@ fun Header(
                         color = Color.White,
                         lineHeight = 1.2.em,
                         fontSize = 14.sp,
-                        maxLines = 3
+                        maxLines = 4
                     )
 
                     Text(
@@ -180,7 +180,7 @@ fun Header(
                         color = Color.White,
                         lineHeight = 1.2.em,
                         fontSize = 14.sp,
-                        maxLines = 3
+                        maxLines = 4
                     )
 
                     Text(
