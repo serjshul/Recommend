@@ -22,6 +22,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.serj.recommend.android.model.Recommendation
+import com.serj.recommend.android.ui.screens.recommendation.components.CommentFullItem
+import com.serj.recommend.android.ui.screens.recommendation.components.Content
+import com.serj.recommend.android.ui.screens.recommendation.components.Footer
+import com.serj.recommend.android.ui.screens.recommendation.components.Header
 
 @Composable
 fun RecommendationScreen(
@@ -75,6 +79,7 @@ fun RecommendationScreenContent(
                         tags = recommendation.tags,
                         year = recommendation.year,
                         backgroundImage = backgroundImage,
+                        backgroundVideo = null,
                         popUpScreen = popUpScreen
                     )
                     Column(
@@ -83,25 +88,14 @@ fun RecommendationScreenContent(
                             .padding(top = 280.dp)
                             .background(Color.White, RoundedCornerShape(20.dp))
                     ) {
-                        Description(
-                            modifier = modifier,
-                            description = recommendation.description
-                        )
-                        for (i in recommendation.paragraphs.indices) {
-                            Paragraph(
-                                modifier = modifier,
-                                title = recommendation.paragraphs[i]["title"] ?: "",
-                                image = paragraphsImages[i],
-                                video = recommendation.paragraphs[i]["video"],
-                                text = recommendation.paragraphs[i]["text"] ?: "",
-                                color = recommendation.color
-                            )
-                        }
-                        Quote(
-                            modifier = modifier,
+                        Content(
+                            description = recommendation.description,
+                            paragraphs = recommendation.paragraphs,
+                            paragraphsImages = paragraphsImages,
                             quote = recommendation.quote,
                             color = recommendation.color
                         )
+
                         Footer(
                             modifier = modifier,
                             author = recommendation.authorId,
@@ -131,9 +125,11 @@ fun RecommendationScreenContent(
                 Column (
                     modifier = modifier.padding(start = 15.dp, end = 15.dp, bottom = 20.dp)
                 ) {
-                    for (i in 0..2) {
-                        CommentItem(
+                    for (comment in recommendation.comments) {
+                        CommentFullItem(
                             modifier = modifier,
+                            user = comment["userId"] ?: "",
+                            comment = comment["text"] ?: "",
                         )
                     }
                 }

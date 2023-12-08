@@ -1,4 +1,4 @@
-package com.serj.recommend.android.ui.screens.recommendation
+package com.serj.recommend.android.ui.screens.recommendation.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -21,17 +21,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.serj.recommend.android.R
-import java.sql.Timestamp
-import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.Locale
 
 @Composable
 fun Footer(
@@ -48,7 +42,7 @@ fun Footer(
     Info(
         modifier = modifier,
         author = author,
-        date = date.toString()
+        date = date.toLocaleString()
     )
 
     Divider(
@@ -73,7 +67,7 @@ fun Footer(
                 .clickable { onCommentsClick() },
         ) {
             for (comment in comments) {
-                ShortCommentItem(
+                CommentShortItem(
                     user = comment["userId"] ?: "",
                     comment = comment["text"] ?: ""
                 )
@@ -199,31 +193,4 @@ fun InteractionPanel(
             )
         }
     }
-}
-
-@Composable
-fun ShortCommentItem(
-    modifier: Modifier = Modifier,
-    user: String,
-    comment: String
-) {
-    Text(
-        modifier = modifier
-            .padding(bottom = 3.dp),
-        text = buildAnnotatedString {
-            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                append(user)
-            }
-            append(" $comment")
-        },
-        fontSize = 14.sp,
-        maxLines = 2,
-        lineHeight = 1.2.em,
-        overflow = TextOverflow.Ellipsis
-    )
-}
-
-private fun getDateString(timestamp: Timestamp): String {
-    val simpleDateFormat = SimpleDateFormat("dd/MMMM/yyyy HH:mm:ss", Locale.ENGLISH)
-    return simpleDateFormat.format(timestamp.time * 1000L)
 }

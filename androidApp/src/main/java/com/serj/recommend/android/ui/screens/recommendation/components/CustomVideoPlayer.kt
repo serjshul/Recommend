@@ -1,4 +1,4 @@
-package com.serj.recommend.android.ui.screens.recommendation
+package com.serj.recommend.android.ui.screens.recommendation.components
 
 import android.annotation.SuppressLint
 import android.util.Log

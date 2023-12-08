@@ -1,4 +1,4 @@
-package com.serj.recommend.android.ui.screens.recommendation
+package com.serj.recommend.android.ui.screens.recommendation.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -32,12 +32,13 @@ import androidx.compose.ui.unit.sp
 import com.serj.recommend.android.R
 
 @Composable
-fun CommentItem(
-    modifier: Modifier = Modifier
+fun CommentFullItem(
+    modifier: Modifier = Modifier,
+    user: String,
+    comment: String
 ) {
+    // TODO: getting photo and date from firestore
     val photo = R.drawable.profile_photo
-    val user = "@lalala"
-    val text = "Wow-wow-wow! Wow-wow-wow! Wow-wow-wow! Wow-wow-wow! Wow-wow-wow! Wow-wow-wow!"
     val date = "04/12/2023 22:04"
 
     var isLiked by rememberSaveable { mutableStateOf(false) }
@@ -69,7 +70,7 @@ fun CommentItem(
                     withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                         append(user)
                     }
-                    append(" $text")
+                    append(" $comment")
                 },
                 fontSize = 14.sp,
                 lineHeight = 1.2.em

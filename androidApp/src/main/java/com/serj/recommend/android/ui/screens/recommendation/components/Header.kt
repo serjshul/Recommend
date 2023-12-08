@@ -1,4 +1,4 @@
-package com.serj.recommend.android.ui.screens.recommendation
+package com.serj.recommend.android.ui.screens.recommendation.components
 
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image
@@ -44,6 +44,7 @@ fun Header(
     tags: List<String>,
     year: Int,
     backgroundImage: Bitmap?,
+    backgroundVideo: String?,
     popUpScreen: () -> Unit
 ) {
     // TODO: save like / unlike by user
@@ -55,17 +56,33 @@ fun Header(
             .height(300.dp)
             .background(Muesli)
     ) {
-        if (backgroundImage != null) {
-            Image(
-                modifier = Modifier
-                    .fillMaxSize(),
-                bitmap = backgroundImage.asImageBitmap(),
-                colorFilter = ColorFilter.colorMatrix(
-                    ColorMatrix().apply { setToScale(0.7f, 0.7f, 0.7f, 1f) }
-                ),
-                contentDescription = "background",
-                contentScale = ContentScale.Crop
-            )
+        when {
+            backgroundVideo != null -> {
+                // TODO: add video player
+            }
+            backgroundImage != null -> {
+                Image(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    bitmap = backgroundImage.asImageBitmap(),
+                    colorFilter = ColorFilter
+                        .colorMatrix(ColorMatrix().apply {
+                            setToScale(0.7f, 0.7f, 0.7f, 1f)
+                        }
+                    ),
+                    contentDescription = "background_image",
+                    contentScale = ContentScale.Crop
+                )
+            }
+            else -> {
+                Image(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    painter = painterResource(id = R.drawable.gradient),
+                    contentDescription = "background_gradient",
+                    contentScale = ContentScale.Crop
+                )
+            }
         }
 
         Column(
@@ -83,7 +100,7 @@ fun Header(
                         .align(Alignment.TopStart)
                         .clickable { popUpScreen() },
                     painter = painterResource(id = R.drawable.icon_arrow_back),
-                    contentDescription = "back",
+                    contentDescription = "button_back",
                     contentScale = ContentScale.Crop
                 )
 
@@ -103,9 +120,9 @@ fun Header(
                         .align(Alignment.TopEnd)
                         .clickable { isSaved = !isSaved },
                     painter = if (isSaved) painterResource(id = R.drawable.icon_saved)
-                    else painterResource(id = R.drawable.icon_unsaved),
-                    contentDescription = if (isSaved) "saved"
-                    else "unsaved",
+                        else painterResource(id = R.drawable.icon_unsaved),
+                    contentDescription = if (isSaved) "button_saved"
+                        else "button_unsaved",
                     contentScale = ContentScale.Crop
                 )
             }
@@ -182,7 +199,7 @@ fun Header(
                         textAlign = TextAlign.Center,
                         color = Color.White,
                         fontSize = 14.sp,
-                        maxLines = 3
+                        maxLines = 1
                     )
                 }
             }
