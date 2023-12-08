@@ -6,5 +6,5 @@ data class Category(
     @DocumentId val id: String = "",
     val title: String = "",
     val type: String = "",
-    val content: List<String> = arrayListOf(""),
+    val content: ArrayList<HashMap<String, String>> = arrayListOf(),
 )

@@ -1,4 +1,4 @@
-package com.serj.recommend.android.ui.screens.recommendation
+package com.serj.recommend.android.ui.screens.recommendation.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -21,32 +21,28 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.serj.recommend.android.R
+import java.util.Date
 
 @Composable
 fun Footer(
     modifier: Modifier = Modifier,
-    onCommentsClick: () -> Unit
+    author: String,
+    date: Date,
+    viewsCount: Int,
+    likesCount: Int,
+    commentsCount: Int,
+    repostsCount: Int,
+    comments: List<HashMap<String, String>>,
+    onCommentsClick: () -> Unit,
 ) {
-    val author = "@serjshul"
-    val date = "04/12/2023 21:36"
-    val views = "52"
-    val likes = "15"
-    val comments = "3"
-    val reposts = "2"
-    //val comments =
-    val color = "#E03038"
-
     Info(
         modifier = modifier,
         author = author,
-        date = date
+        date = date.toLocaleString()
     )
 
     Divider(
@@ -57,20 +53,25 @@ fun Footer(
 
     InteractionPanel(
         modifier = modifier,
-        views = views,
-        likes = likes,
-        comments = comments,
-        reposts = reposts
+        views = viewsCount.toString(),
+        likes = likesCount.toString(),
+        comments = commentsCount.toString(),
+        reposts = repostsCount.toString()
     )
 
-    Column (
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(start = 15.dp, end = 15.dp, bottom = 15.dp)
-            .clickable { onCommentsClick() },
-    ) {
-        for (i in 0..2) {
-            ShortCommentItem(user = "@lalala", comment = "wow! so cool")
+    if (comments.isNotEmpty()) {
+        Column (
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(start = 15.dp, end = 15.dp, bottom = 15.dp)
+                .clickable { onCommentsClick() },
+        ) {
+            for (comment in comments) {
+                CommentShortItem(
+                    user = comment["userId"] ?: "",
+                    comment = comment["text"] ?: ""
+                )
+            }
         }
     }
 }
@@ -192,26 +193,4 @@ fun InteractionPanel(
             )
         }
     }
-}
-
-@Composable
-fun ShortCommentItem(
-    modifier: Modifier = Modifier,
-    user: String,
-    comment: String
-) {
-    Text(
-        modifier = modifier
-            .padding(bottom = 3.dp),
-        text = buildAnnotatedString {
-            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                append(user)
-            }
-            append(" $comment")
-        },
-        fontSize = 14.sp,
-        maxLines = 2,
-        lineHeight = 1.2.em,
-        overflow = TextOverflow.Ellipsis
-    )
 }

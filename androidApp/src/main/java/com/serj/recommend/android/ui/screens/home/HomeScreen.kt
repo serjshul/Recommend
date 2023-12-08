@@ -1,68 +1,53 @@
 package com.serj.recommend.android.ui.screens.home
 
-import android.content.ContentValues
-import android.util.Log
-import androidx.compose.foundation.ExperimentalFoundationApi
+import android.graphics.Bitmap
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.serj.recommend.android.R
-import com.serj.recommend.android.model.Article
 import com.serj.recommend.android.model.Category
-import com.serj.recommend.android.ui.screens.home.categories.CrossingCategoryItem
-import com.serj.recommend.android.ui.screens.home.categories.GalleryCategoryItem
-import com.serj.recommend.android.ui.screens.home.categories.OrdinaryCategoryItem
+import com.serj.recommend.android.model.Recommendation
+import com.serj.recommend.android.ui.screens.home.categories.OrdinaryCategory
 import com.serj.recommend.android.ui.screens.home.categories.recommendations.BookItemData
 import com.serj.recommend.android.ui.screens.home.categories.recommendations.MediaItemData
-import com.serj.recommend.android.ui.screens.home.categories.recommendations.MusicItemData
 
-
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     openScreen: (String) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
-    //val articles = viewModel.articles.collectAsStateWithLifecycle(emptyList())
     val categories = viewModel.categories.collectAsStateWithLifecycle(emptyList())
+    val categoriesImages = viewModel.categoriesImages
+
     val options by viewModel.options
 
-    Log.v(ContentValues.TAG, categories.value.toString())
-
     HomeScreenContent(
-        articles = categories.value,
+        categories = categories.value,
         options = options,
-        onArticleClick = viewModel::onArticleActionClick,
-        openScreen = openScreen
+        openScreen = openScreen,
+        categoriesImages = categoriesImages,
+        onRecommendationClick = viewModel::onRecommendationClick
     )
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreenContent(
     modifier: Modifier = Modifier,
-    articles: List<Category>,
+    categories: List<Category>,
+    categoriesImages: Map<String?, List<Bitmap?>?>,
     options: List<String>,
-    onArticleClick: ((String) -> Unit, Article, String) -> Unit,
-    openScreen: (String) -> Unit
+    openScreen: (String) -> Unit,
+    onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
 ) {
     val banners = getBannersData()
-    val musicData = getMusicData()
-    val mediaData = getMediaData()
-    val booksData = getBooksData()
 
     Scaffold() { paddingValues ->
         LazyColumn(
@@ -72,35 +57,40 @@ fun HomeScreenContent(
                 .background(color = Color.White)
         ) {
             item {
-                Box() {
-                    val pagerState = rememberPagerState(pageCount = { banners.size })
-                    HorizontalPager(
-                        state = pagerState,
-                        verticalAlignment = Alignment.Top
-                    ) { page ->
-                        BannerItem(banners[page])
-                    }
-                    BannerIndicator(pagerState = pagerState)
+                BannerItem(
+                    banners = banners
+                )
+            }
+
+            for (category in categories) {
+                item {
+                    OrdinaryCategory(
+                        category = category,
+                        covers = categoriesImages[category.title],
+                        openScreen = openScreen,
+                        onRecommendationClick = onRecommendationClick
+                    )
                 }
             }
 
+
+            /*
             item {
                 CrossingCategoryItem(
                     title = "Serj's New Music",
                     data = musicData[0],
-                    openScreen = openScreen
+                    openScreen = openScreen,
+                    onRecommendationClick = onRecommendationClick
                 )
             }
 
-            item {
-                OrdinaryCategoryItem(
-                    "Cool books", booksData[0]
-                )
-            }
+
 
             item {
                 GalleryCategoryItem(title = "Netflix and Chill", data = mediaData[0])
             }
+
+             */
         }
     }
 }
@@ -129,36 +119,6 @@ fun getBannersData(): ArrayList<BannerItemData> {
             R.drawable.banner_aster
         )
     )
-}
-
-fun getMusicData(): ArrayList<List<MusicItemData>> {
-    val musicData = arrayListOf<List<MusicItemData>>()
-
-    val newMusic = listOf(
-        MusicItemData(
-            "Saoko",
-            "Rosalia",
-            R.drawable.cover_music_rosalia_saoko
-        ),
-        MusicItemData(
-            "Matilda",
-            "Harry Styles",
-            R.drawable.cover_music_harry_styles_matilda
-        ),
-        MusicItemData(
-            "Пост-пост",
-            "Монеточка",
-            R.drawable.cover_music_monetochka_post_post
-        ),
-        MusicItemData(
-            "King of Everything",
-            "Dominic Fike",
-            R.drawable.cover_music_dominic_fike_king_of_everything
-        )
-    )
-    musicData.add(newMusic)
-
-    return musicData
 }
 
 fun getMediaData(): ArrayList<List<MediaItemData>> {

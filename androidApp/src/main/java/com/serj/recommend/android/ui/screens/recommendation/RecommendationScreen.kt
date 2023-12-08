@@ -1,7 +1,6 @@
 package com.serj.recommend.android.ui.screens.recommendation
 
-import android.content.ContentValues.TAG
-import android.util.Log
+import android.graphics.Bitmap
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,47 +13,53 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.serj.recommend.android.model.Recommendation
+import com.serj.recommend.android.ui.screens.recommendation.components.CommentFullItem
+import com.serj.recommend.android.ui.screens.recommendation.components.Content
+import com.serj.recommend.android.ui.screens.recommendation.components.Footer
+import com.serj.recommend.android.ui.screens.recommendation.components.Header
 
 @Composable
 fun RecommendationScreen(
     popUpScreen: () -> Unit,
     viewModel: RecommendationViewModel = hiltViewModel()
 ) {
-    val articles = viewModel.articles.collectAsStateWithLifecycle(emptyList())
     val options by viewModel.options
 
-    Log.v(TAG, articles.value.toString())
+    val recommendation by viewModel.recommendation
+    val backgroundImage = viewModel.backgroundImage.value
+    val paragraphsImages = viewModel.paragraphsImages
 
     RecommendationScreenContent(
-        //articles = articles.value,
+        recommendation = recommendation,
+        backgroundImage = backgroundImage,
+        paragraphsImages = paragraphsImages,
+        popUpScreen = popUpScreen,
         options = options,
-        popUpScreen = popUpScreen
     )
 
-    LaunchedEffect(viewModel) { viewModel.loadArticleOptions() }
+    //LaunchedEffect(viewModel) { viewModel.loadArticleOptions() }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecommendationScreenContent(
     modifier: Modifier = Modifier,
-    //articles: List<Article>,
-    options: List<String>,
+    recommendation: Recommendation,
+    backgroundImage: Bitmap?,
+    paragraphsImages: Map<Int?, Bitmap?>,
     popUpScreen: () -> Unit,
+    options: List<String>
 ) {
     val sheetState = rememberModalBottomSheetState()
-    val scope = rememberCoroutineScope()
     var showBottomSheet by remember { mutableStateOf(false) }
 
     Scaffold() {paddingValues ->
@@ -68,6 +73,13 @@ fun RecommendationScreenContent(
                 ) {
                     Header(
                         modifier = modifier,
+                        title = recommendation.title,
+                        type = recommendation.type,
+                        creator = recommendation.creator,
+                        tags = recommendation.tags,
+                        year = recommendation.year,
+                        backgroundImage = backgroundImage,
+                        backgroundVideo = null,
                         popUpScreen = popUpScreen
                     )
                     Column(
@@ -76,19 +88,23 @@ fun RecommendationScreenContent(
                             .padding(top = 280.dp)
                             .background(Color.White, RoundedCornerShape(20.dp))
                     ) {
-                        Description(
-                            modifier = modifier
+                        Content(
+                            description = recommendation.description,
+                            paragraphs = recommendation.paragraphs,
+                            paragraphsImages = paragraphsImages,
+                            quote = recommendation.quote,
+                            color = recommendation.color
                         )
-                        for (i in 0..0) {
-                            Paragraph(
-                                modifier = modifier
-                            )
-                        }
-                        Quote(
-                            modifier = modifier
-                        )
+
                         Footer(
                             modifier = modifier,
+                            author = recommendation.authorId,
+                            date = recommendation.date,
+                            viewsCount = recommendation.viewsCount,
+                            likesCount = recommendation.likesCount,
+                            commentsCount = recommendation.commentsCount,
+                            repostsCount = recommendation.repostsCount,
+                            comments = recommendation.comments,
                             onCommentsClick = {
                                 showBottomSheet = true
                             }
@@ -109,9 +125,11 @@ fun RecommendationScreenContent(
                 Column (
                     modifier = modifier.padding(start = 15.dp, end = 15.dp, bottom = 20.dp)
                 ) {
-                    for (i in 0..2) {
-                        CommentItem(
+                    for (comment in recommendation.comments) {
+                        CommentFullItem(
                             modifier = modifier,
+                            user = comment["userId"] ?: "",
+                            comment = comment["text"] ?: "",
                         )
                     }
                 }

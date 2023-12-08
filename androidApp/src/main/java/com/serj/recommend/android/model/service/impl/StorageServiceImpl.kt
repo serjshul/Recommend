@@ -1,69 +1,104 @@
 package com.serj.recommend.android.model.service.impl
 
+import android.content.ContentValues
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
+import android.util.Log
+import com.google.android.gms.tasks.Continuation
+import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.dataObjects
 import com.google.firebase.firestore.toObject
-import com.serj.recommend.android.model.Article
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.UploadTask
 import com.serj.recommend.android.model.Category
+import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.service.AccountService
 import com.serj.recommend.android.model.service.StorageService
-import com.serj.recommend.android.model.service.trace
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
-class StorageServiceImpl
-@Inject
-constructor(private val firestore: FirebaseFirestore, private val auth: AccountService) :
-    StorageService {
+class StorageServiceImpl @Inject constructor(
+    private val firestore: FirebaseFirestore,
+    private val storage: FirebaseStorage,
+    private val auth: AccountService
+) : StorageService {
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    override val articles: Flow<List<Article>>
-        get() = firestore.collection(ARTICLES_COLLECTION).dataObjects()
-            /*
-            auth.currentUser.flatMapLatest { user ->
-                firestore.collection(ARTICLES_COLLECTION).whereEqualTo(USER_ID_FIELD, user.id).dataObjects()
-            }
+    override val recommendations: Flow<List<Recommendation>>
+        get() = firestore
+            .collection(RECOMMENDATION_COLLECTION)
+            .dataObjects()
 
-             */
-
-    @OptIn(ExperimentalCoroutinesApi::class)
     override val categories: Flow<List<Category>>
-        get() = firestore.collection(CATEGORY_COLLECTION).dataObjects()
-    /*
-    auth.currentUser.flatMapLatest { user ->
-        firestore.collection(ARTICLES_COLLECTION).whereEqualTo(USER_ID_FIELD, user.id).dataObjects()
+        get() = firestore
+            .collection(CATEGORY_COLLECTION)
+            .dataObjects()
+
+    override suspend fun getRecommendation(recommendationId: String): Recommendation? =
+        firestore
+            .collection(RECOMMENDATION_COLLECTION)
+            .document(recommendationId)
+            .get()
+            .await()
+            .toObject()
+
+    override suspend fun downloadImage(gsReference: String): Bitmap? {
+        var bmp: Bitmap? = null
+
+        storage
+            .getReferenceFromUrl(gsReference)
+            .getBytes(ONE_MEGABYTE)
+            .addOnSuccessListener {
+                // Data for "images/island.jpg" is returned, use this as needed
+                bmp = BitmapFactory.decodeByteArray(it, 0, it.size)
+            }.addOnFailureListener {
+                // Handle any errors
+                Log.v(ContentValues.TAG, "not downloaded !!!")
+            }
+            .await()
+
+        return bmp
     }
 
-     */
+    override suspend fun uploadImage(uri: Uri, folderName: String, fileName: String): String {
+        return suspendCoroutine { continuation ->
+            val storageRef = storage.reference
+            val storageReference = storageRef.child("$folderName/$fileName")
 
-    override suspend fun getCategory(categoryId: String): Category? =
-        firestore.collection(CATEGORY_COLLECTION).document(categoryId).get().await().toObject()
+            val uploadTask = storageReference.putFile(uri)
 
-    override suspend fun getArticle(articleId: String): Article? =
-        firestore.collection(ARTICLES_COLLECTION).document(articleId).get().await().toObject()
+            uploadTask
+                .addOnFailureListener {
+                    continuation.resumeWithException(it)
+                }
+                .addOnSuccessListener {
+                    it.task.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
+                        if (!task.isSuccessful) {
+                            task.exception?.let { exception ->
+                                continuation.resumeWithException(exception)
+                            }
+                        }
 
-    override suspend fun saveArticle(article: Article): String =
-        trace(SAVE_TASK_TRACE) {
-            val articleWithUserId = article.copy(userId = auth.currentUserId)
-            firestore.collection(ARTICLES_COLLECTION).add(articleWithUserId).await().id
+                        return@Continuation storageReference.downloadUrl
+                    }).addOnCompleteListener { uriTask ->
+                        if (uriTask.isSuccessful) {
+                            val downloadUri = uriTask.result
+                            continuation.resume(downloadUri.toString())
+                        }
+                    }
+                }
         }
-
-    override suspend fun updateArticle(article: Article): Unit =
-        trace(UPDATE_TASK_TRACE) {
-            firestore.collection(ARTICLES_COLLECTION).document(article.id).set(article).await()
-        }
-
-    override suspend fun deleteArticle(articleId: String) {
-        firestore.collection(ARTICLES_COLLECTION).document(articleId).delete().await()
     }
 
     companion object {
-        private const val USER_ID_FIELD = "userId"
-        private const val ARTICLES_COLLECTION = "articles"
+        private const val RECOMMENDATION_COLLECTION = "recommendations"
         private const val CATEGORY_COLLECTION = "categories"
-        private const val SAVE_TASK_TRACE = "saveArticle"
-        private const val UPDATE_TASK_TRACE = "updateArticle"
+
+        private const val ONE_MEGABYTE: Long = 1024 * 1024
     }
 }
