@@ -6,7 +6,8 @@ data class Category(
     @DocumentId val id: String = "",
     val title: String = "",
     val type: String = "",
-    val description: String = "",
     val background: HashMap<String, String> = hashMapOf(),
-    val content: ArrayList<HashMap<String, String>> = arrayListOf(),
+    val coverType: String = "",
+    val recommendationIds: ArrayList<String> = arrayListOf(),
+    var content: ArrayList<CategoryItem> = arrayListOf()
 )

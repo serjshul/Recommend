@@ -1,4 +1,4 @@
-package com.serj.recommend.android.ui.screens.home.categories
+package com.serj.recommend.android.ui.screens.home.components.categoryItems
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image

@@ -13,6 +13,7 @@ import com.google.firebase.firestore.toObject
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import com.serj.recommend.android.model.Category
+import com.serj.recommend.android.model.CategoryItem
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.service.AccountService
 import com.serj.recommend.android.model.service.StorageService
@@ -46,6 +47,31 @@ class StorageServiceImpl @Inject constructor(
             .get()
             .await()
             .toObject()
+
+    override suspend fun getCategoryItem(recommendationId: String): CategoryItem? {
+        var categoryItem: CategoryItem? = null
+
+        firestore
+            .collection(RECOMMENDATION_COLLECTION)
+            .document(recommendationId)
+            .get()
+            .addOnSuccessListener {document ->
+                val recommendation = document.toObject<Recommendation>()
+                categoryItem = CategoryItem(
+                    recommendationId = recommendationId,
+                    title = recommendation!!.title,
+                    creator = recommendation.creator,
+                    cover = recommendation.cover["reference"] ?: ""
+                )
+                //Log.v(ContentValues.TAG, "got CategoryItem")
+            }.addOnFailureListener {
+                // Handle any errors
+                Log.v(ContentValues.TAG, "error getCategoryItem()")
+            }
+            .await()
+
+        return categoryItem
+    }
 
     override suspend fun downloadImage(gsReference: String): Bitmap? {
         var bmp: Bitmap? = null

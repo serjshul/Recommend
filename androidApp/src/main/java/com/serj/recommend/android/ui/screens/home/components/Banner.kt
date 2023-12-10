@@ -56,8 +56,8 @@ fun Banner(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(440.dp)
-            .padding(bottom = 15.dp)
+            .height(520.dp)
+            .padding(bottom = 30.dp)
     ) {
         if (background != null) {
             Image(
@@ -113,7 +113,7 @@ fun Banner(
             )
 
             Row(
-                modifier = modifier.padding(bottom = 10.dp),
+                modifier = modifier.padding(bottom = 9.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 FilledTonalButton(
@@ -126,7 +126,6 @@ fun Banner(
                     }
                 ) {
                     Text(
-                        modifier = modifier.padding(start = 3.dp, end = 3.dp),
                         text = "Read",
                         color = Color.Black,
                         fontSize = 14.sp,

@@ -13,9 +13,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.serj.recommend.android.model.Category
+import com.serj.recommend.android.model.CategoryItem
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.ui.screens.home.components.Banner
-import com.serj.recommend.android.ui.screens.home.components.OrdinaryCategory
+import com.serj.recommend.android.ui.screens.home.components.categoryItems.OrdinaryCategory
 
 @Composable
 fun HomeScreen(
@@ -25,7 +26,9 @@ fun HomeScreen(
     val options by viewModel.options
 
     val categories = viewModel.categories.collectAsStateWithLifecycle(emptyList())
+    val categoriesItems = viewModel.categoriesItems
     val categoriesImages = viewModel.categoriesImages
+
     val banner = viewModel.banner
     val bannerBackground = viewModel.bannerBackground.value
 
@@ -33,6 +36,7 @@ fun HomeScreen(
         banner = banner.value,
         bannerBackground = bannerBackground,
         categories = categories.value.shuffled(),
+        categoriesItems = categoriesItems,
         categoriesImages = categoriesImages,
         options = options,
         openScreen = openScreen,
@@ -46,6 +50,7 @@ fun HomeScreenContent(
     banner: Category?,
     bannerBackground: Bitmap?,
     categories: List<Category>,
+    categoriesItems: Map<String?, List<CategoryItem?>?>,
     categoriesImages: Map<String?, List<Bitmap?>?>,
     openScreen: (String) -> Unit,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit,
@@ -62,7 +67,7 @@ fun HomeScreenContent(
                 item {
                     Banner(
                         title = banner.title,
-                        description = banner.description,
+                        description = "", // banner.description,
                         background = bannerBackground
                     )
                 }
@@ -74,6 +79,7 @@ fun HomeScreenContent(
                         "Ordinary" -> {
                             OrdinaryCategory(
                                 category = category,
+                                items = categoriesItems[category.title],
                                 covers = categoriesImages[category.title],
                                 openScreen = openScreen,
                                 onRecommendationClick = onRecommendationClick

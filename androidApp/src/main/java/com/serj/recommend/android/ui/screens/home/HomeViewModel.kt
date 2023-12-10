@@ -3,10 +3,10 @@ package com.serj.recommend.android.ui.screens.home
 import android.graphics.Bitmap
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.SavedStateHandle
 import com.serj.recommend.android.RECOMMENDATION_ID
 import com.serj.recommend.android.RECOMMENDATION_SCREEN
 import com.serj.recommend.android.model.Category
+import com.serj.recommend.android.model.CategoryItem
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.service.ConfigurationService
 import com.serj.recommend.android.model.service.LogService
@@ -19,13 +19,14 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     logService: LogService,
     private val storageService: StorageService,
-    private val configurationService: ConfigurationService,
-    savedStateHandle: SavedStateHandle
+    private val configurationService: ConfigurationService
 ) : RecommendViewModel(logService) {
     val options = mutableStateOf<List<String>>(listOf())
 
     val categories = storageService.categories
+    val categoriesItems = mutableStateMapOf<String?, List<CategoryItem?>?>(null to null)
     val categoriesImages = mutableStateMapOf<String?, List<Bitmap?>?>(null to null)
+
     val banner = mutableStateOf<Category?>(null)
     val bannerBackground = mutableStateOf<Bitmap?>(null)
 
@@ -41,13 +42,29 @@ class HomeViewModel @Inject constructor(
                 }
 
                 for (category in categories) {
-                    val images = arrayListOf<Bitmap?>()
-                    for (item in category.content) {
-                        images.add(
-                            item["coverReference"]?.let { storageService.downloadImage(it) }
-                        )
+                    if (category.recommendationIds.isNotEmpty()) {
+                        val currentItems = arrayListOf<CategoryItem?>()
+                        for (recommendationId in category.recommendationIds) {
+                            storageService.getCategoryItem(recommendationId). let {
+                                currentItems.add(it)
+                            }
+                        }
+                        categoriesItems[category.title] = currentItems
                     }
-                    categoriesImages[category.title] = images
+                }
+
+                for (category in categories) {
+                    if (category.recommendationIds.isNotEmpty()) {
+                        val currentImages = arrayListOf<Bitmap?>()
+                        for (item in categoriesItems[category.title]!!) {
+                            item?.cover?.let { gsReference ->
+                                storageService.downloadImage(gsReference). let {
+                                    currentImages.add(it)
+                                }
+                            }
+                        }
+                        categoriesImages[category.title] = currentImages
+                    }
                 }
             }
         }
