@@ -13,8 +13,10 @@ import com.google.firebase.firestore.toObject
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import com.serj.recommend.android.model.Category
+import com.serj.recommend.android.model.CategoryItem
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.service.AccountService
+import com.serj.recommend.android.model.service.Banner
 import com.serj.recommend.android.model.service.StorageService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.tasks.await
@@ -31,21 +33,51 @@ class StorageServiceImpl @Inject constructor(
 
     override val recommendations: Flow<List<Recommendation>>
         get() = firestore
-            .collection(RECOMMENDATION_COLLECTION)
+            .collection(RECOMMENDATIONS_COLLECTION)
+            .dataObjects()
+
+    override val banners: Flow<List<Banner>>
+        get() = firestore
+            .collection(BANNERS_COLLECTION)
             .dataObjects()
 
     override val categories: Flow<List<Category>>
         get() = firestore
-            .collection(CATEGORY_COLLECTION)
+            .collection(CATEGORIES_COLLECTION)
             .dataObjects()
 
     override suspend fun getRecommendation(recommendationId: String): Recommendation? =
         firestore
-            .collection(RECOMMENDATION_COLLECTION)
+            .collection(RECOMMENDATIONS_COLLECTION)
             .document(recommendationId)
             .get()
             .await()
             .toObject()
+
+    override suspend fun getCategoryItem(recommendationId: String): CategoryItem? {
+        var categoryItem: CategoryItem? = null
+
+        firestore
+            .collection(RECOMMENDATIONS_COLLECTION)
+            .document(recommendationId)
+            .get()
+            .addOnSuccessListener {document ->
+                val recommendation = document.toObject<Recommendation>()
+                categoryItem = CategoryItem(
+                    recommendationId = recommendationId,
+                    title = recommendation!!.title,
+                    creator = recommendation.creator,
+                    cover = recommendation.cover["reference"] ?: ""
+                )
+                //Log.v(ContentValues.TAG, "got CategoryItem")
+            }.addOnFailureListener {
+                // Handle any errors
+                Log.v(ContentValues.TAG, "error getCategoryItem()")
+            }
+            .await()
+
+        return categoryItem
+    }
 
     override suspend fun downloadImage(gsReference: String): Bitmap? {
         var bmp: Bitmap? = null
@@ -96,8 +128,9 @@ class StorageServiceImpl @Inject constructor(
     }
 
     companion object {
-        private const val RECOMMENDATION_COLLECTION = "recommendations"
-        private const val CATEGORY_COLLECTION = "categories"
+        private const val RECOMMENDATIONS_COLLECTION = "recommendations"
+        private const val CATEGORIES_COLLECTION = "categories"
+        private const val BANNERS_COLLECTION = "banners"
 
         private const val ONE_MEGABYTE: Long = 1024 * 1024
     }

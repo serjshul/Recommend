@@ -13,25 +13,39 @@ import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.serj.recommend.android.model.Category
+import com.serj.recommend.android.model.CategoryItem
 import com.serj.recommend.android.model.Recommendation
-import com.serj.recommend.android.ui.screens.home.categories.OrdinaryCategory
+import com.serj.recommend.android.model.service.Banner
 import com.serj.recommend.android.ui.screens.home.components.Banner
+import com.serj.recommend.android.ui.screens.home.components.categoryItems.ExtendedCategory
+import com.serj.recommend.android.ui.screens.home.components.categoryItems.OrdinaryCategory
 
 @Composable
 fun HomeScreen(
     openScreen: (String) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
-    val categories = viewModel.categories.collectAsStateWithLifecycle(emptyList())
-    val categoriesImages = viewModel.categoriesImages
-
     val options by viewModel.options
 
+    val categories = viewModel.categories.collectAsStateWithLifecycle(emptyList())
+    val categoriesBackgrounds = viewModel.categoriesBackgrounds
+    val categoriesItems = viewModel.categoriesItems
+    val categoriesImages = viewModel.categoriesImages
+
+    val banner = viewModel.banner
+    val bannerItems = viewModel.bannerItems
+    val bannerBackground = viewModel.bannerBackground.value
+
     HomeScreenContent(
-        categories = categories.value,
+        banner = banner.value,
+        bannerItems = bannerItems,
+        bannerBackground = bannerBackground,
+        categories = categories.value.shuffled(),
+        categoriesBackgrounds = categoriesBackgrounds,
+        categoriesItems = categoriesItems,
+        categoriesImages = categoriesImages,
         options = options,
         openScreen = openScreen,
-        categoriesImages = categoriesImages,
         onRecommendationClick = viewModel::onRecommendationClick
     )
 }
@@ -39,11 +53,16 @@ fun HomeScreen(
 @Composable
 fun HomeScreenContent(
     modifier: Modifier = Modifier,
+    banner: Banner?,
+    bannerItems: List<CategoryItem?>?,
+    bannerBackground: Bitmap?,
     categories: List<Category>,
+    categoriesBackgrounds: Map<String?, Bitmap?>,
+    categoriesItems: Map<String?, List<CategoryItem?>?>,
     categoriesImages: Map<String?, List<Bitmap?>?>,
-    options: List<String>,
     openScreen: (String) -> Unit,
-    onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
+    onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit,
+    options: List<String>,
 ) {
     Scaffold() { paddingValues ->
         LazyColumn(
@@ -52,18 +71,45 @@ fun HomeScreenContent(
                 .padding(paddingValues)
                 .background(color = Color.White)
         ) {
-            item {
-                Banner()
+            if (banner != null) {
+                item {
+                    Banner(
+                        title = banner.title,
+                        description = banner.description,
+                        background = bannerBackground
+                    )
+                }
             }
 
             for (category in categories) {
                 item {
-                    OrdinaryCategory(
-                        category = category,
-                        covers = categoriesImages[category.title],
-                        openScreen = openScreen,
-                        onRecommendationClick = onRecommendationClick
-                    )
+                    when (category.type) {
+                        "Ordinary" -> {
+                            OrdinaryCategory(
+                                category = category,
+                                items = categoriesItems[category.title],
+                                covers = categoriesImages[category.title],
+                                openScreen = openScreen,
+                                onRecommendationClick = onRecommendationClick
+                            )
+                        }
+                        "Extended" -> {
+                            ExtendedCategory(
+                                category = category,
+                                backgroundImage = categoriesBackgrounds[category.title],
+                                items = categoriesItems[category.title],
+                                covers = categoriesImages[category.title],
+                                openScreen = openScreen,
+                                onRecommendationClick = onRecommendationClick
+                            )
+                        }
+                        "Gallery" -> {
+
+                        }
+                        else -> {
+                            // TODO: what to do?
+                        }
+                    }
                 }
             }
         }

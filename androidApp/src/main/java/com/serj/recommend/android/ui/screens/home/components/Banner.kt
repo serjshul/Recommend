@@ -1,7 +1,7 @@
 package com.serj.recommend.android.ui.screens.home.components
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -31,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
@@ -41,10 +42,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.serj.recommend.android.R
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Banner(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    title: String? = null,
+    description: String? = null,
+    background: Bitmap?
 ) {
     var sizeImage by remember { mutableStateOf(IntSize.Zero) }
     // TODO: save like / unlike by user
@@ -53,30 +56,37 @@ fun Banner(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(480.dp)
+            .height(520.dp)
+            .padding(bottom = 30.dp)
     ) {
-        Image(
-            modifier = modifier
-                .matchParentSize()
-                .onGloballyPositioned {
-                    sizeImage = it.size
-                },
-            painter = painterResource(id = R.drawable.banner_backround),
-            contentDescription = "background",
-            contentScale = ContentScale.Crop
-        )
-
-        Box(
-            modifier = modifier
-                .matchParentSize()
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(Color.Transparent, Color.Black),
-                        startY = sizeImage.height.toFloat() / 2,
-                        endY = sizeImage.height.toFloat()
+        if (background != null) {
+            Image(
+                modifier = Modifier
+                    .matchParentSize()
+                    .onGloballyPositioned { sizeImage = it.size },
+                bitmap = background.asImageBitmap(),
+                contentDescription = title,
+                contentScale = ContentScale.Crop
+            )
+            Box(
+                modifier = modifier
+                    .matchParentSize()
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(Color.Transparent, Color.Black),
+                            startY = sizeImage.height.toFloat() / 6,
+                            endY = sizeImage.height.toFloat()
+                        )
                     )
-                )
-        )
+            )
+        } else {
+            Image(
+                modifier = Modifier.matchParentSize(),
+                painter = painterResource(id = R.drawable.gradient),
+                contentDescription = "background_gradient",
+                contentScale = ContentScale.Crop
+            )
+        }
 
         Column(
             modifier = modifier
@@ -87,22 +97,23 @@ fun Banner(
         ) {
             Text(
                 modifier = modifier.padding(start = 5.dp, end = 5.dp, bottom = 5.dp),
-                text = "Beyoncé’s \"Renaissance\"",
+                text = title ?: "loading",
                 color = Color.White,
                 fontSize = 26.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
             )
 
             Text(
                 modifier = modifier.padding(start = 5.dp, end = 5.dp, bottom = 10.dp),
-                text = "It’s been six years since Beyoncé has graced us with new music. But the queen has returned, and her loyal Beyhive has patiently awaited “Renaissance”",
+                text = description ?: "loading",
                 color = Color.White,
                 fontSize = 14.sp,
                 textAlign = TextAlign.Center
             )
 
             Row(
-                modifier = modifier.padding(bottom = 10.dp),
+                modifier = modifier.padding(bottom = 9.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 FilledTonalButton(
@@ -115,7 +126,6 @@ fun Banner(
                     }
                 ) {
                     Text(
-                        modifier = modifier.padding(start = 3.dp, end = 3.dp),
                         text = "Read",
                         color = Color.Black,
                         fontSize = 14.sp,
