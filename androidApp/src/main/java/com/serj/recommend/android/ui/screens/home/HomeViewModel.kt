@@ -5,9 +5,9 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import com.serj.recommend.android.RECOMMENDATION_ID
 import com.serj.recommend.android.RECOMMENDATION_SCREEN
-import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.CategoryItem
 import com.serj.recommend.android.model.Recommendation
+import com.serj.recommend.android.model.service.Banner
 import com.serj.recommend.android.model.service.ConfigurationService
 import com.serj.recommend.android.model.service.LogService
 import com.serj.recommend.android.model.service.StorageService
@@ -27,20 +27,32 @@ class HomeViewModel @Inject constructor(
     val categoriesItems = mutableStateMapOf<String?, List<CategoryItem?>?>(null to null)
     val categoriesImages = mutableStateMapOf<String?, List<Bitmap?>?>(null to null)
 
-    val banner = mutableStateOf<Category?>(null)
+    private val banners = storageService.banners
+    val banner = mutableStateOf<Banner?>(null)
+    val bannerItems = mutableListOf<CategoryItem?>()
     val bannerBackground = mutableStateOf<Bitmap?>(null)
 
     init {
         launchCatching {
-            categories.collect { categories ->
-                val banners = categories.filter { category -> category.type == "Banner" }
-                banner.value = if (banners.isNotEmpty()) banners.random() else null
-                if (banner.value != null) {
-                    bannerBackground.value = banner.value!!.background["reference"]?. let {
-                        storageService.downloadImage(it)
+            banners.collect { banners ->
+                banner.value = banners.random()
+
+                if (!banner.value!!.recommendationIds.isNullOrEmpty()) {
+                    for (recommendationId in banner.value!!.recommendationIds!!) {
+                        storageService.getCategoryItem(recommendationId).let {
+                            bannerItems.add(it)
+                        }
                     }
                 }
 
+                bannerBackground.value = banner.value!!.background?.get("reference")?. let {
+                    storageService.downloadImage(it)
+                }
+            }
+        }
+
+        launchCatching {
+            categories.collect { categories ->
                 for (category in categories) {
                     if (category.recommendationIds.isNotEmpty()) {
                         val currentItems = arrayListOf<CategoryItem?>()

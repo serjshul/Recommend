@@ -45,8 +45,8 @@ import com.serj.recommend.android.R
 @Composable
 fun Banner(
     modifier: Modifier = Modifier,
-    title: String,
-    description: String,
+    title: String? = null,
+    description: String? = null,
     background: Bitmap?
 ) {
     var sizeImage by remember { mutableStateOf(IntSize.Zero) }
@@ -97,7 +97,7 @@ fun Banner(
         ) {
             Text(
                 modifier = modifier.padding(start = 5.dp, end = 5.dp, bottom = 5.dp),
-                text = title,
+                text = title ?: "loading",
                 color = Color.White,
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
@@ -106,7 +106,7 @@ fun Banner(
 
             Text(
                 modifier = modifier.padding(start = 5.dp, end = 5.dp, bottom = 10.dp),
-                text = description,
+                text = description ?: "loading",
                 color = Color.White,
                 fontSize = 14.sp,
                 textAlign = TextAlign.Center

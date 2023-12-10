@@ -16,6 +16,7 @@ import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.CategoryItem
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.service.AccountService
+import com.serj.recommend.android.model.service.Banner
 import com.serj.recommend.android.model.service.StorageService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.tasks.await
@@ -32,17 +33,22 @@ class StorageServiceImpl @Inject constructor(
 
     override val recommendations: Flow<List<Recommendation>>
         get() = firestore
-            .collection(RECOMMENDATION_COLLECTION)
+            .collection(RECOMMENDATIONS_COLLECTION)
+            .dataObjects()
+
+    override val banners: Flow<List<Banner>>
+        get() = firestore
+            .collection(BANNERS_COLLECTION)
             .dataObjects()
 
     override val categories: Flow<List<Category>>
         get() = firestore
-            .collection(CATEGORY_COLLECTION)
+            .collection(CATEGORIES_COLLECTION)
             .dataObjects()
 
     override suspend fun getRecommendation(recommendationId: String): Recommendation? =
         firestore
-            .collection(RECOMMENDATION_COLLECTION)
+            .collection(RECOMMENDATIONS_COLLECTION)
             .document(recommendationId)
             .get()
             .await()
@@ -52,7 +58,7 @@ class StorageServiceImpl @Inject constructor(
         var categoryItem: CategoryItem? = null
 
         firestore
-            .collection(RECOMMENDATION_COLLECTION)
+            .collection(RECOMMENDATIONS_COLLECTION)
             .document(recommendationId)
             .get()
             .addOnSuccessListener {document ->
@@ -122,8 +128,9 @@ class StorageServiceImpl @Inject constructor(
     }
 
     companion object {
-        private const val RECOMMENDATION_COLLECTION = "recommendations"
-        private const val CATEGORY_COLLECTION = "categories"
+        private const val RECOMMENDATIONS_COLLECTION = "recommendations"
+        private const val CATEGORIES_COLLECTION = "categories"
+        private const val BANNERS_COLLECTION = "banners"
 
         private const val ONE_MEGABYTE: Long = 1024 * 1024
     }

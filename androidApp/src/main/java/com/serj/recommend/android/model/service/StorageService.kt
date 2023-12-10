@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface StorageService {
     val recommendations: Flow<List<Recommendation>>
+    val banners: Flow<List<Banner>>
     val categories: Flow<List<Category>>
 
     suspend fun getRecommendation(recommendationId: String): Recommendation?

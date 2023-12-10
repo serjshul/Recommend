@@ -15,6 +15,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.CategoryItem
 import com.serj.recommend.android.model.Recommendation
+import com.serj.recommend.android.model.service.Banner
 import com.serj.recommend.android.ui.screens.home.components.Banner
 import com.serj.recommend.android.ui.screens.home.components.categoryItems.OrdinaryCategory
 
@@ -30,10 +31,12 @@ fun HomeScreen(
     val categoriesImages = viewModel.categoriesImages
 
     val banner = viewModel.banner
+    val bannerItems = viewModel.bannerItems
     val bannerBackground = viewModel.bannerBackground.value
 
     HomeScreenContent(
         banner = banner.value,
+        bannerItems = bannerItems,
         bannerBackground = bannerBackground,
         categories = categories.value.shuffled(),
         categoriesItems = categoriesItems,
@@ -47,7 +50,8 @@ fun HomeScreen(
 @Composable
 fun HomeScreenContent(
     modifier: Modifier = Modifier,
-    banner: Category?,
+    banner: Banner?,
+    bannerItems: List<CategoryItem?>?,
     bannerBackground: Bitmap?,
     categories: List<Category>,
     categoriesItems: Map<String?, List<CategoryItem?>?>,
@@ -67,7 +71,7 @@ fun HomeScreenContent(
                 item {
                     Banner(
                         title = banner.title,
-                        description = "", // banner.description,
+                        description = banner.description,
                         background = bannerBackground
                     )
                 }
