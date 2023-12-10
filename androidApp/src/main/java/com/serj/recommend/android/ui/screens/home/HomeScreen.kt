@@ -17,6 +17,7 @@ import com.serj.recommend.android.model.CategoryItem
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.service.Banner
 import com.serj.recommend.android.ui.screens.home.components.Banner
+import com.serj.recommend.android.ui.screens.home.components.categoryItems.ExtendedCategory
 import com.serj.recommend.android.ui.screens.home.components.categoryItems.OrdinaryCategory
 
 @Composable
@@ -27,6 +28,7 @@ fun HomeScreen(
     val options by viewModel.options
 
     val categories = viewModel.categories.collectAsStateWithLifecycle(emptyList())
+    val categoriesBackgrounds = viewModel.categoriesBackgrounds
     val categoriesItems = viewModel.categoriesItems
     val categoriesImages = viewModel.categoriesImages
 
@@ -39,6 +41,7 @@ fun HomeScreen(
         bannerItems = bannerItems,
         bannerBackground = bannerBackground,
         categories = categories.value.shuffled(),
+        categoriesBackgrounds = categoriesBackgrounds,
         categoriesItems = categoriesItems,
         categoriesImages = categoriesImages,
         options = options,
@@ -54,6 +57,7 @@ fun HomeScreenContent(
     bannerItems: List<CategoryItem?>?,
     bannerBackground: Bitmap?,
     categories: List<Category>,
+    categoriesBackgrounds: Map<String?, Bitmap?>,
     categoriesItems: Map<String?, List<CategoryItem?>?>,
     categoriesImages: Map<String?, List<Bitmap?>?>,
     openScreen: (String) -> Unit,
@@ -89,10 +93,17 @@ fun HomeScreenContent(
                                 onRecommendationClick = onRecommendationClick
                             )
                         }
-                        "Gallery" -> {
-
-                        }
                         "Extended" -> {
+                            ExtendedCategory(
+                                category = category,
+                                backgroundImage = categoriesBackgrounds[category.title],
+                                items = categoriesItems[category.title],
+                                covers = categoriesImages[category.title],
+                                openScreen = openScreen,
+                                onRecommendationClick = onRecommendationClick
+                            )
+                        }
+                        "Gallery" -> {
 
                         }
                         else -> {

@@ -14,6 +14,7 @@ import com.serj.recommend.android.model.service.StorageService
 import com.serj.recommend.android.ui.screens.RecommendViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlin.collections.set
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -24,13 +25,14 @@ class HomeViewModel @Inject constructor(
     val options = mutableStateOf<List<String>>(listOf())
 
     val categories = storageService.categories
+    val categoriesBackgrounds = mutableStateMapOf<String?, Bitmap?>(null to null)
     val categoriesItems = mutableStateMapOf<String?, List<CategoryItem?>?>(null to null)
     val categoriesImages = mutableStateMapOf<String?, List<Bitmap?>?>(null to null)
 
     private val banners = storageService.banners
     val banner = mutableStateOf<Banner?>(null)
-    val bannerItems = mutableListOf<CategoryItem?>()
     val bannerBackground = mutableStateOf<Bitmap?>(null)
+    val bannerItems = mutableListOf<CategoryItem?>()
 
     init {
         launchCatching {
@@ -66,6 +68,25 @@ class HomeViewModel @Inject constructor(
                 }
 
                 for (category in categories) {
+                    if (category.recommendationIds.isNotEmpty()) {
+                        val currentItems = arrayListOf<CategoryItem?>()
+                        for (recommendationId in category.recommendationIds) {
+                            storageService.getCategoryItem(recommendationId). let {
+                                currentItems.add(it)
+                            }
+                        }
+                        categoriesItems[category.title] = currentItems
+                    }
+                }
+
+                for (category in categories) {
+                    if (category.background != null) {
+                        categoriesBackgrounds[category.title] =
+                            category.background["reference"]?.let {reference ->
+                                storageService.downloadImage(reference)
+                            }
+                    }
+
                     if (category.recommendationIds.isNotEmpty()) {
                         val currentImages = arrayListOf<Bitmap?>()
                         for (item in categoriesItems[category.title]!!) {
