@@ -54,7 +54,8 @@ class StorageServiceImpl @Inject constructor(
             .await()
             .toObject()
 
-    override suspend fun getCategoryItem(recommendationId: String): CategoryItem? {
+    override suspend fun getCategoryItem(recommendationId: String, coverType: String):
+            CategoryItem? {
         var categoryItem: CategoryItem? = null
 
         firestore
@@ -67,7 +68,8 @@ class StorageServiceImpl @Inject constructor(
                     recommendationId = recommendationId,
                     title = recommendation!!.title,
                     creator = recommendation.creator,
-                    cover = recommendation.cover["reference"] ?: ""
+                    cover = recommendation.cover[coverType] ?: "",
+                    date = recommendation.date
                 )
                 //Log.v(ContentValues.TAG, "got CategoryItem")
             }.addOnFailureListener {

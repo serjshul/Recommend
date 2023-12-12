@@ -8,6 +8,7 @@ data class Banner(
     val title: String? = null,
     val description: String? = null,
     val background: HashMap<String, String>? = null,
+    val coverType: String? = null,
     val recommendationIds: ArrayList<String>? = null,
     var content: ArrayList<CategoryItem>? = null
 )

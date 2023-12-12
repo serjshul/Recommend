@@ -7,9 +7,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
@@ -35,6 +37,7 @@ fun VerticalCategoryItem(
 ) {
     Column(
         modifier = Modifier
+            .padding(end = 10.dp)
             .clickable {
                 if (recommendationId != null) {
                     onRecommendationClick(
@@ -49,7 +52,8 @@ fun VerticalCategoryItem(
                 modifier = modifier
                     .height(240.dp)
                     .width(150.dp)
-                    .padding(bottom = 5.dp),
+                    .padding(bottom = 5.dp)
+                    .clip(RoundedCornerShape(5.dp)),
                 bitmap = cover.asImageBitmap(),
                 contentDescription = title,
                 contentScale = ContentScale.Crop
@@ -59,7 +63,8 @@ fun VerticalCategoryItem(
                 modifier = modifier
                     .height(240.dp)
                     .width(150.dp)
-                    .padding(bottom = 5.dp),
+                    .padding(bottom = 5.dp)
+                    .clip(RoundedCornerShape(5.dp)),
                 painter = painterResource(id = R.drawable.gradient),
                 contentDescription = title,
                 contentScale = ContentScale.Crop
