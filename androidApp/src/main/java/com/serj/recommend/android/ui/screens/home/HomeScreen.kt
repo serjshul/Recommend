@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -64,7 +65,7 @@ fun HomeScreenContent(
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit,
     options: List<String>,
 ) {
-    Scaffold() { paddingValues ->
+    Scaffold { paddingValues ->
         LazyColumn(
             modifier = modifier
                 .fillMaxSize()
@@ -81,34 +82,35 @@ fun HomeScreenContent(
                 }
             }
 
-            for (category in categories) {
-                item {
-                    when (category.type) {
-                        "Ordinary" -> {
-                            OrdinaryCategory(
-                                category = category,
-                                items = categoriesItems[category.title],
-                                covers = categoriesImages[category.title],
-                                openScreen = openScreen,
-                                onRecommendationClick = onRecommendationClick
-                            )
-                        }
-                        "Extended" -> {
-                            ExtendedCategory(
-                                category = category,
-                                backgroundImage = categoriesBackgrounds[category.title],
-                                items = categoriesItems[category.title],
-                                covers = categoriesImages[category.title],
-                                openScreen = openScreen,
-                                onRecommendationClick = onRecommendationClick
-                            )
-                        }
-                        "Gallery" -> {
+            items(categories) { category ->
+                when (category.type) {
+                    "Ordinary" -> {
+                        OrdinaryCategory(
+                            category = category,
+                            items = categoriesItems[category.title],
+                            covers = categoriesImages[category.title],
+                            openScreen = openScreen,
+                            onRecommendationClick = onRecommendationClick
+                        )
+                    }
 
-                        }
-                        else -> {
-                            // TODO: what to do?
-                        }
+                    "Extended" -> {
+                        ExtendedCategory(
+                            category = category,
+                            backgroundImage = categoriesBackgrounds[category.title],
+                            items = categoriesItems[category.title],
+                            covers = categoriesImages[category.title],
+                            openScreen = openScreen,
+                            onRecommendationClick = onRecommendationClick
+                        )
+                    }
+
+                    "Gallery" -> {
+
+                    }
+
+                    else -> {
+                        // TODO: what to do?
                     }
                 }
             }
