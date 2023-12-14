@@ -89,7 +89,10 @@ dependencies {
     ksp("com.google.dagger:hilt-compiler:2.47")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 }
-
+// TODO: KAPT and KSP is technology for the same result
+//  (for compile plugins, code generation or smth like that)
+//  Task: Use only one thing in one project KSP / KAPT
+//  Recommend: KSP, because it is last recommended from jetbrains/google
 // Allow references to generated code
 kapt {
     correctErrorTypes = true
