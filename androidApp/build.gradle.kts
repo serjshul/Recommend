@@ -85,11 +85,15 @@ dependencies {
     implementation("com.google.firebase:firebase-storage")
     implementation("com.google.firebase:firebase-perf")
 
-    implementation("com.google.dagger:hilt-android:2.48")
-    ksp("com.google.dagger:hilt-compiler:2.48")
+    implementation("com.google.dagger:hilt-android:2.49")
+    ksp("com.google.dagger:hilt-compiler:2.49")
     implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
 
-    // For Robolectric tests
-    testImplementation("com.google.dagger:hilt-android-testing:2.44")
-    kspTest("com.google.dagger:hilt-android-compiler:2.44")
+    // For Robolectric (emulate simulator on JVM on your machine) tests
+    testImplementation("com.google.dagger:hilt-android-testing:2.49")
+    kspTest("com.google.dagger:hilt-android-compiler:2.49")
+
+    // For Instrumented (UI) tests
+    androidTestImplementation("com.google.dagger:hilt-android-testing:2.49")
+    kspAndroidTest("com.google.dagger:hilt-android-compiler:2.49")
 }
