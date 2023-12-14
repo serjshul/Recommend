@@ -110,6 +110,8 @@ fun HomeScreenContent(
                     }
 
                     else -> {
+                        // TODO: Declare TODOs more understandable!
+                        //  (add more description to TODOs)
                         // TODO: what to do?
                     }
                 }
