@@ -1,23 +1,23 @@
 package com.serj.recommend.android
 
 import androidx.activity.ComponentActivity
-import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.onParent
-import androidx.compose.ui.test.performClick
-import androidx.navigation.compose.rememberNavController
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.serj.recommend.android.ui.screens.home.HomeScreen
+
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Rule
-import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
+@HiltAndroidTest
 class UiTests {
-    @get:Rule
+    @get:Rule(order = 0)
     val rule = createComposeRule()
+
+    @get:Rule(order = 1)
+    var hiltRule = HiltAndroidRule(this)
 
     val activityRule =
         createAndroidComposeRule<ComponentActivity>()
