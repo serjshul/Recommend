@@ -93,7 +93,6 @@ dependencies {
 //  (for compile plugins, code generation or smth like that)
 //  Task: Use only one thing in one project KSP / KAPT
 //  Recommend: KSP, because it is last recommended from jetbrains/google
-// Allow references to generated code
 kapt {
     correctErrorTypes = true
 }
