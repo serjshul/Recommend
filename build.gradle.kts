@@ -6,6 +6,8 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform).apply(false)
     id("com.google.gms.google-services") version "4.4.0" apply false
     id("com.google.firebase.crashlytics") version "2.9.9" apply false
+    // TODO: Resolve: ksp-1.9.0-1.0.11 is too old for kotlin-1.9.10. Please upgrade ksp or downgrade kotlin-gradle-plugin to 1.9.0.
+    //  we use kotlin 1.9.10 declared in libs.versions.toml, but ksp version is not properly for our kotlin version
     id("com.google.devtools.ksp") version "1.9.0-1.0.11" apply false
     id("com.google.dagger.hilt.android") version "2.47" apply false
 }

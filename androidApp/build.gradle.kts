@@ -87,7 +87,7 @@ dependencies {
 
     implementation("com.google.dagger:hilt-android:2.47")
     ksp("com.google.dagger:hilt-compiler:2.47")
-    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
 }
 // TODO: KAPT and KSP is technology for the same result
 //  (for compile plugins, code generation or smth like that)
