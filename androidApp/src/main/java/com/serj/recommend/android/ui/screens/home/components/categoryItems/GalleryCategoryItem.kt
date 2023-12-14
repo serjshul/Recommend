@@ -24,13 +24,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.lerp
 import com.serj.recommend.android.R
+import com.serj.recommend.android.ui.styles.AppleRed
+import com.serj.recommend.android.ui.styles.Muesli
 import kotlin.math.absoluteValue
 
 
@@ -48,7 +49,7 @@ fun GalleryCategoryItem(
                 .padding(start = 15.dp, top = 15.dp, end = 15.dp)
                 .align(Alignment.CenterHorizontally),
             text = title,
-            color = colorResource(id = R.color.apple_red),
+            color = AppleRed,
             fontSize = 26.sp,
             maxLines = 2,
             fontWeight = FontWeight.Bold
@@ -122,7 +123,7 @@ fun MediaGalleryItem(pagerState: PagerState, page: Int) {
 
             Text(
                 text = "media.production",
-                color = colorResource(id = R.color.muesli),
+                color = Muesli,
                 fontSize = 12.sp
             )
         }

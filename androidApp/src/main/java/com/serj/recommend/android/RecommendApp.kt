@@ -36,13 +36,14 @@ import com.google.accompanist.permissions.shouldShowRationale
 import com.serj.recommend.android.common.composable.PermissionDialog
 import com.serj.recommend.android.common.composable.RationaleDialog
 import com.serj.recommend.android.ui.BottomNavigationBar
+import com.serj.recommend.android.ui.components.snackbar.SnackbarManager
 import com.serj.recommend.android.ui.screens.FeedScreen
+import com.serj.recommend.android.ui.screens.banner.BannerScreen
 import com.serj.recommend.android.ui.screens.home.HomeScreen
 import com.serj.recommend.android.ui.screens.profile.ProfileScreen
 import com.serj.recommend.android.ui.screens.rec.RecScreen
 import com.serj.recommend.android.ui.screens.recommendation.RecommendationScreen
 import com.serj.recommend.android.ui.screens.search.SearchScreen
-import com.serj.recommend.android.ui.snackbar.SnackbarManager
 import com.serj.recommend.android.ui.styles.MyApplicationTheme
 import kotlinx.coroutines.CoroutineScope
 
@@ -152,6 +153,18 @@ fun NavGraphBuilder.recommendGraph(
         })
     ) {
         RecommendationScreen(
+            popUpScreen = { appState.popUp() }
+        )
+    }
+    composable(
+        route = "$BANNER_SCREEN$BANNER_ID_ARG",
+        arguments = listOf(navArgument(BANNER_ID) {
+            nullable = true
+            defaultValue = null
+        })
+    ) {
+        BannerScreen(
+            openScreen = { route -> appState.navigate(route) },
             popUpScreen = { appState.popUp() }
         )
     }

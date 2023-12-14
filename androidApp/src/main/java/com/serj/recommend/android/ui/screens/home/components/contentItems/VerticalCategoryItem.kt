@@ -1,4 +1,4 @@
-package com.serj.recommend.android.ui.screens.home.components.categoryContentItems
+package com.serj.recommend.android.ui.screens.home.components.contentItems
 
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image
@@ -22,8 +22,11 @@ import androidx.compose.ui.unit.sp
 import com.serj.recommend.android.R
 import com.serj.recommend.android.model.Recommendation
 
+//import com.serj.recommend.android.ArticleActivity
+
+
 @Composable
-fun HorizontalCategoryItem(
+fun VerticalCategoryItem(
     modifier: Modifier = Modifier,
     recommendationId: String?,
     title: String?,
@@ -33,7 +36,7 @@ fun HorizontalCategoryItem(
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
 ) {
     Column(
-        modifier = modifier
+        modifier = Modifier
             .padding(end = 10.dp)
             .clickable {
                 if (recommendationId != null) {
@@ -47,8 +50,8 @@ fun HorizontalCategoryItem(
         if (cover != null) {
             Image(
                 modifier = modifier
-                    .height(160.dp)
-                    .width(290.dp)
+                    .height(240.dp)
+                    .width(150.dp)
                     .padding(bottom = 5.dp)
                     .clip(RoundedCornerShape(5.dp)),
                 bitmap = cover.asImageBitmap(),
@@ -58,8 +61,8 @@ fun HorizontalCategoryItem(
         } else {
             Image(
                 modifier = modifier
-                    .height(160.dp)
-                    .width(300.dp)
+                    .height(240.dp)
+                    .width(150.dp)
                     .padding(bottom = 5.dp)
                     .clip(RoundedCornerShape(5.dp)),
                 painter = painterResource(id = R.drawable.gradient),

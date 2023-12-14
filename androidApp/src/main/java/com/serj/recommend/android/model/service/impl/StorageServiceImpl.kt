@@ -12,11 +12,11 @@ import com.google.firebase.firestore.dataObjects
 import com.google.firebase.firestore.toObject
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
+import com.serj.recommend.android.model.Banner
 import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.CategoryItem
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.service.AccountService
-import com.serj.recommend.android.model.service.Banner
 import com.serj.recommend.android.model.service.StorageService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.tasks.await
@@ -54,6 +54,14 @@ class StorageServiceImpl @Inject constructor(
             .await()
             .toObject()
 
+    override suspend fun getBanner(bannerId: String): Banner? =
+        firestore
+            .collection(BANNERS_COLLECTION)
+            .document(bannerId)
+            .get()
+            .await()
+            .toObject()
+
     override suspend fun getCategoryItem(recommendationId: String, coverType: String):
             CategoryItem? {
         var categoryItem: CategoryItem? = null
@@ -68,6 +76,7 @@ class StorageServiceImpl @Inject constructor(
                     recommendationId = recommendationId,
                     title = recommendation!!.title,
                     creator = recommendation.creator,
+                    description = recommendation.description,
                     cover = recommendation.cover[coverType] ?: "",
                     date = recommendation.date
                 )

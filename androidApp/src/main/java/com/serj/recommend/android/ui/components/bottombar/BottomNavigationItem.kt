@@ -1,4 +1,4 @@
-package com.serj.recommend.android.ui.bottombar
+package com.serj.recommend.android.ui.components.bottombar
 
 import com.serj.recommend.android.FEED_SCREEN
 import com.serj.recommend.android.HOME_SCREEN

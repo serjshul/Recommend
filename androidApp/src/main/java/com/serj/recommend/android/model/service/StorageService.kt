@@ -2,6 +2,7 @@ package com.serj.recommend.android.model.service
 
 import android.graphics.Bitmap
 import android.net.Uri
+import com.serj.recommend.android.model.Banner
 import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.CategoryItem
 import com.serj.recommend.android.model.Recommendation
@@ -14,6 +15,8 @@ interface StorageService {
     val categories: Flow<List<Category>>
 
     suspend fun getRecommendation(recommendationId: String): Recommendation?
+
+    suspend fun getBanner(bannerId: String): Banner?
 
     suspend fun getCategoryItem(recommendationId: String, coverType: String): CategoryItem?
 

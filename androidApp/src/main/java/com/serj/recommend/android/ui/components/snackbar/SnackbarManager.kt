@@ -1,4 +1,4 @@
-package com.serj.recommend.android.ui.snackbar
+package com.serj.recommend.android.ui.components.snackbar
 
 import androidx.annotation.StringRes
 import kotlinx.coroutines.flow.MutableStateFlow

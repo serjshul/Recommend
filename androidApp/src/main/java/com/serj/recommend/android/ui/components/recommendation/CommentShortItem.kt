@@ -1,4 +1,4 @@
-package com.serj.recommend.android.ui.screens.recommendation.components
+package com.serj.recommend.android.ui.components.recommendation
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text

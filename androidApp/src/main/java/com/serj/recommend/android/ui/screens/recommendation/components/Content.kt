@@ -20,6 +20,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.serj.recommend.android.ui.components.recommendation.CustomVideoPlayer
+import com.serj.recommend.android.ui.components.recommendation.Description
 
 @Composable
 fun Content(
@@ -38,7 +40,8 @@ fun Content(
     ) {
         Description(
             modifier = modifier,
-            description = description
+            description = description,
+            color = color
         )
 
         for (i in paragraphs.indices) {
@@ -58,22 +61,6 @@ fun Content(
             color = color
         )
     }
-}
-
-@Composable
-fun Description(
-    modifier: Modifier = Modifier,
-    description: String
-) {
-    Text(
-        modifier = modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .padding(top = 15.dp, bottom = 20.dp),
-        text = description,
-        color = Color.Black,
-        fontSize = 14.sp
-    )
 }
 
 @Composable

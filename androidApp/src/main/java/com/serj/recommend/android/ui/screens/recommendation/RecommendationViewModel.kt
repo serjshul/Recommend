@@ -13,7 +13,6 @@ import com.serj.recommend.android.ui.screens.RecommendViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
-
 @HiltViewModel
 class RecommendationViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,

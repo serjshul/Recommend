@@ -22,10 +22,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.serj.recommend.android.model.Recommendation
-import com.serj.recommend.android.ui.screens.recommendation.components.CommentFullItem
+import com.serj.recommend.android.ui.components.recommendation.CommentFullItem
 import com.serj.recommend.android.ui.screens.recommendation.components.Content
-import com.serj.recommend.android.ui.screens.recommendation.components.Footer
-import com.serj.recommend.android.ui.screens.recommendation.components.Header
+import com.serj.recommend.android.ui.components.recommendation.Footer
+import com.serj.recommend.android.ui.screens.recommendation.components.RecommendationHeader
 
 @Composable
 fun RecommendationScreen(
@@ -71,7 +71,7 @@ fun RecommendationScreenContent(
                     modifier = modifier
                         .fillMaxWidth()
                 ) {
-                    Header(
+                    RecommendationHeader(
                         modifier = modifier,
                         title = recommendation.title,
                         type = recommendation.type,

@@ -36,7 +36,7 @@ import com.serj.recommend.android.R
 import com.serj.recommend.android.ui.styles.Muesli
 
 @Composable
-fun Header(
+fun RecommendationHeader(
     modifier: Modifier = Modifier,
     title: String,
     type: String,
