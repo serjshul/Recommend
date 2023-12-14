@@ -25,9 +25,9 @@ class HomeViewModel @Inject constructor(
     val options = mutableStateOf<List<String>>(listOf())
 
     val categories = storageService.categories
-    val categoriesBackgrounds = mutableStateMapOf<String?, Bitmap?>(null to null)
-    val categoriesItems = mutableStateMapOf<String?, List<CategoryItem?>?>(null to null)
-    val categoriesImages = mutableStateMapOf<String?, List<Bitmap?>?>(null to null)
+    val categoriesBackgrounds = mutableStateMapOf<String?, Bitmap?>()
+    val categoriesItems = mutableStateMapOf<String?, List<CategoryItem?>?>()
+    val categoriesImages = mutableStateMapOf<String?, List<Bitmap?>?>()
 
     private val banners = storageService.banners
     val banner = mutableStateOf<Banner?>(null)
@@ -41,13 +41,15 @@ class HomeViewModel @Inject constructor(
 
                 if (!banner.value!!.recommendationIds.isNullOrEmpty()) {
                     for (recommendationId in banner.value!!.recommendationIds!!) {
-                        storageService.getCategoryItem(recommendationId).let {
-                            bannerItems.add(it)
+                        banner.value!!.coverType?.let {
+                            storageService.getCategoryItem(recommendationId, it).let {item ->
+                                bannerItems.add(item)
+                            }
                         }
                     }
                 }
 
-                bannerBackground.value = banner.value!!.background?.get("reference")?. let {
+                bannerBackground.value = banner.value!!.background?.get("image")?. let {
                     storageService.downloadImage(it)
                 }
             }
@@ -59,34 +61,20 @@ class HomeViewModel @Inject constructor(
                     if (category.recommendationIds.isNotEmpty()) {
                         val currentItems = arrayListOf<CategoryItem?>()
                         for (recommendationId in category.recommendationIds) {
-                            storageService.getCategoryItem(recommendationId). let {
-                                currentItems.add(it)
-                            }
+                            storageService
+                                .getCategoryItem(
+                                    recommendationId = recommendationId,
+                                    coverType = category.coverType)
+                                . let {
+                                    currentItems.add(it)
+                                }
                         }
                         categoriesItems[category.title] = currentItems
+                            .sortedByDescending { item -> item?.date }
                     }
                 }
 
                 for (category in categories) {
-                    if (category.recommendationIds.isNotEmpty()) {
-                        val currentItems = arrayListOf<CategoryItem?>()
-                        for (recommendationId in category.recommendationIds) {
-                            storageService.getCategoryItem(recommendationId). let {
-                                currentItems.add(it)
-                            }
-                        }
-                        categoriesItems[category.title] = currentItems
-                    }
-                }
-
-                for (category in categories) {
-                    if (category.background != null) {
-                        categoriesBackgrounds[category.title] =
-                            category.background["reference"]?.let {reference ->
-                                storageService.downloadImage(reference)
-                            }
-                    }
-
                     if (category.recommendationIds.isNotEmpty()) {
                         val currentImages = arrayListOf<Bitmap?>()
                         for (item in categoriesItems[category.title]!!) {
@@ -97,6 +85,13 @@ class HomeViewModel @Inject constructor(
                             }
                         }
                         categoriesImages[category.title] = currentImages
+                    }
+
+                    if (category.background != null) {
+                        categoriesBackgrounds[category.title] =
+                            category.background["image"]?.let {reference ->
+                                storageService.downloadImage(reference)
+                            }
                     }
                 }
             }

@@ -40,7 +40,7 @@ fun HomeScreen(
         banner = banner.value,
         bannerItems = bannerItems,
         bannerBackground = bannerBackground,
-        categories = categories.value.shuffled(),
+        categories = categories.value,
         categoriesBackgrounds = categoriesBackgrounds,
         categoriesItems = categoriesItems,
         categoriesImages = categoriesImages,

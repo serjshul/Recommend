@@ -15,7 +15,7 @@ interface StorageService {
 
     suspend fun getRecommendation(recommendationId: String): Recommendation?
 
-    suspend fun getCategoryItem(recommendationId: String): CategoryItem?
+    suspend fun getCategoryItem(recommendationId: String, coverType: String): CategoryItem?
 
     suspend fun downloadImage(gsReference: String): Bitmap?
 

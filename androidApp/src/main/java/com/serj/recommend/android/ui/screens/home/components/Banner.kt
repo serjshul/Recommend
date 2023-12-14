@@ -73,8 +73,8 @@ fun Banner(
                     .matchParentSize()
                     .background(
                         Brush.verticalGradient(
-                            colors = listOf(Color.Transparent, Color.Black),
-                            startY = sizeImage.height.toFloat() / 6,
+                            colors = listOf(Color.Transparent, Color.White),
+                            startY = sizeImage.height.toFloat() / 7,
                             endY = sizeImage.height.toFloat()
                         )
                     )
@@ -98,16 +98,18 @@ fun Banner(
             Text(
                 modifier = modifier.padding(start = 5.dp, end = 5.dp, bottom = 5.dp),
                 text = title ?: "loading",
-                color = Color.White,
+                color = if (background != null) Color.Black
+                    else Color.White,
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center
             )
 
             Text(
-                modifier = modifier.padding(start = 5.dp, end = 5.dp, bottom = 10.dp),
+                modifier = modifier.padding(start = 10.dp, end = 10.dp, bottom = 10.dp),
                 text = description ?: "loading",
-                color = Color.White,
+                color = if (background != null) Color.Black
+                    else Color.White,
                 fontSize = 14.sp,
                 textAlign = TextAlign.Center
             )
@@ -119,7 +121,8 @@ fun Banner(
                 FilledTonalButton(
                     modifier = modifier.padding(end = 5.dp),
                     colors = ButtonDefaults.filledTonalButtonColors(
-                        containerColor = Color.White
+                        containerColor = if (background != null) Color.Black
+                            else Color.White
                     ),
                     onClick = {
                         // TODO: recommend on click
@@ -127,7 +130,8 @@ fun Banner(
                 ) {
                     Text(
                         text = "Read",
-                        color = Color.Black,
+                        color = if (background != null) Color.White
+                            else Color.Black,
                         fontSize = 14.sp,
                         textAlign = TextAlign.Center
                     )
@@ -136,7 +140,8 @@ fun Banner(
                 OutlinedIconButton(
                     modifier = modifier.padding(end = 2.dp),
                     colors = IconButtonDefaults.outlinedIconButtonColors(
-                        contentColor = Color.White
+                        contentColor = if (background != null) Color.Black
+                            else Color.White
                     ),
                     border = BorderStroke(1.dp, Color.Gray),
                     onClick = {
@@ -152,7 +157,8 @@ fun Banner(
 
                 OutlinedIconButton(
                     colors = IconButtonDefaults.outlinedIconButtonColors(
-                        contentColor = Color.White
+                        contentColor = if (background != null) Color.Black
+                            else Color.White
                     ),
                     border = BorderStroke(1.dp, Color.Gray),
                     onClick = {

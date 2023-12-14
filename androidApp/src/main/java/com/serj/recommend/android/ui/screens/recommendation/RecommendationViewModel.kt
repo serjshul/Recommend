@@ -32,11 +32,11 @@ class RecommendationViewModel @Inject constructor(
             launchCatching {
                 recommendation.value = storageService
                     .getRecommendation(recommendationId.idFromParameter()) ?: Recommendation()
-                backgroundImage.value = recommendation.value.background["reference"]?.let {
+                backgroundImage.value = recommendation.value.background["image"]?.let {
                     storageService.downloadImage(it)
                 }
                 for (i in recommendation.value.paragraphs.indices) {
-                    recommendation.value.paragraphs[i]["reference"]?.let {
+                    recommendation.value.paragraphs[i]["image"]?.let {
                         paragraphsImages[i] = storageService.downloadImage(it)
                     }
                 }
