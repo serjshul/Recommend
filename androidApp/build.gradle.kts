@@ -15,9 +15,10 @@ android {
         minSdk = 25
         targetSdk = 34
         versionCode = 1
-        versionName = "1.0"
+        versionName = "0.1"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+//        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.serj.recommend.android.CustomTestRunner"
     }
     buildFeatures {
         compose = true
@@ -84,15 +85,16 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.firebase:firebase-storage")
     implementation("com.google.firebase:firebase-perf")
-    
+
     implementation("com.google.dagger:hilt-android:2.49")
     ksp("com.google.dagger:hilt-compiler:2.49")
     implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
 
-    // For Robolectric tests
+    // For Robolectric (emulate simulator on JVM on your machine) tests
     testImplementation("com.google.dagger:hilt-android-testing:2.49")
     kspTest("com.google.dagger:hilt-android-compiler:2.49")
 
+    // For Instrumented (UI) tests
     androidTestImplementation("com.google.dagger:hilt-android-testing:2.49")
     kspAndroidTest("com.google.dagger:hilt-android-compiler:2.49")
 }
