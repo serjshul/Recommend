@@ -15,9 +15,10 @@ android {
         minSdk = 25
         targetSdk = 34
         versionCode = 1
-        versionName = "1.0"
+        versionName = "0.1"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+//        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.serj.recommend.android.CustomTestRunner"
     }
     buildFeatures {
         compose = true
