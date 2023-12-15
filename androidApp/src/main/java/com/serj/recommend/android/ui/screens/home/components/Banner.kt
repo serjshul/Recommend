@@ -34,20 +34,24 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.serj.recommend.android.R
+import com.serj.recommend.android.model.Banner
+import com.serj.recommend.android.ui.components.loadingIndicators.SmallLoadingIndicator
 
 @Composable
 fun Banner(
     modifier: Modifier = Modifier,
+    bannerId: String? = null,
     title: String? = null,
-    description: String? = null,
-    background: Bitmap?
+    promo: String? = null,
+    backgroundVideo: String? = null,
+    backgroundImage: Bitmap?,
+    openScreen: (String) -> Unit,
+    onBannerClick: ((String) -> Unit, Banner) -> Unit
 ) {
     var sizeImage by remember { mutableStateOf(IntSize.Zero) }
     // TODO: save like / unlike by user
@@ -59,33 +63,37 @@ fun Banner(
             .height(520.dp)
             .padding(bottom = 30.dp)
     ) {
-        if (background != null) {
-            Image(
-                modifier = Modifier
-                    .matchParentSize()
-                    .onGloballyPositioned { sizeImage = it.size },
-                bitmap = background.asImageBitmap(),
-                contentDescription = title,
-                contentScale = ContentScale.Crop
-            )
-            Box(
-                modifier = modifier
-                    .matchParentSize()
-                    .background(
-                        Brush.verticalGradient(
-                            colors = listOf(Color.Transparent, Color.White),
-                            startY = sizeImage.height.toFloat() / 7,
-                            endY = sizeImage.height.toFloat()
+        when {
+            backgroundVideo != null -> {
+                // TODO: add video player
+            }
+            backgroundImage != null -> {
+                Image(
+                    modifier = Modifier
+                        .matchParentSize()
+                        .onGloballyPositioned { sizeImage = it.size },
+                    bitmap = backgroundImage.asImageBitmap(),
+                    contentDescription = title,
+                    contentScale = ContentScale.Crop
+                )
+                Box(
+                    modifier = modifier
+                        .matchParentSize()
+                        .background(
+                            Brush.verticalGradient(
+                                colors = listOf(Color.Transparent, Color.White),
+                                startY = sizeImage.height.toFloat() / 7,
+                                endY = sizeImage.height.toFloat()
+                            )
                         )
-                    )
-            )
-        } else {
-            Image(
-                modifier = Modifier.matchParentSize(),
-                painter = painterResource(id = R.drawable.gradient),
-                contentDescription = "background_gradient",
-                contentScale = ContentScale.Crop
-            )
+                )
+            }
+            else -> {
+                SmallLoadingIndicator(
+                    modifier = Modifier
+                        .matchParentSize()
+                )
+            }
         }
 
         Column(
@@ -96,10 +104,9 @@ fun Banner(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                modifier = modifier.padding(start = 5.dp, end = 5.dp, bottom = 5.dp),
+                modifier = modifier.padding(start = 10.dp, end = 10.dp, bottom = 5.dp),
                 text = title ?: "loading",
-                color = if (background != null) Color.Black
-                    else Color.White,
+                color = Color.Black,
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center
@@ -107,9 +114,8 @@ fun Banner(
 
             Text(
                 modifier = modifier.padding(start = 10.dp, end = 10.dp, bottom = 10.dp),
-                text = description ?: "loading",
-                color = if (background != null) Color.Black
-                    else Color.White,
+                text = promo ?: "loading",
+                color = Color.Black,
                 fontSize = 14.sp,
                 textAlign = TextAlign.Center
             )
@@ -121,17 +127,20 @@ fun Banner(
                 FilledTonalButton(
                     modifier = modifier.padding(end = 5.dp),
                     colors = ButtonDefaults.filledTonalButtonColors(
-                        containerColor = if (background != null) Color.Black
-                            else Color.White
+                        containerColor = Color.Black
                     ),
                     onClick = {
-                        // TODO: recommend on click
+                        if (bannerId != null) {
+                            onBannerClick(
+                                openScreen,
+                                Banner(id = bannerId)
+                            )
+                        }
                     }
                 ) {
                     Text(
                         text = "Read",
-                        color = if (background != null) Color.White
-                            else Color.Black,
+                        color = Color.White,
                         fontSize = 14.sp,
                         textAlign = TextAlign.Center
                     )
@@ -140,8 +149,7 @@ fun Banner(
                 OutlinedIconButton(
                     modifier = modifier.padding(end = 2.dp),
                     colors = IconButtonDefaults.outlinedIconButtonColors(
-                        contentColor = if (background != null) Color.Black
-                            else Color.White
+                        contentColor = Color.Black
                     ),
                     border = BorderStroke(1.dp, Color.Gray),
                     onClick = {
@@ -157,8 +165,7 @@ fun Banner(
 
                 OutlinedIconButton(
                     colors = IconButtonDefaults.outlinedIconButtonColors(
-                        contentColor = if (background != null) Color.Black
-                            else Color.White
+                        contentColor = Color.Black
                     ),
                     border = BorderStroke(1.dp, Color.Gray),
                     onClick = {

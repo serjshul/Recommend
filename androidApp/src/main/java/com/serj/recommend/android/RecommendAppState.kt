@@ -4,8 +4,8 @@ import android.content.res.Resources
 import androidx.compose.material.ScaffoldState
 import androidx.compose.runtime.Stable
 import androidx.navigation.NavHostController
-import com.serj.recommend.android.ui.snackbar.SnackbarManager
-import com.serj.recommend.android.ui.snackbar.SnackbarMessage.Companion.toMessage
+import com.serj.recommend.android.ui.components.snackbar.SnackbarManager
+import com.serj.recommend.android.ui.components.snackbar.SnackbarMessage.Companion.toMessage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch

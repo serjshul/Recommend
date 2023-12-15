@@ -1,7 +1,7 @@
 package com.serj.recommend.android.common.snackbar
 
 import androidx.annotation.StringRes
-import com.serj.recommend.android.ui.snackbar.SnackbarMessage
+import com.serj.recommend.android.ui.components.snackbar.SnackbarMessage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

@@ -11,14 +11,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.serj.recommend.android.R
-import com.serj.recommend.android.ui.bottombar.BottomNavigationItem
+import com.serj.recommend.android.ui.components.bottombar.BottomNavigationItem
+import com.serj.recommend.android.ui.styles.TigerEye
 
 @Composable
 fun BottomNavigationBar(
@@ -69,8 +68,8 @@ fun BottomNavigationBar(
                     indicatorColor = Color.White,
                     unselectedTextColor = Color.Gray,
                     unselectedIconColor = Color.Gray,
-                    selectedTextColor = colorResource(R.color.tigereye),
-                    selectedIconColor = colorResource(R.color.tigereye)
+                    selectedTextColor = TigerEye,
+                    selectedIconColor = TigerEye
                 ),
             )
         }

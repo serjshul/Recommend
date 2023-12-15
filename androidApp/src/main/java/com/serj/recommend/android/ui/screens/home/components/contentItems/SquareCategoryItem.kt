@@ -1,12 +1,11 @@
-package com.serj.recommend.android.ui.screens.home.components.categoryContentItems
+package com.serj.recommend.android.ui.screens.home.components.contentItems
 
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,11 +21,8 @@ import androidx.compose.ui.unit.sp
 import com.serj.recommend.android.R
 import com.serj.recommend.android.model.Recommendation
 
-//import com.serj.recommend.android.ArticleActivity
-
-
 @Composable
-fun VerticalCategoryItem(
+fun SquareCategoryItem(
     modifier: Modifier = Modifier,
     recommendationId: String?,
     title: String?,
@@ -36,7 +32,7 @@ fun VerticalCategoryItem(
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .padding(end = 10.dp)
             .clickable {
                 if (recommendationId != null) {
@@ -50,8 +46,7 @@ fun VerticalCategoryItem(
         if (cover != null) {
             Image(
                 modifier = modifier
-                    .height(240.dp)
-                    .width(150.dp)
+                    .size(160.dp)
                     .padding(bottom = 5.dp)
                     .clip(RoundedCornerShape(5.dp)),
                 bitmap = cover.asImageBitmap(),
@@ -61,8 +56,7 @@ fun VerticalCategoryItem(
         } else {
             Image(
                 modifier = modifier
-                    .height(240.dp)
-                    .width(150.dp)
+                    .size(160.dp)
                     .padding(bottom = 5.dp)
                     .clip(RoundedCornerShape(5.dp)),
                 painter = painterResource(id = R.drawable.gradient),

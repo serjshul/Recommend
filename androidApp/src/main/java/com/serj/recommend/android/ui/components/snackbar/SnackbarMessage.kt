@@ -1,4 +1,4 @@
-package com.serj.recommend.android.ui.snackbar
+package com.serj.recommend.android.ui.components.snackbar
 
 import android.content.res.Resources
 import androidx.annotation.StringRes

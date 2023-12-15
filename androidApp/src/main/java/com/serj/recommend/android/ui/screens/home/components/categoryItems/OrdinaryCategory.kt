@@ -25,9 +25,9 @@ import androidx.compose.ui.unit.sp
 import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.CategoryItem
 import com.serj.recommend.android.model.Recommendation
-import com.serj.recommend.android.ui.screens.home.components.categoryContentItems.HorizontalCategoryItem
-import com.serj.recommend.android.ui.screens.home.components.categoryContentItems.SquareCategoryItem
-import com.serj.recommend.android.ui.screens.home.components.categoryContentItems.VerticalCategoryItem
+import com.serj.recommend.android.ui.screens.home.components.contentItems.HorizontalCategoryItem
+import com.serj.recommend.android.ui.screens.home.components.contentItems.SquareCategoryItem
+import com.serj.recommend.android.ui.screens.home.components.contentItems.VerticalCategoryItem
 
 @Composable
 fun OrdinaryCategory(
@@ -64,7 +64,7 @@ fun OrdinaryCategory(
                             SquareCategoryItem(
                                 title = items[i]?.title,
                                 creator = items[i]?.creator,
-                                cover = covers?.get(i),
+                                cover = covers?.getOrNull(i),
                                 recommendationId = items[i]?.recommendationId,
                                 openScreen = openScreen,
                                 onRecommendationClick = onRecommendationClick
@@ -74,7 +74,7 @@ fun OrdinaryCategory(
                             HorizontalCategoryItem(
                                 title = items[i]?.title,
                                 creator = items[i]?.creator,
-                                cover = covers?.get(i),
+                                cover = covers?.getOrNull(i),
                                 recommendationId = items[i]?.recommendationId,
                                 openScreen = openScreen,
                                 onRecommendationClick = onRecommendationClick
@@ -84,7 +84,7 @@ fun OrdinaryCategory(
                             VerticalCategoryItem(
                                 title = items[i]?.title,
                                 creator = items[i]?.creator,
-                                cover = covers?.get(i),
+                                cover = covers?.getOrNull(i),
                                 recommendationId = items[i]?.recommendationId,
                                 openScreen = openScreen,
                                 onRecommendationClick = onRecommendationClick

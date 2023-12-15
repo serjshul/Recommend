@@ -1,11 +1,12 @@
-package com.serj.recommend.android.ui.screens.home.components.categoryContentItems
+package com.serj.recommend.android.ui.screens.home.components.contentItems
 
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,7 +23,7 @@ import com.serj.recommend.android.R
 import com.serj.recommend.android.model.Recommendation
 
 @Composable
-fun SquareCategoryItem(
+fun HorizontalCategoryItem(
     modifier: Modifier = Modifier,
     recommendationId: String?,
     title: String?,
@@ -46,7 +47,8 @@ fun SquareCategoryItem(
         if (cover != null) {
             Image(
                 modifier = modifier
-                    .size(160.dp)
+                    .height(160.dp)
+                    .width(290.dp)
                     .padding(bottom = 5.dp)
                     .clip(RoundedCornerShape(5.dp)),
                 bitmap = cover.asImageBitmap(),
@@ -56,7 +58,8 @@ fun SquareCategoryItem(
         } else {
             Image(
                 modifier = modifier
-                    .size(160.dp)
+                    .height(160.dp)
+                    .width(300.dp)
                     .padding(bottom = 5.dp)
                     .clip(RoundedCornerShape(5.dp)),
                 painter = painterResource(id = R.drawable.gradient),

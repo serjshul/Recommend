@@ -12,10 +12,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.serj.recommend.android.model.Banner
 import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.CategoryItem
 import com.serj.recommend.android.model.Recommendation
-import com.serj.recommend.android.model.service.Banner
 import com.serj.recommend.android.ui.screens.home.components.Banner
 import com.serj.recommend.android.ui.screens.home.components.categoryItems.ExtendedCategory
 import com.serj.recommend.android.ui.screens.home.components.categoryItems.OrdinaryCategory
@@ -34,19 +34,20 @@ fun HomeScreen(
 
     val banner = viewModel.banner
     val bannerItems = viewModel.bannerItems
-    val bannerBackground = viewModel.bannerBackground.value
+    val bannerCover = viewModel.bannerCover.value
 
     HomeScreenContent(
         banner = banner.value,
         bannerItems = bannerItems,
-        bannerBackground = bannerBackground,
+        bannerCover = bannerCover,
         categories = categories.value,
         categoriesBackgrounds = categoriesBackgrounds,
         categoriesItems = categoriesItems,
         categoriesImages = categoriesImages,
         options = options,
         openScreen = openScreen,
-        onRecommendationClick = viewModel::onRecommendationClick
+        onRecommendationClick = viewModel::onRecommendationClick,
+        onBannerClick = viewModel::onBannerClick
     )
 }
 
@@ -55,13 +56,14 @@ fun HomeScreenContent(
     modifier: Modifier = Modifier,
     banner: Banner?,
     bannerItems: List<CategoryItem?>?,
-    bannerBackground: Bitmap?,
+    bannerCover: Bitmap?,
     categories: List<Category>,
     categoriesBackgrounds: Map<String?, Bitmap?>,
     categoriesItems: Map<String?, List<CategoryItem?>?>,
     categoriesImages: Map<String?, List<Bitmap?>?>,
     openScreen: (String) -> Unit,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit,
+    onBannerClick: ((String) -> Unit, Banner) -> Unit,
     options: List<String>,
 ) {
     Scaffold() { paddingValues ->
@@ -74,9 +76,12 @@ fun HomeScreenContent(
             if (banner != null) {
                 item {
                     Banner(
+                        bannerId = banner.id,
                         title = banner.title,
-                        description = banner.description,
-                        background = bannerBackground
+                        promo = banner.promo,
+                        backgroundImage = bannerCover,
+                        openScreen = openScreen,
+                        onBannerClick = onBannerClick
                     )
                 }
             }

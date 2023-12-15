@@ -3,11 +3,13 @@ package com.serj.recommend.android.ui.screens.home
 import android.graphics.Bitmap
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
+import com.serj.recommend.android.BANNER_ID
+import com.serj.recommend.android.BANNER_SCREEN
 import com.serj.recommend.android.RECOMMENDATION_ID
 import com.serj.recommend.android.RECOMMENDATION_SCREEN
+import com.serj.recommend.android.model.Banner
 import com.serj.recommend.android.model.CategoryItem
 import com.serj.recommend.android.model.Recommendation
-import com.serj.recommend.android.model.service.Banner
 import com.serj.recommend.android.model.service.ConfigurationService
 import com.serj.recommend.android.model.service.LogService
 import com.serj.recommend.android.model.service.StorageService
@@ -31,7 +33,7 @@ class HomeViewModel @Inject constructor(
 
     private val banners = storageService.banners
     val banner = mutableStateOf<Banner?>(null)
-    val bannerBackground = mutableStateOf<Bitmap?>(null)
+    val bannerCover = mutableStateOf<Bitmap?>(null)
     val bannerItems = mutableListOf<CategoryItem?>()
 
     init {
@@ -49,7 +51,7 @@ class HomeViewModel @Inject constructor(
                     }
                 }
 
-                bannerBackground.value = banner.value!!.background?.get("image")?. let {
+                bannerCover.value = banner.value!!.cover?.get("image")?. let {
                     storageService.downloadImage(it)
                 }
             }
@@ -100,5 +102,9 @@ class HomeViewModel @Inject constructor(
 
     fun onRecommendationClick(openScreen: (String) -> Unit, recommendation: Recommendation) {
         openScreen("$RECOMMENDATION_SCREEN?$RECOMMENDATION_ID={${recommendation.id}}")
+    }
+
+    fun onBannerClick(openScreen: (String) -> Unit, banner: Banner) {
+        openScreen("$BANNER_SCREEN?$BANNER_ID={${banner.id}}")
     }
 }
