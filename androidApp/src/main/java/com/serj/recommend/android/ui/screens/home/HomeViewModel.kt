@@ -42,16 +42,19 @@ class HomeViewModel @Inject constructor(
                 if (!banner.value!!.recommendationIds.isNullOrEmpty()) {
                     for (recommendationId in banner.value!!.recommendationIds!!) {
                         banner.value!!.coverType?.let {
-                            storageService.getCategoryItem(recommendationId, it).let {item ->
-                                bannerItems.add(item)
-                            }
+                            storageService
+                                .getCategoryItem(recommendationId, it)
+                                .let { item ->
+                                    bannerItems.add(item)
+                                }
                         }
                     }
                 }
 
-                bannerBackground.value = banner.value!!.background?.get("image")?. let {
-                    storageService.downloadImage(it)
-                }
+                bannerBackground.value = banner
+                    .value!!.background?.get("image")?.let {
+                        storageService.downloadImage(it)
+                    }
             }
         }
 
@@ -64,13 +67,15 @@ class HomeViewModel @Inject constructor(
                             storageService
                                 .getCategoryItem(
                                     recommendationId = recommendationId,
-                                    coverType = category.coverType)
-                                . let {
+                                    coverType = category.coverType
+                                ).let {
                                     currentItems.add(it)
                                 }
                         }
                         categoriesItems[category.title] = currentItems
-                            .sortedByDescending { item -> item?.date }
+                            .sortedByDescending { item ->
+                                item?.date
+                            }
                     }
                 }
 
@@ -79,19 +84,21 @@ class HomeViewModel @Inject constructor(
                         val currentImages = arrayListOf<Bitmap?>()
                         for (item in categoriesItems[category.title]!!) {
                             item?.cover?.let { gsReference ->
-                                storageService.downloadImage(gsReference). let {
-                                    currentImages.add(it)
-                                }
+                                storageService
+                                    .downloadImage(gsReference)
+                                    .let {
+                                        currentImages.add(it)
+                                    }
                             }
                         }
                         categoriesImages[category.title] = currentImages
                     }
 
                     if (category.background != null) {
-                        categoriesBackgrounds[category.title] =
-                            category.background["image"]?.let {reference ->
-                                storageService.downloadImage(reference)
-                            }
+                        categoriesBackgrounds[category.title] = category
+                            .background["image"]?.let { reference ->
+                            storageService.downloadImage(reference)
+                        }
                     }
                 }
             }
