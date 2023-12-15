@@ -13,6 +13,7 @@ import com.google.firebase.firestore.toObject
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import com.serj.recommend.android.model.Banner
+import com.serj.recommend.android.model.BannerItem
 import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.CategoryItem
 import com.serj.recommend.android.model.Recommendation
@@ -76,7 +77,6 @@ class StorageServiceImpl @Inject constructor(
                     recommendationId = recommendationId,
                     title = recommendation!!.title,
                     creator = recommendation.creator,
-                    description = recommendation.description,
                     cover = recommendation.cover[coverType] ?: "",
                     date = recommendation.date
                 )
@@ -88,6 +88,34 @@ class StorageServiceImpl @Inject constructor(
             .await()
 
         return categoryItem
+    }
+
+    override suspend fun getBannerItem(recommendationId: String, coverType: String):
+            BannerItem? {
+        var bannerItem: BannerItem? = null
+
+        firestore
+            .collection(RECOMMENDATIONS_COLLECTION)
+            .document(recommendationId)
+            .get()
+            .addOnSuccessListener {document ->
+                val recommendation = document.toObject<Recommendation>()
+                bannerItem = BannerItem(
+                    recommendationId = recommendationId,
+                    title = recommendation!!.title,
+                    creator = recommendation.creator,
+                    description = recommendation.description,
+                    cover = recommendation.cover[coverType] ?: "",
+                    date = recommendation.date
+                )
+                //Log.v(ContentValues.TAG, "got CategoryItem")
+            }.addOnFailureListener {
+                // Handle any errors
+                Log.v(ContentValues.TAG, "error getCategoryItem()")
+            }
+            .await()
+
+        return bannerItem
     }
 
     override suspend fun downloadImage(gsReference: String): Bitmap? {

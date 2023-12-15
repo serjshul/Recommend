@@ -2,6 +2,7 @@ package com.serj.recommend.android.ui.screens.banner
 
 import android.graphics.Bitmap
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import com.serj.recommend.android.BANNER_ID
@@ -9,7 +10,7 @@ import com.serj.recommend.android.RECOMMENDATION_ID
 import com.serj.recommend.android.RECOMMENDATION_SCREEN
 import com.serj.recommend.android.common.ext.idFromParameter
 import com.serj.recommend.android.model.Banner
-import com.serj.recommend.android.model.CategoryItem
+import com.serj.recommend.android.model.BannerItem
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.service.LogService
 import com.serj.recommend.android.model.service.StorageService
@@ -26,8 +27,8 @@ class BannerViewModel @Inject constructor(
 
     val banner = mutableStateOf<Banner?>(null)
     val bannerBackground = mutableStateOf<Bitmap?>(null)
-    val bannerItems = mutableListOf<CategoryItem?>()
-    val bannerImages = mutableStateListOf<Bitmap?>()
+    val bannerItems = mutableStateListOf<BannerItem?>()
+    val bannerImages = mutableStateMapOf<String?, Bitmap?>()
 
     init {
         val bannerId = savedStateHandle.get<String>(BANNER_ID)
@@ -35,16 +36,19 @@ class BannerViewModel @Inject constructor(
             launchCatching {
                 banner.value = storageService
                     .getBanner(bannerId.idFromParameter()) ?: Banner()
-                for (recommendationId in banner.value!!.recommendationIds!!) {
-                    banner.value!!.coverType?.let {item ->
-                        storageService
-                            .getCategoryItem(
-                                recommendationId = recommendationId,
-                                coverType = item
-                            )
-                            . let {
-                                bannerItems.add(it)
-                            }
+
+                if (banner.value!!.recommendationIds?.isNotEmpty() == true) {
+                    for (recommendationId in banner.value!!.recommendationIds!!) {
+                        banner.value!!.coverType?.let { item ->
+                            storageService
+                                .getBannerItem(
+                                    recommendationId = recommendationId,
+                                    coverType = item
+                                )
+                                .let {
+                                    bannerItems.add(it)
+                                }
+                        }
                     }
                 }
 
@@ -56,7 +60,7 @@ class BannerViewModel @Inject constructor(
                 for (item in bannerItems) {
                     item?.cover?.let { gsReference ->
                         storageService.downloadImage(gsReference).let {
-                            bannerImages.add(it)
+                            bannerImages[item.title] = it
                         }
                     }
                 }

@@ -21,10 +21,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.serj.recommend.android.ui.components.recommendation.CustomVideoPlayer
-import com.serj.recommend.android.ui.components.recommendation.Description
 
 @Composable
-fun Content(
+fun RecommendationContent(
     modifier: Modifier = Modifier,
     description: String,
     paragraphs: ArrayList<HashMap<String, String>>,
@@ -38,10 +37,9 @@ fun Content(
             .wrapContentHeight()
             .padding(start = 15.dp, end = 15.dp, bottom = 20.dp)
     ) {
-        Description(
+        RecommendationDescription(
             modifier = modifier,
-            description = description,
-            color = color
+            description = description
         )
 
         for (i in paragraphs.indices) {

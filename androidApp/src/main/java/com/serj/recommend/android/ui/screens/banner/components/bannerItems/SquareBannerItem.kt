@@ -96,7 +96,7 @@ fun SquareBannerItem(
 
                     if (creator != null && description != null) {
                         Text(
-                            modifier = Modifier.padding(bottom = 5.dp),
+                            modifier = Modifier.padding(bottom = 4.dp),
                             text = creator,
                             color = Color.Gray,
                             fontSize = 13.sp,

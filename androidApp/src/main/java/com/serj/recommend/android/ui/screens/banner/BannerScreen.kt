@@ -1,6 +1,8 @@
 package com.serj.recommend.android.ui.screens.banner
 
 import android.graphics.Bitmap
+import android.service.controls.ControlsProviderService.TAG
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,12 +18,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.serj.recommend.android.model.Banner
-import com.serj.recommend.android.model.CategoryItem
+import com.serj.recommend.android.model.BannerItem
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.ui.components.loadingIndicators.LargeLoadingIndicator
-import com.serj.recommend.android.ui.components.recommendation.Description
+import com.serj.recommend.android.ui.screens.banner.components.BannerContent
+import com.serj.recommend.android.ui.screens.banner.components.BannerDescription
 import com.serj.recommend.android.ui.screens.banner.components.BannerHeader
-import com.serj.recommend.android.ui.screens.banner.components.BannerItems
 
 @Composable
 fun BannerScreen(
@@ -33,6 +35,8 @@ fun BannerScreen(
     val bannerBackground = viewModel.bannerBackground.value
     val bannerItems = viewModel.bannerItems
     val bannerImages = viewModel.bannerImages
+
+    Log.v(TAG, bannerItems.joinToString())
 
     BannerScreenContent(
         banner = banner.value,
@@ -51,8 +55,8 @@ fun BannerScreenContent(
     banner: Banner?,
     bannerBackgroundVideo: String? = null,
     bannerBackgroundImage: Bitmap?,
-    bannerItems: List<CategoryItem?>,
-    bannerImages: List<Bitmap?>?,
+    bannerItems: List<BannerItem?>?,
+    bannerImages: Map<String?, Bitmap?>?,
     openScreen: (String) -> Unit,
     popUpScreen: () -> Unit,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
@@ -85,13 +89,13 @@ fun BannerScreenContent(
                                 .padding(top = 380.dp)
                                 .background(Color.White, RoundedCornerShape(20.dp))
                         ) {
-                            Description(
+                            BannerDescription(
                                 modifier = Modifier.padding(start = 15.dp, end = 15.dp),
                                 description = banner.description,
                                 color = banner.color
                             )
 
-                            BannerItems(
+                            BannerContent(
                                 coverType = banner.coverType,
                                 color = banner.color,
                                 bannerItems = bannerItems,

@@ -15,7 +15,6 @@ data class Banner(
     val coverType: String? = null,
     val color: String? = null,
     val recommendationIds: ArrayList<String>? = null,
-    var content: ArrayList<CategoryItem>? = null,
     var author: String? = null,
     var date: Date? = null
 )

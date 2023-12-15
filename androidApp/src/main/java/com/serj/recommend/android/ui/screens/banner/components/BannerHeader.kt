@@ -16,7 +16,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,7 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.serj.recommend.android.R
-import com.serj.recommend.android.ui.components.loadingIndicators.SmallLoadingIndicator
+import com.serj.recommend.android.ui.components.loadingIndicators.LargeLoadingIndicator
 
 @Composable
 fun BannerHeader(
@@ -48,8 +47,6 @@ fun BannerHeader(
     popUpScreen: () -> Unit
 ) {
     var sizeImage by remember { mutableStateOf(IntSize.Zero) }
-    // TODO: save like / unlike by user
-    var isSaved by rememberSaveable { mutableStateOf(false) }
 
     Box(
         modifier = modifier
@@ -74,7 +71,7 @@ fun BannerHeader(
                 )
             }
             else -> {
-                SmallLoadingIndicator(
+                LargeLoadingIndicator(
                     modifier = Modifier.background(Color.LightGray)
                 )
             }
@@ -92,18 +89,6 @@ fun BannerHeader(
                     .clickable { popUpScreen() },
                 painter = painterResource(id = R.drawable.icon_arrow_back),
                 contentDescription = "button_back",
-                contentScale = ContentScale.Crop
-            )
-
-            Image(
-                modifier = Modifier
-                    .padding(20.dp)
-                    .align(Alignment.TopEnd)
-                    .clickable { isSaved = !isSaved },
-                painter = if (isSaved) painterResource(id = R.drawable.icon_saved)
-                else painterResource(id = R.drawable.icon_unsaved),
-                contentDescription = if (isSaved) "button_saved"
-                else "button_unsaved",
                 contentScale = ContentScale.Crop
             )
         }
@@ -167,8 +152,6 @@ fun BannerHeader(
                     }
                 }
             }
-        } else {
-            // TODO: what else??
         }
     }
 }

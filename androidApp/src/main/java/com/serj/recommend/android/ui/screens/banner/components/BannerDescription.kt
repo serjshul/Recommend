@@ -1,4 +1,4 @@
-package com.serj.recommend.android.ui.components.recommendation
+package com.serj.recommend.android.ui.screens.banner.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -29,7 +29,7 @@ import com.serj.recommend.android.ui.screens.recommendation.components.toColor
 import com.serj.recommend.android.ui.styles.AppleRed
 
 @Composable
-fun Description(
+fun BannerDescription(
     modifier: Modifier = Modifier,
     description: String?,
     color: String?

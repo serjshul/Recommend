@@ -23,8 +23,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.ui.components.recommendation.CommentFullItem
-import com.serj.recommend.android.ui.screens.recommendation.components.Content
 import com.serj.recommend.android.ui.components.recommendation.Footer
+import com.serj.recommend.android.ui.screens.recommendation.components.RecommendationContent
 import com.serj.recommend.android.ui.screens.recommendation.components.RecommendationHeader
 
 @Composable
@@ -88,7 +88,7 @@ fun RecommendationScreenContent(
                             .padding(top = 280.dp)
                             .background(Color.White, RoundedCornerShape(20.dp))
                     ) {
-                        Content(
+                        RecommendationContent(
                             description = recommendation.description,
                             paragraphs = recommendation.paragraphs,
                             paragraphsImages = paragraphsImages,
