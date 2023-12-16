@@ -15,12 +15,14 @@
 
     <!-- LoginScreen -->
     <string name="sign_in">Sign in</string>
+    <string name="sign_up">Sign up</string>
     <string name="login_details">Enter your login details</string>
     <string name="forgot_password">Forgot password?</string>
     <string name="recovery_email_sent">Check your inbox for the recovery email</string>
     <string name="empty_password_error">Password cannot be empty</string>
     <string name="success_sign_in">Success</string>
     <string name="error_sign_in">Error</string>
+    <string name="reset_password">Reset password</string>
 
     <!-- SignUpScreen -->
     <string name="create_account">Create account</string>

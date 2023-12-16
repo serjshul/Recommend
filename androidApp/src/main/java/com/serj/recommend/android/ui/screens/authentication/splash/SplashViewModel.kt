@@ -2,7 +2,7 @@ package com.serj.recommend.android.ui.screens.authentication.splash
 
 import androidx.compose.runtime.mutableStateOf
 import com.serj.recommend.android.HOME_SCREEN
-import com.serj.recommend.android.SIGN_UP_SCREEN
+import com.serj.recommend.android.SIGN_IN_SCREEN
 import com.serj.recommend.android.SPLASH_SCREEN
 import com.serj.recommend.android.model.service.AccountService
 import com.serj.recommend.android.model.service.ConfigurationService
@@ -30,7 +30,6 @@ class SplashViewModel @Inject constructor(
         if (accountService.hasUser)
             openAndPopUp(HOME_SCREEN, SPLASH_SCREEN)
         else
-            openAndPopUp(SIGN_UP_SCREEN, SPLASH_SCREEN)
-            //createAnonymousAccount(openAndPopUp)
+            openAndPopUp(SIGN_IN_SCREEN, SPLASH_SCREEN)
     }
 }

@@ -9,6 +9,7 @@ const val PROFILE_SCREEN = "ProfileScreen"
 const val SPLASH_SCREEN = "SplashScreen"
 const val SIGN_UP_SCREEN = "SignUpScreen"
 const val SIGN_IN_SCREEN = "SignInScreen"
+const val RESET_PASSWORD_SCREEN = "ResetPasswordScreen"
 const val RECOMMENDATION_SCREEN = "RecommendationScreen"
 const val BANNER_SCREEN = "BannerScreen"
 

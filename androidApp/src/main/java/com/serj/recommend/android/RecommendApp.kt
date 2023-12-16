@@ -38,15 +38,16 @@ import com.serj.recommend.android.common.composable.RationaleDialog
 import com.serj.recommend.android.ui.BottomNavigationBar
 import com.serj.recommend.android.ui.components.snackbar.SnackbarManager
 import com.serj.recommend.android.ui.screens.FeedScreen
-import com.serj.recommend.android.ui.screens.common.banner.BannerScreen
-import com.serj.recommend.android.ui.screens.main.home.HomeScreen
-import com.serj.recommend.android.ui.screens.main.profile.ProfileScreen
-import com.serj.recommend.android.ui.screens.main.rec.RecScreen
-import com.serj.recommend.android.ui.screens.common.recommendation.RecommendationScreen
-import com.serj.recommend.android.ui.screens.main.search.SearchScreen
+import com.serj.recommend.android.ui.screens.authentication.resetPassword.ResetPasswordScreen
 import com.serj.recommend.android.ui.screens.authentication.signIn.SignInScreen
 import com.serj.recommend.android.ui.screens.authentication.signUp.SignUpScreen
 import com.serj.recommend.android.ui.screens.authentication.splash.SplashScreen
+import com.serj.recommend.android.ui.screens.common.banner.BannerScreen
+import com.serj.recommend.android.ui.screens.common.recommendation.RecommendationScreen
+import com.serj.recommend.android.ui.screens.main.home.HomeScreen
+import com.serj.recommend.android.ui.screens.main.profile.ProfileScreen
+import com.serj.recommend.android.ui.screens.main.rec.RecScreen
+import com.serj.recommend.android.ui.screens.main.search.SearchScreen
 import com.serj.recommend.android.ui.styles.MyApplicationTheme
 import kotlinx.coroutines.CoroutineScope
 
@@ -132,13 +133,24 @@ fun NavGraphBuilder.recommendGraph(
     appState: RecommendAppState
 ) {
     composable(SPLASH_SCREEN) {
-        SplashScreen(openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) })
+        SplashScreen(
+            openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) }
+        )
     }
     composable(SIGN_UP_SCREEN) {
-        SignUpScreen(openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) })
+        SignUpScreen(
+            openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) }
+        )
     }
     composable(SIGN_IN_SCREEN) {
-        SignInScreen(openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) })
+        SignInScreen(
+            openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) }
+        )
+    }
+    composable(RESET_PASSWORD_SCREEN) {
+        ResetPasswordScreen(
+            openScreen = { route -> appState.navigate(route) }
+        )
     }
     composable(HOME_SCREEN) {
         HomeScreen(

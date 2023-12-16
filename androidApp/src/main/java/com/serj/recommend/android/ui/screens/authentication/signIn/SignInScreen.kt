@@ -1,46 +1,30 @@
 package com.serj.recommend.android.ui.screens.authentication.signIn
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.FilledTonalButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.serj.recommend.android.R
 import com.serj.recommend.android.common.ext.basicButton
 import com.serj.recommend.android.common.ext.fieldModifier
 import com.serj.recommend.android.common.ext.textButton
-import com.serj.recommend.android.ui.screens.authentication.signUp.Title
+import com.serj.recommend.android.ui.components.AppLogo
+import com.serj.recommend.android.ui.components.authentication.AuthenticationButton
+import com.serj.recommend.android.ui.components.authentication.AuthenticationTextButton
+import com.serj.recommend.android.ui.components.authentication.EmailField
+import com.serj.recommend.android.ui.components.authentication.PasswordField
 
 @Composable
 fun SignInScreen(
@@ -54,7 +38,8 @@ fun SignInScreen(
         onEmailChange = viewModel::onEmailChange,
         onPasswordChange = viewModel::onPasswordChange,
         onSignInClick = { viewModel.onSignInClick(openAndPopUp) },
-        onForgotPasswordClick = viewModel::onForgotPasswordClick
+        onSignUpClick = { viewModel.onSignUpClick(openAndPopUp) },
+        onForgotPasswordClick = { viewModel.onForgotPasswordClick(openAndPopUp) }
     )
 }
 
@@ -65,113 +50,78 @@ fun SignInScreenContent(
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onSignInClick: () -> Unit,
+    onSignUpClick: () -> Unit,
     onForgotPasswordClick: () -> Unit
 ) {
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(Color.White)
-            .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+            .verticalScroll(rememberScrollState())
     ) {
-        Title(text = "Sign In", modifier = Modifier.padding(30.dp))
+        Column(
+            modifier = Modifier
+                .weight(5f)
+                .fillMaxWidth(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            AppLogo()
+        }
 
-        EmailField(uiState.email, onEmailChange, Modifier.fieldModifier())
+        Column(
+            modifier = modifier
+                .weight(5f)
+                .fillMaxWidth(),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            EmailField(
+                value = uiState.email,
+                onNewValue = onEmailChange,
+                modifier = Modifier.fieldModifier()
+            )
 
-        PasswordField(uiState.password, onPasswordChange, Modifier.fieldModifier())
+            PasswordField(
+                value = uiState.password,
+                placeholder = R.string.password,
+                onNewValue = onPasswordChange,
+                modifier = Modifier.fieldModifier()
+            )
 
-        BasicButton(R.string.sign_in, Modifier.basicButton()) { onSignInClick() }
+            AuthenticationButton(
+                text = R.string.sign_in,
+                action = onSignInClick,
+                modifier = Modifier.basicButton()
+            )
 
-        BasicTextButton(R.string.forgot_password, Modifier.textButton()) {
-            onForgotPasswordClick()
+            AuthenticationTextButton(
+                text = R.string.forgot_password,
+                action = onForgotPasswordClick,
+                modifier = Modifier.textButton()
+            )
+        }
+
+        Row(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(text = "Don't have an account?")
+
+            AuthenticationTextButton(
+                text = R.string.sign_up,
+                action = onSignUpClick
+            )
         }
     }
 }
 
-@Composable
-fun BasicTextButton(@StringRes text: Int, modifier: Modifier, action: () -> Unit) {
-    TextButton(
-        onClick = action,
-        modifier = modifier,
-        colors = ButtonDefaults.textButtonColors(
-            contentColor = Color.Black
-        )
-    ) {
-        Text(
-            text = stringResource(text)
-        )
-    }
-}
-
-@Composable
-fun BasicButton(@StringRes text: Int, modifier: Modifier, action: () -> Unit) {
-    FilledTonalButton(
-        onClick = action,
-        modifier = modifier,
-        colors = ButtonDefaults.filledTonalButtonColors(
-            containerColor = Color.Black,
-            contentColor = Color.White
-        )
-    ) {
-        Text(text = stringResource(text), fontSize = 16.sp)
-    }
-}
-
-@Composable
-fun EmailField(value: String, onNewValue: (String) -> Unit, modifier: Modifier = Modifier) {
-    OutlinedTextField(
-        singleLine = true,
-        modifier = modifier,
-        value = value,
-        onValueChange = { onNewValue(it) },
-        placeholder = { Text(stringResource(R.string.email)) },
-        leadingIcon = { Icon(imageVector = Icons.Default.Email, contentDescription = "Email") }
-    )
-}
-
-@Composable
-fun PasswordField(value: String, onNewValue: (String) -> Unit, modifier: Modifier = Modifier) {
-    PasswordField(value, R.string.password, onNewValue, modifier)
-}
-
-@Composable
-private fun PasswordField(
-    value: String,
-    @StringRes placeholder: Int,
-    onNewValue: (String) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    var isVisible by remember { mutableStateOf(false) }
-
-    val icon =
-        if (isVisible)
-            painterResource(R.drawable.ic_visibility_on)
-        else
-            painterResource(R.drawable.ic_visibility_off)
-
-    val visualTransformation =
-        if (isVisible) VisualTransformation.None else PasswordVisualTransformation()
-
-    OutlinedTextField(
-        modifier = modifier,
-        value = value,
-        onValueChange = { onNewValue(it) },
-        placeholder = { Text(text = stringResource(placeholder)) },
-        leadingIcon = { Icon(imageVector = Icons.Default.Lock, contentDescription = "Lock") },
-        trailingIcon = {
-            IconButton(onClick = { isVisible = !isVisible }) {
-                Icon(painter = icon, contentDescription = "Visibility")
-            }
-        },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-        visualTransformation = visualTransformation
-    )
-}
-
 @Preview(showBackground = true)
 @Composable
-fun LoginScreenPreview() {
+fun SignInScreenPreview() {
     val uiState = SignInUiState(
         email = "email@test.com"
     )
@@ -181,6 +131,7 @@ fun LoginScreenPreview() {
         onEmailChange = { },
         onPasswordChange = { },
         onSignInClick = { },
+        onSignUpClick = { },
         onForgotPasswordClick = { }
     )
 }

@@ -2,8 +2,10 @@ package com.serj.recommend.android.ui.screens.authentication.signIn
 
 import androidx.compose.runtime.mutableStateOf
 import com.serj.recommend.android.HOME_SCREEN
-import com.serj.recommend.android.SIGN_IN_SCREEN
 import com.serj.recommend.android.R
+import com.serj.recommend.android.RESET_PASSWORD_SCREEN
+import com.serj.recommend.android.SIGN_IN_SCREEN
+import com.serj.recommend.android.SIGN_UP_SCREEN
 import com.serj.recommend.android.common.ext.isValidEmail
 import com.serj.recommend.android.common.snackbar.SnackbarManager
 import com.serj.recommend.android.model.service.AccountService
@@ -50,15 +52,11 @@ class SignInViewModel @Inject constructor(
         }
     }
 
-    fun onForgotPasswordClick() {
-        if (!email.isValidEmail()) {
-            SnackbarManager.showMessage(R.string.email_error)
-            return
-        }
+    fun onForgotPasswordClick(openAndPopUp: (String, String) -> Unit) {
+        openAndPopUp(RESET_PASSWORD_SCREEN, SIGN_IN_SCREEN)
+    }
 
-        launchCatching {
-            accountService.sendPasswordResetEmail(email)
-            SnackbarManager.showMessage(R.string.recovery_email_sent)
-        }
+    fun onSignUpClick(openAndPopUp: (String, String) -> Unit) {
+        openAndPopUp(SIGN_UP_SCREEN, SIGN_IN_SCREEN)
     }
 }

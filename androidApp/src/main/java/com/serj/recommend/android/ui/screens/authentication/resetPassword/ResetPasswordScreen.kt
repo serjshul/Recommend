@@ -1,4 +1,4 @@
-package com.serj.recommend.android.ui.screens.authentication.signUp
+package com.serj.recommend.android.ui.screens.authentication.resetPassword
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -25,47 +25,37 @@ import com.serj.recommend.android.common.ext.fieldModifier
 import com.serj.recommend.android.ui.components.AppLogo
 import com.serj.recommend.android.ui.components.authentication.AuthenticationButton
 import com.serj.recommend.android.ui.components.authentication.EmailField
-import com.serj.recommend.android.ui.components.authentication.PasswordField
-import com.serj.recommend.android.ui.components.authentication.RepeatPasswordField
 
 @Composable
-fun SignUpScreen(
-    openAndPopUp: (String, String) -> Unit,
-    viewModel: SignUpViewModel = hiltViewModel()
+fun ResetPasswordScreen(
+    openScreen: (String) -> Unit,
+    viewModel: ResetPasswordViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState
 
-    SignUpScreenContent(
+    ResetPasswordScreenContent(
         uiState = uiState,
         onEmailChange = viewModel::onEmailChange,
-        onPasswordChange = viewModel::onPasswordChange,
-        onRepeatPasswordChange = viewModel::onRepeatPasswordChange,
-        onSignUpClick = { viewModel.onSignUpClick(openAndPopUp) }
+        onResetPasswordClick = { viewModel.onResetPasswordClick(openScreen) }
     )
 }
 
 @Composable
-fun SignUpScreenContent(
+fun ResetPasswordScreenContent(
     modifier: Modifier = Modifier,
-    uiState: SignUpUiState,
+    uiState: ResetPasswordUiState,
     onEmailChange: (String) -> Unit,
-    onPasswordChange: (String) -> Unit,
-    onRepeatPasswordChange: (String) -> Unit,
-    onSignUpClick: () -> Unit
+    onResetPasswordClick: () -> Unit
 ) {
-    val fieldModifier = Modifier.fieldModifier()
-
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(Color.White)
-            .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+            .verticalScroll(rememberScrollState())
     ) {
         Column(
             modifier = Modifier
-                .weight(4f)
+                .weight(5f)
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
@@ -75,43 +65,44 @@ fun SignUpScreenContent(
 
         Column(
             modifier = modifier
-                .weight(6f)
+                .weight(5f)
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
                 modifier = Modifier.padding(bottom = 30.dp),
-                text = "Sign up to see recommendation\nfrom your friends",
+                text = "Enter email address linked to your profile",
                 fontSize = 16.sp,
+                maxLines = 2,
                 textAlign = TextAlign.Center
             )
 
-            EmailField(uiState.email, onEmailChange, fieldModifier)
+            EmailField(
+                value = uiState.email,
+                onNewValue = onEmailChange,
+                modifier = Modifier.fieldModifier()
+            )
 
-            PasswordField(uiState.password, R.string.password, onPasswordChange, fieldModifier)
-
-            RepeatPasswordField(uiState.repeatPassword, onRepeatPasswordChange, fieldModifier)
-
-            AuthenticationButton(R.string.create_account, Modifier.basicButton()) {
-                onSignUpClick()
-            }
+            AuthenticationButton(
+                text = R.string.reset_password,
+                action = onResetPasswordClick,
+                modifier = Modifier.basicButton()
+            )
         }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun SignUpScreenPreview() {
-    val uiState = SignUpUiState(
+fun SignInScreenPreview() {
+    val uiState = ResetPasswordUiState(
         email = "email@test.com"
     )
 
-    SignUpScreenContent(
+    ResetPasswordScreenContent(
         uiState = uiState,
         onEmailChange = { },
-        onPasswordChange = { },
-        onRepeatPasswordChange = { },
-        onSignUpClick = { }
+        onResetPasswordClick = { }
     )
 }

@@ -17,7 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.serj.recommend.android.R
 import com.serj.recommend.android.common.ext.basicButton
-import com.serj.recommend.android.ui.screens.authentication.signIn.BasicButton
+import com.serj.recommend.android.ui.components.authentication.AuthenticationButton
 import kotlinx.coroutines.delay
 
 private const val SPLASH_TIMEOUT = 1000L
@@ -50,7 +50,9 @@ fun SplashScreenContent(
         if (shouldShowError) {
             Text(text = stringResource(R.string.generic_error))
 
-            BasicButton(R.string.try_again, Modifier.basicButton()) { onAppStart() }
+            AuthenticationButton(R.string.try_again, Modifier.basicButton()) {
+                onAppStart()
+            }
         } else {
             // TODO: add logo here
             Text(
