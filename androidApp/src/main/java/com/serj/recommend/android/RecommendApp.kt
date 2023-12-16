@@ -40,11 +40,12 @@ import com.serj.recommend.android.ui.components.snackbar.SnackbarManager
 import com.serj.recommend.android.ui.screens.FeedScreen
 import com.serj.recommend.android.ui.screens.banner.BannerScreen
 import com.serj.recommend.android.ui.screens.home.HomeScreen
-import com.serj.recommend.android.ui.screens.login.LoginScreen
 import com.serj.recommend.android.ui.screens.profile.ProfileScreen
 import com.serj.recommend.android.ui.screens.rec.RecScreen
 import com.serj.recommend.android.ui.screens.recommendation.RecommendationScreen
 import com.serj.recommend.android.ui.screens.search.SearchScreen
+import com.serj.recommend.android.ui.screens.signIn.SignInScreen
+import com.serj.recommend.android.ui.screens.signUp.SignUpScreen
 import com.serj.recommend.android.ui.screens.splash.SplashScreen
 import com.serj.recommend.android.ui.styles.MyApplicationTheme
 import kotlinx.coroutines.CoroutineScope
@@ -133,8 +134,11 @@ fun NavGraphBuilder.recommendGraph(
     composable(SPLASH_SCREEN) {
         SplashScreen(openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) })
     }
-    composable(LOGIN_SCREEN) {
-        LoginScreen(openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) })
+    composable(SIGN_UP_SCREEN) {
+        SignUpScreen(openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) })
+    }
+    composable(SIGN_IN_SCREEN) {
+        SignInScreen(openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) })
     }
     composable(HOME_SCREEN) {
         HomeScreen(

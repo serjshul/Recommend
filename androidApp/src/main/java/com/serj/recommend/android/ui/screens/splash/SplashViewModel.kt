@@ -1,9 +1,8 @@
 package com.serj.recommend.android.ui.screens.splash
 
 import androidx.compose.runtime.mutableStateOf
-import com.google.firebase.auth.FirebaseAuthException
 import com.serj.recommend.android.HOME_SCREEN
-import com.serj.recommend.android.LOGIN_SCREEN
+import com.serj.recommend.android.SIGN_UP_SCREEN
 import com.serj.recommend.android.SPLASH_SCREEN
 import com.serj.recommend.android.model.service.AccountService
 import com.serj.recommend.android.model.service.ConfigurationService
@@ -31,19 +30,7 @@ class SplashViewModel @Inject constructor(
         if (accountService.hasUser)
             openAndPopUp(HOME_SCREEN, SPLASH_SCREEN)
         else
-            openAndPopUp(LOGIN_SCREEN, SPLASH_SCREEN)
+            openAndPopUp(SIGN_UP_SCREEN, SPLASH_SCREEN)
             //createAnonymousAccount(openAndPopUp)
-    }
-
-    private fun createAnonymousAccount(openAndPopUp: (String, String) -> Unit) {
-        launchCatching(snackbar = false) {
-            try {
-                accountService.createAnonymousAccount()
-            } catch (ex: FirebaseAuthException) {
-                addRecommenderSystem.value = true
-                throw ex
-            }
-            openAndPopUp(HOME_SCREEN, SPLASH_SCREEN)
-        }
     }
 }

@@ -17,7 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.serj.recommend.android.R
 import com.serj.recommend.android.common.ext.basicButton
-import com.serj.recommend.android.ui.screens.login.BasicButton
+import com.serj.recommend.android.ui.screens.signIn.BasicButton
 import kotlinx.coroutines.delay
 
 private const val SPLASH_TIMEOUT = 1000L

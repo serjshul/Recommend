@@ -1,10 +1,12 @@
-package com.serj.recommend.android.ui.screens.login
+package com.serj.recommend.android.ui.screens.signUp
 
 import androidx.compose.runtime.mutableStateOf
 import com.serj.recommend.android.HOME_SCREEN
-import com.serj.recommend.android.LOGIN_SCREEN
 import com.serj.recommend.android.R
+import com.serj.recommend.android.SIGN_UP_SCREEN
 import com.serj.recommend.android.common.ext.isValidEmail
+import com.serj.recommend.android.common.ext.isValidPassword
+import com.serj.recommend.android.common.ext.passwordMatches
 import com.serj.recommend.android.common.snackbar.SnackbarManager
 import com.serj.recommend.android.model.service.AccountService
 import com.serj.recommend.android.model.service.LogService
@@ -13,11 +15,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(
+class SignUpViewModel @Inject constructor(
     private val accountService: AccountService,
     logService: LogService
 ) : RecommendViewModel(logService) {
-    var uiState = mutableStateOf(LoginUiState())
+    var uiState = mutableStateOf(SignUpUiState())
         private set
 
     private val email
@@ -33,32 +35,29 @@ class LoginViewModel @Inject constructor(
         uiState.value = uiState.value.copy(password = newValue)
     }
 
-    fun onSignInClick(openAndPopUp: (String, String) -> Unit) {
-        if (!email.isValidEmail()) {
-            SnackbarManager.showMessage(R.string.email_error)
-            return
-        }
-
-        if (password.isBlank()) {
-            SnackbarManager.showMessage(R.string.empty_password_error)
-            return
-        }
-
-        launchCatching {
-            accountService.signIn(email, password)
-            openAndPopUp(HOME_SCREEN, LOGIN_SCREEN)
-        }
+    fun onRepeatPasswordChange(newValue: String) {
+        uiState.value = uiState.value.copy(repeatPassword = newValue)
     }
 
-    fun onForgotPasswordClick() {
+    fun onSignUpClick(openAndPopUp: (String, String) -> Unit) {
         if (!email.isValidEmail()) {
             SnackbarManager.showMessage(R.string.email_error)
             return
         }
 
+        if (!password.isValidPassword()) {
+            SnackbarManager.showMessage(R.string.password_error)
+            return
+        }
+
+        if (!password.passwordMatches(uiState.value.repeatPassword)) {
+            SnackbarManager.showMessage(R.string.password_match_error)
+            return
+        }
+
         launchCatching {
-            accountService.sendRecoveryEmail(email)
-            SnackbarManager.showMessage(R.string.recovery_email_sent)
+            accountService.signUp(email, password)
+            openAndPopUp(HOME_SCREEN, SIGN_UP_SCREEN)
         }
     }
 }
