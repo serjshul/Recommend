@@ -38,15 +38,15 @@ import com.serj.recommend.android.common.composable.RationaleDialog
 import com.serj.recommend.android.ui.BottomNavigationBar
 import com.serj.recommend.android.ui.components.snackbar.SnackbarManager
 import com.serj.recommend.android.ui.screens.FeedScreen
-import com.serj.recommend.android.ui.screens.banner.BannerScreen
-import com.serj.recommend.android.ui.screens.home.HomeScreen
-import com.serj.recommend.android.ui.screens.profile.ProfileScreen
-import com.serj.recommend.android.ui.screens.rec.RecScreen
-import com.serj.recommend.android.ui.screens.recommendation.RecommendationScreen
-import com.serj.recommend.android.ui.screens.search.SearchScreen
-import com.serj.recommend.android.ui.screens.signIn.SignInScreen
-import com.serj.recommend.android.ui.screens.signUp.SignUpScreen
-import com.serj.recommend.android.ui.screens.splash.SplashScreen
+import com.serj.recommend.android.ui.screens.common.banner.BannerScreen
+import com.serj.recommend.android.ui.screens.main.home.HomeScreen
+import com.serj.recommend.android.ui.screens.main.profile.ProfileScreen
+import com.serj.recommend.android.ui.screens.main.rec.RecScreen
+import com.serj.recommend.android.ui.screens.common.recommendation.RecommendationScreen
+import com.serj.recommend.android.ui.screens.main.search.SearchScreen
+import com.serj.recommend.android.ui.screens.authentication.signIn.SignInScreen
+import com.serj.recommend.android.ui.screens.authentication.signUp.SignUpScreen
+import com.serj.recommend.android.ui.screens.authentication.splash.SplashScreen
 import com.serj.recommend.android.ui.styles.MyApplicationTheme
 import kotlinx.coroutines.CoroutineScope
 
