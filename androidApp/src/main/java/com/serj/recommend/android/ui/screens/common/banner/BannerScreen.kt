@@ -1,8 +1,6 @@
 package com.serj.recommend.android.ui.screens.common.banner
 
 import android.graphics.Bitmap
-import android.service.controls.ControlsProviderService.TAG
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,8 +33,6 @@ fun BannerScreen(
     val bannerBackground = viewModel.bannerBackground.value
     val bannerItems = viewModel.bannerItems
     val bannerImages = viewModel.bannerImages
-
-    Log.v(TAG, bannerItems.joinToString())
 
     BannerScreenContent(
         banner = banner.value,

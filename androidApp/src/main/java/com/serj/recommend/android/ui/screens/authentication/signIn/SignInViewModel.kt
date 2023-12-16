@@ -1,7 +1,7 @@
 package com.serj.recommend.android.ui.screens.authentication.signIn
 
 import androidx.compose.runtime.mutableStateOf
-import com.serj.recommend.android.HOME_SCREEN
+import com.serj.recommend.android.MAIN_SCREEN
 import com.serj.recommend.android.R
 import com.serj.recommend.android.RESET_PASSWORD_SCREEN
 import com.serj.recommend.android.SIGN_IN_SCREEN
@@ -48,7 +48,7 @@ class SignInViewModel @Inject constructor(
 
         launchCatching {
             accountService.signIn(email, password)
-            openAndPopUp(HOME_SCREEN, SIGN_IN_SCREEN)
+            openAndPopUp(MAIN_SCREEN, SIGN_IN_SCREEN)
         }
     }
 

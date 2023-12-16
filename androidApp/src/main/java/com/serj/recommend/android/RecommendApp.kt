@@ -35,19 +35,14 @@ import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
 import com.serj.recommend.android.common.composable.PermissionDialog
 import com.serj.recommend.android.common.composable.RationaleDialog
-import com.serj.recommend.android.ui.BottomNavigationBar
 import com.serj.recommend.android.ui.components.snackbar.SnackbarManager
-import com.serj.recommend.android.ui.screens.FeedScreen
 import com.serj.recommend.android.ui.screens.authentication.resetPassword.ResetPasswordScreen
 import com.serj.recommend.android.ui.screens.authentication.signIn.SignInScreen
 import com.serj.recommend.android.ui.screens.authentication.signUp.SignUpScreen
 import com.serj.recommend.android.ui.screens.authentication.splash.SplashScreen
 import com.serj.recommend.android.ui.screens.common.banner.BannerScreen
 import com.serj.recommend.android.ui.screens.common.recommendation.RecommendationScreen
-import com.serj.recommend.android.ui.screens.main.home.HomeScreen
-import com.serj.recommend.android.ui.screens.main.profile.ProfileScreen
-import com.serj.recommend.android.ui.screens.main.rec.RecScreen
-import com.serj.recommend.android.ui.screens.main.search.SearchScreen
+import com.serj.recommend.android.ui.screens.main.MainScreen
 import com.serj.recommend.android.ui.styles.MyApplicationTheme
 import kotlinx.coroutines.CoroutineScope
 
@@ -66,13 +61,6 @@ fun RecommendApp() {
 
             Scaffold(
                 modifier = Modifier.fillMaxSize(),
-                bottomBar = {
-                    BottomNavigationBar(
-                        navController = appState.navController,
-                        state = buttonsVisible,
-                        modifier = Modifier
-                    )
-                },
                 snackbarHost = {
                     SnackbarHost(
                         hostState = it,
@@ -152,22 +140,10 @@ fun NavGraphBuilder.recommendGraph(
             openScreen = { route -> appState.navigate(route) }
         )
     }
-    composable(HOME_SCREEN) {
-        HomeScreen(
-            openScreen = { route -> appState.navigate(route) }
+    composable(MAIN_SCREEN) {
+        MainScreen(
+            appState = appState
         )
-    }
-    composable(FEED_SCREEN) {
-        FeedScreen()
-    }
-    composable(REC_SCREEN) {
-        RecScreen()
-    }
-    composable(SEARCH_SCREEN) {
-        SearchScreen()
-    }
-    composable(PROFILE_SCREEN) {
-        ProfileScreen()
     }
     composable(
         route = "$RECOMMENDATION_SCREEN$RECOMMENDATION_ID_ARG",

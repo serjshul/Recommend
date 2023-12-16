@@ -1,5 +1,6 @@
 package com.serj.recommend.android
 
+const val MAIN_SCREEN = "MainScreen"
 const val HOME_SCREEN = "HomeScreen"
 const val FEED_SCREEN = "FeedScreen"
 const val REC_SCREEN = "RecScreen"
