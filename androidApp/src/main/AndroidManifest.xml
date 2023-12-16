@@ -17,7 +17,9 @@
         android:name=".RecommendHiltApp"
         android:allowBackup="false"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:enableOnBackInvokedCallback="true"
+        android:theme="@style/AppTheme"
+        tools:targetApi="tiramisu">
         <activity
             android:name=".RecommendActivity"
             android:exported="true">

@@ -45,6 +45,7 @@ import com.serj.recommend.android.ui.screens.profile.ProfileScreen
 import com.serj.recommend.android.ui.screens.rec.RecScreen
 import com.serj.recommend.android.ui.screens.recommendation.RecommendationScreen
 import com.serj.recommend.android.ui.screens.search.SearchScreen
+import com.serj.recommend.android.ui.screens.splash.SplashScreen
 import com.serj.recommend.android.ui.styles.MyApplicationTheme
 import kotlinx.coroutines.CoroutineScope
 
@@ -84,7 +85,7 @@ fun RecommendApp() {
                 NavHost(
                     modifier = Modifier.padding(paddingValues),
                     navController = appState.navController,
-                    startDestination = LOGIN_SCREEN
+                    startDestination = SPLASH_SCREEN
                 ) {
                     recommendGraph(appState=appState)
                 }
@@ -129,6 +130,9 @@ fun NavGraphBuilder.recommendGraph(
     modifier: Modifier = Modifier,
     appState: RecommendAppState
 ) {
+    composable(SPLASH_SCREEN) {
+        SplashScreen(openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) })
+    }
     composable(LOGIN_SCREEN) {
         LoginScreen(openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) })
     }

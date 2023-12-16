@@ -1,6 +1,8 @@
 package com.serj.recommend.android.ui.screens.login
 
 import androidx.compose.runtime.mutableStateOf
+import com.serj.recommend.android.HOME_SCREEN
+import com.serj.recommend.android.LOGIN_SCREEN
 import com.serj.recommend.android.R
 import com.serj.recommend.android.common.ext.isValidEmail
 import com.serj.recommend.android.common.snackbar.SnackbarManager
@@ -44,7 +46,7 @@ class LoginViewModel @Inject constructor(
 
         launchCatching {
             accountService.signIn(email, password)
-            //openAndPopUp(SETTINGS_SCREEN, LOGIN_SCREEN)
+            openAndPopUp(HOME_SCREEN, LOGIN_SCREEN)
         }
     }
 

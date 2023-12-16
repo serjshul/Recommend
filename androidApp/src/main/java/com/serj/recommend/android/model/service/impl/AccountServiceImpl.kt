@@ -32,10 +32,14 @@ class AccountServiceImpl @Inject constructor(
         get() = callbackFlow {
             val listener =
                 FirebaseAuth.AuthStateListener { auth ->
-                    this.trySend(auth.currentUser?.let { User(it.uid, it.isAnonymous) } ?: User())
+                    this.trySend(auth.currentUser?.let {
+                        User(it.uid, it.isAnonymous)
+                    } ?: User())
                 }
             auth.addAuthStateListener(listener)
-            awaitClose { auth.removeAuthStateListener(listener) }
+            awaitClose {
+                auth.removeAuthStateListener(listener)
+            }
         }
 
     override suspend fun sendRecoveryEmail(email: String) {
@@ -63,7 +67,7 @@ class AccountServiceImpl @Inject constructor(
         auth.signOut()
 
         // Sign the user back in anonymously.
-        createAnonymousAccount()
+        //createAnonymousAccount()
     }
 
     companion object {

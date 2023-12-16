@@ -98,7 +98,7 @@ fun MediaGalleryItem(pagerState: PagerState, page: Int) {
                 .height(210.dp)
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(10.dp)),
-            painter = painterResource(id = R.drawable.cover_media_never_have_i_ever),
+            painter = painterResource(id = R.drawable.profile_photo),
             contentDescription = "",
             contentScale = ContentScale.Crop
         )

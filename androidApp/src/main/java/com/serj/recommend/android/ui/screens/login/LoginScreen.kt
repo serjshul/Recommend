@@ -1,27 +1,20 @@
 package com.serj.recommend.android.ui.screens.login
 
-import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -32,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -70,12 +64,10 @@ fun LoginScreenContent(
     onSignInClick: () -> Unit,
     onForgotPasswordClick: () -> Unit
 ) {
-    BasicToolbar(R.string.login_details)
-
     Column(
         modifier = modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
+            .fillMaxSize()
+            .background(Color.White)
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -93,80 +85,32 @@ fun LoginScreenContent(
 }
 
 @Composable
-fun BasicToolbar(@StringRes title: Int) {
-    TopAppBar(title = { Text(stringResource(title)) }, backgroundColor = toolbarColor())
-}
-
-@Composable
-fun ActionToolbar(
-    modifier: Modifier,
-    @StringRes title: Int,
-    @DrawableRes primaryActionIcon: Int,
-    primaryAction: () -> Unit,
-    @DrawableRes secondaryActionIcon: Int? = null,
-    secondaryAction: (() -> Unit)? = null
-) {
-    TopAppBar(
-        title = { Text(stringResource(title)) },
-        backgroundColor = toolbarColor(),
-        actions = {
-            Box(modifier) {
-                Row(
-                    modifier = Modifier.wrapContentSize(),
-                ) {
-                    IconButton(onClick = primaryAction) {
-                        Icon(painter = painterResource(primaryActionIcon), contentDescription = "Primary Action")
-                    }
-                    if (secondaryAction != null && secondaryActionIcon != null) {
-                        IconButton(onClick = secondaryAction) {
-                            Icon(painter = painterResource(secondaryActionIcon), contentDescription = "Secondary Action")
-                        }
-                    }
-                }
-            }
-        }
-    )
-}
-
-@Composable
-private fun toolbarColor(darkTheme: Boolean = isSystemInDarkTheme()): androidx.compose.ui.graphics.Color {
-    return if (darkTheme) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.primaryContainer
-}
-
-@Composable
 fun BasicTextButton(@StringRes text: Int, modifier: Modifier, action: () -> Unit) {
-    TextButton(onClick = action, modifier = modifier) { Text(text = stringResource(text)) }
-}
-
-@Composable
-fun BasicButton(@StringRes text: Int, modifier: Modifier, action: () -> Unit) {
-    Button(
+    TextButton(
         onClick = action,
         modifier = modifier,
-        colors =
-        ButtonDefaults.buttonColors(
-            backgroundColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimary
+        colors = ButtonDefaults.textButtonColors(
+            contentColor = Color.Black
         )
     ) {
-        Text(text = stringResource(text), fontSize = 16.sp)
+        Text(
+            text = stringResource(text)
+        )
     }
 }
 
 @Composable
-fun BasicField(
-    @StringRes text: Int,
-    value: String,
-    onNewValue: (String) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    OutlinedTextField(
-        singleLine = true,
+fun BasicButton(@StringRes text: Int, modifier: Modifier, action: () -> Unit) {
+    FilledTonalButton(
+        onClick = action,
         modifier = modifier,
-        value = value,
-        onValueChange = { onNewValue(it) },
-        placeholder = { Text(stringResource(text)) }
-    )
+        colors = ButtonDefaults.filledTonalButtonColors(
+            containerColor = Color.Black,
+            contentColor = Color.White
+        )
+    ) {
+        Text(text = stringResource(text), fontSize = 16.sp)
+    }
 }
 
 @Composable
@@ -187,15 +131,6 @@ fun PasswordField(value: String, onNewValue: (String) -> Unit, modifier: Modifie
 }
 
 @Composable
-fun RepeatPasswordField(
-    value: String,
-    onNewValue: (String) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    PasswordField(value, R.string.repeat_password, onNewValue, modifier)
-}
-
-@Composable
 private fun PasswordField(
     value: String,
     @StringRes placeholder: Int,
@@ -205,8 +140,10 @@ private fun PasswordField(
     var isVisible by remember { mutableStateOf(false) }
 
     val icon =
-        if (isVisible) painterResource(R.drawable.icon_feed)
-        else painterResource(R.drawable.icon_feed)
+        if (isVisible)
+            painterResource(R.drawable.ic_visibility_on)
+        else
+            painterResource(R.drawable.ic_visibility_off)
 
     val visualTransformation =
         if (isVisible) VisualTransformation.None else PasswordVisualTransformation()
