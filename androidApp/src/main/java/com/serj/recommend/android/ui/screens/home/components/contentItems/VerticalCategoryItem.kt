@@ -18,6 +18,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.serj.recommend.android.R
 import com.serj.recommend.android.model.Recommendation
@@ -75,13 +76,15 @@ fun VerticalCategoryItem(
             text = title ?: "loading",
             color = Color.Black,
             fontSize = 14.sp,
+            lineHeight = 1.2.em,
             fontWeight = FontWeight.Bold
         )
 
         Text(
             text = creator ?: "loading",
             color = Color.Black,
-            fontSize = 12.sp
+            fontSize = 12.sp,
+            lineHeight = 1.2.em
         )
     }
 }

@@ -6,6 +6,7 @@ const val REC_SCREEN = "RecScreen"
 const val SEARCH_SCREEN = "SearchScreen"
 const val PROFILE_SCREEN = "ProfileScreen"
 
+const val LOGIN_SCREEN = "LoginScreen"
 const val RECOMMENDATION_SCREEN = "RecommendationScreen"
 const val BANNER_SCREEN = "BannerScreen"
 

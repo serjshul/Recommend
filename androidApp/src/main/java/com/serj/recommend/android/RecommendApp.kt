@@ -40,6 +40,7 @@ import com.serj.recommend.android.ui.components.snackbar.SnackbarManager
 import com.serj.recommend.android.ui.screens.FeedScreen
 import com.serj.recommend.android.ui.screens.banner.BannerScreen
 import com.serj.recommend.android.ui.screens.home.HomeScreen
+import com.serj.recommend.android.ui.screens.login.LoginScreen
 import com.serj.recommend.android.ui.screens.profile.ProfileScreen
 import com.serj.recommend.android.ui.screens.rec.RecScreen
 import com.serj.recommend.android.ui.screens.recommendation.RecommendationScreen
@@ -83,7 +84,7 @@ fun RecommendApp() {
                 NavHost(
                     modifier = Modifier.padding(paddingValues),
                     navController = appState.navController,
-                    startDestination = HOME_SCREEN
+                    startDestination = LOGIN_SCREEN
                 ) {
                     recommendGraph(appState=appState)
                 }
@@ -128,6 +129,9 @@ fun NavGraphBuilder.recommendGraph(
     modifier: Modifier = Modifier,
     appState: RecommendAppState
 ) {
+    composable(LOGIN_SCREEN) {
+        LoginScreen(openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) })
+    }
     composable(HOME_SCREEN) {
         HomeScreen(
             openScreen = { route -> appState.navigate(route) }

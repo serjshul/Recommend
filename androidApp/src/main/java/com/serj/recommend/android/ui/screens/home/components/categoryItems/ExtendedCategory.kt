@@ -116,7 +116,7 @@ fun ExtendedCategory(
 
         LazyRow(
             modifier = modifier.padding(top = 190.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.Top
         ) {
             item {
                 Spacer(modifier = Modifier.size(15.dp))

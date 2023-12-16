@@ -18,6 +18,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.serj.recommend.android.R
 import com.serj.recommend.android.model.Recommendation
@@ -34,6 +35,7 @@ fun HorizontalCategoryItem(
 ) {
     Column(
         modifier = modifier
+            .width(290.dp)
             .padding(end = 10.dp)
             .clickable {
                 if (recommendationId != null) {
@@ -59,7 +61,7 @@ fun HorizontalCategoryItem(
             Image(
                 modifier = modifier
                     .height(160.dp)
-                    .width(300.dp)
+                    .width(290.dp)
                     .padding(bottom = 5.dp)
                     .clip(RoundedCornerShape(5.dp)),
                 painter = painterResource(id = R.drawable.gradient),
@@ -72,13 +74,15 @@ fun HorizontalCategoryItem(
             text = title ?: "loading",
             color = Color.Black,
             fontSize = 14.sp,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            lineHeight = 1.2.em
         )
 
         Text(
             text = creator ?: "loading",
             color = Color.Black,
-            fontSize = 12.sp
+            fontSize = 12.sp,
+            lineHeight = 1.2.em
         )
     }
 }

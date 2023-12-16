@@ -140,8 +140,9 @@ fun RecommendationHeader(
                     text = title,
                     color = Color.White,
                     fontSize = 24.sp,
-                    maxLines = 2,
-                    fontWeight = FontWeight.Bold
+                    maxLines = 4,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
                 )
 
                 Row(

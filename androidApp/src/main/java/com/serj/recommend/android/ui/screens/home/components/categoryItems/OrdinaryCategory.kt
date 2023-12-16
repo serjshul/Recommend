@@ -51,7 +51,7 @@ fun OrdinaryCategory(
         )
 
         LazyRow(
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.Top
         ) {
             item {
                 Spacer(modifier = Modifier.size(15.dp))
