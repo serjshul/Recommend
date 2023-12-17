@@ -29,24 +29,21 @@ import com.serj.recommend.android.ui.screens.common.recommendation.components.Re
 
 @Composable
 fun RecommendationScreen(
+    modifier: Modifier = Modifier,
     popUpScreen: () -> Unit,
     viewModel: RecommendationViewModel = hiltViewModel()
 ) {
-    val options by viewModel.options
-
     val recommendation by viewModel.recommendation
     val backgroundImage = viewModel.backgroundImage.value
     val paragraphsImages = viewModel.paragraphsImages
 
     RecommendationScreenContent(
+        modifier = modifier,
         recommendation = recommendation,
         backgroundImage = backgroundImage,
         paragraphsImages = paragraphsImages,
-        popUpScreen = popUpScreen,
-        options = options,
+        popUpScreen = popUpScreen
     )
-
-    //LaunchedEffect(viewModel) { viewModel.loadArticleOptions() }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -56,13 +53,12 @@ fun RecommendationScreenContent(
     recommendation: Recommendation,
     backgroundImage: Bitmap?,
     paragraphsImages: Map<Int?, Bitmap?>,
-    popUpScreen: () -> Unit,
-    options: List<String>
+    popUpScreen: () -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState()
     var showBottomSheet by remember { mutableStateOf(false) }
 
-    Scaffold() {paddingValues ->
+    Scaffold {paddingValues ->
         LazyColumn(
             modifier = modifier.padding(paddingValues)
         ) {

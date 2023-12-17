@@ -38,7 +38,7 @@ class SignUpViewModel @Inject constructor(
         uiState.value = uiState.value.copy(repeatPassword = newValue)
     }
 
-    fun onSignUpClick(openAndPopUp: (String, String) -> Unit) {
+    fun onSignUpClick(openSrceen: (String) -> Unit) {
         if (!email.isValidEmail()) {
             SnackbarManager.showMessage(R.string.email_error)
             return
@@ -56,7 +56,7 @@ class SignUpViewModel @Inject constructor(
 
         launchCatching {
             accountService.signUp(email, password)
-            openAndPopUp(RecommendRoutes.MainScreen.name, RecommendRoutes.SignUpScreen.name)
+            openSrceen(RecommendRoutes.MainScreen.name)
         }
     }
 }

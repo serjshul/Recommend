@@ -28,12 +28,14 @@ import com.serj.recommend.android.ui.components.authentication.EmailField
 
 @Composable
 fun ResetPasswordScreen(
+    modifier: Modifier = Modifier,
     openScreen: (String) -> Unit,
     viewModel: ResetPasswordViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState
 
     ResetPasswordScreenContent(
+        modifier = modifier,
         uiState = uiState,
         onEmailChange = viewModel::onEmailChange,
         onResetPasswordClick = { viewModel.onResetPasswordClick(openScreen) }

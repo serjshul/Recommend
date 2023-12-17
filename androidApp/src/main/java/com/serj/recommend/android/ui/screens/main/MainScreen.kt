@@ -7,8 +7,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
@@ -27,19 +25,20 @@ import com.serj.recommend.android.ui.styles.MyApplicationTheme
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MainScreen(
+    modifier: Modifier = Modifier,
     appState: RecommendAppState
 ) {
     MyApplicationTheme {
-        val buttonsVisible = remember { mutableStateOf(true) }
         val navController = rememberNavController()
 
-        Surface(color = MaterialTheme.colors.background) {
+        Surface(
+            color = MaterialTheme.colors.background
+        ) {
             Scaffold(
-                modifier = Modifier.fillMaxSize(),
+                modifier = modifier.fillMaxSize(),
                 bottomBar = {
                     BottomNavigationBar(
                         navController = navController,
-                        state = buttonsVisible,
                         modifier = Modifier
                     )
                 }

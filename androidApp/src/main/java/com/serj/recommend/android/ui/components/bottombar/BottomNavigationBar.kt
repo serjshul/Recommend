@@ -6,7 +6,6 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -16,21 +15,20 @@ import androidx.compose.ui.res.vectorResource
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.serj.recommend.android.ui.components.bottombar.BottomNavigationItem
+import com.serj.recommend.android.ui.components.bottombar.BottomNavigation
 import com.serj.recommend.android.ui.styles.TigerEye
 
 @Composable
 fun BottomNavigationBar(
     navController: NavHostController,
-    state: MutableState<Boolean>,
     modifier: Modifier = Modifier
 ) {
     val screens = listOf(
-        BottomNavigationItem.Home,
-        BottomNavigationItem.Feed,
-        BottomNavigationItem.Rec,
-        BottomNavigationItem.Search,
-        BottomNavigationItem.Profile
+        BottomNavigation.Home,
+        BottomNavigation.Feed,
+        BottomNavigation.Rec,
+        BottomNavigation.Search,
+        BottomNavigation.Profile
     )
 
     NavigationBar(

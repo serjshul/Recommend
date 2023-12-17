@@ -30,17 +30,19 @@ import com.serj.recommend.android.ui.components.authentication.RepeatPasswordFie
 
 @Composable
 fun SignUpScreen(
-    openAndPopUp: (String, String) -> Unit,
+    modifier: Modifier = Modifier,
+    openScreen: (String) -> Unit,
     viewModel: SignUpViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState
 
     SignUpScreenContent(
+        modifier = modifier,
         uiState = uiState,
         onEmailChange = viewModel::onEmailChange,
         onPasswordChange = viewModel::onPasswordChange,
         onRepeatPasswordChange = viewModel::onRepeatPasswordChange,
-        onSignUpClick = { viewModel.onSignUpClick(openAndPopUp) }
+        onSignUpClick = { viewModel.onSignUpClick(openScreen) }
     )
 }
 

@@ -25,6 +25,7 @@ import com.serj.recommend.android.ui.screens.common.banner.components.BannerHead
 
 @Composable
 fun BannerScreen(
+    modifier: Modifier = Modifier,
     openScreen: (String) -> Unit,
     popUpScreen: () -> Unit,
     viewModel: BannerViewModel = hiltViewModel()
@@ -35,6 +36,7 @@ fun BannerScreen(
     val bannerImages = viewModel.bannerImages
 
     BannerScreenContent(
+        modifier = modifier,
         banner = banner.value,
         bannerBackgroundImage = bannerBackground,
         bannerItems = bannerItems,

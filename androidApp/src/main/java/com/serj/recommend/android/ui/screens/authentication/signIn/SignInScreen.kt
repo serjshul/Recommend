@@ -28,16 +28,19 @@ import com.serj.recommend.android.ui.components.authentication.PasswordField
 
 @Composable
 fun SignInScreen(
+    modifier: Modifier = Modifier,
+    openScreen: (String) -> Unit,
     openAndPopUp: (String, String) -> Unit,
     viewModel: SignInViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState
 
     SignInScreenContent(
+        modifier = modifier,
         uiState = uiState,
         onEmailChange = viewModel::onEmailChange,
         onPasswordChange = viewModel::onPasswordChange,
-        onSignInClick = { viewModel.onSignInClick(openAndPopUp) },
+        onSignInClick = { viewModel.onSignInClick(openScreen) },
         onSignUpClick = { viewModel.onSignUpClick(openAndPopUp) },
         onForgotPasswordClick = { viewModel.onForgotPasswordClick(openAndPopUp) }
     )
