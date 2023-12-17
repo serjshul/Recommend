@@ -71,7 +71,7 @@ class StorageServiceImpl @Inject constructor(
             .collection(RECOMMENDATIONS_COLLECTION)
             .document(recommendationId)
             .get()
-            .addOnSuccessListener {document ->
+            .addOnSuccessListener { document ->
                 val recommendation = document.toObject<Recommendation>()
                 categoryItem = CategoryItem(
                     recommendationId = recommendationId,
