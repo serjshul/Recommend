@@ -3,20 +3,23 @@ package com.serj.recommend.android.ui.screens.main.home.components.categoryItems
 import android.graphics.Bitmap
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.util.lerp
+import androidx.compose.ui.unit.sp
 import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.CategoryItem
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.ui.screens.main.home.components.contentItems.GalleryCategoryItem
-import kotlin.math.absoluteValue
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -30,35 +33,36 @@ fun GalleryCategory(
 ) {
     Column(
         modifier = Modifier
-            .padding(top = 10.dp, bottom = 10.dp)
+            .fillMaxWidth()
+            .padding(bottom = 40.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Text(
+            modifier = modifier
+                .padding(start = 15.dp, end = 15.dp, bottom = 10.dp),
+            text = category.title,
+            color = Color.Black,
+            fontSize = 24.sp,
+            maxLines = 2,
+            fontWeight = FontWeight.Bold,
+        )
+
         if (!items.isNullOrEmpty()) {
-            val pagerState = rememberPagerState(pageCount = { items.size })
+            val pageCount = Int.MAX_VALUE
+            val pagerState = rememberPagerState(
+                initialPage = pageCount / 2,
+                pageCount = { pageCount }
+            )
 
-            HorizontalPager(state = pagerState) { page ->
+            HorizontalPager(
+                state = pagerState,
+                contentPadding = PaddingValues(start = 20.dp, end = 20.dp)
+            ) { page ->
                 GalleryCategoryItem(
-                    modifier = Modifier
-                        .size(200.dp)
-                        .graphicsLayer {
-                            // Calculate the absolute offset for the current page from the
-                            // scroll position. We use the absolute value which allows us to mirror
-                            // any effects for both directions
-                            val pageOffset = (
-                                    (pagerState.currentPage - page) + pagerState
-                                        .currentPageOffsetFraction
-                                    ).absoluteValue
-
-                            // We animate the alpha, between 50% and 100%
-                            alpha = lerp(
-                                start = 0.5f,
-                                stop = 1f,
-                                fraction = 1f - pageOffset.coerceIn(0f, 1f)
-                            )
-                        },
-                    recommendationId = items[page]?.recommendationId,
-                    title = items[page]?.title,
-                    creator = items[page]?.creator,
-                    cover = covers?.getOrNull(page),
+                    recommendationId = items[page % items.size]?.recommendationId,
+                    title = items[page % items.size]?.title,
+                    creator = items[page % items.size]?.creator,
+                    cover = covers?.getOrNull(page % items.size),
                     openScreen = openScreen,
                     onRecommendationClick = onRecommendationClick
                 )

@@ -18,6 +18,7 @@ import com.serj.recommend.android.model.CategoryItem
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.ui.screens.main.home.components.Banner
 import com.serj.recommend.android.ui.screens.main.home.components.categoryItems.ExtendedCategory
+import com.serj.recommend.android.ui.screens.main.home.components.categoryItems.GalleryCategory
 import com.serj.recommend.android.ui.screens.main.home.components.categoryItems.OrdinaryCategory
 
 @Composable
@@ -89,7 +90,7 @@ fun HomeScreenContent(
             for (category in categories) {
                 item {
                     when (category.type) {
-                        "Ordinary" -> {
+                        "ordinary" -> {
                             OrdinaryCategory(
                                 category = category,
                                 items = categoriesItems[category.title],
@@ -98,7 +99,7 @@ fun HomeScreenContent(
                                 onRecommendationClick = onRecommendationClick
                             )
                         }
-                        "Extended" -> {
+                        "extended" -> {
                             ExtendedCategory(
                                 category = category,
                                 backgroundImage = categoriesBackgrounds[category.title],
@@ -108,8 +109,14 @@ fun HomeScreenContent(
                                 onRecommendationClick = onRecommendationClick
                             )
                         }
-                        "Gallery" -> {
-
+                        "gallery" -> {
+                            GalleryCategory(
+                                category = category,
+                                items = categoriesItems[category.title],
+                                covers = categoriesImages[category.title],
+                                openScreen = openScreen,
+                                onRecommendationClick = onRecommendationClick
+                            )
                         }
                         else -> {
                             // TODO: what to do?
