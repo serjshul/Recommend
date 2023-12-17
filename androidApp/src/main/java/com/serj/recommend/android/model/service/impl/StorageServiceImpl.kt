@@ -12,11 +12,12 @@ import com.google.firebase.firestore.dataObjects
 import com.google.firebase.firestore.toObject
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
+import com.serj.recommend.android.model.Banner
+import com.serj.recommend.android.model.BannerItem
 import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.CategoryItem
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.service.AccountService
-import com.serj.recommend.android.model.service.Banner
 import com.serj.recommend.android.model.service.StorageService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.tasks.await
@@ -54,6 +55,14 @@ class StorageServiceImpl @Inject constructor(
             .await()
             .toObject()
 
+    override suspend fun getBanner(bannerId: String): Banner? =
+        firestore
+            .collection(BANNERS_COLLECTION)
+            .document(bannerId)
+            .get()
+            .await()
+            .toObject()
+
     override suspend fun getCategoryItem(recommendationId: String, coverType: String):
             CategoryItem? {
         var categoryItem: CategoryItem? = null
@@ -79,6 +88,34 @@ class StorageServiceImpl @Inject constructor(
             .await()
 
         return categoryItem
+    }
+
+    override suspend fun getBannerItem(recommendationId: String, coverType: String):
+            BannerItem? {
+        var bannerItem: BannerItem? = null
+
+        firestore
+            .collection(RECOMMENDATIONS_COLLECTION)
+            .document(recommendationId)
+            .get()
+            .addOnSuccessListener {document ->
+                val recommendation = document.toObject<Recommendation>()
+                bannerItem = BannerItem(
+                    recommendationId = recommendationId,
+                    title = recommendation!!.title,
+                    creator = recommendation.creator,
+                    description = recommendation.description,
+                    cover = recommendation.cover[coverType] ?: "",
+                    date = recommendation.date
+                )
+                //Log.v(ContentValues.TAG, "got CategoryItem")
+            }.addOnFailureListener {
+                // Handle any errors
+                Log.v(ContentValues.TAG, "error getCategoryItem()")
+            }
+            .await()
+
+        return bannerItem
     }
 
     override suspend fun downloadImage(gsReference: String): Bitmap? {

@@ -1,0 +1,79 @@
+package com.serj.recommend.android.ui.screens.main
+
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Surface
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.serj.recommend.android.RecommendAppState
+import com.serj.recommend.android.RecommendRoutes
+import com.serj.recommend.android.ui.BottomNavigationBar
+import com.serj.recommend.android.ui.screens.FeedScreen
+import com.serj.recommend.android.ui.screens.main.home.HomeScreen
+import com.serj.recommend.android.ui.screens.main.profile.ProfileScreen
+import com.serj.recommend.android.ui.screens.main.rec.RecScreen
+import com.serj.recommend.android.ui.screens.main.search.SearchScreen
+import com.serj.recommend.android.ui.styles.MyApplicationTheme
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun MainScreen(
+    modifier: Modifier = Modifier,
+    appState: RecommendAppState
+) {
+    MyApplicationTheme {
+        val navController = rememberNavController()
+
+        Surface(
+            color = MaterialTheme.colors.background
+        ) {
+            Scaffold(
+                modifier = modifier.fillMaxSize(),
+                bottomBar = {
+                    BottomNavigationBar(
+                        navController = navController,
+                        modifier = Modifier
+                    )
+                }
+            ) { paddingValues ->
+                NavHost(
+                    modifier = Modifier.padding(paddingValues),
+                    navController = navController,
+                    startDestination = RecommendRoutes.HomeScreen.name
+                ) {
+                    mainScreenGraph(appState = appState)
+                }
+            }
+        }
+    }
+}
+
+@ExperimentalMaterialApi
+fun NavGraphBuilder.mainScreenGraph(
+    appState: RecommendAppState
+) {
+    composable(RecommendRoutes.HomeScreen.name) {
+        HomeScreen(
+            openScreen = { route -> appState.navigate(route) }
+        )
+    }
+    composable(RecommendRoutes.FeedScreen.name) {
+        FeedScreen()
+    }
+    composable(RecommendRoutes.RecScreen.name) {
+        RecScreen()
+    }
+    composable(RecommendRoutes.SearchScreen.name) {
+        SearchScreen()
+    }
+    composable(RecommendRoutes.ProfileScreen.name) {
+        ProfileScreen()
+    }
+}

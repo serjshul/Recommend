@@ -14,10 +14,12 @@
         tools:ignore="ScopedStorage" />
 
     <application
+        android:name=".RecommendHiltApp"
         android:allowBackup="false"
         android:supportsRtl="true"
+        android:enableOnBackInvokedCallback="true"
         android:theme="@style/AppTheme"
-        android:name=".RecommendHiltApp">
+        tools:targetApi="tiramisu">
         <activity
             android:name=".RecommendActivity"
             android:exported="true">
@@ -35,8 +37,8 @@
         </service>
 
         <provider
-            android:authorities="${applicationId}.provider"
             android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
@@ -44,5 +46,4 @@
                 android:resource="@xml/file_paths" />
         </provider>
     </application>
-
 </manifest>
