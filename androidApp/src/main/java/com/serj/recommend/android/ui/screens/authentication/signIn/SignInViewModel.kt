@@ -1,12 +1,14 @@
 package com.serj.recommend.android.ui.screens.authentication.signIn
 
+import android.content.ContentValues.TAG
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import com.serj.recommend.android.R
 import com.serj.recommend.android.RecommendRoutes
 import com.serj.recommend.android.common.ext.isValidEmail
-import com.serj.recommend.android.common.snackbar.SnackbarManager
 import com.serj.recommend.android.model.service.AccountService
 import com.serj.recommend.android.model.service.LogService
+import com.serj.recommend.android.ui.components.snackbar.SnackbarManager
 import com.serj.recommend.android.ui.screens.RecommendViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -35,6 +37,7 @@ class SignInViewModel @Inject constructor(
     fun onSignInClick(openScreen: (String) -> Unit) {
         if (!email.isValidEmail()) {
             SnackbarManager.showMessage(R.string.email_error)
+            Log.v(TAG, "I'm here")
             return
         }
 

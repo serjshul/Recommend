@@ -1,12 +1,10 @@
 package com.serj.recommend.android.model.service.impl
 
-import android.content.ContentValues.TAG
-import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.serj.recommend.android.R
-import com.serj.recommend.android.common.snackbar.SnackbarManager
 import com.serj.recommend.android.model.User
 import com.serj.recommend.android.model.service.AccountService
+import com.serj.recommend.android.ui.components.snackbar.SnackbarManager
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -39,10 +37,7 @@ class AccountServiceImpl @Inject constructor(
     override suspend fun signIn(email: String, password: String) {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    SnackbarManager.showMessage(R.string.success_sign_in)
-                } else {
-                    Log.w(TAG, "signInWithEmail:failure", task.exception)
+                if (!task.isSuccessful) {
                     SnackbarManager.showMessage(R.string.error_sign_in)
                 }
             }.await()
@@ -51,10 +46,7 @@ class AccountServiceImpl @Inject constructor(
     override suspend fun signUp(email: String, password: String) {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    SnackbarManager.showMessage(R.string.success_sign_up)
-                } else {
-                    Log.w(TAG, "createUserWithEmail:failure", task.exception)
+                if (!task.isSuccessful) {
                     SnackbarManager.showMessage(R.string.error_sign_up)
                 }
             }.await()
