@@ -13,6 +13,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.serj.recommend.android.model.Banner
@@ -110,3 +111,10 @@ fun BannerScreenContent(
         }
     }
 }
+
+// TODO: provide
+//@Preview
+//@Composable
+//fun PreviewBannerScreen() = BannerScreenContent(
+//
+//)
