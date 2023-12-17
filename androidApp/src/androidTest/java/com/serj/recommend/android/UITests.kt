@@ -9,8 +9,7 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.serj.recommend.android.ui.screens.home.HomeScreen
-import com.serj.recommend.android.ui.screens.home.HomeViewModel
+import com.serj.recommend.android.ui.screens.main.home.HomeScreen
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 

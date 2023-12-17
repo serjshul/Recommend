@@ -10,13 +10,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
-fun Modifier.textButton(): Modifier {
-    return this.fillMaxWidth().padding(16.dp, 8.dp, 16.dp, 0.dp)
+fun Modifier.fieldModifier(): Modifier {
+    return this.fillMaxWidth().padding(15.dp, 5.dp)
 }
 
 fun Modifier.basicButton(): Modifier {
-    return this.fillMaxWidth().padding(16.dp, 8.dp)
+    return this.fillMaxWidth().padding(15.dp, 10.dp)
 }
+
+fun Modifier.textButton(): Modifier {
+    return this.fillMaxWidth().padding(15.dp, 10.dp, 15.dp, 20.dp)
+}
+
+
+
+
 
 fun Modifier.card(): Modifier {
     return this.padding(16.dp, 0.dp, 16.dp, 8.dp)
@@ -32,10 +40,6 @@ fun Modifier.alertDialog(): Modifier {
 
 fun Modifier.dropdownSelector(): Modifier {
     return this.fillMaxWidth()
-}
-
-fun Modifier.fieldModifier(): Modifier {
-    return this.fillMaxWidth().padding(16.dp, 4.dp)
 }
 
 fun Modifier.toolbarActions(): Modifier {
