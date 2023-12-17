@@ -15,15 +15,21 @@
 
     <!-- LoginScreen -->
     <string name="sign_in">Sign in</string>
+    <string name="sign_up">Sign up</string>
     <string name="login_details">Enter your login details</string>
-    <string name="forgot_password">Forgot password? Click to get recovery email</string>
-    <string name="recovery_email_sent">Check your inbox for the recovery email.</string>
-    <string name="empty_password_error">Password cannot be empty.</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="recovery_email_sent">Check your inbox for the recovery email</string>
+    <string name="empty_password_error">Password cannot be empty</string>
+    <string name="success_sign_in">Success</string>
+    <string name="error_sign_in">Error</string>
+    <string name="reset_password">Reset password</string>
 
     <!-- SignUpScreen -->
     <string name="create_account">Create account</string>
     <string name="password_error">Your password should have at least six digits and include one digit, one lower case letter and one upper case letter.</string>
     <string name="password_match_error">Passwords do not match.</string>
+    <string name="success_sign_up">Success</string>
+    <string name="error_sign_up">Error</string>
 
     <!-- Navigation -->
     <string name="navigation_title_home_screen">Home</string>

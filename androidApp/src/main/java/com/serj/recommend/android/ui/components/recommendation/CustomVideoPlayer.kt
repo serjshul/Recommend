@@ -1,35 +1,14 @@
 package com.serj.recommend.android.ui.components.recommendation
 
-import android.annotation.SuppressLint
-import android.util.Log
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.unit.dp
-import androidx.media3.exoplayer.analytics.AnalyticsListener
-import com.serj.recommend.android.R
-import io.sanghun.compose.video.RepeatMode
-import io.sanghun.compose.video.controller.VideoPlayerControllerConfig
-import io.sanghun.compose.video.toRepeatMode
-import io.sanghun.compose.video.uri.VideoPlayerMediaItem
 
 @Composable
 fun CustomVideoPlayer(
     modifier: Modifier = Modifier
 ) {
-    val samplePlayList = listOf(
+    /*
+    val samplePlayList = listOf()
         VideoPlayerMediaItem.RawResourceMediaItem(
             resourceId = R.raw.music_rosalia,
         )
@@ -84,4 +63,6 @@ fun CustomVideoPlayer(
                 .align(Alignment.Center),
         )
     }
+
+     */
 }

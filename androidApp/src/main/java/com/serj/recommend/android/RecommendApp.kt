@@ -1,9 +1,6 @@
 package com.serj.recommend.android
 
-import android.Manifest
 import android.content.res.Resources
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
@@ -16,7 +13,6 @@ import androidx.compose.material.Surface
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -29,21 +25,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.isGranted
-import com.google.accompanist.permissions.rememberPermissionState
-import com.google.accompanist.permissions.shouldShowRationale
-import com.serj.recommend.android.common.composable.PermissionDialog
-import com.serj.recommend.android.common.composable.RationaleDialog
-import com.serj.recommend.android.ui.BottomNavigationBar
 import com.serj.recommend.android.ui.components.snackbar.SnackbarManager
-import com.serj.recommend.android.ui.screens.FeedScreen
-import com.serj.recommend.android.ui.screens.banner.BannerScreen
-import com.serj.recommend.android.ui.screens.home.HomeScreen
-import com.serj.recommend.android.ui.screens.profile.ProfileScreen
-import com.serj.recommend.android.ui.screens.rec.RecScreen
-import com.serj.recommend.android.ui.screens.recommendation.RecommendationScreen
-import com.serj.recommend.android.ui.screens.search.SearchScreen
+import com.serj.recommend.android.ui.screens.authentication.resetPassword.ResetPasswordScreen
+import com.serj.recommend.android.ui.screens.authentication.signIn.SignInScreen
+import com.serj.recommend.android.ui.screens.authentication.signUp.SignUpScreen
+import com.serj.recommend.android.ui.screens.authentication.splash.SplashScreen
+import com.serj.recommend.android.ui.screens.common.banner.BannerScreen
+import com.serj.recommend.android.ui.screens.common.recommendation.RecommendationScreen
+import com.serj.recommend.android.ui.screens.main.MainScreen
 import com.serj.recommend.android.ui.styles.MyApplicationTheme
 import kotlinx.coroutines.CoroutineScope
 
@@ -51,24 +40,11 @@ import kotlinx.coroutines.CoroutineScope
 @Composable
 fun RecommendApp() {
     MyApplicationTheme {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            RequestNotificationPermissionDialog()
-        }
-
-        val buttonsVisible = remember { mutableStateOf(true) }
-
         Surface(color = MaterialTheme.colors.background) {
             val appState = rememberAppState()
 
             Scaffold(
                 modifier = Modifier.fillMaxSize(),
-                bottomBar = {
-                    BottomNavigationBar(
-                        navController = appState.navController,
-                        state = buttonsVisible,
-                        modifier = Modifier
-                    )
-                },
                 snackbarHost = {
                     SnackbarHost(
                         hostState = it,
@@ -83,24 +59,12 @@ fun RecommendApp() {
                 NavHost(
                     modifier = Modifier.padding(paddingValues),
                     navController = appState.navController,
-                    startDestination = HOME_SCREEN
+                    startDestination = RecommendRoutes.SplashScreen.name
                 ) {
                     recommendGraph(appState=appState)
                 }
             }
         }
-    }
-}
-
-@RequiresApi(Build.VERSION_CODES.TIRAMISU)
-@OptIn(ExperimentalPermissionsApi::class)
-@Composable
-fun RequestNotificationPermissionDialog() {
-    val permissionState = rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)
-
-    if (!permissionState.status.isGranted) {
-        if (permissionState.status.shouldShowRationale) RationaleDialog()
-        else PermissionDialog { permissionState.launchPermissionRequest() }
     }
 }
 
@@ -128,42 +92,58 @@ fun NavGraphBuilder.recommendGraph(
     modifier: Modifier = Modifier,
     appState: RecommendAppState
 ) {
-    composable(HOME_SCREEN) {
-        HomeScreen(
+    composable(RecommendRoutes.SplashScreen.name) {
+        SplashScreen(
+            modifier = modifier,
             openScreen = { route -> appState.navigate(route) }
         )
     }
-    composable(FEED_SCREEN) {
-        FeedScreen()
+    composable(RecommendRoutes.SignUpScreen.name) {
+        SignUpScreen(
+            modifier = modifier,
+            openScreen = { route -> appState.navigate(route) }
+        )
     }
-    composable(REC_SCREEN) {
-        RecScreen()
+    composable(RecommendRoutes.SignInScreen.name) {
+        SignInScreen(
+            modifier = modifier,
+            openScreen = { route -> appState.navigate(route) },
+            openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) }
+        )
     }
-    composable(SEARCH_SCREEN) {
-        SearchScreen()
+    composable(RecommendRoutes.ResetPasswordScreen.name) {
+        ResetPasswordScreen(
+            modifier = modifier,
+            openScreen = { route -> appState.navigate(route) }
+        )
     }
-    composable(PROFILE_SCREEN) {
-        ProfileScreen()
+    composable(RecommendRoutes.MainScreen.name) {
+        MainScreen(
+            modifier = modifier,
+            appState = appState
+        )
     }
     composable(
-        route = "$RECOMMENDATION_SCREEN$RECOMMENDATION_ID_ARG",
+        route = "${RecommendRoutes.RecommendationScreen.name}$RECOMMENDATION_ID_ARG",
         arguments = listOf(navArgument(RECOMMENDATION_ID) {
             nullable = true
             defaultValue = null
         })
     ) {
         RecommendationScreen(
+            modifier = modifier,
             popUpScreen = { appState.popUp() }
         )
     }
     composable(
-        route = "$BANNER_SCREEN$BANNER_ID_ARG",
+        route = "${RecommendRoutes.BannerScreen.name}$BANNER_ID_ARG",
         arguments = listOf(navArgument(BANNER_ID) {
             nullable = true
             defaultValue = null
         })
     ) {
         BannerScreen(
+            modifier = modifier,
             openScreen = { route -> appState.navigate(route) },
             popUpScreen = { appState.popUp() }
         )
