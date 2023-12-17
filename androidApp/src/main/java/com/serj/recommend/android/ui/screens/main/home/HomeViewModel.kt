@@ -58,20 +58,27 @@ class HomeViewModel @Inject constructor(
 
         launchCatching {
             categories.collect { categories ->
+                var currentItems: ArrayList<CategoryItem?>
+                var currentRecommendations: List<String?>
+
                 for (category in categories) {
                     if (category.recommendationIds.isNotEmpty()) {
-                        val currentItems = arrayListOf<CategoryItem?>()
-                        for (recommendationId in category.recommendationIds) {
+                        currentItems = arrayListOf()
+                        currentRecommendations =
+                            if (category.recommendationIds.size < 6)
+                                category.recommendationIds.shuffled()
+                            else
+                                category.recommendationIds.shuffled().subList(0, 5)
+                        for (i in currentRecommendations.indices) {
                             storageService
                                 .getCategoryItem(
-                                    recommendationId = recommendationId,
+                                    recommendationId = currentRecommendations[i],
                                     coverType = category.coverType)
                                 . let {
                                     currentItems.add(it)
                                 }
                         }
                         categoriesItems[category.title] = currentItems
-                            .sortedByDescending { item -> item?.date }
                     }
                 }
 
