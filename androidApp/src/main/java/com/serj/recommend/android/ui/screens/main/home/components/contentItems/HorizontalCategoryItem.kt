@@ -35,8 +35,9 @@ fun HorizontalCategoryItem(
 ) {
     Column(
         modifier = modifier
-            .width(290.dp)
-            .padding(end = 10.dp)
+            .height(230.dp)
+            .width(265.dp)
+            .padding(end = 8.dp)
             .clickable {
                 if (recommendationId != null) {
                     onRecommendationClick(
@@ -50,7 +51,7 @@ fun HorizontalCategoryItem(
             Image(
                 modifier = modifier
                     .height(160.dp)
-                    .width(290.dp)
+                    .width(265.dp)
                     .padding(bottom = 5.dp)
                     .clip(RoundedCornerShape(5.dp)),
                 bitmap = cover.asImageBitmap(),
@@ -61,7 +62,7 @@ fun HorizontalCategoryItem(
             Image(
                 modifier = modifier
                     .height(160.dp)
-                    .width(290.dp)
+                    .width(265.dp)
                     .padding(bottom = 5.dp)
                     .clip(RoundedCornerShape(5.dp)),
                 painter = painterResource(id = R.drawable.gradient),
@@ -74,14 +75,16 @@ fun HorizontalCategoryItem(
             text = title ?: "loading",
             color = Color.Black,
             fontSize = 14.sp,
-            fontWeight = FontWeight.Bold,
-            lineHeight = 1.2.em
+            lineHeight = 1.2.em,
+            maxLines = 2,
+            fontWeight = FontWeight.Bold
         )
 
         Text(
             text = creator ?: "loading",
             color = Color.Black,
             fontSize = 12.sp,
+            maxLines = 2,
             lineHeight = 1.2.em
         )
     }

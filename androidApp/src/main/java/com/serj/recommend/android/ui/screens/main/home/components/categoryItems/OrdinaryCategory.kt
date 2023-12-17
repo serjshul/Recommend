@@ -39,7 +39,7 @@ fun OrdinaryCategory(
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
 ) {
     Column(
-        modifier = modifier.padding(bottom = 40.dp)
+        modifier = modifier.padding(bottom = 30.dp)
     ) {
         Text(
             modifier = modifier.padding(start = 15.dp, end = 15.dp, bottom = 10.dp),
@@ -51,7 +51,7 @@ fun OrdinaryCategory(
         )
 
         LazyRow(
-            verticalAlignment = Alignment.Top
+            verticalAlignment = Alignment.CenterVertically
         ) {
             item {
                 Spacer(modifier = Modifier.size(15.dp))
@@ -98,9 +98,9 @@ fun OrdinaryCategory(
 
                 item {
                     Column(
-                        modifier = modifier.padding(start = 35.dp, end = 50.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
+                        modifier = modifier.padding(start = 35.dp, end = 50.dp, bottom = 30.dp),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         OutlinedIconButton(
                             colors = IconButtonDefaults.outlinedIconButtonColors(

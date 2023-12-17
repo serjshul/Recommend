@@ -41,10 +41,10 @@ import com.serj.recommend.android.R
 import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.CategoryItem
 import com.serj.recommend.android.model.Recommendation
+import com.serj.recommend.android.ui.screens.common.recommendation.components.toColor
 import com.serj.recommend.android.ui.screens.main.home.components.contentItems.HorizontalCategoryItem
 import com.serj.recommend.android.ui.screens.main.home.components.contentItems.SquareCategoryItem
 import com.serj.recommend.android.ui.screens.main.home.components.contentItems.VerticalCategoryItem
-import com.serj.recommend.android.ui.screens.common.recommendation.components.toColor
 
 @Composable
 fun ExtendedCategory(
@@ -116,7 +116,7 @@ fun ExtendedCategory(
 
         LazyRow(
             modifier = modifier.padding(top = 190.dp),
-            verticalAlignment = Alignment.Top
+            verticalAlignment = Alignment.CenterVertically
         ) {
             item {
                 Spacer(modifier = Modifier.size(15.dp))
@@ -163,7 +163,7 @@ fun ExtendedCategory(
 
                 item {
                     Column(
-                        modifier = modifier.padding(start = 35.dp, end = 50.dp),
+                        modifier = modifier.padding(start = 35.dp, end = 50.dp, bottom = 30.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
                     ) {

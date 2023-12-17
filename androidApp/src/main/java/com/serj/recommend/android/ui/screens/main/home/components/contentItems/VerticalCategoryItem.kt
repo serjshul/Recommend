@@ -38,7 +38,9 @@ fun VerticalCategoryItem(
 ) {
     Column(
         modifier = Modifier
-            .padding(end = 10.dp)
+            .height(310.dp)
+            .width(150.dp)
+            .padding(end = 8.dp)
             .clickable {
                 if (recommendationId != null) {
                     onRecommendationClick(
@@ -77,6 +79,7 @@ fun VerticalCategoryItem(
             color = Color.Black,
             fontSize = 14.sp,
             lineHeight = 1.2.em,
+            maxLines = 2,
             fontWeight = FontWeight.Bold
         )
 
@@ -84,7 +87,8 @@ fun VerticalCategoryItem(
             text = creator ?: "loading",
             color = Color.Black,
             fontSize = 12.sp,
-            lineHeight = 1.2.em
+            lineHeight = 1.2.em,
+            maxLines = 2
         )
     }
 }
