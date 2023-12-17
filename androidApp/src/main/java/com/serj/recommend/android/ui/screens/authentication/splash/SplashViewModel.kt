@@ -1,9 +1,7 @@
 package com.serj.recommend.android.ui.screens.authentication.splash
 
 import androidx.compose.runtime.mutableStateOf
-import com.serj.recommend.android.MAIN_SCREEN
-import com.serj.recommend.android.SIGN_IN_SCREEN
-import com.serj.recommend.android.SPLASH_SCREEN
+import com.serj.recommend.android.RecommendRoutes
 import com.serj.recommend.android.model.service.AccountService
 import com.serj.recommend.android.model.service.ConfigurationService
 import com.serj.recommend.android.model.service.LogService
@@ -26,10 +24,10 @@ class SplashViewModel @Inject constructor(
         }
     }
 
-    fun onAppStart(openAndPopUp: (String, String) -> Unit) {
+    fun onAppStart(openScreen: (String) -> Unit) {
         if (accountService.hasUser)
-            openAndPopUp(MAIN_SCREEN, SPLASH_SCREEN)
+            openScreen(RecommendRoutes.MainScreen.name)
         else
-            openAndPopUp(SIGN_IN_SCREEN, SPLASH_SCREEN)
+            openScreen(RecommendRoutes.SignInScreen.name)
     }
 }

@@ -2,7 +2,7 @@ package com.serj.recommend.android.ui.screens.authentication.resetPassword
 
 import androidx.compose.runtime.mutableStateOf
 import com.serj.recommend.android.R
-import com.serj.recommend.android.SIGN_IN_SCREEN
+import com.serj.recommend.android.RecommendRoutes
 import com.serj.recommend.android.common.ext.isValidEmail
 import com.serj.recommend.android.common.snackbar.SnackbarManager
 import com.serj.recommend.android.model.service.AccountService
@@ -34,7 +34,7 @@ class ResetPasswordViewModel @Inject constructor(
         launchCatching {
             accountService.sendPasswordResetEmail(email)
             SnackbarManager.showMessage(R.string.recovery_email_sent)
-            openScreen(SIGN_IN_SCREEN)
+            openScreen(RecommendRoutes.SignInScreen.name)
         }
     }
 }

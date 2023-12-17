@@ -1,11 +1,8 @@
 package com.serj.recommend.android.ui.screens.authentication.signIn
 
 import androidx.compose.runtime.mutableStateOf
-import com.serj.recommend.android.MAIN_SCREEN
 import com.serj.recommend.android.R
-import com.serj.recommend.android.RESET_PASSWORD_SCREEN
-import com.serj.recommend.android.SIGN_IN_SCREEN
-import com.serj.recommend.android.SIGN_UP_SCREEN
+import com.serj.recommend.android.RecommendRoutes
 import com.serj.recommend.android.common.ext.isValidEmail
 import com.serj.recommend.android.common.snackbar.SnackbarManager
 import com.serj.recommend.android.model.service.AccountService
@@ -48,15 +45,15 @@ class SignInViewModel @Inject constructor(
 
         launchCatching {
             accountService.signIn(email, password)
-            openAndPopUp(MAIN_SCREEN, SIGN_IN_SCREEN)
+            openAndPopUp(RecommendRoutes.MainScreen.name, RecommendRoutes.SignInScreen.name)
         }
     }
 
     fun onForgotPasswordClick(openAndPopUp: (String, String) -> Unit) {
-        openAndPopUp(RESET_PASSWORD_SCREEN, SIGN_IN_SCREEN)
+        openAndPopUp(RecommendRoutes.ResetPasswordScreen.name, RecommendRoutes.SignInScreen.name)
     }
 
     fun onSignUpClick(openAndPopUp: (String, String) -> Unit) {
-        openAndPopUp(SIGN_UP_SCREEN, SIGN_IN_SCREEN)
+        openAndPopUp(RecommendRoutes.SignUpScreen.name, RecommendRoutes.SignInScreen.name)
     }
 }

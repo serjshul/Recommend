@@ -1,9 +1,8 @@
 package com.serj.recommend.android.ui.screens.authentication.signUp
 
 import androidx.compose.runtime.mutableStateOf
-import com.serj.recommend.android.MAIN_SCREEN
 import com.serj.recommend.android.R
-import com.serj.recommend.android.SIGN_UP_SCREEN
+import com.serj.recommend.android.RecommendRoutes
 import com.serj.recommend.android.common.ext.isValidEmail
 import com.serj.recommend.android.common.ext.isValidPassword
 import com.serj.recommend.android.common.ext.passwordMatches
@@ -57,7 +56,7 @@ class SignUpViewModel @Inject constructor(
 
         launchCatching {
             accountService.signUp(email, password)
-            openAndPopUp(MAIN_SCREEN, SIGN_UP_SCREEN)
+            openAndPopUp(RecommendRoutes.MainScreen.name, RecommendRoutes.SignUpScreen.name)
         }
     }
 }

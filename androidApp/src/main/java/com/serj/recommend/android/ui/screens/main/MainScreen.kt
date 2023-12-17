@@ -14,12 +14,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.serj.recommend.android.FEED_SCREEN
-import com.serj.recommend.android.HOME_SCREEN
-import com.serj.recommend.android.PROFILE_SCREEN
-import com.serj.recommend.android.REC_SCREEN
 import com.serj.recommend.android.RecommendAppState
-import com.serj.recommend.android.SEARCH_SCREEN
+import com.serj.recommend.android.RecommendRoutes
 import com.serj.recommend.android.ui.BottomNavigationBar
 import com.serj.recommend.android.ui.screens.FeedScreen
 import com.serj.recommend.android.ui.screens.main.home.HomeScreen
@@ -51,7 +47,7 @@ fun MainScreen(
                 NavHost(
                     modifier = Modifier.padding(paddingValues),
                     navController = navController,
-                    startDestination = HOME_SCREEN
+                    startDestination = RecommendRoutes.HomeScreen.name
                 ) {
                     mainScreenGraph(appState = appState)
                 }
@@ -64,21 +60,21 @@ fun MainScreen(
 fun NavGraphBuilder.mainScreenGraph(
     appState: RecommendAppState
 ) {
-    composable(HOME_SCREEN) {
+    composable(RecommendRoutes.HomeScreen.name) {
         HomeScreen(
             openScreen = { route -> appState.navigate(route) }
         )
     }
-    composable(FEED_SCREEN) {
+    composable(RecommendRoutes.FeedScreen.name) {
         FeedScreen()
     }
-    composable(REC_SCREEN) {
+    composable(RecommendRoutes.RecScreen.name) {
         RecScreen()
     }
-    composable(SEARCH_SCREEN) {
+    composable(RecommendRoutes.SearchScreen.name) {
         SearchScreen()
     }
-    composable(PROFILE_SCREEN) {
+    composable(RecommendRoutes.ProfileScreen.name) {
         ProfileScreen()
     }
 }

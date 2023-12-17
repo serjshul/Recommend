@@ -75,7 +75,7 @@ fun RecommendApp() {
                 NavHost(
                     modifier = Modifier.padding(paddingValues),
                     navController = appState.navController,
-                    startDestination = SPLASH_SCREEN
+                    startDestination = RecommendRoutes.SplashScreen.name
                 ) {
                     recommendGraph(appState=appState)
                 }
@@ -120,33 +120,33 @@ fun NavGraphBuilder.recommendGraph(
     modifier: Modifier = Modifier,
     appState: RecommendAppState
 ) {
-    composable(SPLASH_SCREEN) {
+    composable(RecommendRoutes.SplashScreen.name) {
         SplashScreen(
-            openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) }
+            openScreen = { route -> appState.navigate(route) }
         )
     }
-    composable(SIGN_UP_SCREEN) {
+    composable(RecommendRoutes.SignUpScreen.name) {
         SignUpScreen(
             openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) }
         )
     }
-    composable(SIGN_IN_SCREEN) {
+    composable(RecommendRoutes.SignInScreen.name) {
         SignInScreen(
             openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) }
         )
     }
-    composable(RESET_PASSWORD_SCREEN) {
+    composable(RecommendRoutes.ResetPasswordScreen.name) {
         ResetPasswordScreen(
             openScreen = { route -> appState.navigate(route) }
         )
     }
-    composable(MAIN_SCREEN) {
+    composable(RecommendRoutes.MainScreen.name) {
         MainScreen(
             appState = appState
         )
     }
     composable(
-        route = "$RECOMMENDATION_SCREEN$RECOMMENDATION_ID_ARG",
+        route = "${RecommendRoutes.RecommendationScreen.name}$RECOMMENDATION_ID_ARG",
         arguments = listOf(navArgument(RECOMMENDATION_ID) {
             nullable = true
             defaultValue = null
@@ -157,7 +157,7 @@ fun NavGraphBuilder.recommendGraph(
         )
     }
     composable(
-        route = "$BANNER_SCREEN$BANNER_ID_ARG",
+        route = "${RecommendRoutes.BannerScreen.name}$BANNER_ID_ARG",
         arguments = listOf(navArgument(BANNER_ID) {
             nullable = true
             defaultValue = null

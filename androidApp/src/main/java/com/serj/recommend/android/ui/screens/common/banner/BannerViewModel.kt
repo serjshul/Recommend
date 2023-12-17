@@ -7,7 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import com.serj.recommend.android.BANNER_ID
 import com.serj.recommend.android.RECOMMENDATION_ID
-import com.serj.recommend.android.RECOMMENDATION_SCREEN
+import com.serj.recommend.android.RecommendRoutes
 import com.serj.recommend.android.common.ext.idFromParameter
 import com.serj.recommend.android.model.Banner
 import com.serj.recommend.android.model.BannerItem
@@ -69,6 +69,6 @@ class BannerViewModel @Inject constructor(
     }
 
     fun onRecommendationClick(openScreen: (String) -> Unit, recommendation: Recommendation) {
-        openScreen("$RECOMMENDATION_SCREEN?$RECOMMENDATION_ID={${recommendation.id}}")
+        openScreen("${RecommendRoutes.RecommendationScreen.name}?$RECOMMENDATION_ID={${recommendation.id}}")
     }
 }

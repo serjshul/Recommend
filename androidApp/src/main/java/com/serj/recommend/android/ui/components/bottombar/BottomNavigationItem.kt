@@ -1,11 +1,7 @@
 package com.serj.recommend.android.ui.components.bottombar
 
-import com.serj.recommend.android.FEED_SCREEN
-import com.serj.recommend.android.HOME_SCREEN
-import com.serj.recommend.android.PROFILE_SCREEN
 import com.serj.recommend.android.R
-import com.serj.recommend.android.REC_SCREEN
-import com.serj.recommend.android.SEARCH_SCREEN
+import com.serj.recommend.android.RecommendRoutes
 
 sealed class BottomNavigationItem(
     val route: String,
@@ -14,35 +10,35 @@ sealed class BottomNavigationItem(
 ) {
     data object Home :
         BottomNavigationItem(
-            HOME_SCREEN,
+            RecommendRoutes.HomeScreen.name,
             R.string.navigation_title_home_screen,
             R.drawable.icon_home
         )
 
     data object Feed :
         BottomNavigationItem(
-            FEED_SCREEN,
+            RecommendRoutes.FeedScreen.name,
             R.string.navigation_title_feed_screen,
             R.drawable.icon_feed
         )
 
     data object Rec :
         BottomNavigationItem(
-            REC_SCREEN,
+            RecommendRoutes.RecScreen.name,
             R.string.rec_screen,
             R.drawable.icon_add
         )
 
     data object Search :
         BottomNavigationItem(
-            SEARCH_SCREEN,
+            RecommendRoutes.SearchScreen.name,
             R.string.navigation_title_search_screen,
             R.drawable.icon_search
         )
 
     data object Profile :
         BottomNavigationItem(
-            PROFILE_SCREEN,
+            RecommendRoutes.ProfileScreen.name,
             R.string.navigation_title_profile_screen,
             R.drawable.icon_profile
         )
