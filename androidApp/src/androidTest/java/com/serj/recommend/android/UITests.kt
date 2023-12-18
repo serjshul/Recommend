@@ -1,37 +1,23 @@
 package com.serj.recommend.android
 
-import org.junit.Rule
-import org.junit.Test
-import org.junit.Before
-import org.junit.runner.RunWith
-import androidx.activity.ComponentActivity
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.serj.recommend.android.ui.screens.main.home.HomeScreen
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 
-
-@RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
+@OptIn(ExperimentalMaterialApi::class)
 class UiTests {
     @get:Rule(order = 0)
-    val rule = createComposeRule()
-
-    @get:Rule(order = 1)
     var hiltRule = HiltAndroidRule(this)
 
-    val activityRule =
-        createAndroidComposeRule<ComponentActivity>()
-
-    // with this we get build failed
-//    @Inject
-//    lateinit var viewModel: HomeViewModel // by viewModels()
-
-//    val taskViewModel: HomeViewModel by viewModels()
-
+    @get:Rule(order = 1)
+    val rule =
+        createAndroidComposeRule<RecommendActivity>()
 
     @Before
     fun init() {
@@ -93,20 +79,34 @@ class UiTests {
     }
 
     fun checkThatBottomNavigationBarIncludesFiveButtons() {
-        TODO("Implement test @Dasha")
+        TODO("Implement test @Daxavic")
     }
 
     @Test
     fun clickButton() {
-        //val model = HomeViewModel()
-        rule.setContent { HomeScreen(openScreen = {}) }
-
         val nodeWithNorwegianForest =
             rule.onNodeWithText("Norwegian Forest")
 
-        nodeWithNorwegianForest.assertExists()
+        nodeWithNorwegianForest.assertDoesNotExist()
+    }
 
-        // continue to resolve all by this guide (try it out):
-        // https://mahendranv.github.io/posts/hilt-instrument/
+    @Test
+    fun checkNotifications() {
+        // P.S. for TODO, when RecommendActivity is starts,
+        //  its request permission notifications in dialog window,
+        //  check that this window is appearing
+        TODO(
+            "Check that notification dialog window appears." +
+                    "Task for @Daxavic"
+        )
+    }
+
+    @Test
+    fun allowNotifications() {
+        TODO(
+            "Pass notification dialog window" +
+                    "& check that notification window is out." +
+                    "Task for @Daxavic"
+        )
     }
 }

@@ -98,6 +98,7 @@ fun HomeScreenContent(
                                 onRecommendationClick = onRecommendationClick
                             )
                         }
+
                         "Extended" -> {
                             ExtendedCategory(
                                 category = category,
@@ -108,9 +109,11 @@ fun HomeScreenContent(
                                 onRecommendationClick = onRecommendationClick
                             )
                         }
+
                         "Gallery" -> {
 
                         }
+
                         else -> {
                             // TODO: what to do?
                         }
