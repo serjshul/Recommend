@@ -39,7 +39,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.serj.recommend.android.model.Banner
 import com.serj.recommend.android.ui.components.loadingIndicators.SmallLoadingIndicator
 
 @Composable
@@ -51,7 +50,7 @@ fun Banner(
     backgroundVideo: String? = null,
     backgroundImage: Bitmap?,
     openScreen: (String) -> Unit,
-    onBannerClick: ((String) -> Unit, Banner) -> Unit
+    onBannerClick: ((String) -> Unit, String) -> Unit
 ) {
     var sizeImage by remember { mutableStateOf(IntSize.Zero) }
     // TODO: save like / unlike by user
@@ -133,7 +132,7 @@ fun Banner(
                         if (bannerId != null) {
                             onBannerClick(
                                 openScreen,
-                                Banner(id = bannerId)
+                                bannerId
                             )
                         }
                     }

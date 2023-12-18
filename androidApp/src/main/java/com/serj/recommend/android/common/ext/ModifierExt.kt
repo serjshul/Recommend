@@ -3,11 +3,14 @@ package com.serj.recommend.android.common.ext
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 
 fun Modifier.fieldModifier(): Modifier {
@@ -20,6 +23,41 @@ fun Modifier.basicButton(): Modifier {
 
 fun Modifier.textButton(): Modifier {
     return this.fillMaxWidth().padding(15.dp, 10.dp, 15.dp, 20.dp)
+}
+
+
+
+fun Modifier.recommendationCoverShape(): Modifier {
+    return this
+        .padding(bottom = 5.dp)
+        .clip(RoundedCornerShape(5.dp))
+}
+
+fun Modifier.squareRecommendationMain(): Modifier {
+    return this
+        .height(225.dp)
+        .width(160.dp)
+        .padding(end = 8.dp)
+}
+
+fun Modifier.squareRecommendationCategory(): Modifier {
+    return this
+        .height(225.dp)
+        .width(160.dp)
+}
+
+fun Modifier.horizontalRecommendationMain(): Modifier {
+    return this
+        .height(230.dp)
+        .width(265.dp)
+        .padding(end = 8.dp)
+}
+
+fun Modifier.horizontalRecommendationCategory(): Modifier {
+    return this
+        .height(250.dp)
+        .fillMaxWidth()
+        .padding(start = 15.dp, end = 15.dp, bottom = 15.dp)
 }
 
 

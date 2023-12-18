@@ -46,7 +46,8 @@ fun HomeScreen(
         categoriesImages = categoriesImages,
         openScreen = openScreen,
         onRecommendationClick = viewModel::onRecommendationClick,
-        onBannerClick = viewModel::onBannerClick
+        onBannerClick = viewModel::onBannerClick,
+        onCategoryClick = viewModel::onCategoryClick
     )
 }
 
@@ -61,7 +62,8 @@ fun HomeScreenContent(
     categoriesImages: Map<String?, List<Bitmap?>?>,
     openScreen: (String) -> Unit,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit,
-    onBannerClick: ((String) -> Unit, Banner) -> Unit,
+    onBannerClick: ((String) -> Unit, String) -> Unit,
+    onCategoryClick: ((String) -> Unit, String) -> Unit
 ) {
     Scaffold { paddingValues ->
         LazyColumn(
@@ -92,7 +94,8 @@ fun HomeScreenContent(
                                 items = categoriesItems[category.title],
                                 covers = categoriesImages[category.title],
                                 openScreen = openScreen,
-                                onRecommendationClick = onRecommendationClick
+                                onRecommendationClick = onRecommendationClick,
+                                onCategoryClick = onCategoryClick
                             )
                         }
                         EXTENDED_CATEGORY -> {

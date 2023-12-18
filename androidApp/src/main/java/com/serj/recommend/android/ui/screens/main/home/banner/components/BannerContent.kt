@@ -1,4 +1,4 @@
-package com.serj.recommend.android.ui.screens.common.banner.components
+package com.serj.recommend.android.ui.screens.main.home.banner.components
 
 import android.graphics.Bitmap
 import androidx.compose.foundation.layout.Column
@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.dp
 import com.serj.recommend.android.model.BannerItem
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.ui.components.loadingIndicators.SmallLoadingIndicator
-import com.serj.recommend.android.ui.screens.common.banner.components.bannerItems.SquareBannerItem
+import com.serj.recommend.android.ui.screens.main.home.banner.components.bannerItems.SquareBannerItem
 
 @Composable
 fun BannerContent(

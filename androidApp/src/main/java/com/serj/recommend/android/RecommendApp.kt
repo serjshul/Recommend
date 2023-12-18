@@ -30,9 +30,10 @@ import com.serj.recommend.android.ui.screens.authentication.resetPassword.ResetP
 import com.serj.recommend.android.ui.screens.authentication.signIn.SignInScreen
 import com.serj.recommend.android.ui.screens.authentication.signUp.SignUpScreen
 import com.serj.recommend.android.ui.screens.authentication.splash.SplashScreen
-import com.serj.recommend.android.ui.screens.common.banner.BannerScreen
 import com.serj.recommend.android.ui.screens.common.recommendation.RecommendationScreen
 import com.serj.recommend.android.ui.screens.main.MainScreen
+import com.serj.recommend.android.ui.screens.main.home.banner.BannerScreen
+import com.serj.recommend.android.ui.screens.main.home.category.CategoryScreen
 import com.serj.recommend.android.ui.styles.MyApplicationTheme
 import kotlinx.coroutines.CoroutineScope
 
@@ -151,6 +152,19 @@ fun NavGraphBuilder.recommendGraph(
         })
     ) {
         BannerScreen(
+            modifier = modifier,
+            openScreen = { route -> appState.navigate(route) },
+            popUpScreen = { appState.popUp() }
+        )
+    }
+    composable(
+        route = "${RecommendRoutes.CategoryScreen.name}$CATEGORY_ID_ARG",
+        arguments = listOf(navArgument(CATEGORY_ID) {
+            nullable = true
+            defaultValue = null
+        })
+    ) {
+        CategoryScreen(
             modifier = modifier,
             openScreen = { route -> appState.navigate(route) },
             popUpScreen = { appState.popUp() }

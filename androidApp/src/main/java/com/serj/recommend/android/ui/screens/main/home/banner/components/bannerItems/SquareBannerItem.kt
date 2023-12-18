@@ -1,4 +1,4 @@
-package com.serj.recommend.android.ui.screens.common.banner.components.bannerItems
+package com.serj.recommend.android.ui.screens.main.home.banner.components.bannerItems
 
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image

@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import com.serj.recommend.android.BANNER_ID
+import com.serj.recommend.android.CATEGORY_ID
 import com.serj.recommend.android.RECOMMENDATION_ID
 import com.serj.recommend.android.RecommendRoutes
 import com.serj.recommend.android.model.Banner
@@ -97,7 +98,11 @@ class HomeViewModel @Inject constructor(
         openScreen("${RecommendRoutes.RecommendationScreen.name}?$RECOMMENDATION_ID={${recommendation.id}}")
     }
 
-    fun onBannerClick(openScreen: (String) -> Unit, banner: Banner) {
-        openScreen("${RecommendRoutes.BannerScreen.name}?$BANNER_ID={${banner.id}}")
+    fun onBannerClick(openScreen: (String) -> Unit, bannerId: String) {
+        openScreen("${RecommendRoutes.BannerScreen.name}?$BANNER_ID={${bannerId}}")
+    }
+
+    fun onCategoryClick(openScreen: (String) -> Unit, categoryId: String) {
+        openScreen("${RecommendRoutes.CategoryScreen.name}?$CATEGORY_ID={${categoryId}}")
     }
 }

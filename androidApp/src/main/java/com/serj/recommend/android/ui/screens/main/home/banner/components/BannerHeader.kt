@@ -1,4 +1,4 @@
-package com.serj.recommend.android.ui.screens.common.banner.components
+package com.serj.recommend.android.ui.screens.main.home.banner.components
 
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image
@@ -87,7 +87,7 @@ fun BannerHeader(
                     .padding(20.dp)
                     .align(Alignment.TopStart)
                     .clickable { popUpScreen() },
-                painter = painterResource(id = R.drawable.icon_arrow_back),
+                painter = painterResource(id = R.drawable.icon_arrow_back_white),
                 contentDescription = "button_back",
                 contentScale = ContentScale.Crop
             )

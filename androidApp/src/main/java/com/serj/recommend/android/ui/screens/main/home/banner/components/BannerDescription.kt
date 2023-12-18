@@ -1,4 +1,4 @@
-package com.serj.recommend.android.ui.screens.common.banner.components
+package com.serj.recommend.android.ui.screens.main.home.banner.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

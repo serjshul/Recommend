@@ -2,6 +2,7 @@ package com.serj.recommend.android.ui.screens.main.home.components.categoryItems
 
 import android.graphics.Bitmap
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -22,6 +23,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.serj.recommend.android.common.ext.horizontalRecommendationMain
+import com.serj.recommend.android.common.ext.squareRecommendationMain
 import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.CategoryItem
 import com.serj.recommend.android.model.Recommendation
@@ -36,13 +39,16 @@ fun OrdinaryCategory(
     covers: List<Bitmap?>?,
     category: Category,
     openScreen: (String) -> Unit,
-    onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
+    onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit,
+    onCategoryClick: ((String) -> Unit, String) -> Unit
 ) {
     Column(
         modifier = modifier.padding(bottom = 30.dp)
     ) {
         Text(
-            modifier = modifier.padding(start = 15.dp, end = 15.dp, bottom = 10.dp),
+            modifier = modifier
+                .padding(start = 15.dp, end = 15.dp, bottom = 10.dp)
+                .clickable { onCategoryClick(openScreen, category.id) },
             text = category.title,
             color = Color.Black,
             fontSize = 22.sp,
@@ -62,6 +68,7 @@ fun OrdinaryCategory(
                     when (category.coverType) {
                         "square" -> {
                             SquareCategoryItem(
+                                modifier = Modifier.squareRecommendationMain(),
                                 title = items[i]?.title,
                                 creator = items[i]?.creator,
                                 cover = covers?.getOrNull(i),
@@ -72,6 +79,7 @@ fun OrdinaryCategory(
                         }
                         "horizontal" -> {
                             HorizontalCategoryItem(
+                                modifier = Modifier.horizontalRecommendationMain(),
                                 title = items[i]?.title,
                                 creator = items[i]?.creator,
                                 cover = covers?.getOrNull(i),
@@ -107,9 +115,7 @@ fun OrdinaryCategory(
                                 contentColor = Color.Black,
                             ),
                             border = BorderStroke(1.dp, Color.Gray),
-                            onClick = {
-                                // TODO: category screen
-                            }
+                            onClick = { onCategoryClick(openScreen, category.id) }
                         ) {
                             Icon(
                                 imageVector = Icons.Outlined.ArrowForward,
