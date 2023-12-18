@@ -1,8 +1,18 @@
 package com.serj.recommend.android.ui.screens.main.profile
 
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 
-class ProfileViewModel: ViewModel() {
+class ProfileViewModel(
+    private val coroutineScope: CoroutineScope =
+        CoroutineScope(
+            SupervisorJob()
+                    + Dispatchers.Main.immediate
+        )
+) : ViewModel() {
     fun changeBio() {
 
     }
@@ -28,5 +38,9 @@ class ProfileViewModel: ViewModel() {
         // get all (part, first some)
 
         // firebase request to places where we saved
+    }
+
+    override fun onCleared() {
+        coroutineScope.cancel()
     }
 }
