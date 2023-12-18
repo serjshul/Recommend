@@ -71,7 +71,7 @@ fun VerticalItemCard(
                     Image(
                         modifier = Modifier
                             .fillMaxHeight()
-                            .width(160.dp)
+                            .width(165.dp)
                             .padding(end = 10.dp)
                             .clip(RoundedCornerShape(5.dp)),
                         bitmap = cover.asImageBitmap(),
@@ -82,7 +82,7 @@ fun VerticalItemCard(
                     SmallLoadingIndicator(
                         modifier = Modifier
                             .fillMaxHeight()
-                            .width(160.dp)
+                            .width(165.dp)
                             .padding(end = 10.dp)
                             .clip(RoundedCornerShape(5.dp)),
                         backgroundColor = LightGray

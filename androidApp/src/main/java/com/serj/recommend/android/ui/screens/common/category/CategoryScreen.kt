@@ -27,10 +27,14 @@ import com.serj.recommend.android.R
 import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.CategoryItem
 import com.serj.recommend.android.model.Recommendation
+import com.serj.recommend.android.ui.COVER_HORIZONTAL
+import com.serj.recommend.android.ui.COVER_SQUARE
+import com.serj.recommend.android.ui.COVER_VERTICAL
 import com.serj.recommend.android.ui.components.items.cards.HorizontalItemCard
 import com.serj.recommend.android.ui.components.items.cards.SquareItemCard
 import com.serj.recommend.android.ui.components.items.cards.VerticalItemCard
 import com.serj.recommend.android.ui.components.loadingIndicators.LargeLoadingIndicator
+import com.serj.recommend.android.ui.components.snackbar.SnackbarManager
 import com.serj.recommend.android.ui.styles.LightGray
 
 @Composable
@@ -105,7 +109,7 @@ fun CategoryScreenContent(
 
                 items(categoryItems) {item ->
                     when (category.coverType) {
-                        "square" -> {
+                        COVER_SQUARE -> {
                             SquareItemCard(
                                 modifier = Modifier.padding(start = 15.dp, end = 15.dp, bottom = 15.dp),
                                 recommendationId = item?.recommendationId,
@@ -117,7 +121,7 @@ fun CategoryScreenContent(
                                 onRecommendationClick = onRecommendationClick
                             )
                         }
-                        "horizontal" -> {
+                        COVER_HORIZONTAL -> {
                             HorizontalItemCard(
                                 modifier = Modifier.padding(start = 15.dp, end = 15.dp, bottom = 15.dp),
                                 recommendationId = item?.recommendationId,
@@ -129,7 +133,7 @@ fun CategoryScreenContent(
                                 onRecommendationClick = onRecommendationClick
                             )
                         }
-                        "vertical" -> {
+                        COVER_VERTICAL -> {
                             VerticalItemCard(
                                 modifier = Modifier.padding(start = 15.dp, end = 15.dp, bottom = 15.dp),
                                 recommendationId = item?.recommendationId,
@@ -142,7 +146,7 @@ fun CategoryScreenContent(
                             )
                         }
                         else -> {
-                            // TODO: what else?
+                            SnackbarManager.showMessage(R.string.error_cover_type)
                         }
                     }
                 }
