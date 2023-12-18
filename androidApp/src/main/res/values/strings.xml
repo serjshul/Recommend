@@ -59,4 +59,7 @@
     <string name="notification_permission_description">The notification permission is important for this app. Please grant the permission.</string>
     <string name="notification_permission_settings">The notification permission is important for this app. Please navigate to your device settings and enable notifications for Make it So.</string>
 
+    <!-- Profile Screen -->
+    <string name="posts">Posts</string>
+    <string name="saved">Saved</string>
 </resources>
