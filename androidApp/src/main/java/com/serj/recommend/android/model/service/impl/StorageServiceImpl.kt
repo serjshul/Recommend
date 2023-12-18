@@ -8,7 +8,7 @@ import android.util.Log
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.dataObjects
+import com.google.firebase.firestore.ktx.dataObjects
 import com.google.firebase.firestore.toObject
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
@@ -80,9 +80,7 @@ class StorageServiceImpl @Inject constructor(
                     cover = recommendation.cover[coverType] ?: "",
                     date = recommendation.date
                 )
-                //Log.v(ContentValues.TAG, "got CategoryItem")
             }.addOnFailureListener {
-                // Handle any errors
                 Log.v(ContentValues.TAG, "error getCategoryItem()")
             }
             .await()

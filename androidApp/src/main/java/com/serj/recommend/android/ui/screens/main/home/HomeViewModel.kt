@@ -23,8 +23,6 @@ class HomeViewModel @Inject constructor(
     private val storageService: StorageService,
     private val configurationService: ConfigurationService
 ) : RecommendViewModel(logService) {
-    val options = mutableStateOf<List<String>>(listOf())
-
     val categories = storageService.categories
     val categoriesBackgrounds = mutableStateMapOf<String?, Bitmap?>()
     val categoriesItems = mutableStateMapOf<String?, List<CategoryItem?>?>()
@@ -33,22 +31,11 @@ class HomeViewModel @Inject constructor(
     private val banners = storageService.banners
     val banner = mutableStateOf<Banner?>(null)
     val bannerCover = mutableStateOf<Bitmap?>(null)
-    val bannerItems = mutableListOf<CategoryItem?>()
 
     init {
         launchCatching {
             banners.collect { banners ->
                 banner.value = banners.random()
-
-                if (!banner.value!!.recommendationIds.isNullOrEmpty()) {
-                    for (recommendationId in banner.value!!.recommendationIds!!) {
-                        banner.value!!.coverType?.let {
-                            storageService.getCategoryItem(recommendationId, it).let {item ->
-                                bannerItems.add(item)
-                            }
-                        }
-                    }
-                }
 
                 bannerCover.value = banner.value!!.cover?.get("image")?. let {
                     storageService.downloadImage(it)
@@ -65,7 +52,7 @@ class HomeViewModel @Inject constructor(
                     if (category.recommendationIds.isNotEmpty()) {
                         currentItems = arrayListOf()
                         currentRecommendations =
-                            if (category.recommendationIds.size < 6)
+                            if (category.recommendationIds.size < 6 || category.type == "pager")
                                 category.recommendationIds.shuffled()
                             else
                                 category.recommendationIds.shuffled().subList(0, 5)
