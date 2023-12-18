@@ -2,6 +2,8 @@ package com.serj.recommend.android.repository
 
 import com.serj.recommend.android.model.Recommendation
 
+// read about data-layer here:
+// https://developer.android.com/topic/architecture/data-layer
 class AppRepository(
     private val local: LocalRepository,
     private val remote: RemoteRepository
