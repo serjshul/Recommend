@@ -50,7 +50,10 @@ fun RecommendApp() {
                         hostState = it,
                         modifier = Modifier.padding(8.dp),
                         snackbar = { snackbarData ->
-                            Snackbar(snackbarData, contentColor = MaterialTheme.colors.onPrimary)
+                            Snackbar(
+                                snackbarData = snackbarData,
+                                contentColor = MaterialTheme.colors.onPrimary
+                            )
                         }
                     )
                 },
@@ -61,7 +64,7 @@ fun RecommendApp() {
                     navController = appState.navController,
                     startDestination = RecommendRoutes.SplashScreen.name
                 ) {
-                    recommendGraph(appState=appState)
+                    recommendGraph(appState = appState)
                 }
             }
         }
@@ -75,10 +78,15 @@ fun rememberAppState(
     snackbarManager: SnackbarManager = SnackbarManager,
     resources: Resources = resources(),
     coroutineScope: CoroutineScope = rememberCoroutineScope()
-) =
-    remember(scaffoldState, navController, snackbarManager, resources, coroutineScope) {
-        RecommendAppState(scaffoldState, navController, snackbarManager, resources, coroutineScope)
-    }
+) = remember(
+    scaffoldState, navController, snackbarManager,
+    resources, coroutineScope
+) {
+    RecommendAppState(
+        scaffoldState, navController, snackbarManager,
+        resources, coroutineScope
+    )
+}
 
 @Composable
 @ReadOnlyComposable
