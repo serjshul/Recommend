@@ -15,7 +15,7 @@ android {
         minSdk = 25
         targetSdk = 34
         versionCode = 1
-        versionName = "0.1"
+        versionName = "1.0"
 
 //        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunner = "com.serj.recommend.android.CustomTestRunner"
@@ -91,7 +91,7 @@ dependencies {
 
     implementation("com.google.dagger:hilt-android:2.49")
     ksp("com.google.dagger:hilt-compiler:2.49")
-    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0-alpha01")
 
     // For Robolectric (emulate simulator on JVM on your machine) tests
     testImplementation("com.google.dagger:hilt-android-testing:2.49")
