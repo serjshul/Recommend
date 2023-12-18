@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.serj.recommend.android.ui.components.loadingIndicators.SmallLoadingIndicator
+import com.serj.recommend.android.ui.styles.White
 
 @Composable
 fun Banner(
@@ -90,7 +91,8 @@ fun Banner(
             else -> {
                 SmallLoadingIndicator(
                     modifier = Modifier
-                        .matchParentSize()
+                        .matchParentSize(),
+                    backgroundColor = White
                 )
             }
         }

@@ -1,5 +1,6 @@
 package com.serj.recommend.android.ui.components.loadingIndicators
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.width
@@ -9,21 +10,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.serj.recommend.android.ui.styles.AppleRed
+import com.serj.recommend.android.ui.styles.TigerEye
 
 @Composable
 fun LargeLoadingIndicator(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    backgroundColor: Color
 ) {
     Box(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
+            .fillMaxSize()
+            .background(backgroundColor)
     ) {
         CircularProgressIndicator(
             modifier = Modifier
                 .width(64.dp)
                 .align(Alignment.Center),
-            color = Color.LightGray,
-            trackColor = AppleRed,
+            trackColor = TigerEye,
+            color = backgroundColor
         )
     }
 }

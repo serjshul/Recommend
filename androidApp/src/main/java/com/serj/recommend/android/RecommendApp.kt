@@ -32,8 +32,8 @@ import com.serj.recommend.android.ui.screens.authentication.signUp.SignUpScreen
 import com.serj.recommend.android.ui.screens.authentication.splash.SplashScreen
 import com.serj.recommend.android.ui.screens.common.recommendation.RecommendationScreen
 import com.serj.recommend.android.ui.screens.main.MainScreen
-import com.serj.recommend.android.ui.screens.main.home.banner.BannerScreen
-import com.serj.recommend.android.ui.screens.main.home.category.CategoryScreen
+import com.serj.recommend.android.ui.screens.common.banner.BannerScreen
+import com.serj.recommend.android.ui.screens.common.category.CategoryScreen
 import com.serj.recommend.android.ui.styles.MyApplicationTheme
 import kotlinx.coroutines.CoroutineScope
 

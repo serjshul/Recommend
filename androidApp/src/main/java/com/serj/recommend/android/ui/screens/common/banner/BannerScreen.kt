@@ -1,4 +1,4 @@
-package com.serj.recommend.android.ui.screens.main.home.banner
+package com.serj.recommend.android.ui.screens.common.banner
 
 import android.graphics.Bitmap
 import androidx.compose.foundation.background
@@ -19,9 +19,10 @@ import com.serj.recommend.android.model.Banner
 import com.serj.recommend.android.model.BannerItem
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.ui.components.loadingIndicators.LargeLoadingIndicator
-import com.serj.recommend.android.ui.screens.main.home.banner.components.BannerContent
-import com.serj.recommend.android.ui.screens.main.home.banner.components.BannerDescription
-import com.serj.recommend.android.ui.screens.main.home.banner.components.BannerHeader
+import com.serj.recommend.android.ui.screens.common.banner.components.BannerContent
+import com.serj.recommend.android.ui.screens.common.banner.components.BannerDescription
+import com.serj.recommend.android.ui.screens.common.banner.components.BannerHeader
+import com.serj.recommend.android.ui.styles.White
 
 @Composable
 fun BannerScreen(
@@ -106,7 +107,9 @@ fun BannerScreenContent(
                 }
             }
         } else {
-            LargeLoadingIndicator()
+            LargeLoadingIndicator(
+                backgroundColor = White
+            )
         }
     }
 }

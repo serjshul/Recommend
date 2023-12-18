@@ -1,4 +1,4 @@
-package com.serj.recommend.android.ui.screens.main.home.category
+package com.serj.recommend.android.ui.screens.common.category
 
 import android.graphics.Bitmap
 import androidx.compose.runtime.mutableStateListOf

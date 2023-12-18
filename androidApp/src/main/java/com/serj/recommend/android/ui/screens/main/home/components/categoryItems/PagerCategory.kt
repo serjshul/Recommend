@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.sp
 import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.CategoryItem
 import com.serj.recommend.android.model.Recommendation
-import com.serj.recommend.android.ui.screens.main.home.components.contentItems.PagerCategoryItem
+import com.serj.recommend.android.ui.components.items.transparent.PagerItemTransparent
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -58,7 +58,7 @@ fun PagerCategory(
                 state = pagerState,
                 contentPadding = PaddingValues(start = 20.dp, end = 20.dp)
             ) { page ->
-                PagerCategoryItem(
+                PagerItemTransparent(
                     recommendationId = items[page % items.size]?.recommendationId,
                     title = items[page % items.size]?.title,
                     creator = items[page % items.size]?.creator,

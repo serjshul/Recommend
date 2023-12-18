@@ -1,4 +1,4 @@
-package com.serj.recommend.android.ui.screens.main.home.banner
+package com.serj.recommend.android.ui.screens.common.banner
 
 import android.graphics.Bitmap
 import androidx.compose.runtime.mutableStateListOf

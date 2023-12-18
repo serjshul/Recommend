@@ -28,9 +28,9 @@ import com.serj.recommend.android.common.ext.squareRecommendationMain
 import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.CategoryItem
 import com.serj.recommend.android.model.Recommendation
-import com.serj.recommend.android.ui.screens.main.home.components.contentItems.HorizontalCategoryItem
-import com.serj.recommend.android.ui.screens.main.home.components.contentItems.SquareCategoryItem
-import com.serj.recommend.android.ui.screens.main.home.components.contentItems.VerticalCategoryItem
+import com.serj.recommend.android.ui.components.items.transparent.HorizontalItemTransparent
+import com.serj.recommend.android.ui.components.items.transparent.SquareItemTransparent
+import com.serj.recommend.android.ui.components.items.transparent.VerticalItemTransparent
 
 @Composable
 fun OrdinaryCategory(
@@ -67,7 +67,7 @@ fun OrdinaryCategory(
                 items(items.size) { i ->
                     when (category.coverType) {
                         "square" -> {
-                            SquareCategoryItem(
+                            SquareItemTransparent(
                                 modifier = Modifier.squareRecommendationMain(),
                                 title = items[i]?.title,
                                 creator = items[i]?.creator,
@@ -78,7 +78,7 @@ fun OrdinaryCategory(
                             )
                         }
                         "horizontal" -> {
-                            HorizontalCategoryItem(
+                            HorizontalItemTransparent(
                                 modifier = Modifier.horizontalRecommendationMain(),
                                 title = items[i]?.title,
                                 creator = items[i]?.creator,
@@ -89,7 +89,7 @@ fun OrdinaryCategory(
                             )
                         }
                         "vertical" -> {
-                            VerticalCategoryItem(
+                            VerticalItemTransparent(
                                 title = items[i]?.title,
                                 creator = items[i]?.creator,
                                 cover = covers?.getOrNull(i),

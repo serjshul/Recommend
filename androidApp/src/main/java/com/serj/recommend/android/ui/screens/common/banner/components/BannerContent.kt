@@ -1,4 +1,4 @@
-package com.serj.recommend.android.ui.screens.main.home.banner.components
+package com.serj.recommend.android.ui.screens.common.banner.components
 
 import android.graphics.Bitmap
 import androidx.compose.foundation.layout.Column
@@ -10,8 +10,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.serj.recommend.android.model.BannerItem
 import com.serj.recommend.android.model.Recommendation
+import com.serj.recommend.android.ui.components.items.cards.SquareItemCard
 import com.serj.recommend.android.ui.components.loadingIndicators.SmallLoadingIndicator
-import com.serj.recommend.android.ui.screens.main.home.banner.components.bannerItems.SquareBannerItem
+import com.serj.recommend.android.ui.styles.White
 
 @Composable
 fun BannerContent(
@@ -30,7 +31,7 @@ fun BannerContent(
             for (i in bannerItems.indices) {
                 when (coverType) {
                     "square" -> {
-                        SquareBannerItem(
+                        SquareItemCard(
                             modifier = Modifier.padding(start = 15.dp, bottom = 15.dp, end = 15.dp),
                             title = bannerItems[i]?.title,
                             creator = bannerItems[i]?.creator,
@@ -57,7 +58,8 @@ fun BannerContent(
             SmallLoadingIndicator(
                 modifier = Modifier
                     .height(135.dp)
-                    .fillMaxWidth()
+                    .fillMaxWidth(),
+                backgroundColor = White
             )
         }
     }
