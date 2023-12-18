@@ -59,4 +59,6 @@
     <string name="notification_permission_description">The notification permission is important for this app. Please grant the permission.</string>
     <string name="notification_permission_settings">The notification permission is important for this app. Please navigate to your device settings and enable notifications for Make it So.</string>
 
+    <string name="goes_online_toast">Wi-Fi is ready to be scanned!</string>
+    <string name="goes_offline_toast">Not connected to any Wi-Fi!</string>
 </resources>
