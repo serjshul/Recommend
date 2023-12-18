@@ -19,11 +19,11 @@ import androidx.compose.ui.unit.sp
 import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.CategoryItem
 import com.serj.recommend.android.model.Recommendation
-import com.serj.recommend.android.ui.screens.main.home.components.contentItems.GalleryCategoryItem
+import com.serj.recommend.android.ui.screens.main.home.components.contentItems.PagerCategoryItem
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun GalleryCategory(
+fun PagerCategory(
     modifier: Modifier = Modifier,
     items: List<CategoryItem?>?,
     covers: List<Bitmap?>?,
@@ -34,7 +34,7 @@ fun GalleryCategory(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 40.dp),
+            .padding(bottom = 45.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
@@ -48,7 +48,7 @@ fun GalleryCategory(
         )
 
         if (!items.isNullOrEmpty()) {
-            val pageCount = Int.MAX_VALUE
+            val pageCount = 300
             val pagerState = rememberPagerState(
                 initialPage = pageCount / 2,
                 pageCount = { pageCount }
@@ -58,7 +58,7 @@ fun GalleryCategory(
                 state = pagerState,
                 contentPadding = PaddingValues(start = 20.dp, end = 20.dp)
             ) { page ->
-                GalleryCategoryItem(
+                PagerCategoryItem(
                     recommendationId = items[page % items.size]?.recommendationId,
                     title = items[page % items.size]?.title,
                     creator = items[page % items.size]?.creator,

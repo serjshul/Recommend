@@ -26,7 +26,7 @@ import com.serj.recommend.android.R
 import com.serj.recommend.android.model.Recommendation
 
 @Composable
-fun GalleryCategoryItem(
+fun PagerCategoryItem(
     modifier: Modifier = Modifier,
     recommendationId: String?,
     title: String?,
