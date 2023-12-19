@@ -29,7 +29,7 @@ fun CommentShortItem(
             append(" $comment")
         },
         fontSize = 14.sp,
-        maxLines = 2,
+        maxLines = 1,
         lineHeight = 1.2.em,
         overflow = TextOverflow.Ellipsis
     )
