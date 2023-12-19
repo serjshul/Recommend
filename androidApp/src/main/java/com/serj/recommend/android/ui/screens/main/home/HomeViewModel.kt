@@ -1,6 +1,5 @@
 package com.serj.recommend.android.ui.screens.main.home
 
-import android.content.ContentValues.TAG
 import android.content.ContentValues
 import android.graphics.Bitmap
 import android.util.Log
@@ -16,7 +15,6 @@ import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.service.ConfigurationService
 import com.serj.recommend.android.model.service.LogService
 import com.serj.recommend.android.model.service.StorageService
-import com.serj.recommend.android.ui.CATEGORY_PAGER
 import com.serj.recommend.android.ui.screens.RecommendViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -64,11 +62,11 @@ class HomeViewModel @Inject constructor(
                             )
                         }
 
-                        currentRecommendations =
-                            if (category.recommendationIds.size < 6 || category.type == CATEGORY_PAGER)
-                                category.recommendationIds.shuffled()
-                            else
-                                category.recommendationIds.shuffled().subList(0, 5)
+                        currentRecommendations = if (
+                            recsLessThanN(category.recommendationIds)
+                            || isPager(category.type)
+                        ) category.recommendationIds.shuffled()
+                        else category.recommendationIds.shuffled().subList(0, 5)
 
                         for (recommendationId in currentRecommendations) {
                             getCategoryItemData(
@@ -83,24 +81,35 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun getCategoryItemData(recommendationId: String, coverType: String, title: String) {
-        launchCatching {
-            storageService
-                .getCategoryItems(
-                    recommendationId = recommendationId,
-                    coverType = coverType)
-                .let {
-                    categoriesItems[title] = categoriesItems[title]?.plus(it)
+    private fun recsLessThanN(
+        recs: ArrayList<String>, n: Int = 6
+    ) = recs.size < 6
 
-                    if (it != null) {
-                        it.cover?.let { gsReference ->
-                            getCategoryItemCover(
-                                gsReference = gsReference,
-                                title = title
-                            )
-                        }
+    // TODO: User enums, instead of strings
+    private fun isPager(categoryType: String) =
+        categoryType == CategoryType.pager.name
+
+    private fun getCategoryItemData(
+        recommendationId: String,
+        coverType: String,
+        title: String
+    ) {
+        launchCatching {
+            storageService.getCategoryItems(
+                recommendationId = recommendationId,
+                coverType = coverType
+            ).let {
+                categoriesItems[title] = categoriesItems[title]?.plus(it)
+
+                if (it != null) {
+                    it.cover?.let { gsReference ->
+                        getCategoryItemCover(
+                            gsReference = gsReference,
+                            title = title
+                        )
                     }
                 }
+            }
         }
     }
 

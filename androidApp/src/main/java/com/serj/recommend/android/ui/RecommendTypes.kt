@@ -1,9 +1,7 @@
 package com.serj.recommend.android.ui
 
-const val CATEGORY_ORDINARY = "ordinary"
-const val CATEGORY_EXTENDED = "extended"
-const val CATEGORY_PAGER = "pager"
-
+// TODO: put it to CategoryType enum if this is a categories
+//  or create other enum class for this
 const val COVER_SQUARE = "square"
 const val COVER_HORIZONTAL = "horizontal"
 const val COVER_VERTICAL = "vertical"

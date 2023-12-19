@@ -23,7 +23,7 @@ import com.serj.recommend.android.ui.screens.main.home.components.categoryItems.
 import com.serj.recommend.android.ui.screens.main.home.components.categoryItems.OrdinaryCategory
 import com.serj.recommend.android.ui.screens.main.home.components.categoryItems.PagerCategory
 
-private enum class CategoryType {
+enum class CategoryType {
     ordinary, extended, pager
 }
 
@@ -129,10 +129,10 @@ fun HomeScreenContent(
                         //  (add more description to TODOs)
                         // TODO: what to do?
 
+                        SnackbarManager.showMessage(R.string.error_category_type)
+
                         // TODO: if this doesn't must happened anytime of app lifecycle,
                         //  use enums for categories, so when always be fulled
-
-                        SnackbarManager.showMessage(R.string.error_category_type)
                     }
                 }
             }
