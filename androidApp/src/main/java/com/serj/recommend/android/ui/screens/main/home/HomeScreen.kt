@@ -21,9 +21,9 @@ import com.serj.recommend.android.ui.screens.main.home.components.categoryItems.
 import com.serj.recommend.android.ui.screens.main.home.components.categoryItems.OrdinaryCategory
 import com.serj.recommend.android.ui.screens.main.home.components.categoryItems.PagerCategory
 
-const val ORDINARY_CATEGORY = "ordinary"
-const val EXTENDED_CATEGORY = "extended"
-const val PAGER_CATEGORY = "pager"
+private enum class CategoryType {
+    ordinary, extended, pager
+}
 
 @Composable
 fun HomeScreen(
@@ -86,7 +86,7 @@ fun HomeScreenContent(
 
             items(categories) { category ->
                 when (category.type) {
-                    ORDINARY_CATEGORY -> {
+                    CategoryType.ordinary.name -> {
                         OrdinaryCategory(
                             category = category,
                             items = categoriesItems[category.title],
@@ -96,7 +96,7 @@ fun HomeScreenContent(
                         )
                     }
 
-                    EXTENDED_CATEGORY -> {
+                    CategoryType.extended.name -> {
                         ExtendedCategory(
                             category = category,
                             backgroundImage = categoriesBackgrounds[category.title],
@@ -107,7 +107,7 @@ fun HomeScreenContent(
                         )
                     }
 
-                    PAGER_CATEGORY -> {
+                    CategoryType.pager.name -> {
                         PagerCategory(
                             category = category,
                             items = categoriesItems[category.title],
@@ -121,6 +121,9 @@ fun HomeScreenContent(
                         // TODO: Declare TODOs more understandable!
                         //  (add more description to TODOs)
                         // TODO: what to do?
+
+                        // TODO: if this doesn't must happened anytime of app lifecycle,
+                        //  use enums for categories, so when always be fulled
                     }
                 }
             }
