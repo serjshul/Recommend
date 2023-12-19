@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -83,40 +84,43 @@ fun HomeScreenContent(
                 }
             }
 
-            for (category in categories) {
-                item {
-                    when (category.type) {
-                        ORDINARY_CATEGORY -> {
-                            OrdinaryCategory(
-                                category = category,
-                                items = categoriesItems[category.title],
-                                covers = categoriesImages[category.title],
-                                openScreen = openScreen,
-                                onRecommendationClick = onRecommendationClick
-                            )
-                        }
-                        EXTENDED_CATEGORY -> {
-                            ExtendedCategory(
-                                category = category,
-                                backgroundImage = categoriesBackgrounds[category.title],
-                                items = categoriesItems[category.title],
-                                covers = categoriesImages[category.title],
-                                openScreen = openScreen,
-                                onRecommendationClick = onRecommendationClick
-                            )
-                        }
-                        PAGER_CATEGORY -> {
-                            PagerCategory(
-                                category = category,
-                                items = categoriesItems[category.title],
-                                covers = categoriesImages[category.title],
-                                openScreen = openScreen,
-                                onRecommendationClick = onRecommendationClick
-                            )
-                        }
-                        else -> {
-                            // TODO: what to do?
-                        }
+            items(categories) { category ->
+                when (category.type) {
+                    ORDINARY_CATEGORY -> {
+                        OrdinaryCategory(
+                            category = category,
+                            items = categoriesItems[category.title],
+                            covers = categoriesImages[category.title],
+                            openScreen = openScreen,
+                            onRecommendationClick = onRecommendationClick
+                        )
+                    }
+
+                    EXTENDED_CATEGORY -> {
+                        ExtendedCategory(
+                            category = category,
+                            backgroundImage = categoriesBackgrounds[category.title],
+                            items = categoriesItems[category.title],
+                            covers = categoriesImages[category.title],
+                            openScreen = openScreen,
+                            onRecommendationClick = onRecommendationClick
+                        )
+                    }
+
+                    PAGER_CATEGORY -> {
+                        PagerCategory(
+                            category = category,
+                            items = categoriesItems[category.title],
+                            covers = categoriesImages[category.title],
+                            openScreen = openScreen,
+                            onRecommendationClick = onRecommendationClick
+                        )
+                    }
+
+                    else -> {
+                        // TODO: Declare TODOs more understandable!
+                        //  (add more description to TODOs)
+                        // TODO: what to do?
                     }
                 }
             }
