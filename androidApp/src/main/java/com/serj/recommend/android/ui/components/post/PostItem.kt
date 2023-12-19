@@ -1,28 +1,22 @@
-package com.serj.recommend.android.ui.screens.main.feed
+package com.serj.recommend.android.ui.components.post
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.ColorMatrix
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
@@ -45,7 +39,15 @@ fun PostItem(
     name: String?,
     nickname: String?,
     date: String?,
+    userPhoto: Bitmap?,
     text: String?,
+    background: Bitmap?,
+    title: String?,
+    creator: String?,
+    likesCounter: Int?,
+    commentsCounter: Int?,
+    repostsCounter: Int?,
+    viewsCounter: Int?,
     recommendationId: String?,
     openScreen: (String) -> Unit,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
@@ -57,16 +59,28 @@ fun PostItem(
                 .shadow(2.dp)
                 .background(White)
         ) {
-            Image(
-                modifier = Modifier
-                    .padding(10.dp)
-                    .size(40.dp)
-                    .clip(CircleShape),
-                painter = painterResource(id = R.drawable.profile_photo),
-                contentDescription = "photo",
-                contentScale = ContentScale.Crop,
-                alignment = Alignment.TopCenter
-            )
+            if (userPhoto != null) {
+                Image(
+                    modifier = Modifier
+                        .padding(10.dp)
+                        .size(40.dp)
+                        .clip(CircleShape),
+                    bitmap = userPhoto.asImageBitmap(),
+                    contentDescription = title,
+                    contentScale = ContentScale.Crop
+                )
+            } else {
+                Image(
+                    modifier = Modifier
+                        .padding(10.dp)
+                        .size(40.dp)
+                        .clip(CircleShape),
+                    painter = painterResource(id = R.drawable.no_user_photo),
+                    contentDescription = "photo",
+                    contentScale = ContentScale.Crop,
+                    alignment = Alignment.TopCenter
+                )
+            }
 
             Column(
                 modifier = Modifier
@@ -108,58 +122,21 @@ fun PostItem(
                     fontSize = 14.sp
                 )
 
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp)
-                        .padding(top = 5.dp)
-                        .clip(RoundedCornerShape(5.dp))
-                        .clickable {
-                            if (recommendationId != null) {
-                                onRecommendationClick(
-                                    openScreen,
-                                    Recommendation(id = recommendationId)
-                                )
-                            }
-                        }
-                ) {
-                    Image(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .blur(radius = 3.dp),
-                        painter = painterResource(id = R.drawable.background),
-                        colorFilter = ColorFilter.colorMatrix(ColorMatrix().apply {
-                            setToScale(0.8f, 0.8f, 0.8f, 1f)
-                        }),
-                        contentDescription = "",
-                        contentScale = ContentScale.Crop
-                    )
-
-                    Column(
-                        modifier = Modifier.align(Alignment.Center),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = "Title",
-                            color = White,
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-
-                        Text(
-                            text = "Creator",
-                            color = White,
-                            fontSize = 16.sp
-                        )
-                    }
-                }
+                PostRecommendationCard(
+                    background = background,
+                    title = title,
+                    creator = creator,
+                    recommendationId = recommendationId,
+                    openScreen = openScreen,
+                    onRecommendationClick = onRecommendationClick
+                )
 
                 InteractionPanel(
                     modifier = Modifier.padding(top = 10.dp),
-                    views = "183",
-                    likes = "93",
-                    comments = "5",
-                    reposts = "4"
+                    views = viewsCounter.toString(),
+                    likes = likesCounter.toString(),
+                    comments = commentsCounter.toString(),
+                    reposts = repostsCounter.toString()
                 )
             }
         }
@@ -178,9 +155,17 @@ fun PostItemPreview() {
                 name = "Serj's cringe",
                 nickname = "@serjshul",
                 date = "1d",
+                userPhoto = null,
                 text = "text text text text text text text text text text text text text text text " +
                         "text text text text text text text text text text text text text text text " +
                         "text text text text text text text text text text text text text text",
+                background = null,
+                title = "title",
+                creator = "creator",
+                likesCounter = 43,
+                commentsCounter = 7,
+                repostsCounter = 4,
+                viewsCounter = 185,
                 recommendationId = "",
                 openScreen = { },
                 onRecommendationClick = { _: (String) -> Unit, _: Recommendation -> }
