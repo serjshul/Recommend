@@ -38,24 +38,41 @@ class CategoryViewModel @Inject constructor(
 
                 if (category.value!!.recommendationIds.isNotEmpty()) {
                     for (recommendationId in category.value!!.recommendationIds) {
-                        val item = storageService
-                            .getCategoryItems(
+                        category.value?.coverType?.let {
+                            getCategoryItemData(
                                 recommendationId = recommendationId,
-                                coverType = category.value!!.coverType
+                                coverType = it
                             )
-                        if (item != null) {
-                            categoryItems.add(item)
                         }
                     }
                 }
+            }
+        }
+    }
 
-                for (item in categoryItems) {
-                    item?.cover?.let { gsReference ->
-                        storageService.downloadImage(gsReference).let {
-                            categoryImages[item.title] = it
-                        }
+    private fun getCategoryItemData(recommendationId: String, coverType: String) {
+        launchCatching {
+            storageService
+                .getCategoryItems(
+                    recommendationId = recommendationId,
+                    coverType = coverType)
+                . let {
+                    categoryItems.add(it)
+
+                    if (it?.cover != null && it.title != null) {
+                        getCategoryItemCover(
+                            gsReference = it.cover,
+                            title = it.title
+                        )
                     }
                 }
+        }
+    }
+
+    private fun getCategoryItemCover(gsReference: String, title: String) {
+        launchCatching {
+            storageService.downloadImage(gsReference). let {
+                categoryImages[title] = it
             }
         }
     }

@@ -3,6 +3,7 @@ package com.serj.recommend.android.ui.screens.main.home.components.categoryItems
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -105,7 +106,8 @@ fun ExtendedCategory(
             Text(
                 modifier = modifier
                     .padding(start = 15.dp, top = 10.dp, end = 15.dp, bottom = 10.dp)
-                    .align(Alignment.TopCenter),
+                    .align(Alignment.TopCenter)
+                    .clickable { onCategoryClick(openScreen, category.id) },
                 text = category.title,
                 color = if (backgroundImage != null) category.color?.toColor() ?: Color.Black
                 else Color.Black,
