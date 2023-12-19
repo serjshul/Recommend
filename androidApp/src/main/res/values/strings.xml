@@ -61,4 +61,7 @@
 
     <string name="goes_online_toast">You\'re online now!</string>
     <string name="goes_offline_toast">Problems with network!</string>
+
+    <string name="error_cover_type">Wrong cover type</string>
+    <string name="error_category_type">Wrong category type</string>
 </resources>

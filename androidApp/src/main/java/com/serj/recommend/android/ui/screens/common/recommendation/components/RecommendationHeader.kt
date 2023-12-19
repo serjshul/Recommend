@@ -99,7 +99,7 @@ fun RecommendationHeader(
                         .padding(20.dp)
                         .align(Alignment.TopStart)
                         .clickable { popUpScreen() },
-                    painter = painterResource(id = R.drawable.icon_arrow_back),
+                    painter = painterResource(id = R.drawable.icon_arrow_back_white),
                     contentDescription = "button_back",
                     contentScale = ContentScale.Crop
                 )

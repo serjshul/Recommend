@@ -1,23 +1,15 @@
 package com.serj.recommend.android.ui.screens.main.home.components.categoryItems
 
 import android.graphics.Bitmap
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowForward
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -33,7 +25,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -41,10 +32,15 @@ import com.serj.recommend.android.R
 import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.CategoryItem
 import com.serj.recommend.android.model.Recommendation
+import com.serj.recommend.android.ui.COVER_HORIZONTAL
+import com.serj.recommend.android.ui.COVER_SQUARE
+import com.serj.recommend.android.ui.COVER_VERTICAL
+import com.serj.recommend.android.ui.components.items.transparent.HorizontalItemTransparent
+import com.serj.recommend.android.ui.components.items.transparent.SquareItemTransparent
+import com.serj.recommend.android.ui.components.items.transparent.VerticalItemTransparent
+import com.serj.recommend.android.ui.components.snackbar.SnackbarManager
 import com.serj.recommend.android.ui.screens.common.recommendation.components.toColor
-import com.serj.recommend.android.ui.screens.main.home.components.contentItems.HorizontalCategoryItem
-import com.serj.recommend.android.ui.screens.main.home.components.contentItems.SquareCategoryItem
-import com.serj.recommend.android.ui.screens.main.home.components.contentItems.VerticalCategoryItem
+import com.serj.recommend.android.ui.screens.main.home.components.ShowAllButton
 
 @Composable
 fun ExtendedCategory(
@@ -55,78 +51,81 @@ fun ExtendedCategory(
     covers: List<Bitmap?>?,
     category: Category,
     openScreen: (String) -> Unit,
+    onCategoryClick: ((String) -> Unit, String) -> Unit,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
 ) {
-    var sizeImage by remember { mutableStateOf(IntSize.Zero) }
+    if (items != null) {
+        var sizeImage by remember { mutableStateOf(IntSize.Zero) }
 
-    Box(
-        modifier = Modifier
-            .padding(top = 5.dp, bottom = 60.dp)
-    ) {
-        when {
-            backgroundVideo != null -> {
-                // TODO: add video player
-            }
-            backgroundImage != null -> {
-                Image(
-                    modifier = Modifier
-                        .height(270.dp)
-                        .fillMaxWidth()
-                        .onGloballyPositioned { sizeImage = it.size },
-                    bitmap = backgroundImage.asImageBitmap(),
-                    contentDescription = "background_image",
-                    contentScale = ContentScale.Crop
-                )
-            }
-            else -> {
-                Image(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(270.dp),
-                    painter = painterResource(id = R.drawable.gradient),
-                    contentDescription = "background_gradient",
-                    contentScale = ContentScale.Crop
-                )
-            }
-        }
         Box(
-            modifier = modifier
-                .height(270.dp)
-                .fillMaxWidth()
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(Color.Transparent, Color.White),
-                        startY = (sizeImage.height.toFloat() / 1.5).toFloat(),
-                        endY = sizeImage.height.toFloat()
-                    )
-                )
-        )
-
-        Text(
-            modifier = modifier
-                .padding(start = 15.dp, top = 10.dp, end = 15.dp, bottom = 10.dp)
-                .align(Alignment.TopCenter),
-            text = category.title,
-            color = if (backgroundImage != null) category.color?.toColor() ?: Color.Black
-                else Color.Black,
-            fontSize = 24.sp,
-            maxLines = 2,
-            fontWeight = FontWeight.Bold,
-        )
-
-        LazyRow(
-            modifier = modifier.padding(top = 190.dp),
-            verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier
+                .padding(top = 10.dp, bottom = 20.dp)
         ) {
-            item {
-                Spacer(modifier = Modifier.size(15.dp))
-            }
+            when {
+                backgroundVideo != null -> {
+                    // TODO: add video player
+                }
 
-            items?.let {
+                backgroundImage != null -> {
+                    Image(
+                        modifier = Modifier
+                            .height(270.dp)
+                            .fillMaxWidth()
+                            .onGloballyPositioned { sizeImage = it.size },
+                        bitmap = backgroundImage.asImageBitmap(),
+                        contentDescription = "background_image",
+                        contentScale = ContentScale.Crop
+                    )
+                }
+
+                else -> {
+                    Image(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(270.dp),
+                        painter = painterResource(id = R.drawable.gradient),
+                        contentDescription = "background_gradient",
+                        contentScale = ContentScale.Crop
+                    )
+                }
+            }
+            Box(
+                modifier = modifier
+                    .height(270.dp)
+                    .fillMaxWidth()
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(Color.Transparent, Color.White),
+                            startY = (sizeImage.height.toFloat() / 1.5).toFloat(),
+                            endY = sizeImage.height.toFloat()
+                        )
+                    )
+            )
+
+            Text(
+                modifier = modifier
+                    .padding(start = 15.dp, top = 10.dp, end = 15.dp, bottom = 10.dp)
+                    .align(Alignment.TopCenter),
+                text = category.title,
+                color = if (backgroundImage != null) category.color?.toColor() ?: Color.Black
+                else Color.Black,
+                fontSize = 24.sp,
+                maxLines = 2,
+                fontWeight = FontWeight.Bold,
+            )
+
+            LazyRow(
+                modifier = modifier.padding(top = 190.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                item {
+                    Spacer(modifier = Modifier.size(15.dp))
+                }
+
                 items(items.size) { i ->
                     when (category.coverType) {
-                        "square" -> {
-                            SquareCategoryItem(
+                        COVER_SQUARE -> {
+                            SquareItemTransparent(
                                 title = items[i]?.title,
                                 creator = items[i]?.creator,
                                 cover = covers?.getOrNull(i),
@@ -135,8 +134,9 @@ fun ExtendedCategory(
                                 onRecommendationClick = onRecommendationClick
                             )
                         }
-                        "horizontal" -> {
-                            HorizontalCategoryItem(
+
+                        COVER_HORIZONTAL -> {
+                            HorizontalItemTransparent(
                                 title = items[i]?.title,
                                 creator = items[i]?.creator,
                                 cover = covers?.getOrNull(i),
@@ -145,8 +145,9 @@ fun ExtendedCategory(
                                 onRecommendationClick = onRecommendationClick
                             )
                         }
-                        "vertical" -> {
-                            VerticalCategoryItem(
+
+                        COVER_VERTICAL -> {
+                            VerticalItemTransparent(
                                 title = items[i]?.title,
                                 creator = items[i]?.creator,
                                 cover = covers?.getOrNull(i),
@@ -155,40 +156,20 @@ fun ExtendedCategory(
                                 onRecommendationClick = onRecommendationClick
                             )
                         }
+
                         else -> {
-                            // TODO: what else?
+                            SnackbarManager.showMessage(R.string.error_cover_type)
                         }
                     }
                 }
 
                 item {
-                    Column(
-                        modifier = modifier.padding(start = 35.dp, end = 50.dp, bottom = 30.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        OutlinedIconButton(
-                            colors = IconButtonDefaults.outlinedIconButtonColors(
-                                contentColor = Color.Black,
-                            ),
-                            border = BorderStroke(1.dp, Color.Gray),
-                            onClick = {
-                                // TODO: category screen
-                            }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Outlined.ArrowForward,
-                                contentDescription = "forward"
-                            )
-                        }
-
-                        Text(
-                            text = "Show all",
-                            color = Color.Black,
-                            fontSize = 14.sp,
-                            textAlign = TextAlign.Center
-                        )
-                    }
+                    ShowAllButton(
+                        modifier = Modifier.padding(start = 35.dp, end = 50.dp, bottom = 30.dp),
+                        categoryId = category.id,
+                        openScreen = openScreen,
+                        onCategoryClick = onCategoryClick
+                    )
                 }
             }
         }

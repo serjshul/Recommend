@@ -22,6 +22,7 @@ import com.serj.recommend.android.ui.components.loadingIndicators.LargeLoadingIn
 import com.serj.recommend.android.ui.screens.common.banner.components.BannerContent
 import com.serj.recommend.android.ui.screens.common.banner.components.BannerDescription
 import com.serj.recommend.android.ui.screens.common.banner.components.BannerHeader
+import com.serj.recommend.android.ui.styles.White
 
 @Composable
 fun BannerScreen(
@@ -106,7 +107,9 @@ fun BannerScreenContent(
                 }
             }
         } else {
-            LargeLoadingIndicator()
+            LargeLoadingIndicator(
+                backgroundColor = White
+            )
         }
     }
 }

@@ -11,18 +11,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.serj.recommend.android.R
 import com.serj.recommend.android.model.Banner
 import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.CategoryItem
 import com.serj.recommend.android.model.Recommendation
+import com.serj.recommend.android.ui.CATEGORY_EXTENDED
+import com.serj.recommend.android.ui.CATEGORY_ORDINARY
+import com.serj.recommend.android.ui.CATEGORY_PAGER
+import com.serj.recommend.android.ui.components.snackbar.SnackbarManager
 import com.serj.recommend.android.ui.screens.main.home.components.Banner
 import com.serj.recommend.android.ui.screens.main.home.components.categoryItems.ExtendedCategory
 import com.serj.recommend.android.ui.screens.main.home.components.categoryItems.OrdinaryCategory
 import com.serj.recommend.android.ui.screens.main.home.components.categoryItems.PagerCategory
-
-const val ORDINARY_CATEGORY = "ordinary"
-const val EXTENDED_CATEGORY = "extended"
-const val PAGER_CATEGORY = "pager"
 
 @Composable
 fun HomeScreen(
@@ -46,7 +47,8 @@ fun HomeScreen(
         categoriesImages = categoriesImages,
         openScreen = openScreen,
         onRecommendationClick = viewModel::onRecommendationClick,
-        onBannerClick = viewModel::onBannerClick
+        onBannerClick = viewModel::onBannerClick,
+        onCategoryClick = viewModel::onCategoryClick
     )
 }
 
@@ -61,7 +63,8 @@ fun HomeScreenContent(
     categoriesImages: Map<String?, List<Bitmap?>?>,
     openScreen: (String) -> Unit,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit,
-    onBannerClick: ((String) -> Unit, Banner) -> Unit,
+    onBannerClick: ((String) -> Unit, String) -> Unit,
+    onCategoryClick: ((String) -> Unit, String) -> Unit
 ) {
     Scaffold { paddingValues ->
         LazyColumn(
@@ -86,36 +89,39 @@ fun HomeScreenContent(
             for (category in categories) {
                 item {
                     when (category.type) {
-                        ORDINARY_CATEGORY -> {
+                        CATEGORY_ORDINARY -> {
                             OrdinaryCategory(
                                 category = category,
                                 items = categoriesItems[category.title],
                                 covers = categoriesImages[category.title],
                                 openScreen = openScreen,
-                                onRecommendationClick = onRecommendationClick
+                                onRecommendationClick = onRecommendationClick,
+                                onCategoryClick = onCategoryClick
                             )
                         }
-                        EXTENDED_CATEGORY -> {
+                        CATEGORY_EXTENDED -> {
                             ExtendedCategory(
                                 category = category,
                                 backgroundImage = categoriesBackgrounds[category.title],
                                 items = categoriesItems[category.title],
                                 covers = categoriesImages[category.title],
                                 openScreen = openScreen,
-                                onRecommendationClick = onRecommendationClick
+                                onRecommendationClick = onRecommendationClick,
+                                onCategoryClick = onCategoryClick
                             )
                         }
-                        PAGER_CATEGORY -> {
+                        CATEGORY_PAGER -> {
                             PagerCategory(
                                 category = category,
                                 items = categoriesItems[category.title],
                                 covers = categoriesImages[category.title],
                                 openScreen = openScreen,
-                                onRecommendationClick = onRecommendationClick
+                                onRecommendationClick = onRecommendationClick,
+                                onCategoryClick = onCategoryClick
                             )
                         }
                         else -> {
-                            // TODO: what to do?
+                            SnackbarManager.showMessage(R.string.error_category_type)
                         }
                     }
                 }

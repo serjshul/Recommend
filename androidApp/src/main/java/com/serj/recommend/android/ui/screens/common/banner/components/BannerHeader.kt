@@ -2,7 +2,6 @@ package com.serj.recommend.android.ui.screens.common.banner.components
 
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -35,6 +34,7 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.serj.recommend.android.R
 import com.serj.recommend.android.ui.components.loadingIndicators.LargeLoadingIndicator
+import com.serj.recommend.android.ui.styles.LightGray
 
 @Composable
 fun BannerHeader(
@@ -72,7 +72,7 @@ fun BannerHeader(
             }
             else -> {
                 LargeLoadingIndicator(
-                    modifier = Modifier.background(Color.LightGray)
+                    backgroundColor = LightGray
                 )
             }
         }
@@ -87,7 +87,7 @@ fun BannerHeader(
                     .padding(20.dp)
                     .align(Alignment.TopStart)
                     .clickable { popUpScreen() },
-                painter = painterResource(id = R.drawable.icon_arrow_back),
+                painter = painterResource(id = R.drawable.icon_arrow_back_white),
                 contentDescription = "button_back",
                 contentScale = ContentScale.Crop
             )

@@ -27,6 +27,7 @@ import com.serj.recommend.android.ui.components.loadingIndicators.SmallLoadingIn
 import com.serj.recommend.android.ui.screens.common.recommendation.components.getParagraphTexts
 import com.serj.recommend.android.ui.screens.common.recommendation.components.toColor
 import com.serj.recommend.android.ui.styles.AppleRed
+import com.serj.recommend.android.ui.styles.White
 
 @Composable
 fun BannerDescription(
@@ -104,7 +105,9 @@ fun BannerDescription(
                 .height(100.dp)
                 .fillMaxWidth()
         ) {
-            SmallLoadingIndicator()
+            SmallLoadingIndicator(
+                backgroundColor = White
+            )
         }
     }
 }
