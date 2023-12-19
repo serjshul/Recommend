@@ -71,7 +71,7 @@ class StorageServiceImpl @Inject constructor(
             .await()
             .toObject()
 
-    override suspend fun getCategoryItem(recommendationId: String, coverType: String):
+    override suspend fun getCategoryItems(recommendationId: String, coverType: String):
             CategoryItem? {
         var categoryItem: CategoryItem? = null
 

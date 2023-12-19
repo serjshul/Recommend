@@ -54,7 +54,7 @@ fun ExtendedCategory(
     onCategoryClick: ((String) -> Unit, String) -> Unit,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
 ) {
-    if (items != null) {
+    if (!items.isNullOrEmpty()) {
         var sizeImage by remember { mutableStateOf(IntSize.Zero) }
 
         Box(

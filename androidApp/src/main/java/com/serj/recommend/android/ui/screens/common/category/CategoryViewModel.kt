@@ -39,7 +39,7 @@ class CategoryViewModel @Inject constructor(
                 if (category.value!!.recommendationIds.isNotEmpty()) {
                     for (recommendationId in category.value!!.recommendationIds) {
                         val item = storageService
-                            .getCategoryItem(
+                            .getCategoryItems(
                                 recommendationId = recommendationId,
                                 coverType = category.value!!.coverType
                             )

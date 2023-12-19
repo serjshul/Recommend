@@ -39,7 +39,7 @@ fun OrdinaryCategory(
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit,
     onCategoryClick: ((String) -> Unit, String) -> Unit
 ) {
-    if (items != null) {
+    if (!items.isNullOrEmpty()) {
         Column(
             modifier = modifier.padding(bottom = 20.dp)
         ) {
