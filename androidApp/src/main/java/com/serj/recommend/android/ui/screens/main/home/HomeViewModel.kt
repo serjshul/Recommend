@@ -37,7 +37,7 @@ class HomeViewModel @Inject constructor(
             banners.collect { banners ->
                 banner.value = banners.random()
 
-                bannerCover.value = banner.value!!.cover?.get("image")?. let {
+                bannerCover.value = banner.value!!.cover?.get("image")?.let {
                     storageService.downloadImage(it)
                 }
             }
@@ -61,7 +61,7 @@ class HomeViewModel @Inject constructor(
                                 .getCategoryItem(
                                     recommendationId = currentRecommendations[i],
                                     coverType = category.coverType)
-                                . let {
+                                .let {
                                     currentItems.add(it)
                                 }
                         }
@@ -74,7 +74,7 @@ class HomeViewModel @Inject constructor(
                         val currentImages = arrayListOf<Bitmap?>()
                         for (item in categoriesItems[category.title]!!) {
                             item?.cover?.let { gsReference ->
-                                storageService.downloadImage(gsReference). let {
+                                storageService.downloadImage(gsReference).let {
                                     currentImages.add(it)
                                 }
                             }
