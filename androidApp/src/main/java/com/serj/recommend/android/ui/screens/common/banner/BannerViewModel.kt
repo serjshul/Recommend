@@ -37,34 +37,56 @@ class BannerViewModel @Inject constructor(
                 banner.value = storageService
                     .getBanner(bannerId.idFromParameter()) ?: Banner()
 
-                if (banner.value!!.recommendationIds?.isNotEmpty() == true) {
+                banner.value!!.background?.get("image")?.let {
+                    getBannerBackground(
+                        gsReference = it,
+                    )
+                }
+
+                if (!banner.value!!.recommendationIds.isNullOrEmpty()) {
                     for (recommendationId in banner.value!!.recommendationIds!!) {
-                        banner.value!!.coverType?.let { item ->
-                            storageService
-                                .getBannerItem(
-                                    recommendationId = recommendationId,
-                                    coverType = item
-                                )
-                                .let {
-                                    bannerItems.add(it)
-                                }
-                        }
-                    }
-                }
-
-                bannerBackground.value = banner.value!!.background?.get("image")
-                    ?.let { gsReference ->
-                    storageService.downloadImage(gsReference)
-                }
-
-                for (item in bannerItems) {
-                    item?.cover?.let { gsReference ->
-                        storageService.downloadImage(gsReference).let {
-                            bannerImages[item.title] = it
+                        banner.value?.coverType?.let {
+                            getBannerItemData(
+                                recommendationId = recommendationId,
+                                coverType = it
+                            )
                         }
                     }
                 }
             }
+        }
+    }
+
+    private fun getBannerItemData(recommendationId: String, coverType: String) {
+        launchCatching {
+            storageService
+                .getBannerItem(
+                    recommendationId = recommendationId,
+                    coverType = coverType)
+                . let {
+                    bannerItems.add(it)
+
+                    if (it?.cover != null && it.title != null) {
+                        getBannerItemCover(
+                            gsReference = it.cover,
+                            title = it.title
+                        )
+                    }
+                }
+        }
+    }
+
+    private fun getBannerItemCover(gsReference: String, title: String) {
+        launchCatching {
+            storageService.downloadImage(gsReference). let {
+                bannerImages[title] = it
+            }
+        }
+    }
+
+    private fun getBannerBackground(gsReference: String) {
+        launchCatching {
+            bannerBackground.value = storageService.downloadImage(gsReference)
         }
     }
 
