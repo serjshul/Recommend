@@ -12,10 +12,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.serj.recommend.android.R
 import com.serj.recommend.android.model.Banner
 import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.CategoryItem
 import com.serj.recommend.android.model.Recommendation
+import com.serj.recommend.android.ui.components.snackbar.SnackbarManager
 import com.serj.recommend.android.ui.screens.main.home.components.Banner
 import com.serj.recommend.android.ui.screens.main.home.components.categoryItems.ExtendedCategory
 import com.serj.recommend.android.ui.screens.main.home.components.categoryItems.OrdinaryCategory
@@ -47,7 +49,8 @@ fun HomeScreen(
         categoriesImages = categoriesImages,
         openScreen = openScreen,
         onRecommendationClick = viewModel::onRecommendationClick,
-        onBannerClick = viewModel::onBannerClick
+        onBannerClick = viewModel::onBannerClick,
+        onCategoryClick = viewModel::onCategoryClick
     )
 }
 
@@ -62,7 +65,8 @@ fun HomeScreenContent(
     categoriesImages: Map<String?, List<Bitmap?>?>,
     openScreen: (String) -> Unit,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit,
-    onBannerClick: ((String) -> Unit, Banner) -> Unit,
+    onBannerClick: ((String) -> Unit, String) -> Unit,
+    onCategoryClick: ((String) -> Unit, String) -> Unit
 ) {
     Scaffold { paddingValues ->
         LazyColumn(
@@ -92,7 +96,8 @@ fun HomeScreenContent(
                             items = categoriesItems[category.title],
                             covers = categoriesImages[category.title],
                             openScreen = openScreen,
-                            onRecommendationClick = onRecommendationClick
+                            onRecommendationClick = onRecommendationClick,
+                            onCategoryClick = onCategoryClick
                         )
                     }
 
@@ -103,7 +108,8 @@ fun HomeScreenContent(
                             items = categoriesItems[category.title],
                             covers = categoriesImages[category.title],
                             openScreen = openScreen,
-                            onRecommendationClick = onRecommendationClick
+                            onRecommendationClick = onRecommendationClick,
+                            onCategoryClick = onCategoryClick
                         )
                     }
 
@@ -113,7 +119,8 @@ fun HomeScreenContent(
                             items = categoriesItems[category.title],
                             covers = categoriesImages[category.title],
                             openScreen = openScreen,
-                            onRecommendationClick = onRecommendationClick
+                            onRecommendationClick = onRecommendationClick,
+                            onCategoryClick = onCategoryClick
                         )
                     }
 
@@ -124,6 +131,8 @@ fun HomeScreenContent(
 
                         // TODO: if this doesn't must happened anytime of app lifecycle,
                         //  use enums for categories, so when always be fulled
+
+                        SnackbarManager.showMessage(R.string.error_category_type)
                     }
                 }
             }

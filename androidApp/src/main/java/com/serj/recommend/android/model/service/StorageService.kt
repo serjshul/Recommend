@@ -19,7 +19,9 @@ interface StorageService {
 
     suspend fun getBanner(bannerId: String): Banner?
 
-    suspend fun getCategoryItem(recommendationId: String, coverType: String): CategoryItem?
+    suspend fun getCategory(categoryId: String): Category?
+
+    suspend fun getCategoryItems(recommendationId: String, coverType: String): CategoryItem?
 
     suspend fun getBannerItem(recommendationId: String, coverType: String): BannerItem?
 

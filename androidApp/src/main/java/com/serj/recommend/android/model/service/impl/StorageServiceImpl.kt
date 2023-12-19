@@ -8,7 +8,7 @@ import android.util.Log
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.dataObjects
+import com.google.firebase.firestore.dataObjects
 import com.google.firebase.firestore.toObject
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
@@ -63,7 +63,15 @@ class StorageServiceImpl @Inject constructor(
             .await()
             .toObject()
 
-    override suspend fun getCategoryItem(recommendationId: String, coverType: String):
+    override suspend fun getCategory(categoryId: String): Category? =
+        firestore
+            .collection(CATEGORIES_COLLECTION)
+            .document(categoryId)
+            .get()
+            .await()
+            .toObject()
+
+    override suspend fun getCategoryItems(recommendationId: String, coverType: String):
             CategoryItem? {
         var categoryItem: CategoryItem? = null
 
@@ -77,6 +85,7 @@ class StorageServiceImpl @Inject constructor(
                     recommendationId = recommendationId,
                     title = recommendation!!.title,
                     creator = recommendation.creator,
+                    description = recommendation.description,
                     cover = recommendation.cover[coverType] ?: "",
                     date = recommendation.date
                 )

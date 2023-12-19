@@ -2,6 +2,7 @@ package com.serj.recommend.android.ui.screens.main.home.components.categoryItems
 
 import android.graphics.Bitmap
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,7 +20,7 @@ import androidx.compose.ui.unit.sp
 import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.CategoryItem
 import com.serj.recommend.android.model.Recommendation
-import com.serj.recommend.android.ui.screens.main.home.components.contentItems.PagerCategoryItem
+import com.serj.recommend.android.ui.components.items.transparent.HorizontalItemTransparent
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -29,25 +30,27 @@ fun PagerCategory(
     covers: List<Bitmap?>?,
     category: Category,
     openScreen: (String) -> Unit,
-    onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
+    onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit,
+    onCategoryClick: ((String) -> Unit, String) -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 45.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            modifier = modifier
-                .padding(start = 15.dp, end = 15.dp, bottom = 10.dp),
-            text = category.title,
-            color = Color.Black,
-            fontSize = 24.sp,
-            maxLines = 2,
-            fontWeight = FontWeight.Bold,
-        )
+    if (!items.isNullOrEmpty()) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                modifier = modifier
+                    .padding(start = 15.dp, end = 15.dp, bottom = 10.dp)
+                    .clickable { onCategoryClick(openScreen, category.id) },
+                text = category.title,
+                color = Color.Black,
+                fontSize = 24.sp,
+                maxLines = 2,
+                fontWeight = FontWeight.Bold,
+            )
 
-        if (!items.isNullOrEmpty()) {
             val pageCount = 300
             val pagerState = rememberPagerState(
                 initialPage = pageCount / 2,
@@ -58,11 +61,12 @@ fun PagerCategory(
                 state = pagerState,
                 contentPadding = PaddingValues(start = 20.dp, end = 20.dp)
             ) { page ->
-                PagerCategoryItem(
+                HorizontalItemTransparent(
                     recommendationId = items[page % items.size]?.recommendationId,
                     title = items[page % items.size]?.title,
                     creator = items[page % items.size]?.creator,
                     cover = covers?.getOrNull(page % items.size),
+                    isOnPager = true,
                     openScreen = openScreen,
                     onRecommendationClick = onRecommendationClick
                 )
