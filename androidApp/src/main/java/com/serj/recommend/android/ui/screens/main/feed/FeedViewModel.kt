@@ -1,12 +1,14 @@
 package com.serj.recommend.android.ui.screens.main.feed
 
-import android.content.ContentValues
-import android.util.Log
+import android.graphics.Bitmap
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateMapOf
 import com.serj.recommend.android.RECOMMENDATION_ID
 import com.serj.recommend.android.RecommendRoutes
 import com.serj.recommend.android.model.Post
 import com.serj.recommend.android.model.Recommendation
+import com.serj.recommend.android.model.RecommendationItem
+import com.serj.recommend.android.model.UserItem
 import com.serj.recommend.android.model.service.AccountService
 import com.serj.recommend.android.model.service.ConfigurationService
 import com.serj.recommend.android.model.service.LogService
@@ -24,16 +26,44 @@ class FeedViewModel @Inject constructor(
 ) : RecommendViewModel(logService) {
 
     val currentUser = accountService.currentUser
+
     val posts = mutableStateListOf<Post?>()
+    val users = mutableStateMapOf<String?, UserItem?>()
+    val postsRecommendations = mutableStateMapOf<String?, RecommendationItem?>()
+
+    val usersPhotos = mutableStateMapOf<String?, Bitmap?>()
+    val postsImages = mutableStateMapOf<String?, Bitmap?>()
 
     init {
         launchCatching {
             currentUser.collect {user ->
                 for (followingUid in user.following!!) {
                     val currentPosts = storageService.getFollowingPosts(followingUid)
+                    for (post in currentPosts) {
+                        post.uid?.let {
+                            users[it] = storageService.getUserItem(it)
+                            usersPhotos[it] = users[it]?.userPhoto?.let { it1 ->
+                                storageService.downloadImage(
+                                    it1
+                                )
+                            }
+                        }
+
+                        postsRecommendations[post.id] = post.recommendationId?.let {
+                            storageService.getRecommendationItem(
+                                it
+                            )
+                        }
+
+                        postsImages[post.id] = postsRecommendations[post.id]?.background?.get("image")
+                            ?.let {
+                            storageService.downloadImage(
+                                it
+                            )
+                        }
+                    }
                     posts.addAll(currentPosts)
                 }
-                Log.v(ContentValues.TAG, posts.joinToString())
             }
         }
     }

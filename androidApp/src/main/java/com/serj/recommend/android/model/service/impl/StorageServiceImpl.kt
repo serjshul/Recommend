@@ -19,6 +19,9 @@ import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.CategoryItem
 import com.serj.recommend.android.model.Post
 import com.serj.recommend.android.model.Recommendation
+import com.serj.recommend.android.model.RecommendationItem
+import com.serj.recommend.android.model.User
+import com.serj.recommend.android.model.UserItem
 import com.serj.recommend.android.model.service.AccountService
 import com.serj.recommend.android.model.service.StorageService
 import kotlinx.coroutines.flow.Flow
@@ -56,6 +59,33 @@ class StorageServiceImpl @Inject constructor(
             .get()
             .await()
             .toObject()
+
+    override suspend fun getRecommendationItem(recommendationId: String): RecommendationItem? {
+        var recommendationItem: RecommendationItem? = null
+
+        firestore
+            .collection(RECOMMENDATIONS_COLLECTION)
+            .document(recommendationId)
+            .get()
+            .addOnSuccessListener {document ->
+                val recommendation = document.toObject<Recommendation>()
+                if (recommendation != null) {
+                    recommendationItem = RecommendationItem(
+                        id = recommendation.id,
+                        title = recommendation.title,
+                        creator = recommendation.creator,
+                        background = recommendation.background
+                    )
+                }
+            }.addOnFailureListener {
+                // Handle any errors
+                Log.v(ContentValues.TAG, "error getCategoryItem()")
+            }
+            .await()
+
+        return recommendationItem
+    }
+
 
     override suspend fun getBanner(bannerId: String): Banner? =
         firestore
@@ -135,6 +165,31 @@ class StorageServiceImpl @Inject constructor(
             .await()
             .toObjects()
 
+    override suspend fun getUserItem(uid: String): UserItem? {
+        var userItem: UserItem? = null
+
+        firestore
+            .collection(USERS_COLLECTION)
+            .document(uid)
+            .get()
+            .addOnSuccessListener {document ->
+                val user = document.toObject<User>()
+                if (user != null) {
+                    userItem = UserItem(
+                        nickname = user.nickname,
+                        name = user.name,
+                        userPhoto = user.userPhoto,
+                    )
+                }
+            }.addOnFailureListener {
+                // Handle any errors
+                Log.v(ContentValues.TAG, "error getCategoryItem()")
+            }
+            .await()
+
+        return userItem
+    }
+
     override suspend fun downloadImage(gsReference: String): Bitmap? {
         var bmp: Bitmap? = null
 
@@ -188,6 +243,7 @@ class StorageServiceImpl @Inject constructor(
         private const val CATEGORIES_COLLECTION = "categories"
         private const val BANNERS_COLLECTION = "banners"
         private const val POSTS_COLLECTION = "posts"
+        private const val USERS_COLLECTION = "users"
 
         private const val ONE_MEGABYTE: Long = 1024 * 1024
     }

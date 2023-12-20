@@ -3,7 +3,6 @@ package com.serj.recommend.android.model
 import com.google.firebase.firestore.DocumentId
 import java.util.Date
 
-
 data class Recommendation(
     @DocumentId val id: String = "",
     val date: Date = Date(0),

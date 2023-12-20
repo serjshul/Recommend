@@ -8,6 +8,8 @@ import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.CategoryItem
 import com.serj.recommend.android.model.Post
 import com.serj.recommend.android.model.Recommendation
+import com.serj.recommend.android.model.RecommendationItem
+import com.serj.recommend.android.model.UserItem
 import kotlinx.coroutines.flow.Flow
 
 
@@ -20,15 +22,19 @@ interface StorageService {
 
     suspend fun getRecommendation(recommendationId: String): Recommendation?
 
+    suspend fun getRecommendationItem(recommendationId: String): RecommendationItem?
+
     suspend fun getBanner(bannerId: String): Banner?
+
+    suspend fun getBannerItem(recommendationId: String, coverType: String): BannerItem?
 
     suspend fun getCategory(categoryId: String): Category?
 
     suspend fun getCategoryItems(recommendationId: String, coverType: String): CategoryItem?
 
-    suspend fun getBannerItem(recommendationId: String, coverType: String): BannerItem?
-
     suspend fun getFollowingPosts(followingUid: String): List<Post>
+
+    suspend fun getUserItem(uid: String): UserItem?
 
     suspend fun downloadImage(gsReference: String): Bitmap?
 
