@@ -10,12 +10,14 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.dataObjects
 import com.google.firebase.firestore.toObject
+import com.google.firebase.firestore.toObjects
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import com.serj.recommend.android.model.Banner
 import com.serj.recommend.android.model.BannerItem
 import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.CategoryItem
+import com.serj.recommend.android.model.Post
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.service.AccountService
 import com.serj.recommend.android.model.service.StorageService
@@ -125,6 +127,14 @@ class StorageServiceImpl @Inject constructor(
         return bannerItem
     }
 
+    override suspend fun getFollowingPosts(followingUid: String): List<Post> =
+        firestore
+            .collection(POSTS_COLLECTION)
+            .whereEqualTo("uid", followingUid)
+            .get()
+            .await()
+            .toObjects()
+
     override suspend fun downloadImage(gsReference: String): Bitmap? {
         var bmp: Bitmap? = null
 
@@ -177,6 +187,7 @@ class StorageServiceImpl @Inject constructor(
         private const val RECOMMENDATIONS_COLLECTION = "recommendations"
         private const val CATEGORIES_COLLECTION = "categories"
         private const val BANNERS_COLLECTION = "banners"
+        private const val POSTS_COLLECTION = "posts"
 
         private const val ONE_MEGABYTE: Long = 1024 * 1024
     }

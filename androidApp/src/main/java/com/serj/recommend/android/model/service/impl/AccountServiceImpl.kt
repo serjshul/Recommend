@@ -1,6 +1,8 @@
 package com.serj.recommend.android.model.service.impl
 
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.toObject
 import com.serj.recommend.android.R
 import com.serj.recommend.android.model.User
 import com.serj.recommend.android.model.service.AccountService
@@ -12,14 +14,16 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class AccountServiceImpl @Inject constructor(
-    private val auth: FirebaseAuth
+    private val auth: FirebaseAuth,
+    private val firestore: FirebaseFirestore
 ) : AccountService {
 
     override val currentUser: Flow<User>
         get() = callbackFlow {
+            val currentUser = auth.currentUser?.let { getUserData(it.uid) }
             val listener = FirebaseAuth.AuthStateListener { auth ->
                 this.trySend(auth.currentUser?.let {
-                    User(it.uid, it.isAnonymous)
+                    currentUser
                 } ?: User())
             }
             auth.addAuthStateListener(listener)
@@ -54,5 +58,17 @@ class AccountServiceImpl @Inject constructor(
 
     override suspend fun sendPasswordResetEmail(email: String) {
         auth.sendPasswordResetEmail(email).await()
+    }
+
+    override suspend fun getUserData(uid: String): User? =
+        firestore
+            .collection(USERS_COLLECTION)
+            .document(uid)
+            .get()
+            .await()
+            .toObject()
+
+    companion object {
+        private const val USERS_COLLECTION = "users"
     }
 }
