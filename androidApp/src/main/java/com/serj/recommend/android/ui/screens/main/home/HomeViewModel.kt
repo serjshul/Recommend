@@ -1,8 +1,6 @@
 package com.serj.recommend.android.ui.screens.main.home
 
-import android.content.ContentValues
 import android.graphics.Bitmap
-import android.util.Log
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import com.serj.recommend.android.BANNER_ID
@@ -116,7 +114,6 @@ class HomeViewModel @Inject constructor(
     private fun getCategoryItemCover(gsReference: String, title: String) {
         launchCatching {
             storageService.downloadImage(gsReference).let {
-                Log.v(ContentValues.TAG, it.toString())
                 categoriesImages[title] = categoriesImages[title]?.plus(it)
             }
         }

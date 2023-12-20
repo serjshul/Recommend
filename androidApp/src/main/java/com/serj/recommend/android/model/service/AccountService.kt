@@ -15,4 +15,6 @@ interface AccountService {
     suspend fun signIn(email: String, password: String)
 
     suspend fun sendPasswordResetEmail(email: String)
+
+    suspend fun getUserData(uid: String): User?
 }
