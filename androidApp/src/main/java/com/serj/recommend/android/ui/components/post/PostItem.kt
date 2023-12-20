@@ -98,7 +98,7 @@ fun PostItem(
                             append("$name ")
                         }
                         withStyle(style = SpanStyle(color = Black)) {
-                            append("$nickname ")
+                            append("@$nickname ")
                         }
                         withStyle(
                             style = SpanStyle(
@@ -153,7 +153,7 @@ fun PostItemPreview() {
             PostItem(
                 modifier = Modifier.padding(bottom = 2.dp),
                 name = "Serj's cringe",
-                nickname = "@serjshul",
+                nickname = "serjshul",
                 date = "1d",
                 userPhoto = null,
                 text = "text text text text text text text text text text text text text text text " +
