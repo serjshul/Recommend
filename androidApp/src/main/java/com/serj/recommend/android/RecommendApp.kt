@@ -30,10 +30,10 @@ import com.serj.recommend.android.ui.screens.authentication.resetPassword.ResetP
 import com.serj.recommend.android.ui.screens.authentication.signIn.SignInScreen
 import com.serj.recommend.android.ui.screens.authentication.signUp.SignUpScreen
 import com.serj.recommend.android.ui.screens.authentication.splash.SplashScreen
-import com.serj.recommend.android.ui.screens.common.recommendation.RecommendationScreen
-import com.serj.recommend.android.ui.screens.main.MainScreen
 import com.serj.recommend.android.ui.screens.common.banner.BannerScreen
 import com.serj.recommend.android.ui.screens.common.category.CategoryScreen
+import com.serj.recommend.android.ui.screens.common.recommendation.RecommendationScreen
+import com.serj.recommend.android.ui.screens.main.MainScreen
 import com.serj.recommend.android.ui.styles.MyApplicationTheme
 import kotlinx.coroutines.CoroutineScope
 
@@ -46,6 +46,7 @@ fun RecommendApp() {
 
             Scaffold(
                 modifier = Modifier.fillMaxSize(),
+                scaffoldState = appState.scaffoldState,
                 snackbarHost = {
                     SnackbarHost(
                         hostState = it,
@@ -58,7 +59,13 @@ fun RecommendApp() {
                         }
                     )
                 },
-                scaffoldState = appState.scaffoldState
+                floatingActionButton = {
+                    RecommendFloatingActionBar {
+                        appState.navController.navigate(
+                            RecommendRoutes.CreateRecommendScreen.name
+                        )
+                    }
+                }
             ) { paddingValues ->
                 NavHost(
                     modifier = Modifier.padding(paddingValues),

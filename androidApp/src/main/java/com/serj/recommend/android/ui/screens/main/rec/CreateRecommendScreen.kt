@@ -15,7 +15,7 @@ import androidx.compose.ui.text.style.TextAlign
 import com.serj.recommend.android.R
 
 @Composable
-fun RecScreen() {
+fun CreateRecommendScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()

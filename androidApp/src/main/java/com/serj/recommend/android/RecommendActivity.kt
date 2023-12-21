@@ -10,7 +10,14 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.AndroidEntryPoint
+
+const val APP_TAG = "Recommend."
+private const val USER_PREFERENCES_NAME = "user_preferences"
+private val Context.dataStore by preferencesDataStore(
+    name = USER_PREFERENCES_NAME
+)
 
 @AndroidEntryPoint
 @ExperimentalMaterialApi
@@ -50,7 +57,8 @@ class RecommendActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent { RecommendApp()
+        setContent {
+            RecommendApp()
         }
         bindAndRequestConnectivityManager()
     }

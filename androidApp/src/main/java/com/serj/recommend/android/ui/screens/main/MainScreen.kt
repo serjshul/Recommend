@@ -18,7 +18,7 @@ import com.serj.recommend.android.ui.BottomNavigationBar
 import com.serj.recommend.android.ui.screens.FeedScreen
 import com.serj.recommend.android.ui.screens.main.home.HomeScreen
 import com.serj.recommend.android.ui.screens.main.profile.ProfileScreen
-import com.serj.recommend.android.ui.screens.main.rec.RecScreen
+import com.serj.recommend.android.ui.screens.main.rec.CreateRecommendScreen
 import com.serj.recommend.android.ui.screens.main.search.SearchScreen
 import com.serj.recommend.android.ui.styles.MyApplicationTheme
 
@@ -67,8 +67,8 @@ fun NavGraphBuilder.mainScreenGraph(
     composable(RecommendRoutes.FeedScreen.name) {
         FeedScreen()
     }
-    composable(RecommendRoutes.RecScreen.name) {
-        RecScreen()
+    composable(RecommendRoutes.CreateRecommendScreen.name) {
+        CreateRecommendScreen()
     }
     composable(RecommendRoutes.SearchScreen.name) {
         SearchScreen()

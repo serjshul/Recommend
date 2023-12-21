@@ -24,7 +24,7 @@ sealed class BottomNavigation(
 
     data object Rec :
         BottomNavigation(
-            RecommendRoutes.RecScreen.name,
+            RecommendRoutes.CreateRecommendScreen.name,
             R.string.rec_screen,
             R.drawable.icon_add
         )
