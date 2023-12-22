@@ -40,19 +40,19 @@ fun Footer(
     onCommentsClick: () -> Unit,
 ) {
     Info(
-        modifier = modifier,
+        modifier = Modifier,
         author = author,
         date = date.toLocaleString()
     )
 
     Divider(
-        modifier = modifier.padding(start = 15.dp, end = 15.dp),
+        modifier = Modifier.padding(start = 15.dp, end = 15.dp),
         thickness = 1.dp,
         color = Color.Gray
     )
 
     InteractionPanel(
-        modifier = modifier,
+        modifier = Modifier.padding(top = 20.dp, bottom = 15.dp),
         views = viewsCount.toString(),
         likes = likesCount.toString(),
         comments = commentsCount.toString(),
@@ -61,7 +61,7 @@ fun Footer(
 
     if (comments.isNotEmpty()) {
         Column (
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 15.dp, end = 15.dp, bottom = 15.dp)
                 .clickable { onCommentsClick() },
@@ -110,16 +110,15 @@ fun InteractionPanel(
 
     Row(
         modifier = modifier
-            .fillMaxWidth()
-            .padding(top = 20.dp, bottom = 15.dp)
+            .fillMaxWidth(),
     ) {
         Row(
-            modifier = modifier.weight(1f),
+            modifier = Modifier.weight(1f),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
+            horizontalArrangement = Arrangement.Start
         ) {
             Image(
-                modifier = modifier
+                modifier = Modifier
                     .padding(end = 2.dp)
                     .clickable { isLiked = !isLiked },
                 painter = if (isLiked) painterResource(id = R.drawable.icon_liked)
@@ -137,12 +136,12 @@ fun InteractionPanel(
         }
 
         Row(
-            modifier = modifier.weight(1f),
+            modifier = Modifier.weight(1f),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
             Image(
-                modifier = modifier.padding(end = 4.dp),
+                modifier = Modifier.padding(end = 4.dp),
                 painter = painterResource(id = R.drawable.icon_comment),
                 contentDescription = "comment",
                 contentScale = ContentScale.Crop
@@ -156,12 +155,12 @@ fun InteractionPanel(
         }
 
         Row(
-            modifier = modifier.weight(1f),
+            modifier = Modifier.weight(1f),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
             Image(
-                modifier = modifier.padding(end = 2.dp),
+                modifier = Modifier.padding(end = 2.dp),
                 painter = painterResource(id = R.drawable.icon_repost),
                 contentDescription = "repost",
                 contentScale = ContentScale.Crop
@@ -175,12 +174,12 @@ fun InteractionPanel(
         }
 
         Row(
-            modifier = modifier.weight(1f),
+            modifier = Modifier.weight(1f),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
             Image(
-                modifier = modifier.padding(end = 2.dp),
+                modifier = Modifier.padding(end = 2.dp),
                 painter = painterResource(id = R.drawable.icon_views),
                 contentDescription = "views",
                 contentScale = ContentScale.Crop
