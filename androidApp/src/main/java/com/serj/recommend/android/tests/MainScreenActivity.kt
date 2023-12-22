@@ -3,7 +3,8 @@ package com.serj.recommend.android.tests
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import com.serj.recommend.android.ui.screens.main.home.HomeScreen
+import com.serj.recommend.android.rememberAppState
+import com.serj.recommend.android.ui.screens.main.MainScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 // To use specific screens, we must also add this to manifest:
@@ -12,9 +13,9 @@ import dagger.hilt.android.AndroidEntryPoint
 //        android:exported="false">
 //  </activity>
 @AndroidEntryPoint
-class HomeScreenActivity : ComponentActivity() {
+class MainScreenActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent { HomeScreen(openScreen = { }) }
+        setContent { MainScreen(rememberAppState()) }
     }
 }

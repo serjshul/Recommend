@@ -50,9 +50,14 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-        <!-- тесты для активити -->
+
+        <!-- Декларация активити для использования их в тестах (пожалуйста не трогайте) -->
         <activity
-            android:name=".tests.HomeScreenActivity"
+            android:name=".tests.MainScreenActivity"
+            android:exported="false">
+        </activity>
+        <activity
+            android:name=".tests.SignInActivity"
             android:exported="false">
         </activity>
     </application>

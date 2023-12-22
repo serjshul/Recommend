@@ -52,6 +52,9 @@ fun SplashScreenContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         if (shouldShowError) {
+            AppLogo(
+                size = 200.dp
+            )
             Text(text = stringResource(R.string.generic_error))
 
             AuthenticationButton(R.string.try_again, Modifier.basicButton()) {

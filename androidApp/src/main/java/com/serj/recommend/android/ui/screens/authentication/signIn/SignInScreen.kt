@@ -14,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.serj.recommend.android.R
@@ -26,12 +27,14 @@ import com.serj.recommend.android.ui.components.authentication.AuthenticationTex
 import com.serj.recommend.android.ui.components.authentication.EmailField
 import com.serj.recommend.android.ui.components.authentication.PasswordField
 
+const val SIGN_UP_BUTTON = "SIGN_UP_BUTTON"
+
 @Composable
 fun SignInScreen(
     modifier: Modifier = Modifier,
+    viewModel: SignInViewModel = hiltViewModel(),
     openScreen: (String) -> Unit,
-    openAndPopUp: (String, String) -> Unit,
-    viewModel: SignInViewModel = hiltViewModel()
+    openAndPopUp: (String, String) -> Unit
 ) {
     val uiState by viewModel.uiState
 
@@ -100,8 +103,8 @@ fun SignInScreenContent(
 
             AuthenticationTextButton(
                 text = R.string.forgot_password,
-                action = onForgotPasswordClick,
-                modifier = Modifier.textButton()
+                modifier = Modifier.textButton(),
+                action = onForgotPasswordClick
             )
         }
 
@@ -116,6 +119,7 @@ fun SignInScreenContent(
 
             AuthenticationTextButton(
                 text = R.string.sign_up,
+                modifier = Modifier.testTag(SIGN_UP_BUTTON),
                 action = onSignUpClick
             )
         }
