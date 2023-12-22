@@ -1,4 +1,4 @@
-package com.serj.recommend.android
+package com.serj.recommend.android.tests
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

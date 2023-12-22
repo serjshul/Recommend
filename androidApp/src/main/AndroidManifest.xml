@@ -21,8 +21,8 @@
     <application
         android:name=".RecommendHiltApp"
         android:allowBackup="false"
-        android:supportsRtl="true"
         android:enableOnBackInvokedCallback="true"
+        android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:targetApi="tiramisu">
         <activity
@@ -50,5 +50,10 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+        <!-- тесты для активити -->
+        <activity
+            android:name=".tests.HomeScreenActivity"
+            android:exported="false">
+        </activity>
     </application>
 </manifest>
