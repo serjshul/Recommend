@@ -1,4 +1,4 @@
-package com.serj.recommend.android.ui.screens.authentication.splash
+package com.serj.recommend.android.ui.screens.splash
 
 import androidx.compose.runtime.mutableStateOf
 import com.serj.recommend.android.RecommendRoutes

@@ -25,8 +25,8 @@ import com.serj.recommend.android.ui.styles.MyApplicationTheme
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MainScreen(
-    modifier: Modifier = Modifier,
-    appState: RecommendAppState
+    appState: RecommendAppState,
+    modifier: Modifier = Modifier
 ) {
     MyApplicationTheme {
         val navController = rememberNavController()
