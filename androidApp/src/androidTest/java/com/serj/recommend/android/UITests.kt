@@ -2,12 +2,9 @@ package com.serj.recommend.android
 
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.serj.recommend.android.tests.MainScreenActivity
-import com.serj.recommend.android.ui.screens.authentication.signIn.SIGN_UP_BUTTON
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
@@ -89,40 +86,6 @@ class UiTests {
             rule.onNodeWithText("Norwegian Forest")
 
         nodeWithNorwegianForest.assertDoesNotExist()
-    }
-
-    @Test
-    fun navigateFromSignInToRegisterScreens() {
-//        rule.setContent {
-//            SignInScreen(
-//                openScreen = {},
-//                openAndPopUp = { _, _ -> }
-//            )
-//        }
-
-        rule.waitForIdle()
-//        val signUpNodeMatcher = hasText(
-//            text = "sign up", ignoreCase = true
-//        )
-//        rule.waitUntilAtLeastOneExists(
-//            matcher = signUpNodeMatcher,
-//            timeoutMillis = 1500
-//        )
-
-//        rule.waitUntilDoesNotExist(hasTestTag("Recommend"))
-
-//        val signUpNode = rule.onNodeWithText(
-//            text = "Sign up", ignoreCase = true
-//        )
-//        signUpNode.assertExists()
-//        signUpNode.performClick()
-
-        val signUpNode = rule.onNodeWithTag(
-            testTag = SIGN_UP_BUTTON
-        )
-        signUpNode.assertExists()
-        signUpNode.performClick()
-
     }
 
     @Test

@@ -14,7 +14,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.serj.recommend.android.R
@@ -26,8 +25,6 @@ import com.serj.recommend.android.ui.components.authentication.AuthenticationBut
 import com.serj.recommend.android.ui.components.authentication.AuthenticationTextButton
 import com.serj.recommend.android.ui.components.authentication.EmailField
 import com.serj.recommend.android.ui.components.authentication.PasswordField
-
-const val SIGN_UP_BUTTON = "SIGN_UP_BUTTON"
 
 @Composable
 fun SignInScreen(
@@ -119,7 +116,6 @@ fun SignInScreenContent(
 
             AuthenticationTextButton(
                 text = R.string.sign_up,
-                modifier = Modifier.testTag(SIGN_UP_BUTTON),
                 action = onSignUpClick
             )
         }
