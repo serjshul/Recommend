@@ -36,7 +36,7 @@ fun Modifier.recommendationContentShape(): Modifier {
         .background(Color.White, RoundedCornerShape(20.dp))
 }
 
-fun Modifier.recommendationItemsInterval(): Modifier {
+fun Modifier.itemsInterval(): Modifier {
     return this
         .padding(bottom = 20.dp)
 }

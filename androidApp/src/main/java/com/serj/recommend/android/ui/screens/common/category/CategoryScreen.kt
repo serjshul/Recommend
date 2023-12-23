@@ -24,6 +24,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.serj.recommend.android.R
+import com.serj.recommend.android.common.ext.itemsInterval
+import com.serj.recommend.android.common.ext.screenPaddingsInner
 import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.CategoryItem
 import com.serj.recommend.android.model.Recommendation
@@ -80,38 +82,19 @@ fun CategoryScreenContent(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 item {
-                    Box(
-                        modifier = modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight()
-                    ) {
-                        Image(
-                            modifier = modifier
-                                .padding(20.dp)
-                                .align(Alignment.CenterStart)
-                                .clickable { popUpScreen() },
-                            painter = painterResource(id = R.drawable.icon_arrow_back_black),
-                            contentDescription = "button_back",
-                            contentScale = ContentScale.Crop
-                        )
-
-                        Text(
-                            modifier = modifier
-                                .align(Alignment.Center),
-                            text = category.title,
-                            color = Color.Black,
-                            fontSize = 26.sp,
-                            fontWeight = FontWeight.Bold,
-                            textAlign = TextAlign.Center
-                        )
-                    }
+                    CategoryTitle(
+                        title = category.title,
+                        popUpScreen = popUpScreen
+                    )
                 }
 
                 items(categoryItems) {item ->
                     when (category.coverType) {
                         COVER_SQUARE -> {
                             SquareItemCard(
-                                modifier = Modifier.padding(start = 15.dp, end = 15.dp, bottom = 15.dp),
+                                modifier = Modifier
+                                    .itemsInterval()
+                                    .screenPaddingsInner(),
                                 recommendationId = item?.recommendationId,
                                 title = item?.title,
                                 creator = item?.creator,
@@ -123,7 +106,9 @@ fun CategoryScreenContent(
                         }
                         COVER_HORIZONTAL -> {
                             HorizontalItemCard(
-                                modifier = Modifier.padding(start = 15.dp, end = 15.dp, bottom = 15.dp),
+                                modifier = Modifier
+                                    .itemsInterval()
+                                    .screenPaddingsInner(),
                                 recommendationId = item?.recommendationId,
                                 title = item?.title,
                                 creator = item?.creator,
@@ -135,7 +120,9 @@ fun CategoryScreenContent(
                         }
                         COVER_VERTICAL -> {
                             VerticalItemCard(
-                                modifier = Modifier.padding(start = 15.dp, end = 15.dp, bottom = 15.dp),
+                                modifier = Modifier
+                                    .itemsInterval()
+                                    .screenPaddingsInner(),
                                 recommendationId = item?.recommendationId,
                                 title = item?.title,
                                 creator = item?.creator,
@@ -156,5 +143,38 @@ fun CategoryScreenContent(
                 backgroundColor = LightGray
             )
         }
+    }
+}
+
+@Composable
+fun CategoryTitle(
+    modifier: Modifier = Modifier,
+    title: String,
+    popUpScreen: () -> Unit,
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+    ) {
+        Image(
+            modifier = modifier
+                .padding(20.dp)
+                .align(Alignment.CenterStart)
+                .clickable { popUpScreen() },
+            painter = painterResource(id = R.drawable.icon_arrow_back_black),
+            contentDescription = "button_back",
+            contentScale = ContentScale.Crop
+        )
+
+        Text(
+            modifier = modifier
+                .align(Alignment.Center),
+            text = title,
+            color = Color.Black,
+            fontSize = 26.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center
+        )
     }
 }

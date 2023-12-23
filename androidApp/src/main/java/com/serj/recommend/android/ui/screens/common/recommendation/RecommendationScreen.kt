@@ -22,7 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.serj.recommend.android.common.ext.recommendationContentShape
-import com.serj.recommend.android.common.ext.recommendationItemsInterval
+import com.serj.recommend.android.common.ext.itemsInterval
 import com.serj.recommend.android.common.ext.screenPaddingsInner
 import com.serj.recommend.android.common.ext.screenPaddingsOuter
 import com.serj.recommend.android.model.Recommendation
@@ -114,7 +114,7 @@ fun RecommendationScreenContent(
             item {
                 Quote(
                     modifier = Modifier
-                        .recommendationItemsInterval()
+                        .itemsInterval()
                         .screenPaddingsInner(),
                     quote = recommendation.quote,
                     color = recommendation.color
@@ -124,7 +124,7 @@ fun RecommendationScreenContent(
             item {
                 InfoPanel(
                     modifier = Modifier
-                        .recommendationItemsInterval()
+                        .itemsInterval()
                         .screenPaddingsInner(),
                     author = recommendation.authorId,
                     date = recommendation.date.toLocaleString()
@@ -135,7 +135,7 @@ fun RecommendationScreenContent(
                 Divider(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .recommendationItemsInterval()
+                        .itemsInterval()
                         .screenPaddingsInner(),
                     thickness = 1.dp,
                     color = Color.Gray
@@ -145,7 +145,7 @@ fun RecommendationScreenContent(
             item {
                 InteractionPanel(
                     modifier = Modifier
-                        .recommendationItemsInterval()
+                        .itemsInterval()
                         .screenPaddingsInner(),
                     views = recommendation.viewsCount.toString(),
                     likes = recommendation.likesCount.toString(),
@@ -158,7 +158,7 @@ fun RecommendationScreenContent(
                 item {
                     CommentsList(
                         modifier = Modifier
-                            .recommendationItemsInterval()
+                            .itemsInterval()
                             .screenPaddingsInner()
                             .clickable { showBottomSheet = true },
                         comments = recommendation.comments
