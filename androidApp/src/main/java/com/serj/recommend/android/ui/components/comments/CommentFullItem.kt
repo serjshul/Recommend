@@ -1,4 +1,4 @@
-package com.serj.recommend.android.ui.components.recommendation
+package com.serj.recommend.android.ui.components.comments
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable

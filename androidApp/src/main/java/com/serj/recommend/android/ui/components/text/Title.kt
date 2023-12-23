@@ -1,24 +1,24 @@
-package com.serj.recommend.android.ui.components
+package com.serj.recommend.android.ui.components.text
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
+import com.serj.recommend.android.ui.screens.common.recommendation.components.toColor
 
 @Composable
-fun ScreenTitle(
+fun Title(
     modifier: Modifier = Modifier,
-    title: String
+    title: String,
+    color: String
 ) {
     Text(
         modifier = modifier,
         text = title,
-        color = Color.Black,
-        fontSize = 26.sp,
-        fontWeight = FontWeight.Bold,
-        textAlign = TextAlign.Center
+        color = color.toColor(),
+        fontSize = 22.sp,
+        maxLines = 2,
+        fontWeight = FontWeight.Bold
     )
 }

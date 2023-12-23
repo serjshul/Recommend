@@ -61,8 +61,9 @@ class FeedViewModel @Inject constructor(
                                 it
                             )
                         }
+
+                        posts.add(post)
                     }
-                    posts.addAll(currentPosts)
                 }
             }
         }

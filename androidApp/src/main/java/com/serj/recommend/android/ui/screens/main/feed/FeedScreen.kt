@@ -16,8 +16,10 @@ import com.serj.recommend.android.model.Post
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.RecommendationItem
 import com.serj.recommend.android.model.UserItem
+import com.serj.recommend.android.ui.components.loadingIndicators.LargeLoadingIndicator
 import com.serj.recommend.android.ui.components.post.PostItem
 import com.serj.recommend.android.ui.screens.main.feed.FeedViewModel
+import com.serj.recommend.android.ui.styles.LightGray
 
 
 @Composable
@@ -54,19 +56,19 @@ fun FeedScreenContent(
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
 ) {
     Scaffold { paddingValues ->
-        LazyColumn(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .background(color = Color.White)
-        ) {
-            if (posts != null) {
+        if (posts != null) {
+            LazyColumn(
+                modifier = modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .background(color = Color.White)
+            ) {
                 items(posts) {
-                    if (it != null && users?.get(it.uid) != null) {
+                    if (it != null) {
                         PostItem(
                             modifier = Modifier.padding(bottom = 2.dp),
-                            name = users[it.uid]!!.name,
-                            nickname = users[it.uid]!!.nickname,
+                            name = users?.get(it.uid)?.name,
+                            nickname = users?.get(it.uid)?.nickname,
                             date = it.date.toString(),
                             userPhoto = usersPhotos?.getOrDefault(it.uid, null),
                             text = it.text,
@@ -84,6 +86,8 @@ fun FeedScreenContent(
                     }
                 }
             }
+        } else {
+            LargeLoadingIndicator(backgroundColor = LightGray)
         }
     }
 }

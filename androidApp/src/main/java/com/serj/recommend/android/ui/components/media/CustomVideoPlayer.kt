@@ -1,4 +1,4 @@
-package com.serj.recommend.android.ui.components.recommendation
+package com.serj.recommend.android.ui.components.media
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier

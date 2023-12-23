@@ -19,8 +19,6 @@ class RecommendationViewModel @Inject constructor(
     logService: LogService,
     private val storageService: StorageService
 ) : RecommendViewModel(logService) {
-    val options = mutableStateOf<List<String>>(listOf())
-
     val recommendation = mutableStateOf(Recommendation())
     val backgroundImage = mutableStateOf<Bitmap?>(null)
     val paragraphsImages = mutableStateMapOf<Int?, Bitmap?>(null to null)

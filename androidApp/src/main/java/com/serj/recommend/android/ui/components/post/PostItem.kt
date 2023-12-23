@@ -28,7 +28,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.serj.recommend.android.R
 import com.serj.recommend.android.model.Recommendation
-import com.serj.recommend.android.ui.components.recommendation.InteractionPanel
 import com.serj.recommend.android.ui.styles.Black
 import com.serj.recommend.android.ui.styles.Gray
 import com.serj.recommend.android.ui.styles.White
