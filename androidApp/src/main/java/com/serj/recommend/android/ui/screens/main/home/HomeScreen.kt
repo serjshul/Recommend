@@ -100,7 +100,6 @@ fun HomeScreenContent(
                             onCategoryClick = onCategoryClick
                         )
                     }
-
                     CategoryType.extended.name -> {
                         ExtendedCategory(
                             category = category,
@@ -112,7 +111,6 @@ fun HomeScreenContent(
                             onCategoryClick = onCategoryClick
                         )
                     }
-
                     CategoryType.pager.name -> {
                         PagerCategory(
                             category = category,
@@ -123,7 +121,6 @@ fun HomeScreenContent(
                             onCategoryClick = onCategoryClick
                         )
                     }
-
                     else -> {
                         // TODO: Declare TODOs more understandable!
                         //  (add more description to TODOs)

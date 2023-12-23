@@ -16,7 +16,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.serj.recommend.android.R
-import com.serj.recommend.android.common.ext.mainScreenItems
+import com.serj.recommend.android.common.ext.categoryItemsInterval
+import com.serj.recommend.android.common.ext.itemsInterval
+import com.serj.recommend.android.common.ext.screenPaddingsInner
 import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.CategoryItem
 import com.serj.recommend.android.model.Recommendation
@@ -41,17 +43,18 @@ fun OrdinaryCategory(
 ) {
     if (!items.isNullOrEmpty()) {
         Column(
-            modifier = modifier.padding(bottom = 20.dp)
+            modifier = modifier.itemsInterval()
         ) {
             Text(
                 modifier = Modifier
-                    .padding(start = 15.dp, end = 15.dp, bottom = 10.dp)
+                    .screenPaddingsInner()
+                    .padding(bottom = 10.dp)
                     .clickable { onCategoryClick(openScreen, category.id) },
                 text = category.title,
                 color = Color.Black,
                 fontSize = 22.sp,
                 maxLines = 2,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.Bold
             )
 
             LazyRow(
@@ -65,7 +68,7 @@ fun OrdinaryCategory(
                     when (category.coverType) {
                         COVER_SQUARE -> {
                             SquareItemTransparent(
-                                modifier = Modifier.mainScreenItems(),
+                                modifier = Modifier.categoryItemsInterval(),
                                 title = items[i]?.title,
                                 creator = items[i]?.creator,
                                 cover = covers?.getOrNull(i),
@@ -74,10 +77,9 @@ fun OrdinaryCategory(
                                 onRecommendationClick = onRecommendationClick
                             )
                         }
-
                         COVER_HORIZONTAL -> {
                             HorizontalItemTransparent(
-                                modifier = Modifier.mainScreenItems(),
+                                modifier = Modifier.categoryItemsInterval(),
                                 title = items[i]?.title,
                                 creator = items[i]?.creator,
                                 cover = covers?.getOrNull(i),
@@ -86,10 +88,9 @@ fun OrdinaryCategory(
                                 onRecommendationClick = onRecommendationClick
                             )
                         }
-
                         COVER_VERTICAL -> {
                             VerticalItemTransparent(
-                                modifier = Modifier.mainScreenItems(),
+                                modifier = Modifier.categoryItemsInterval(),
                                 title = items[i]?.title,
                                 creator = items[i]?.creator,
                                 cover = covers?.getOrNull(i),
@@ -98,7 +99,6 @@ fun OrdinaryCategory(
                                 onRecommendationClick = onRecommendationClick
                             )
                         }
-
                         else -> {
                             SnackbarManager.showMessage(R.string.error_cover_type)
                         }

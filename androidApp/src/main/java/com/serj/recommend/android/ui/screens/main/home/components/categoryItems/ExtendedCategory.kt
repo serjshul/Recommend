@@ -6,8 +6,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
@@ -30,6 +28,10 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.serj.recommend.android.R
+import com.serj.recommend.android.common.ext.categoryItemsInterval
+import com.serj.recommend.android.common.ext.extendedCategoryBackgroundShape
+import com.serj.recommend.android.common.ext.itemsInterval
+import com.serj.recommend.android.common.ext.screenPaddingsInner
 import com.serj.recommend.android.common.ext.toColor
 import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.CategoryItem
@@ -60,40 +62,35 @@ fun ExtendedCategory(
 
         Box(
             modifier = modifier
-                .padding(top = 10.dp, bottom = 20.dp)
+                .itemsInterval()
+                .padding(top = 10.dp)
         ) {
             when {
                 backgroundVideo != null -> {
                     // TODO: add video player
                 }
-
                 backgroundImage != null -> {
                     Image(
                         modifier = Modifier
-                            .height(270.dp)
-                            .fillMaxWidth()
+                            .extendedCategoryBackgroundShape()
                             .onGloballyPositioned { sizeImage = it.size },
                         bitmap = backgroundImage.asImageBitmap(),
-                        contentDescription = "background_image",
+                        contentDescription = "background image",
                         contentScale = ContentScale.Crop
                     )
                 }
-
                 else -> {
                     Image(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(270.dp),
+                        modifier = Modifier.extendedCategoryBackgroundShape(),
                         painter = painterResource(id = R.drawable.gradient),
-                        contentDescription = "background_gradient",
+                        contentDescription = "background gradient",
                         contentScale = ContentScale.Crop
                     )
                 }
             }
             Box(
                 modifier = Modifier
-                    .height(270.dp)
-                    .fillMaxWidth()
+                    .extendedCategoryBackgroundShape()
                     .background(
                         Brush.verticalGradient(
                             colors = listOf(Color.Transparent, Color.White),
@@ -105,13 +102,14 @@ fun ExtendedCategory(
 
             Text(
                 modifier = Modifier
-                    .padding(start = 15.dp, top = 10.dp, end = 15.dp, bottom = 10.dp)
-                    .align(Alignment.TopCenter)
+                    .screenPaddingsInner()
+                    .padding(top = 10.dp, bottom = 10.dp)
+                    .align(Alignment.CenterStart)
                     .clickable { onCategoryClick(openScreen, category.id) },
                 text = category.title,
                 color = if (backgroundImage != null) category.color?.toColor() ?: Color.Black
                 else Color.Black,
-                fontSize = 24.sp,
+                fontSize = 22.sp,
                 maxLines = 2,
                 fontWeight = FontWeight.Bold,
             )
@@ -128,6 +126,7 @@ fun ExtendedCategory(
                     when (category.coverType) {
                         COVER_SQUARE -> {
                             SquareItemTransparent(
+                                modifier = Modifier.categoryItemsInterval(),
                                 title = items[i]?.title,
                                 creator = items[i]?.creator,
                                 cover = covers?.getOrNull(i),
@@ -136,9 +135,9 @@ fun ExtendedCategory(
                                 onRecommendationClick = onRecommendationClick
                             )
                         }
-
                         COVER_HORIZONTAL -> {
                             HorizontalItemTransparent(
+                                modifier = Modifier.categoryItemsInterval(),
                                 title = items[i]?.title,
                                 creator = items[i]?.creator,
                                 cover = covers?.getOrNull(i),
@@ -147,9 +146,9 @@ fun ExtendedCategory(
                                 onRecommendationClick = onRecommendationClick
                             )
                         }
-
                         COVER_VERTICAL -> {
                             VerticalItemTransparent(
+                                modifier = Modifier.categoryItemsInterval(),
                                 title = items[i]?.title,
                                 creator = items[i]?.creator,
                                 cover = covers?.getOrNull(i),
@@ -158,7 +157,6 @@ fun ExtendedCategory(
                                 onRecommendationClick = onRecommendationClick
                             )
                         }
-
                         else -> {
                             SnackbarManager.showMessage(R.string.error_cover_type)
                         }

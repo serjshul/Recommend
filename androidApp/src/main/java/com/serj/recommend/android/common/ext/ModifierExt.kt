@@ -23,6 +23,11 @@ fun Modifier.textShape(): Modifier {
         .wrapContentHeight()
 }
 
+fun Modifier.itemsInterval(): Modifier {
+    return this
+        .padding(bottom = 20.dp)
+}
+
 fun Modifier.recommendationHeaderShape(): Modifier {
     return this
         .fillMaxWidth()
@@ -34,11 +39,6 @@ fun Modifier.recommendationContentShape(): Modifier {
         .fillMaxWidth()
         .padding(top = 280.dp)
         .background(Color.White, RoundedCornerShape(20.dp))
-}
-
-fun Modifier.itemsInterval(): Modifier {
-    return this
-        .padding(bottom = 20.dp)
 }
 
 fun Modifier.recommendationParagraphShape(): Modifier {
@@ -93,6 +93,17 @@ fun Modifier.bannerContentShape(): Modifier {
         .background(Color.White, RoundedCornerShape(20.dp))
 }
 
+fun Modifier.extendedCategoryBackgroundShape(): Modifier {
+    return this
+        .height(270.dp)
+        .fillMaxWidth()
+}
+
+fun Modifier.categoryItemsInterval(): Modifier {
+    return this
+        .padding(end = 8.dp)
+}
+
 
 
 
@@ -114,9 +125,4 @@ fun Modifier.recommendationCoverShape(): Modifier {
     return this
         .padding(bottom = 5.dp)
         .clip(RoundedCornerShape(5.dp))
-}
-
-fun Modifier.mainScreenItems(): Modifier {
-    return this
-        .padding(end = 8.dp)
 }

@@ -11,12 +11,12 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.serj.recommend.android.common.ext.screenPaddingsInner
 import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.CategoryItem
 import com.serj.recommend.android.model.Recommendation
@@ -37,18 +37,18 @@ fun PagerCategory(
         Column(
             modifier = modifier
                 .fillMaxWidth()
-                .padding(bottom = 20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(bottom = 20.dp)
         ) {
             Text(
                 modifier = Modifier
-                    .padding(start = 15.dp, end = 15.dp, bottom = 10.dp)
+                    .screenPaddingsInner()
+                    .padding(bottom = 10.dp)
                     .clickable { onCategoryClick(openScreen, category.id) },
                 text = category.title,
                 color = Color.Black,
-                fontSize = 24.sp,
+                fontSize = 22.sp,
                 maxLines = 2,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.Bold
             )
 
             val pageCount = 300
@@ -58,6 +58,7 @@ fun PagerCategory(
             )
 
             HorizontalPager(
+                modifier = Modifier.fillMaxWidth(),
                 state = pagerState,
                 contentPadding = PaddingValues(start = 20.dp, end = 20.dp)
             ) { page ->
