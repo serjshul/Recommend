@@ -23,9 +23,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.serj.recommend.android.common.ext.toColor
+import com.serj.recommend.android.common.ext.toParagraphText
 import com.serj.recommend.android.ui.components.loadingIndicators.SmallLoadingIndicator
-import com.serj.recommend.android.ui.screens.common.recommendation.components.getParagraphTexts
-import com.serj.recommend.android.ui.screens.common.recommendation.components.toColor
 import com.serj.recommend.android.ui.styles.AppleRed
 import com.serj.recommend.android.ui.styles.White
 
@@ -39,7 +39,7 @@ fun BannerDescription(
     var isOpened by rememberSaveable { mutableStateOf(false) }
 
     if (description != null) {
-        val paragraphs = getParagraphTexts(description)
+        val paragraphs = description.toParagraphText()
         Column(
             modifier = modifier
                 .fillMaxWidth()

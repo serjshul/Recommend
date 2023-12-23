@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.serj.recommend.android.R
+import com.serj.recommend.android.common.ext.toColor
 import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.CategoryItem
 import com.serj.recommend.android.model.Recommendation
@@ -40,7 +41,6 @@ import com.serj.recommend.android.ui.components.items.transparent.HorizontalItem
 import com.serj.recommend.android.ui.components.items.transparent.SquareItemTransparent
 import com.serj.recommend.android.ui.components.items.transparent.VerticalItemTransparent
 import com.serj.recommend.android.ui.components.snackbar.SnackbarManager
-import com.serj.recommend.android.ui.screens.common.recommendation.components.toColor
 import com.serj.recommend.android.ui.screens.main.home.components.ShowAllButton
 
 @Composable
@@ -59,7 +59,7 @@ fun ExtendedCategory(
         var sizeImage by remember { mutableStateOf(IntSize.Zero) }
 
         Box(
-            modifier = Modifier
+            modifier = modifier
                 .padding(top = 10.dp, bottom = 20.dp)
         ) {
             when {
@@ -91,7 +91,7 @@ fun ExtendedCategory(
                 }
             }
             Box(
-                modifier = modifier
+                modifier = Modifier
                     .height(270.dp)
                     .fillMaxWidth()
                     .background(
@@ -104,7 +104,7 @@ fun ExtendedCategory(
             )
 
             Text(
-                modifier = modifier
+                modifier = Modifier
                     .padding(start = 15.dp, top = 10.dp, end = 15.dp, bottom = 10.dp)
                     .align(Alignment.TopCenter)
                     .clickable { onCategoryClick(openScreen, category.id) },
@@ -117,7 +117,7 @@ fun ExtendedCategory(
             )
 
             LazyRow(
-                modifier = modifier.padding(top = 190.dp),
+                modifier = Modifier.padding(top = 190.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 item {

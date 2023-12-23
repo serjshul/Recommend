@@ -22,11 +22,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.serj.recommend.android.R
 import com.serj.recommend.android.common.ext.basicButton
 import com.serj.recommend.android.common.ext.fieldModifier
-import com.serj.recommend.android.ui.components.splash.AppLogo
 import com.serj.recommend.android.ui.components.authentication.AuthenticationButton
 import com.serj.recommend.android.ui.components.authentication.EmailField
 import com.serj.recommend.android.ui.components.authentication.PasswordField
 import com.serj.recommend.android.ui.components.authentication.RepeatPasswordField
+import com.serj.recommend.android.ui.components.splash.AppLogo
 
 @Composable
 fun SignUpScreen(
@@ -76,7 +76,7 @@ fun SignUpScreenContent(
         }
 
         Column(
-            modifier = modifier
+            modifier = Modifier
                 .weight(6f)
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.Top,

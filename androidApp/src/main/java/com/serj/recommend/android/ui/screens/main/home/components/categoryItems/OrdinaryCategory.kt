@@ -44,7 +44,7 @@ fun OrdinaryCategory(
             modifier = modifier.padding(bottom = 20.dp)
         ) {
             Text(
-                modifier = modifier
+                modifier = Modifier
                     .padding(start = 15.dp, end = 15.dp, bottom = 10.dp)
                     .clickable { onCategoryClick(openScreen, category.id) },
                 text = category.title,

@@ -22,9 +22,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.serj.recommend.android.R
 import com.serj.recommend.android.common.ext.basicButton
 import com.serj.recommend.android.common.ext.fieldModifier
-import com.serj.recommend.android.ui.components.splash.AppLogo
 import com.serj.recommend.android.ui.components.authentication.AuthenticationButton
 import com.serj.recommend.android.ui.components.authentication.EmailField
+import com.serj.recommend.android.ui.components.splash.AppLogo
 
 @Composable
 fun ResetPasswordScreen(
@@ -66,7 +66,7 @@ fun ResetPasswordScreenContent(
         }
 
         Column(
-            modifier = modifier
+            modifier = Modifier
                 .weight(5f)
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.Top,

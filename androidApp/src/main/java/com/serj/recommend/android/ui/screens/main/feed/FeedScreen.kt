@@ -55,13 +55,14 @@ fun FeedScreenContent(
     openScreen: (String) -> Unit,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
 ) {
-    Scaffold { paddingValues ->
+    Scaffold(
+        modifier = modifier
+            .fillMaxSize()
+            .background(color = Color.White)
+    ) { paddingValues ->
         if (posts != null) {
             LazyColumn(
-                modifier = modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-                    .background(color = Color.White)
+                modifier = Modifier.padding(paddingValues)
             ) {
                 items(posts) {
                     if (it != null) {

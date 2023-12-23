@@ -77,7 +77,7 @@ fun Banner(
                     contentScale = ContentScale.Crop
                 )
                 Box(
-                    modifier = modifier
+                    modifier = Modifier
                         .matchParentSize()
                         .background(
                             Brush.verticalGradient(
@@ -98,14 +98,14 @@ fun Banner(
         }
 
         Column(
-            modifier = modifier
+            modifier = Modifier
                 .matchParentSize()
                 .padding(bottom = 10.dp),
             verticalArrangement = Arrangement.Bottom,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                modifier = modifier.padding(start = 10.dp, end = 10.dp, bottom = 5.dp),
+                modifier = Modifier.padding(start = 10.dp, end = 10.dp, bottom = 5.dp),
                 text = title ?: "loading",
                 color = Color.Black,
                 fontSize = 26.sp,
@@ -114,7 +114,7 @@ fun Banner(
             )
 
             Text(
-                modifier = modifier.padding(start = 10.dp, end = 10.dp, bottom = 10.dp),
+                modifier = Modifier.padding(start = 10.dp, end = 10.dp, bottom = 10.dp),
                 text = promo ?: "loading",
                 color = Color.Black,
                 fontSize = 14.sp,
@@ -122,11 +122,11 @@ fun Banner(
             )
 
             Row(
-                modifier = modifier.padding(bottom = 9.dp),
+                modifier = Modifier.padding(bottom = 9.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 FilledTonalButton(
-                    modifier = modifier.padding(end = 5.dp),
+                    modifier = Modifier.padding(end = 5.dp),
                     colors = ButtonDefaults.filledTonalButtonColors(
                         containerColor = Color.Black
                     ),
@@ -148,7 +148,7 @@ fun Banner(
                 }
 
                 OutlinedIconButton(
-                    modifier = modifier.padding(end = 2.dp),
+                    modifier = Modifier.padding(end = 2.dp),
                     colors = IconButtonDefaults.outlinedIconButtonColors(
                         contentColor = Color.Black
                     ),

@@ -6,12 +6,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import com.serj.recommend.android.common.ext.recommendationMediaClip
 import com.serj.recommend.android.common.ext.recommendationMediaShape
 import com.serj.recommend.android.common.ext.recommendationParagraphShape
 import com.serj.recommend.android.common.ext.textInterval
 import com.serj.recommend.android.common.ext.textShape
+import com.serj.recommend.android.common.ext.toParagraphText
 import com.serj.recommend.android.ui.components.media.CustomVideoPlayer
 import com.serj.recommend.android.ui.components.media.ImageRecommendation
 import com.serj.recommend.android.ui.components.text.TextParagraphs
@@ -51,7 +51,7 @@ fun Paragraph(
     text: String,
     color: String
 ) {
-    val paragraphTexts = getParagraphTexts(text)
+    val paragraphTexts = text.toParagraphText()
 
     Column(
         modifier = modifier
@@ -79,13 +79,4 @@ fun Paragraph(
             paragraphTexts = paragraphTexts
         )
     }
-}
-
-fun getParagraphTexts(text: String): List<String> {
-    val prepare = text.replace("\\n", "\n")
-    return prepare.split("\\n".toRegex()).map { it.trim() }
-}
-
-fun String.toColor(): Color {
-    return Color(android.graphics.Color.parseColor(this))
 }

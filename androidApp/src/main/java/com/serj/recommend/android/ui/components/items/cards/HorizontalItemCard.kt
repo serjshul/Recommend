@@ -22,9 +22,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import com.serj.recommend.android.common.ext.toColor
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.ui.components.loadingIndicators.SmallLoadingIndicator
-import com.serj.recommend.android.ui.screens.common.recommendation.components.toColor
 import com.serj.recommend.android.ui.styles.Black
 import com.serj.recommend.android.ui.styles.Gray
 import com.serj.recommend.android.ui.styles.LightGray

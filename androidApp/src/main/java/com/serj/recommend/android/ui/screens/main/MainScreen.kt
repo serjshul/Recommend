@@ -32,14 +32,15 @@ fun MainScreen(
         val navController = rememberNavController()
 
         Surface(
+            modifier = modifier,
             color = MaterialTheme.colors.background
         ) {
             Scaffold(
-                modifier = modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize(),
                 bottomBar = {
                     BottomNavigationBar(
-                        navController = navController,
-                        modifier = Modifier
+                        modifier = Modifier,
+                        navController = navController
                     )
                 }
             ) { paddingValues ->

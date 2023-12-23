@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.serj.recommend.android.ui.screens.common.recommendation.components.toColor
+import com.serj.recommend.android.common.ext.toColor
 
 @Composable
 fun Title(

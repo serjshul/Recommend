@@ -35,13 +35,13 @@ fun PagerCategory(
 ) {
     if (!items.isNullOrEmpty()) {
         Column(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxWidth()
                 .padding(bottom = 20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                modifier = modifier
+                modifier = Modifier
                     .padding(start = 15.dp, end = 15.dp, bottom = 10.dp)
                     .clickable { onCategoryClick(openScreen, category.id) },
                 text = category.title,

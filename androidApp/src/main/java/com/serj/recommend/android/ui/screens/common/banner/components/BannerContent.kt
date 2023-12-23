@@ -31,7 +31,9 @@ fun BannerContent(
     openScreen: (String) -> Unit,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
 ) {
-    Column(modifier = modifier) {
+    Column(
+        modifier = modifier
+    ) {
         if (!bannerItems.isNullOrEmpty()) {
             // TODO: look what to use instead of cycle - HomeScreen (items(...))
             for (i in bannerItems.indices) {
