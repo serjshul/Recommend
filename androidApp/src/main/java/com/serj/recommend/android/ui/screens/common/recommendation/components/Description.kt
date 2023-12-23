@@ -1,13 +1,11 @@
 package com.serj.recommend.android.ui.screens.common.recommendation.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
+import com.serj.recommend.android.common.ext.toParagraphText
+import com.serj.recommend.android.ui.components.text.TextParagraphs
 import com.serj.recommend.android.ui.styles.White
 
 @Composable
@@ -15,11 +13,11 @@ fun Description(
     modifier: Modifier = Modifier,
     description: String
 ) {
-    Text(
-        modifier = modifier.fillMaxWidth(),
-        text = description,
-        color = Color.Black,
-        fontSize = 14.sp
+    val paragraphs = description.toParagraphText()
+
+    TextParagraphs(
+        modifier = modifier,
+        paragraphTexts = paragraphs
     )
 }
 

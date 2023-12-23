@@ -26,53 +26,38 @@ import androidx.compose.ui.unit.sp
 import com.serj.recommend.android.common.ext.toColor
 import com.serj.recommend.android.common.ext.toParagraphText
 import com.serj.recommend.android.ui.components.loadingIndicators.SmallLoadingIndicator
+import com.serj.recommend.android.ui.components.text.TextParagraphs
 import com.serj.recommend.android.ui.styles.AppleRed
 import com.serj.recommend.android.ui.styles.White
 
 @Composable
-fun BannerDescription(
+fun Description(
     modifier: Modifier = Modifier,
     description: String?,
     color: String?
 ) {
-    var sizeImage by remember { mutableStateOf(IntSize.Zero) }
+    var textSize by remember { mutableStateOf(IntSize.Zero) }
     var isOpened by rememberSaveable { mutableStateOf(false) }
 
     if (description != null) {
         val paragraphs = description.toParagraphText()
+
         Column(
             modifier = modifier
                 .fillMaxWidth()
-                .padding(top = 15.dp, bottom = 25.dp)
-                .onGloballyPositioned { sizeImage = it.size },
+                .onGloballyPositioned { textSize = it.size },
         ) {
             Box(
                 modifier = if (isOpened) Modifier
                 else Modifier.height(100.dp)
             ) {
-                Column {
-                    for (i in paragraphs.indices) {
-                        Text(
-                            modifier = if (i != paragraphs.size - 1) Modifier.padding(bottom = 12.dp)
-                            else Modifier,
-                            text = paragraphs[i],
-                            color = Color.Black,
-                            fontSize = 14.sp
-                        )
-                    }
-                }
+                TextParagraphs(
+                    paragraphTexts = paragraphs
+                )
 
                 if (!isOpened) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(
-                                Brush.verticalGradient(
-                                    colors = listOf(Color.Transparent, Color.White),
-                                    startY = sizeImage.height.toFloat() / 7,
-                                    endY = sizeImage.height.toFloat()
-                                )
-                            )
+                    TextHider(
+                        textSize = textSize
                     )
                 }
             }
@@ -110,4 +95,21 @@ fun BannerDescription(
             )
         }
     }
+}
+
+@Composable
+fun TextHider(
+    textSize: IntSize
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(Color.Transparent, Color.White),
+                    startY = textSize.height.toFloat() / 7,
+                    endY = textSize.height.toFloat()
+                )
+            )
+    )
 }

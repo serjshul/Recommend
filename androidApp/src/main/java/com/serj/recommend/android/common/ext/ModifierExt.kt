@@ -80,6 +80,18 @@ fun Modifier.screenPaddingsOuter(): Modifier {
         .padding(top = 15.dp, bottom = 15.dp)
 }
 
+fun Modifier.bannerHeaderShape(): Modifier {
+    return this
+        .fillMaxWidth()
+        .height(400.dp)
+}
+
+fun Modifier.bannerContentShape(): Modifier {
+    return this
+        .fillMaxWidth()
+        .padding(top = 380.dp)
+        .background(Color.White, RoundedCornerShape(20.dp))
+}
 
 
 
