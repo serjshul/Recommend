@@ -108,7 +108,7 @@ fun Modifier.categoryItemsInterval(): Modifier {
 fun Modifier.postShape(): Modifier {
     return this
         .fillMaxWidth()
-        .height(450.dp)
+        .height(500.dp)
         .clip(RoundedCornerShape(20.dp))
 }
 

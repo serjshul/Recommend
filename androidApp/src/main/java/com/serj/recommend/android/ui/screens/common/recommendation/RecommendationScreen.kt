@@ -21,8 +21,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.serj.recommend.android.common.ext.recommendationContentShape
 import com.serj.recommend.android.common.ext.itemsInterval
+import com.serj.recommend.android.common.ext.recommendationContentShape
 import com.serj.recommend.android.common.ext.screenPaddingsInner
 import com.serj.recommend.android.common.ext.screenPaddingsOuter
 import com.serj.recommend.android.model.Recommendation
@@ -146,11 +146,7 @@ fun RecommendationScreenContent(
                 InteractionPanel(
                     modifier = Modifier
                         .itemsInterval()
-                        .screenPaddingsInner(),
-                    views = recommendation.viewsCount.toString(),
-                    likes = recommendation.likesCount.toString(),
-                    comments = recommendation.commentsCount.toString(),
-                    reposts = recommendation.repostsCount.toString()
+                        .screenPaddingsInner()
                 )
             }
 

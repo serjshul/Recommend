@@ -2,19 +2,24 @@ package com.serj.recommend.android.ui.components.post
 
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,10 +33,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -48,12 +51,12 @@ import com.serj.recommend.android.ui.styles.LightGray
 import com.serj.recommend.android.ui.styles.White
 
 @Composable
-fun PostItem(
+fun PostWithBackground(
     modifier: Modifier = Modifier,
     nickname: String?,
     date: String?,
     userPhoto: Bitmap?,
-    text: String?,
+    description: String?,
     cover: Bitmap? = null,
     backgroundImage: Bitmap?,
     backgroundVideo: String? = null,
@@ -69,7 +72,7 @@ fun PostItem(
 ) {
     var expanded by remember { mutableStateOf(false) }
 
-    if (nickname != null && date != null && text != null && title != null && creator != null) {
+    if (nickname != null && date != null && description != null && title != null && creator != null) {
         Box(
             modifier = modifier.postShape()
         ) {
@@ -77,14 +80,12 @@ fun PostItem(
                 backgroundVideo != null -> {
 
                 }
-
                 backgroundImage != null -> {
                     ImageShaded(
                         modifier = Modifier.fillMaxSize(),
                         image = backgroundImage
                     )
                 }
-
                 else -> {
                     Image(
                         modifier = Modifier.fillMaxSize(),
@@ -96,13 +97,6 @@ fun PostItem(
                         contentDescription = "photo",
                         contentScale = ContentScale.Crop
                     )
-
-                    /*
-                    SmallLoadingIndicator(
-                        backgroundColor = White
-                    )
-
-                     */
                 }
             }
 
@@ -143,8 +137,10 @@ fun PostItem(
                                 .padding(start = 15.dp),
                             text = nickname,
                             color = White,
+                            maxLines = 1,
                             fontSize = 14.sp,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
+                            overflow = TextOverflow.Ellipsis
                         )
 
                         Text(
@@ -154,16 +150,32 @@ fun PostItem(
                             fontSize = 14.sp
                         )
 
-                        IconButton(
+                        Box(
                             modifier = Modifier
-                                .weight(1f),
-                            onClick = { expanded = true }
+                                .weight(1f)
                         ) {
-                            Icon(
-                                Icons.Default.MoreVert,
-                                contentDescription = "Show the menu",
-                                tint = White
-                            )
+                            IconButton(
+                                onClick = { expanded = true }
+                            ) {
+                                Icon(
+                                    Icons.Default.MoreVert,
+                                    contentDescription = "Show the menu",
+                                    tint = White
+                                )
+                            }
+
+                            DropdownMenu(
+                                expanded = expanded,
+                                onDismissRequest = { expanded = false }
+                            ) {
+                                Text(
+                                    modifier = Modifier
+                                        .padding(10.dp)
+                                        .clickable(onClick = { }),
+                                    text = "Add to bookmarks",
+                                    fontSize = 14.sp
+                                )
+                            }
                         }
                     }
                 }
@@ -222,7 +234,7 @@ fun PostItem(
 
                     Text(
                         modifier = Modifier.fillMaxWidth(),
-                        text = text,
+                        text = description,
                         color = White,
                         fontSize = 14.sp,
                         maxLines = 4,
@@ -230,50 +242,9 @@ fun PostItem(
                         overflow = TextOverflow.Ellipsis
                     )
 
-                    Row(
+                    InteractionPanel(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 10.dp)
-                    ) {
-                        IconButton(
-                            modifier = Modifier
-                                .size(35.dp)
-                                .padding(end = 10.dp),
-                            onClick = { }
-                        ) {
-                            Icon(
-                                ImageVector.vectorResource(id = R.drawable.icon_like_bordered_1),
-                                contentDescription = "Like",
-                                tint = White
-                            )
-                        }
-
-                        IconButton(
-                            modifier = Modifier
-                                .size(30.dp)
-                                .padding(top = 7.dp, end = 6.dp),
-                            onClick = { }
-                        ) {
-                            Icon(
-                                ImageVector.vectorResource(id = R.drawable.icon_comment_1),
-                                contentDescription = "Comment",
-                                tint = White
-                            )
-                        }
-
-                        IconButton(
-                            modifier = Modifier
-                                .size(30.dp)
-                                .padding(top = 7.dp),
-                            onClick = { }
-                        ) {
-                            Icon(
-                                ImageVector.vectorResource(id = R.drawable.icon_repost_1),
-                                contentDescription = "Repost",
-                                tint = White
-                            )
-                        }
-                    }
+                    )
                 }
             }
         }
@@ -282,24 +253,37 @@ fun PostItem(
 
 @Preview
 @Composable
-fun PostItemPreview() {
-    PostItem(
-        modifier = Modifier.padding(bottom = 2.dp),
-        nickname = "serjshul",
-        date = "1d",
-        userPhoto = null,
-        text = "text text text text text text text text text text text text text text text " +
-                "text text text text text text text text text text text text text text text " +
-                "text text text text text text text text text text text text text text",
-        backgroundImage = null,
-        title = "title",
-        creator = "creator",
-        likesCounter = 43,
-        commentsCounter = 7,
-        repostsCounter = 4,
-        viewsCounter = 185,
-        recommendationId = "",
-        openScreen = { },
-        onRecommendationClick = { _: (String) -> Unit, _: Recommendation -> }
-    )
+fun PostWithBackgroundPreview() {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(White)
+    ) {
+        item {
+            Spacer(modifier = Modifier.size(10.dp))
+        }
+
+        items(5) {
+            PostWithBackground(
+                modifier = Modifier
+                    .padding(start = 5.dp, end = 5.dp, bottom = 10.dp),
+                nickname = "serjshul",
+                date = "1d",
+                userPhoto = null,
+                description = "text text text text text text text text text text text text text text text " +
+                        "text text text text text text text text text text text text text text text " +
+                        "text text text text text text text text text text text text text text",
+                backgroundImage = null,
+                title = "title",
+                creator = "creator",
+                likesCounter = 43,
+                commentsCounter = 7,
+                repostsCounter = 4,
+                viewsCounter = 185,
+                recommendationId = "",
+                openScreen = { },
+                onRecommendationClick = { _: (String) -> Unit, _: Recommendation -> }
+            )
+        }
+    }
 }

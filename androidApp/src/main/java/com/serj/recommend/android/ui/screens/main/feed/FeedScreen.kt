@@ -2,8 +2,10 @@ package com.serj.recommend.android.ui.screens
 
 import android.graphics.Bitmap
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
@@ -12,13 +14,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.serj.recommend.android.common.ext.screenPaddingsInner
 import com.serj.recommend.android.model.Post
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.RecommendationItem
 import com.serj.recommend.android.model.UserItem
 import com.serj.recommend.android.ui.components.loadingIndicators.LargeLoadingIndicator
-import com.serj.recommend.android.ui.components.post.PostItem
+import com.serj.recommend.android.ui.components.post.PostWithBackground
 import com.serj.recommend.android.ui.screens.main.feed.FeedViewModel
 import com.serj.recommend.android.ui.styles.LightGray
 
@@ -61,31 +62,39 @@ fun FeedScreenContent(
             .fillMaxSize()
             .background(color = Color.White)
     ) { paddingValues ->
-        if (posts != null) {
+        if (!posts.isNullOrEmpty()) {
             LazyColumn(
                 modifier = Modifier
                     .padding(paddingValues)
-                    .screenPaddingsInner()
+                    .padding(start = 5.dp, end = 5.dp)
             ) {
+                item {
+                    Spacer(modifier = Modifier.size(5.dp))
+                }
+
                 items(posts) {
                     if (it != null) {
-                        PostItem(
-                            modifier = Modifier.padding(bottom = 15.dp),
-                            nickname = users?.get(it.uid)?.nickname,
-                            date = it.date.toString(),
-                            userPhoto = usersPhotos?.getOrDefault(it.uid, null),
-                            text = it.text,
-                            backgroundImage = postsPhotos?.getOrDefault(it.id, null),
-                            title = postsRecommendation?.get(it.id)?.title,
-                            creator = postsRecommendation?.get(it.id)?.creator,
-                            likesCounter = it.liked?.size ?: 0,
-                            commentsCounter = it.comments?.size ?: 0,
-                            repostsCounter = it.reposts?.size ?: 0,
-                            viewsCounter = it.views,
-                            recommendationId = it.recommendationId,
-                            openScreen = openScreen,
-                            onRecommendationClick = onRecommendationClick
-                        )
+                        if (postsPhotos?.getOrDefault(it.id, null) != null) {
+
+                        } else {
+                            PostWithBackground(
+                                modifier = Modifier.padding(bottom = 5.dp),
+                                nickname = users?.get(it.uid)?.nickname,
+                                date = it.date.toString(),
+                                userPhoto = usersPhotos?.getOrDefault(it.uid, null),
+                                description = it.descrition,
+                                backgroundImage = postsPhotos?.getOrDefault(it.id, null),
+                                title = postsRecommendation?.get(it.id)?.title,
+                                creator = postsRecommendation?.get(it.id)?.creator,
+                                likesCounter = it.liked?.size ?: 0,
+                                commentsCounter = it.comments?.size ?: 0,
+                                repostsCounter = it.reposts?.size ?: 0,
+                                viewsCounter = it.views,
+                                recommendationId = it.recommendationId,
+                                openScreen = openScreen,
+                                onRecommendationClick = onRecommendationClick
+                            )
+                        }
                     }
                 }
             }

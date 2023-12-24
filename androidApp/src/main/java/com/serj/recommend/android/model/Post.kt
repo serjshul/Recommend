@@ -7,7 +7,7 @@ data class Post(
     @DocumentId val id: String = "",
     val uid: String? = null,
     val recommendationId: String? = null,
-    val text: String? = null,
+    val descrition: String? = null,
     val date: Date? = null,
     val liked: ArrayList<String>? = null,
     val comments: ArrayList<String>? = null,
