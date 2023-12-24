@@ -32,7 +32,7 @@ import com.serj.recommend.android.R
 import com.serj.recommend.android.common.ext.mediaHeaderShape
 import com.serj.recommend.android.common.ext.recommendationHeaderShape
 import com.serj.recommend.android.common.ext.topBarShape
-import com.serj.recommend.android.ui.components.media.ImageHeader
+import com.serj.recommend.android.ui.components.media.ImageShaded
 
 @Composable
 fun Header(
@@ -54,7 +54,7 @@ fun Header(
                 // TODO: add video player
             }
             backgroundImage != null -> {
-                ImageHeader(
+                ImageShaded(
                     modifier = Modifier.mediaHeaderShape(),
                     image = backgroundImage
                 )

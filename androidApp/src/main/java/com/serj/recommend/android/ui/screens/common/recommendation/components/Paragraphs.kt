@@ -13,7 +13,7 @@ import com.serj.recommend.android.common.ext.textInterval
 import com.serj.recommend.android.common.ext.textShape
 import com.serj.recommend.android.common.ext.toParagraphText
 import com.serj.recommend.android.ui.components.media.CustomVideoPlayer
-import com.serj.recommend.android.ui.components.media.ImageRecommendation
+import com.serj.recommend.android.ui.components.media.ImageOrdinary
 import com.serj.recommend.android.ui.components.text.TextParagraphs
 import com.serj.recommend.android.ui.components.text.Title
 
@@ -65,7 +65,7 @@ fun Paragraph(
         if (video != null) {
             CustomVideoPlayer()
         } else if (image != null) {
-            ImageRecommendation(
+            ImageOrdinary(
                 modifier = Modifier
                     .recommendationMediaShape()
                     .textInterval()

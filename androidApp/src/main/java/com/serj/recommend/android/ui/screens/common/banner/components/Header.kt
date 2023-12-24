@@ -27,7 +27,7 @@ import com.serj.recommend.android.R
 import com.serj.recommend.android.common.ext.bannerHeaderShape
 import com.serj.recommend.android.common.ext.mediaHeaderShape
 import com.serj.recommend.android.ui.components.loadingIndicators.SmallLoadingIndicator
-import com.serj.recommend.android.ui.components.media.ImageHeader
+import com.serj.recommend.android.ui.components.media.ImageShaded
 import com.serj.recommend.android.ui.styles.LightGray
 
 @Composable
@@ -48,7 +48,7 @@ fun Header(
                 // TODO: add video player
             }
             backgroundImage != null -> {
-                ImageHeader(
+                ImageShaded(
                     modifier = Modifier.mediaHeaderShape(),
                     image = backgroundImage
                 )

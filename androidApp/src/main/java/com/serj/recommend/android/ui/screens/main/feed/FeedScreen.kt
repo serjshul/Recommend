@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.serj.recommend.android.common.ext.screenPaddingsInner
 import com.serj.recommend.android.model.Post
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.RecommendationItem
@@ -62,18 +63,19 @@ fun FeedScreenContent(
     ) { paddingValues ->
         if (posts != null) {
             LazyColumn(
-                modifier = Modifier.padding(paddingValues)
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .screenPaddingsInner()
             ) {
                 items(posts) {
                     if (it != null) {
                         PostItem(
-                            modifier = Modifier.padding(bottom = 2.dp),
-                            name = users?.get(it.uid)?.name,
+                            modifier = Modifier.padding(bottom = 15.dp),
                             nickname = users?.get(it.uid)?.nickname,
                             date = it.date.toString(),
                             userPhoto = usersPhotos?.getOrDefault(it.uid, null),
                             text = it.text,
-                            background = postsPhotos?.getOrDefault(it.id, null),
+                            backgroundImage = postsPhotos?.getOrDefault(it.id, null),
                             title = postsRecommendation?.get(it.id)?.title,
                             creator = postsRecommendation?.get(it.id)?.creator,
                             likesCounter = it.liked?.size ?: 0,
