@@ -14,18 +14,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.serj.recommend.android.common.ext.toColor
 
 @Composable
 fun Quote(
     modifier: Modifier = Modifier,
     quote: String,
-    color: String
+    color: Color
 ) {
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(color.toColor(), RoundedCornerShape(20.dp))
+            .background(color, RoundedCornerShape(20.dp))
     ) {
         Text(
             modifier = Modifier
@@ -52,6 +51,6 @@ fun QuotePreview() {
     Quote(
         quote = "Yeah, bitch, I said what I said\\nI'd rather be famous instead\\nI let " +
                 "all that get to my head\\nI don’t care, I paint the town red",
-        color = "#EE0027"
+        color = Color.Red
     )
 }

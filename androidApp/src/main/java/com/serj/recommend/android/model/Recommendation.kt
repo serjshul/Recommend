@@ -1,26 +1,35 @@
 package com.serj.recommend.android.model
 
+import android.graphics.Bitmap
 import com.google.firebase.firestore.DocumentId
 import java.util.Date
 
 data class Recommendation(
-    @DocumentId val id: String = "",
-    val date: Date = Date(0),
-    val authorId: String = "",
-    val title: String = "",
-    val creator: String = "",
-    val cover: HashMap<String, String> = hashMapOf(),
-    val type: String = "",
-    val tags: List<String> = arrayListOf(""),
-    val background: HashMap<String, String> = hashMapOf(),
-    val description: String = "",
-    val year: Int = 0,
-    val quote: String = "",
-    val color: String = "#000000",
+    @DocumentId val id: String? = null,
+    val uid: String? = null,
+    val date: Date? = null,
+    val color: String? = null,
+
+    val title: String? = null,
+    val type: String? = null,
+    val creator: String? = null,
+    val tags: List<String>? = null,
+    val year: Int? = null,
+
+    val description: String? = null,
+    val quote: String? = null,
     val paragraphs: ArrayList<HashMap<String, String>> = arrayListOf(),
-    val viewsCount: Int = 0,
-    val likesCount: Int = 0,
-    val commentsCount: Int = 0,
-    val repostsCount: Int = 0,
-    val comments: ArrayList<HashMap<String, String>> = arrayListOf()
+    var paragraphsImages: HashMap<String, Bitmap?> = hashMapOf(),
+
+    val coversReferences: HashMap<String, String> = hashMapOf(),
+    var cover: Bitmap? = null,
+    var coverType: String? = null,
+    val backgroundReferences: HashMap<String, String> = hashMapOf(),
+    var backgroundImage: Bitmap? = null,
+    var backgroundVideo: String? = null,
+
+    val likes: ArrayList<String> = arrayListOf(),
+    val comments: ArrayList<String> = arrayListOf(),
+    val reposts: ArrayList<String> = arrayListOf(),
+    val views: Int = 0
 )

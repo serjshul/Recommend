@@ -1,6 +1,5 @@
 package com.serj.recommend.android.ui.screens.common.banner
 
-import android.graphics.Bitmap
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,7 +13,6 @@ import com.serj.recommend.android.common.ext.bannerContentShape
 import com.serj.recommend.android.common.ext.screenPaddingsInner
 import com.serj.recommend.android.common.ext.screenPaddingsOuter
 import com.serj.recommend.android.model.Banner
-import com.serj.recommend.android.model.BannerItem
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.ui.components.loadingIndicators.LargeLoadingIndicator
 import com.serj.recommend.android.ui.screens.common.banner.components.BannerItems
@@ -30,16 +28,10 @@ fun BannerScreen(
     viewModel: BannerViewModel = hiltViewModel()
 ) {
     val banner = viewModel.banner
-    val bannerBackground = viewModel.bannerBackground.value
-    val bannerItems = viewModel.bannerItems
-    val bannerImages = viewModel.bannerImages
 
     BannerScreenContent(
         modifier = modifier,
         banner = banner.value,
-        bannerBackgroundImage = bannerBackground,
-        bannerItems = bannerItems,
-        bannerImages = bannerImages,
         openScreen = openScreen,
         popUpScreen = popUpScreen,
         onRecommendationClick = viewModel::onRecommendationClick
@@ -50,10 +42,6 @@ fun BannerScreen(
 fun BannerScreenContent(
     modifier: Modifier = Modifier,
     banner: Banner?,
-    bannerBackgroundVideo: String? = null,
-    bannerBackgroundImage: Bitmap?,
-    bannerItems: List<BannerItem?>?,
-    bannerImages: Map<String?, Bitmap?>?,
     openScreen: (String) -> Unit,
     popUpScreen: () -> Unit,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
@@ -73,8 +61,8 @@ fun BannerScreenContent(
                             title = banner.title,
                             creator = banner.creator,
                             type = banner.type,
-                            backgroundVideo = bannerBackgroundVideo,
-                            backgroundImage = bannerBackgroundImage,
+                            backgroundVideo = banner.backgroundVideo,
+                            backgroundImage = banner.backgroundImage,
                             popUpScreen = popUpScreen
                         )
 
@@ -94,10 +82,8 @@ fun BannerScreenContent(
                 }
                 item {
                     BannerItems(
-                        coverType = banner.coverType,
                         color = banner.color,
-                        bannerItems = bannerItems,
-                        bannerImages = bannerImages,
+                        banner = banner,
                         openScreen = openScreen,
                         onRecommendationClick = onRecommendationClick
                     )

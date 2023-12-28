@@ -1,5 +1,6 @@
 package com.serj.recommend.android.model.service
 
+import android.graphics.Bitmap
 import com.serj.recommend.android.model.User
 import kotlinx.coroutines.flow.Flow
 
@@ -16,5 +17,7 @@ interface AccountService {
 
     suspend fun sendPasswordResetEmail(email: String)
 
-    suspend fun getUserData(uid: String): User?
+    suspend fun getUser(uid: String): User?
+
+    suspend fun downloadImage(gsReference: String): Bitmap?
 }

@@ -1,6 +1,5 @@
 package com.serj.recommend.android.ui.screens.main.home.components.categoryItems
 
-import android.graphics.Bitmap
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -18,7 +17,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.serj.recommend.android.common.ext.screenPaddingsInner
 import com.serj.recommend.android.model.Category
-import com.serj.recommend.android.model.CategoryItem
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.ui.components.items.transparent.HorizontalItemTransparent
 
@@ -26,14 +24,14 @@ import com.serj.recommend.android.ui.components.items.transparent.HorizontalItem
 @Composable
 fun PagerCategory(
     modifier: Modifier = Modifier,
-    items: List<CategoryItem?>?,
-    covers: List<Bitmap?>?,
     category: Category,
     openScreen: (String) -> Unit,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit,
     onCategoryClick: ((String) -> Unit, String) -> Unit
 ) {
-    if (!items.isNullOrEmpty()) {
+    val items = category.content
+
+    if (items.isNotEmpty()) {
         Column(
             modifier = modifier
                 .fillMaxWidth()
@@ -63,10 +61,10 @@ fun PagerCategory(
                 contentPadding = PaddingValues(start = 20.dp, end = 20.dp)
             ) { page ->
                 HorizontalItemTransparent(
-                    recommendationId = items[page % items.size]?.recommendationId,
-                    title = items[page % items.size]?.title,
-                    creator = items[page % items.size]?.creator,
-                    cover = covers?.getOrNull(page % items.size),
+                    recommendationId = items[page % items.size].id,
+                    title = items[page % items.size].title,
+                    creator = items[page % items.size].creator,
+                    cover = items[page % items.size].cover,
                     isOnPager = true,
                     openScreen = openScreen,
                     onRecommendationClick = onRecommendationClick

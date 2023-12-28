@@ -1,6 +1,5 @@
 package com.serj.recommend.android.ui.screens.main.home.components.categoryItems
 
-import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -9,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -34,30 +34,23 @@ import com.serj.recommend.android.common.ext.itemsInterval
 import com.serj.recommend.android.common.ext.screenPaddingsInner
 import com.serj.recommend.android.common.ext.toColor
 import com.serj.recommend.android.model.Category
-import com.serj.recommend.android.model.CategoryItem
 import com.serj.recommend.android.model.Recommendation
-import com.serj.recommend.android.ui.COVER_HORIZONTAL
-import com.serj.recommend.android.ui.COVER_SQUARE
-import com.serj.recommend.android.ui.COVER_VERTICAL
 import com.serj.recommend.android.ui.components.items.transparent.HorizontalItemTransparent
 import com.serj.recommend.android.ui.components.items.transparent.SquareItemTransparent
 import com.serj.recommend.android.ui.components.items.transparent.VerticalItemTransparent
 import com.serj.recommend.android.ui.components.snackbar.SnackbarManager
 import com.serj.recommend.android.ui.screens.main.home.components.ShowAllButton
+import com.serj.recommend.android.ui.styles.ItemsShapes
 
 @Composable
 fun ExtendedCategory(
     modifier: Modifier = Modifier,
-    backgroundImage: Bitmap?,
-    backgroundVideo: String? = null,
-    items: List<CategoryItem?>?,
-    covers: List<Bitmap?>?,
     category: Category,
     openScreen: (String) -> Unit,
     onCategoryClick: ((String) -> Unit, String) -> Unit,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
 ) {
-    if (!items.isNullOrEmpty()) {
+    if (category.content.isNotEmpty()) {
         var sizeImage by remember { mutableStateOf(IntSize.Zero) }
 
         Box(
@@ -66,15 +59,15 @@ fun ExtendedCategory(
                 .padding(top = 10.dp)
         ) {
             when {
-                backgroundVideo != null -> {
+                category.backgroundVideo != null -> {
                     // TODO: add video player
                 }
-                backgroundImage != null -> {
+                category.backgroundImage != null -> {
                     Image(
                         modifier = Modifier
                             .extendedCategoryBackgroundShape()
                             .onGloballyPositioned { sizeImage = it.size },
-                        bitmap = backgroundImage.asImageBitmap(),
+                        bitmap = category.backgroundImage!!.asImageBitmap(),
                         contentDescription = "background image",
                         contentScale = ContentScale.Crop
                     )
@@ -107,7 +100,8 @@ fun ExtendedCategory(
                     .align(Alignment.CenterStart)
                     .clickable { onCategoryClick(openScreen, category.id) },
                 text = category.title,
-                color = if (backgroundImage != null) category.color?.toColor() ?: Color.Black
+                color = if (category.backgroundImage != null)
+                    category.color?.toColor() ?: Color.Black
                 else Color.Black,
                 fontSize = 22.sp,
                 maxLines = 2,
@@ -122,37 +116,37 @@ fun ExtendedCategory(
                     Spacer(modifier = Modifier.size(15.dp))
                 }
 
-                items(items.size) { i ->
-                    when (category.coverType) {
-                        COVER_SQUARE -> {
-                            SquareItemTransparent(
-                                modifier = Modifier.categoryItemsInterval(),
-                                title = items[i]?.title,
-                                creator = items[i]?.creator,
-                                cover = covers?.getOrNull(i),
-                                recommendationId = items[i]?.recommendationId,
-                                openScreen = openScreen,
-                                onRecommendationClick = onRecommendationClick
-                            )
-                        }
-                        COVER_HORIZONTAL -> {
+                items(category.content) {
+                    when (it.coverType) {
+                        ItemsShapes.horizontal.name -> {
                             HorizontalItemTransparent(
                                 modifier = Modifier.categoryItemsInterval(),
-                                title = items[i]?.title,
-                                creator = items[i]?.creator,
-                                cover = covers?.getOrNull(i),
-                                recommendationId = items[i]?.recommendationId,
+                                title = it.title,
+                                creator = it.creator,
+                                cover = it.cover,
+                                recommendationId = it.id,
                                 openScreen = openScreen,
                                 onRecommendationClick = onRecommendationClick
                             )
                         }
-                        COVER_VERTICAL -> {
+                        ItemsShapes.square.name -> {
+                            SquareItemTransparent(
+                                modifier = Modifier.categoryItemsInterval(),
+                                title = it.title,
+                                creator = it.creator,
+                                cover = it.cover,
+                                recommendationId = it.id,
+                                openScreen = openScreen,
+                                onRecommendationClick = onRecommendationClick
+                            )
+                        }
+                        ItemsShapes.vertical.name -> {
                             VerticalItemTransparent(
                                 modifier = Modifier.categoryItemsInterval(),
-                                title = items[i]?.title,
-                                creator = items[i]?.creator,
-                                cover = covers?.getOrNull(i),
-                                recommendationId = items[i]?.recommendationId,
+                                title = it.title,
+                                creator = it.creator,
+                                cover = it.cover,
+                                recommendationId = it.id,
                                 openScreen = openScreen,
                                 onRecommendationClick = onRecommendationClick
                             )

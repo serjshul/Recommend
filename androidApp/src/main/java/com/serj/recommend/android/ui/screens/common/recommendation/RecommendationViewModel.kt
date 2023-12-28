@@ -1,7 +1,5 @@
 package com.serj.recommend.android.ui.screens.common.recommendation
 
-import android.graphics.Bitmap
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import com.serj.recommend.android.RECOMMENDATION_ID
@@ -19,9 +17,8 @@ class RecommendationViewModel @Inject constructor(
     logService: LogService,
     private val storageService: StorageService
 ) : RecommendViewModel(logService) {
+
     val recommendation = mutableStateOf(Recommendation())
-    val backgroundImage = mutableStateOf<Bitmap?>(null)
-    val paragraphsImages = mutableStateMapOf<Int?, Bitmap?>(null to null)
 
     init {
         val recommendationId = savedStateHandle.get<String>(RECOMMENDATION_ID)
@@ -29,14 +26,6 @@ class RecommendationViewModel @Inject constructor(
             launchCatching {
                 recommendation.value = storageService
                     .getRecommendation(recommendationId.idFromParameter()) ?: Recommendation()
-                backgroundImage.value = recommendation.value.background["image"]?.let {
-                    storageService.downloadImage(it)
-                }
-                for (i in recommendation.value.paragraphs.indices) {
-                    recommendation.value.paragraphs[i]["image"]?.let {
-                        paragraphsImages[i] = storageService.downloadImage(it)
-                    }
-                }
             }
         }
     }

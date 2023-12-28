@@ -1,6 +1,5 @@
 package com.serj.recommend.android.ui.screens.common.category
 
-import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -27,16 +26,13 @@ import com.serj.recommend.android.R
 import com.serj.recommend.android.common.ext.itemsInterval
 import com.serj.recommend.android.common.ext.screenPaddingsInner
 import com.serj.recommend.android.model.Category
-import com.serj.recommend.android.model.CategoryItem
 import com.serj.recommend.android.model.Recommendation
-import com.serj.recommend.android.ui.COVER_HORIZONTAL
-import com.serj.recommend.android.ui.COVER_SQUARE
-import com.serj.recommend.android.ui.COVER_VERTICAL
 import com.serj.recommend.android.ui.components.items.cards.HorizontalItemCard
 import com.serj.recommend.android.ui.components.items.cards.SquareItemCard
 import com.serj.recommend.android.ui.components.items.cards.VerticalItemCard
 import com.serj.recommend.android.ui.components.loadingIndicators.LargeLoadingIndicator
 import com.serj.recommend.android.ui.components.snackbar.SnackbarManager
+import com.serj.recommend.android.ui.styles.ItemsShapes
 import com.serj.recommend.android.ui.styles.LightGray
 
 @Composable
@@ -47,14 +43,10 @@ fun CategoryScreen(
     viewModel: CategoryViewModel = hiltViewModel()
 ) {
     val category = viewModel.category
-    val categoryItems = viewModel.categoryItems
-    val categoryImages = viewModel.categoryImages
 
     CategoryScreenContent(
         modifier = modifier,
         category = category.value,
-        categoryItems = categoryItems,
-        categoryImages = categoryImages,
         openScreen = openScreen,
         popUpScreen = popUpScreen,
         onRecommendationClick = viewModel::onRecommendationClick
@@ -65,8 +57,6 @@ fun CategoryScreen(
 fun CategoryScreenContent(
     modifier: Modifier = Modifier,
     category: Category?,
-    categoryItems: List<CategoryItem?>?,
-    categoryImages: Map<String?, Bitmap?>?,
     openScreen: (String) -> Unit,
     popUpScreen: () -> Unit,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
@@ -74,7 +64,7 @@ fun CategoryScreenContent(
     Scaffold(
         modifier = modifier
     ) { paddingValues ->
-        if (category != null && categoryItems != null) {
+        if (category != null) {
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
@@ -88,46 +78,46 @@ fun CategoryScreenContent(
                     )
                 }
 
-                items(categoryItems) {item ->
-                    when (category.coverType) {
-                        COVER_SQUARE -> {
+                items(category.content) {
+                    when (it.coverType) {
+                        ItemsShapes.square.name -> {
                             SquareItemCard(
                                 modifier = Modifier
                                     .itemsInterval()
                                     .screenPaddingsInner(),
-                                recommendationId = item?.recommendationId,
-                                title = item?.title,
-                                creator = item?.creator,
-                                description = item?.description,
-                                cover = categoryImages?.getOrDefault(item?.title, null),
+                                recommendationId = it.id,
+                                title = it.title,
+                                creator = it.creator,
+                                description = null,
+                                cover = it.cover,
                                 openScreen = openScreen,
                                 onRecommendationClick = onRecommendationClick
                             )
                         }
-                        COVER_HORIZONTAL -> {
+                        ItemsShapes.horizontal.name -> {
                             HorizontalItemCard(
                                 modifier = Modifier
                                     .itemsInterval()
                                     .screenPaddingsInner(),
-                                recommendationId = item?.recommendationId,
-                                title = item?.title,
-                                creator = item?.creator,
-                                description = item?.description,
-                                cover = categoryImages?.getOrDefault(item?.title, null),
+                                recommendationId = it.id,
+                                title = it.title,
+                                creator = it.creator,
+                                description = null,
+                                cover = it.cover,
                                 openScreen = openScreen,
                                 onRecommendationClick = onRecommendationClick
                             )
                         }
-                        COVER_VERTICAL -> {
+                        ItemsShapes.vertical.name -> {
                             VerticalItemCard(
                                 modifier = Modifier
                                     .itemsInterval()
                                     .screenPaddingsInner(),
-                                recommendationId = item?.recommendationId,
-                                title = item?.title,
-                                creator = item?.creator,
-                                description = item?.description,
-                                cover = categoryImages?.getOrDefault(item?.title, null),
+                                recommendationId = it.id,
+                                title = it.title,
+                                creator = it.creator,
+                                description = null,
+                                cover = it.cover,
                                 openScreen = openScreen,
                                 onRecommendationClick = onRecommendationClick
                             )

@@ -1,7 +1,5 @@
 package com.serj.recommend.android.ui.screens.common.recommendation
 
-import android.graphics.Bitmap
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,15 +23,18 @@ import com.serj.recommend.android.common.ext.itemsInterval
 import com.serj.recommend.android.common.ext.recommendationContentShape
 import com.serj.recommend.android.common.ext.screenPaddingsInner
 import com.serj.recommend.android.common.ext.screenPaddingsOuter
+import com.serj.recommend.android.common.ext.toColor
 import com.serj.recommend.android.model.Recommendation
-import com.serj.recommend.android.ui.components.comments.CommentsBottomSheet
-import com.serj.recommend.android.ui.components.comments.CommentsList
+import com.serj.recommend.android.ui.components.loadingIndicators.LargeLoadingIndicator
 import com.serj.recommend.android.ui.components.post.InfoPanel
 import com.serj.recommend.android.ui.components.post.InteractionPanel
 import com.serj.recommend.android.ui.screens.common.recommendation.components.Description
 import com.serj.recommend.android.ui.screens.common.recommendation.components.Header
 import com.serj.recommend.android.ui.screens.common.recommendation.components.Paragraphs
 import com.serj.recommend.android.ui.screens.common.recommendation.components.Quote
+import com.serj.recommend.android.ui.styles.Black
+import com.serj.recommend.android.ui.styles.Brown
+import com.serj.recommend.android.ui.styles.White
 
 @Composable
 fun RecommendationScreen(
@@ -42,14 +43,10 @@ fun RecommendationScreen(
     viewModel: RecommendationViewModel = hiltViewModel()
 ) {
     val recommendation by viewModel.recommendation
-    val backgroundImage = viewModel.backgroundImage.value
-    val paragraphsImages = viewModel.paragraphsImages
 
     RecommendationScreenContent(
         modifier = modifier,
         recommendation = recommendation,
-        backgroundImage = backgroundImage,
-        paragraphsImages = paragraphsImages,
         popUpScreen = popUpScreen
     )
 }
@@ -59,8 +56,6 @@ fun RecommendationScreen(
 fun RecommendationScreenContent(
     modifier: Modifier = Modifier,
     recommendation: Recommendation,
-    backgroundImage: Bitmap?,
-    paragraphsImages: Map<Int?, Bitmap?>,
     popUpScreen: () -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState()
@@ -69,113 +64,126 @@ fun RecommendationScreenContent(
     Scaffold(
         modifier = modifier
     ) { paddingValues ->
-        LazyColumn(
-            modifier = Modifier.padding(paddingValues)
-        ) {
-            item {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    Header(
-                        modifier = Modifier,
-                        title = recommendation.title,
-                        type = recommendation.type,
-                        creator = recommendation.creator,
-                        tags = recommendation.tags,
-                        year = recommendation.year,
-                        backgroundImage = backgroundImage,
-                        backgroundVideo = null,
-                        popUpScreen = popUpScreen
-                    )
-
-                    Column(
+        if (recommendation.title != null && recommendation.type != null &&
+            recommendation.creator != null && recommendation.tags != null &&
+            recommendation.year != null && recommendation.description != null &&
+            recommendation.quote != null && recommendation.date != null) {
+            LazyColumn(
+                modifier = Modifier.padding(paddingValues)
+            ) {
+                item {
+                    Box(
                         modifier = Modifier
-                            .recommendationContentShape()
-                            .screenPaddingsInner()
-                            .screenPaddingsOuter()
+                            .fillMaxWidth()
                     ) {
-                        Description(
-                            description = recommendation.description
+                        Header(
+                            modifier = Modifier,
+                            title = recommendation.title,
+                            type = recommendation.type,
+                            creator = recommendation.creator,
+                            tags = recommendation.tags,
+                            year = recommendation.year,
+                            backgroundImage = recommendation.backgroundImage,
+                            backgroundVideo = recommendation.backgroundVideo,
+                            popUpScreen = popUpScreen
                         )
+
+                        Column(
+                            modifier = Modifier
+                                .recommendationContentShape()
+                                .screenPaddingsInner()
+                                .screenPaddingsOuter()
+                        ) {
+                            Description(
+                                description = recommendation.description
+                            )
+                        }
+                    }
+                }
+
+                item {
+                    Paragraphs(
+                        modifier = Modifier.screenPaddingsInner(),
+                        paragraphs = recommendation.paragraphs,
+                        paragraphsImages = recommendation.paragraphsImages,
+                        color = recommendation.color?.toColor() ?: Black
+                    )
+                }
+
+                item {
+                    Quote(
+                        modifier = Modifier
+                            .itemsInterval()
+                            .screenPaddingsInner(),
+                        quote = recommendation.quote,
+                        color = recommendation.color?.toColor() ?: Brown
+                    )
+                }
+
+                item {
+                    InfoPanel(
+                        modifier = Modifier
+                            .itemsInterval()
+                            .screenPaddingsInner(),
+                        author = recommendation.uid ?: "",
+                        date = recommendation.date.toLocaleString()
+                    )
+                }
+
+                item {
+                    Divider(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .itemsInterval()
+                            .screenPaddingsInner(),
+                        thickness = 1.dp,
+                        color = Color.Gray
+                    )
+                }
+
+                item {
+                    InteractionPanel(
+                        modifier = Modifier
+                            .itemsInterval()
+                            .screenPaddingsInner()
+                    )
+                }
+
+                if (recommendation.comments.isNotEmpty()) {
+                    item {
+                        /*
+                        CommentsList(
+                            modifier = Modifier
+                                .itemsInterval()
+                                .screenPaddingsInner()
+                                .clickable { showBottomSheet = true },
+                            comments = recommendation.comments
+                        )
+
+                         */
                     }
                 }
             }
 
-            item {
-                Paragraphs(
-                    modifier = Modifier.screenPaddingsInner(),
-                    paragraphs = recommendation.paragraphs,
-                    paragraphsImages = paragraphsImages,
-                    color = recommendation.color
-                )
-            }
-
-            item {
-                Quote(
-                    modifier = Modifier
-                        .itemsInterval()
-                        .screenPaddingsInner(),
-                    quote = recommendation.quote,
-                    color = recommendation.color
-                )
-            }
-
-            item {
-                InfoPanel(
-                    modifier = Modifier
-                        .itemsInterval()
-                        .screenPaddingsInner(),
-                    author = recommendation.authorId,
-                    date = recommendation.date.toLocaleString()
-                )
-            }
-
-            item {
-                Divider(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .itemsInterval()
-                        .screenPaddingsInner(),
-                    thickness = 1.dp,
-                    color = Color.Gray
-                )
-            }
-
-            item {
-                InteractionPanel(
-                    modifier = Modifier
-                        .itemsInterval()
-                        .screenPaddingsInner()
-                )
-            }
-
-            if (recommendation.comments.isNotEmpty()) {
-                item {
-                    CommentsList(
+            if (showBottomSheet) {
+                ModalBottomSheet(
+                    onDismissRequest = { showBottomSheet = false },
+                    sheetState = sheetState,
+                    containerColor = Color.White
+                ) {
+                    /*
+                    CommentsBottomSheet(
                         modifier = Modifier
-                            .itemsInterval()
                             .screenPaddingsInner()
-                            .clickable { showBottomSheet = true },
+                            .screenPaddingsOuter(),
                         comments = recommendation.comments
                     )
+
+                     */
                 }
             }
-        }
-
-        if (showBottomSheet) {
-            ModalBottomSheet(
-                onDismissRequest = { showBottomSheet = false },
-                sheetState = sheetState,
-                containerColor = Color.White
-            ) {
-                CommentsBottomSheet(
-                    modifier = Modifier
-                        .screenPaddingsInner()
-                        .screenPaddingsOuter(),
-                    comments = recommendation.comments
-                )
-            }
+        } else {
+            LargeLoadingIndicator(backgroundColor = White)
         }
     }
 }
