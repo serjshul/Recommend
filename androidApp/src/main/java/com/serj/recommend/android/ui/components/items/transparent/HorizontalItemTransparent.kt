@@ -55,8 +55,8 @@ fun HorizontalItemTransparent(
                     }
                 }
             else modifier
-                .height(230.dp)
-                .width(255.dp)
+                .height(270.dp)
+                .width(330.dp)
                 .clickable {
                     if (recommendationId != null) {
                         onRecommendationClick(
@@ -69,12 +69,8 @@ fun HorizontalItemTransparent(
         ) {
             if (cover != null) {
                 Image(
-                    modifier = if (isOnPager) Modifier
+                    modifier = Modifier
                         .height(200.dp)
-                        .fillMaxWidth()
-                        .recommendationCoverShape()
-                    else Modifier
-                        .height(160.dp)
                         .fillMaxWidth()
                         .recommendationCoverShape(),
                     bitmap = cover.asImageBitmap(),
@@ -83,12 +79,8 @@ fun HorizontalItemTransparent(
                 )
             } else {
                 SmallLoadingIndicator(
-                    modifier = if (isOnPager) Modifier
+                    modifier = Modifier
                         .height(200.dp)
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(5.dp))
-                    else Modifier
-                        .height(160.dp)
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(5.dp)),
                     backgroundColor = LightGray

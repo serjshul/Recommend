@@ -39,8 +39,8 @@ fun SquareItemTransparent(
     if (title != null && creator != null) {
         Column(
             modifier = modifier
-                .height(230.dp)
-                .width(160.dp)
+                .height(270.dp)
+                .width(200.dp)
                 .clickable {
                     if (recommendationId != null) {
                         onRecommendationClick(
@@ -53,7 +53,7 @@ fun SquareItemTransparent(
             if (cover != null) {
                 Image(
                     modifier = Modifier
-                        .size(160.dp)
+                        .size(200.dp)
                         .recommendationCoverShape(),
                     bitmap = cover.asImageBitmap(),
                     contentDescription = title,
@@ -62,7 +62,7 @@ fun SquareItemTransparent(
             } else {
                 SmallLoadingIndicator(
                     modifier = Modifier
-                        .size(160.dp)
+                        .size(200.dp)
                         .clip(RoundedCornerShape(5.dp)),
                     backgroundColor = LightGray
                 )

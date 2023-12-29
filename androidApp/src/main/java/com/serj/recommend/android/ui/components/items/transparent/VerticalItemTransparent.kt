@@ -37,8 +37,8 @@ fun VerticalItemTransparent(
     if (title != null && creator != null) {
         Column(
             modifier = Modifier
-                .height(310.dp)
-                .width(165.dp)
+                .height(370.dp)
+                .width(200.dp)
                 .clickable {
                     if (recommendationId != null) {
                         onRecommendationClick(
@@ -51,7 +51,7 @@ fun VerticalItemTransparent(
             if (cover != null) {
                 Image(
                     modifier = modifier
-                        .height(240.dp)
+                        .height(300.dp)
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(5.dp)),
                     bitmap = cover.asImageBitmap(),
@@ -61,7 +61,7 @@ fun VerticalItemTransparent(
             } else {
                 SmallLoadingIndicator(
                     modifier = Modifier
-                        .height(240.dp)
+                        .height(300.dp)
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(5.dp)),
                     backgroundColor = LightGray
