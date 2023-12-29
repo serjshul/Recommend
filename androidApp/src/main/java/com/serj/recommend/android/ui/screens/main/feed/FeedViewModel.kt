@@ -1,13 +1,12 @@
 package com.serj.recommend.android.ui.screens.main.feed
 
-import android.graphics.Bitmap
+import android.content.ContentValues.TAG
+import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateMapOf
 import com.serj.recommend.android.RECOMMENDATION_ID
 import com.serj.recommend.android.RecommendRoutes
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.items.RecommendationItem
-import com.serj.recommend.android.model.items.UserItem
 import com.serj.recommend.android.model.service.AccountService
 import com.serj.recommend.android.model.service.LogService
 import com.serj.recommend.android.model.service.StorageService
@@ -23,20 +22,21 @@ class FeedViewModel @Inject constructor(
 ) : RecommendViewModel(logService) {
 
     private val currentUser = accountService.currentUser
-
-    val posts = mutableStateListOf<Recommendation?>()
-    val users = mutableStateMapOf<String?, UserItem?>()
-    val postsRecommendations = mutableStateMapOf<String?, RecommendationItem?>()
-
-    val usersPhotos = mutableStateMapOf<String?, Bitmap?>()
-    val postsImages = mutableStateMapOf<String?, Bitmap?>()
+    val currentRecommendations = mutableStateListOf<RecommendationItem>()
 
     init {
         launchCatching {
             currentUser.collect {user ->
                 for (followingUid in user.following!!) {
-                    val currentPosts = storageService.getFeedData(followingUid)
-
+                    val recommendationsIdsFromFollowing = storageService.getFollowingRecommendationsIds(followingUid)
+                    for (recommendationId in recommendationsIdsFromFollowing) {
+                        storageService.getRecommendationItemById(recommendationId)?.let {
+                            currentRecommendations.add(
+                                it
+                            )
+                            Log.v(TAG, currentRecommendations.joinToString())
+                        }
+                    }
                 }
             }
         }

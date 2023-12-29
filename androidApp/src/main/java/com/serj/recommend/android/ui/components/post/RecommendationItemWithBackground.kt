@@ -11,8 +11,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -44,35 +46,34 @@ import androidx.compose.ui.unit.sp
 import com.serj.recommend.android.R
 import com.serj.recommend.android.common.ext.postShape
 import com.serj.recommend.android.model.Recommendation
+import com.serj.recommend.android.model.items.UserItem
 import com.serj.recommend.android.ui.components.loadingIndicators.SmallLoadingIndicator
 import com.serj.recommend.android.ui.components.media.ImageOrdinary
 import com.serj.recommend.android.ui.components.media.ImageShaded
+import com.serj.recommend.android.ui.styles.ItemsShapes
 import com.serj.recommend.android.ui.styles.LightGray
 import com.serj.recommend.android.ui.styles.White
+import java.util.Date
 
 @Composable
-fun PostWithBackground(
+fun RecommendationItemWithBackground(
     modifier: Modifier = Modifier,
-    nickname: String?,
-    date: String?,
-    userPhoto: Bitmap?,
+    user: UserItem?,
+    date: Date?,
     description: String?,
+    coverType: String?,
     cover: Bitmap? = null,
     backgroundImage: Bitmap?,
     backgroundVideo: String? = null,
     title: String?,
     creator: String?,
-    likesCounter: Int?,
-    commentsCounter: Int?,
-    repostsCounter: Int?,
-    viewsCounter: Int?,
     recommendationId: String?,
     openScreen: (String) -> Unit,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 
-    if (nickname != null && date != null && description != null && title != null && creator != null) {
+    if (user!!.nickname != null && date != null && description != null && title != null && creator != null) {
         Box(
             modifier = modifier.postShape()
         ) {
@@ -109,12 +110,12 @@ fun PostWithBackground(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    if (userPhoto != null) {
+                    if (user.photo != null) {
                         ImageOrdinary(
                             modifier = Modifier
                                 .size(40.dp)
                                 .clip(CircleShape),
-                            image = userPhoto
+                            image = user.photo!!
                         )
                     } else {
                         Image(
@@ -135,7 +136,7 @@ fun PostWithBackground(
                             modifier = Modifier
                                 .weight(8f)
                                 .padding(start = 15.dp),
-                            text = nickname,
+                            text = user.nickname!!,
                             color = White,
                             maxLines = 1,
                             fontSize = 14.sp,
@@ -189,24 +190,74 @@ fun PostWithBackground(
                             .padding(bottom = 10.dp),
                         verticalAlignment = Alignment.Bottom
                     ) {
-                        if (cover != null) {
-                            Image(
-                                modifier = Modifier
-                                    .size(100.dp)
-                                    .padding(end = 10.dp)
-                                    .clip(RoundedCornerShape(5.dp)),
-                                bitmap = cover.asImageBitmap(),
-                                contentDescription = title,
-                                contentScale = ContentScale.Crop
-                            )
-                        } else {
-                            SmallLoadingIndicator(
-                                modifier = Modifier
-                                    .padding(end = 10.dp)
-                                    .size(100.dp)
-                                    .clip(RoundedCornerShape(5.dp)),
-                                backgroundColor = LightGray
-                            )
+                        when (coverType) {
+                            ItemsShapes.square.name -> {
+                                if (cover != null) {
+                                    Image(
+                                        modifier = Modifier
+                                            .padding(end = 10.dp)
+                                            .size(100.dp)
+                                            .clip(RoundedCornerShape(5.dp)),
+                                        bitmap = cover.asImageBitmap(),
+                                        contentDescription = title,
+                                        contentScale = ContentScale.Crop
+                                    )
+                                } else {
+                                    SmallLoadingIndicator(
+                                        modifier = Modifier
+                                            .padding(end = 10.dp)
+                                            .size(100.dp)
+                                            .clip(RoundedCornerShape(5.dp)),
+                                        backgroundColor = LightGray
+                                    )
+                                }
+                            }
+                            ItemsShapes.vertical.name -> {
+                                if (cover != null) {
+                                    Image(
+                                        modifier = Modifier
+                                            .padding(end = 10.dp)
+                                            .height(150.dp)
+                                            .width(110.dp)
+                                            .clip(RoundedCornerShape(5.dp)),
+                                        bitmap = cover.asImageBitmap(),
+                                        contentDescription = title,
+                                        contentScale = ContentScale.Crop
+                                    )
+                                } else {
+                                    SmallLoadingIndicator(
+                                        modifier = Modifier
+                                            .padding(end = 10.dp)
+                                            .height(150.dp)
+                                            .width(110.dp)
+                                            .clip(RoundedCornerShape(5.dp)),
+                                        backgroundColor = LightGray
+                                    )
+                                }
+                            }
+                            else -> {
+                                if (cover != null) {
+                                    Image(
+                                        modifier = Modifier
+                                            .height(100.dp)
+                                            .width(165.dp)
+                                            .padding(end = 10.dp)
+                                            .clip(RoundedCornerShape(5.dp)),
+                                        bitmap = cover.asImageBitmap(),
+                                        contentDescription = title,
+                                        contentScale = ContentScale.Crop
+                                    )
+                                } else {
+                                    SmallLoadingIndicator(
+                                        modifier = Modifier
+                                            .height(100.dp)
+                                            .width(165.dp)
+                                            .padding(end = 10.dp)
+                                            .clip(RoundedCornerShape(5.dp)),
+                                        backgroundColor = LightGray
+                                    )
+                                }
+                            }
                         }
 
                         Column(
@@ -264,22 +315,20 @@ fun PostWithBackgroundPreview() {
         }
 
         items(5) {
-            PostWithBackground(
+            RecommendationItemWithBackground(
                 modifier = Modifier
                     .padding(start = 5.dp, end = 5.dp, bottom = 10.dp),
-                nickname = "serjshul",
-                date = "1d",
-                userPhoto = null,
+                user = UserItem(
+                    nickname = "serjshul"
+                ),
+                date = Date(0),
                 description = "text text text text text text text text text text text text text text text " +
                         "text text text text text text text text text text text text text text text " +
                         "text text text text text text text text text text text text text text",
                 backgroundImage = null,
                 title = "title",
                 creator = "creator",
-                likesCounter = 43,
-                commentsCounter = 7,
-                repostsCounter = 4,
-                viewsCounter = 185,
+                coverType = ItemsShapes.horizontal.name,
                 recommendationId = "",
                 openScreen = { },
                 onRecommendationClick = { _: (String) -> Unit, _: Recommendation -> }

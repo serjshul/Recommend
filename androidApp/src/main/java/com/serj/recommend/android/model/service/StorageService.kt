@@ -28,7 +28,7 @@ interface StorageService {
 
     suspend fun getUserItem(uid: String): UserItem?
 
-    suspend fun getFeedData(followingUid: String): List<Recommendation>
+    suspend fun getFollowingRecommendationsIds(followingUid: String): List<String>
 
     suspend fun downloadImage(gsReference: String): Bitmap?
 }

@@ -11,8 +11,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -43,20 +45,23 @@ import androidx.compose.ui.unit.sp
 import com.serj.recommend.android.R
 import com.serj.recommend.android.common.ext.postShape
 import com.serj.recommend.android.model.Recommendation
+import com.serj.recommend.android.model.items.UserItem
 import com.serj.recommend.android.ui.components.loadingIndicators.SmallLoadingIndicator
 import com.serj.recommend.android.ui.components.media.ImageOrdinary
 import com.serj.recommend.android.ui.styles.Brown
 import com.serj.recommend.android.ui.styles.Gray
+import com.serj.recommend.android.ui.styles.ItemsShapes
 import com.serj.recommend.android.ui.styles.LightGray
 import com.serj.recommend.android.ui.styles.White
+import java.util.Date
 
 @Composable
-fun PostWithoutBackground(
+fun RecommendationItemWithoutBackground(
     modifier: Modifier = Modifier,
-    nickname: String?,
-    date: String?,
-    userPhoto: Bitmap?,
+    user: UserItem?,
+    date: Date?,
     description: String?,
+    coverType: String? = ItemsShapes.horizontal.name,
     cover: Bitmap? = null,
     title: String?,
     creator: String?,
@@ -66,7 +71,7 @@ fun PostWithoutBackground(
 ) {
     var expanded by remember { mutableStateOf(false) }
 
-    if (nickname != null && date != null && description != null && title != null && creator != null) {
+    if (user?.nickname != null && date != null && description != null && title != null && creator != null) {
         Box(
             modifier = modifier.postShape()
         ) {
@@ -87,12 +92,12 @@ fun PostWithoutBackground(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    if (userPhoto != null) {
+                    if (user.photo != null) {
                         ImageOrdinary(
                             modifier = Modifier
                                 .size(40.dp)
                                 .clip(CircleShape),
-                            image = userPhoto
+                            image = user.photo!!
                         )
                     } else {
                         Image(
@@ -113,7 +118,7 @@ fun PostWithoutBackground(
                             modifier = Modifier
                                 .weight(8f)
                                 .padding(start = 15.dp),
-                            text = nickname,
+                            text = user.nickname,
                             color = White,
                             maxLines = 1,
                             fontSize = 14.sp,
@@ -163,24 +168,74 @@ fun PostWithoutBackground(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Bottom
                 ) {
-                    if (cover != null) {
-                        Image(
-                            modifier = Modifier
-                                .size(190.dp)
-                                .padding(end = 10.dp)
-                                .clip(RoundedCornerShape(5.dp)),
-                            bitmap = cover.asImageBitmap(),
-                            contentDescription = title,
-                            contentScale = ContentScale.Crop
-                        )
-                    } else {
-                        SmallLoadingIndicator(
-                            modifier = Modifier
-                                .padding(bottom = 25.dp)
-                                .size(190.dp)
-                                .clip(RoundedCornerShape(5.dp)),
-                            backgroundColor = LightGray
-                        )
+                    when (coverType) {
+                        ItemsShapes.square.name -> {
+                            if (cover != null) {
+                                Image(
+                                    modifier = Modifier
+                                        .padding(bottom = 25.dp)
+                                        .size(200.dp)
+                                        .clip(RoundedCornerShape(5.dp)),
+                                    bitmap = cover.asImageBitmap(),
+                                    contentDescription = title,
+                                    contentScale = ContentScale.Crop
+                                )
+                            } else {
+                                SmallLoadingIndicator(
+                                    modifier = Modifier
+                                        .padding(bottom = 25.dp)
+                                        .size(200.dp)
+                                        .clip(RoundedCornerShape(5.dp)),
+                                    backgroundColor = LightGray
+                                )
+                            }
+                        }
+                        ItemsShapes.vertical.name -> {
+                            if (cover != null) {
+                                Image(
+                                    modifier = Modifier
+                                        .padding(bottom = 25.dp)
+                                        .height(200.dp)
+                                        .width(135.dp)
+                                        .clip(RoundedCornerShape(5.dp)),
+                                    bitmap = cover.asImageBitmap(),
+                                    contentDescription = title,
+                                    contentScale = ContentScale.Crop
+                                )
+                            } else {
+                                SmallLoadingIndicator(
+                                    modifier = Modifier
+                                        .padding(bottom = 25.dp)
+                                        .height(200.dp)
+                                        .width(135.dp)
+                                        .clip(RoundedCornerShape(5.dp)),
+                                    backgroundColor = LightGray
+                                )
+                            }
+                        }
+                        else -> {
+                            if (cover != null) {
+                                Image(
+                                    modifier = Modifier
+                                        .padding(bottom = 40.dp)
+                                        .height(170.dp)
+                                        .width(300.dp)
+                                        .clip(RoundedCornerShape(5.dp)),
+                                    bitmap = cover.asImageBitmap(),
+                                    contentDescription = title,
+                                    contentScale = ContentScale.Crop
+                                )
+                            } else {
+                                SmallLoadingIndicator(
+                                    modifier = Modifier
+                                        .padding(bottom = 40.dp)
+                                        .height(170.dp)
+                                        .width(300.dp)
+                                        .clip(RoundedCornerShape(5.dp)),
+                                    backgroundColor = LightGray
+                                )
+                            }
+                        }
                     }
 
                     Text(
@@ -236,12 +291,14 @@ fun PostWithoutBackgroundPreview() {
         }
 
         items(5) {
-            PostWithoutBackground(
+            RecommendationItemWithoutBackground(
                 modifier = Modifier
                     .padding(start = 5.dp, end = 5.dp, bottom = 10.dp),
-                nickname = "serjshul",
-                date = "1d",
-                userPhoto = null,
+                user = UserItem(
+                    nickname = "serjshul"
+                ),
+                date = Date(0),
+                coverType = ItemsShapes.horizontal.name,
                 description = "text text text text text text text text text text text text text text text " +
                         "text text text text text text text text text text text text text text text " +
                         "text text text text text text text text text text text text text text",

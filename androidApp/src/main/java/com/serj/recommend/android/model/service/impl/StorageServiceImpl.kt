@@ -241,15 +241,29 @@ class StorageServiceImpl @Inject constructor(
         return userItem
     }
 
-    override suspend fun getFeedData(
+    override suspend fun getFollowingRecommendationsIds(
         followingUid: String
-    ): List<Recommendation> =
+    ): List<String> {
+        val followingRecommendationsIds = arrayListOf<String>()
+
         firestore
             .collection(RECOMMENDATIONS_COLLECTION)
             .whereEqualTo("uid", followingUid)
             .get()
+            .addOnSuccessListener {document ->
+                val recommendations = document.toObjects<Recommendation>()
+                for (recommendation in recommendations) {
+                    recommendation.id?.let { followingRecommendationsIds.add(it) }
+                }
+            }
+            .addOnFailureListener {
+                // Handle any errors
+                Log.v(TAG, "error getFollowingRecommendationsIds()")
+            }
             .await()
-            .toObjects()
+
+        return followingRecommendationsIds
+    }
 
     override suspend fun downloadImage(gsReference: String): Bitmap? {
         var bmp: Bitmap? = null
