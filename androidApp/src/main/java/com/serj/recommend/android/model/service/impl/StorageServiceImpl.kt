@@ -4,6 +4,8 @@ import android.content.ContentValues.TAG
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.dataObjects
 import com.google.firebase.firestore.toObject
@@ -50,7 +52,7 @@ class StorageServiceImpl @Inject constructor(
         var recommendation: Recommendation? = null
         var currentBackgroundImageReference: String? = null
         val currentParagraphsImagesReferences = hashMapOf<String, String?>()
-        val currentParagraphsImages = hashMapOf<String, Bitmap?>()
+        val currentParagraphsImages = hashMapOf<String, MutableState<Bitmap?>>()
 
         firestore
             .collection(RECOMMENDATIONS_COLLECTION)
@@ -74,9 +76,9 @@ class StorageServiceImpl @Inject constructor(
             }
             .await()
 
-        recommendation?.backgroundImage = currentBackgroundImageReference?.let { downloadImage(it) }
+        recommendation?.backgroundImage?.value = currentBackgroundImageReference?.let { downloadImage(it) }
         for ((title, reference) in currentParagraphsImagesReferences) {
-            currentParagraphsImages[title] = reference?.let { downloadImage(it) }
+            currentParagraphsImages[title] = mutableStateOf(reference?.let { downloadImage(it) })
         }
         recommendation?.paragraphsImages = currentParagraphsImages
 

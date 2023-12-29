@@ -1,6 +1,8 @@
 package com.serj.recommend.android.model
 
 import android.graphics.Bitmap
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import com.google.firebase.firestore.DocumentId
 import java.util.Date
 
@@ -19,13 +21,14 @@ data class Recommendation(
     val description: String? = null,
     val quote: String? = null,
     val paragraphs: ArrayList<HashMap<String, String>> = arrayListOf(),
-    var paragraphsImages: HashMap<String, Bitmap?> = hashMapOf(),
+    var paragraphsImages: HashMap<String, MutableState<Bitmap?>> = hashMapOf(),
 
     val coversReferences: HashMap<String, String> = hashMapOf(),
-    var cover: Bitmap? = null,
+    var cover: MutableState<Bitmap?> = mutableStateOf(null),
     var coverType: String? = null,
+
     val backgroundReferences: HashMap<String, String> = hashMapOf(),
-    var backgroundImage: Bitmap? = null,
+    var backgroundImage: MutableState<Bitmap?> = mutableStateOf(null),
     var backgroundVideo: String? = null,
 
     val likes: ArrayList<String> = arrayListOf(),

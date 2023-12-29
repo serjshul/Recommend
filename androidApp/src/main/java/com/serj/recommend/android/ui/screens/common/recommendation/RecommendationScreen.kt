@@ -83,7 +83,7 @@ fun RecommendationScreenContent(
                             creator = recommendation.creator,
                             tags = recommendation.tags,
                             year = recommendation.year,
-                            backgroundImage = recommendation.backgroundImage,
+                            backgroundImage = recommendation.backgroundImage.value,
                             backgroundVideo = recommendation.backgroundVideo,
                             popUpScreen = popUpScreen
                         )

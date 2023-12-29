@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.serj.recommend.android.common.ext.recommendationMediaClip
@@ -22,7 +23,7 @@ import com.serj.recommend.android.ui.components.text.Title
 fun Paragraphs(
     modifier: Modifier = Modifier,
     paragraphs: ArrayList<HashMap<String, String>>,
-    paragraphsImages: Map<String, Bitmap?>,
+    paragraphsImages: Map<String, MutableState<Bitmap?>>,
     color: Color
 ) {
     Column(
@@ -34,7 +35,7 @@ fun Paragraphs(
             Paragraph(
                 modifier = Modifier.recommendationParagraphShape(),
                 title = paragraphs[i]["title"] ?: "",
-                image = paragraphsImages[paragraphs[i]["title"]],
+                image = paragraphsImages[paragraphs[i]["title"]]?.value,
                 video = paragraphs[i]["video"],
                 text = paragraphs[i]["text"] ?: "",
                 color = color
