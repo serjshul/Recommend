@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -46,7 +47,7 @@ fun HomeScreen(
 fun HomeScreenContent(
     modifier: Modifier = Modifier,
     banner: Banner?,
-    categories: List<Category>,
+    categories: List<MutableState<Category>>,
     openScreen: (String) -> Unit,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit,
     onBannerClick: ((String) -> Unit, String) -> Unit,
@@ -70,10 +71,11 @@ fun HomeScreenContent(
             }
 
             items(categories) { category ->
-                when (category.type) {
+                val value = category.value
+                when (value.type) {
                     CategoryType.ordinary.name -> {
                         OrdinaryCategory(
-                            category = category,
+                            category = value,
                             openScreen = openScreen,
                             onRecommendationClick = onRecommendationClick,
                             onCategoryClick = onCategoryClick
@@ -81,7 +83,7 @@ fun HomeScreenContent(
                     }
                     CategoryType.extended.name -> {
                         ExtendedCategory(
-                            category = category,
+                            category = value,
                             openScreen = openScreen,
                             onRecommendationClick = onRecommendationClick,
                             onCategoryClick = onCategoryClick
@@ -89,7 +91,7 @@ fun HomeScreenContent(
                     }
                     CategoryType.pager.name -> {
                         PagerCategory(
-                            category = category,
+                            category = value,
                             openScreen = openScreen,
                             onRecommendationClick = onRecommendationClick,
                             onCategoryClick = onCategoryClick

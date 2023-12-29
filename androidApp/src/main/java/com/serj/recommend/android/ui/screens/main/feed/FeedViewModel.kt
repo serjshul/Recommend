@@ -35,7 +35,7 @@ class FeedViewModel @Inject constructor(
         launchCatching {
             currentUser.collect {user ->
                 for (followingUid in user.following!!) {
-                    val currentPosts = storageService.getFollowingRecommendations(followingUid)
+                    val currentPosts = storageService.getFeedData(followingUid)
 
                 }
             }

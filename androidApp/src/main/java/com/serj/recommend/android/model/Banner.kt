@@ -2,7 +2,7 @@ package com.serj.recommend.android.model
 
 import android.graphics.Bitmap
 import com.google.firebase.firestore.DocumentId
-import com.serj.recommend.android.model.items.CategoryItem
+import com.serj.recommend.android.model.items.RecommendationItem
 import java.util.Date
 
 data class Banner(
@@ -25,5 +25,5 @@ data class Banner(
     val color: String? = null,
 
     val recommendationIds: ArrayList<String>? = null,
-    val content: ArrayList<CategoryItem>? = null
+    val content: ArrayList<RecommendationItem>? = null
 )

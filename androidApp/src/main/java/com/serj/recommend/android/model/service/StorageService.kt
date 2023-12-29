@@ -4,8 +4,8 @@ import android.graphics.Bitmap
 import com.serj.recommend.android.model.Banner
 import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.Recommendation
-import com.serj.recommend.android.model.items.CategoryItem
 import com.serj.recommend.android.model.items.RecommendationItem
+import com.serj.recommend.android.model.items.RecommendationPreview
 import com.serj.recommend.android.model.items.UserItem
 import kotlinx.coroutines.flow.Flow
 
@@ -18,19 +18,17 @@ interface StorageService {
 
     val categories: Flow<List<Category>>
 
-    suspend fun getRecommendation(recommendationId: String): Recommendation?
+    suspend fun getRecommendationById(recommendationId: String): Recommendation?
 
-    suspend fun getCategory(categoryId: String): Category?
+    suspend fun getBannerById(bannerId: String): Banner?
 
-    suspend fun getBanner(bannerId: String): Banner?
+    suspend fun getRecommendationItemById(recommendationId: String): RecommendationItem?
 
-    suspend fun getRecommendationItem(recommendationId: String): RecommendationItem?
-
-    suspend fun getCategoryItem(recommendationId: String): CategoryItem?
+    suspend fun getRecommendationPreviewById(recommendationId: String): RecommendationPreview?
 
     suspend fun getUserItem(uid: String): UserItem?
 
-    suspend fun getFollowingRecommendations(followingUid: String): List<Recommendation>
+    suspend fun getFeedData(followingUid: String): List<Recommendation>
 
     suspend fun downloadImage(gsReference: String): Bitmap?
 }

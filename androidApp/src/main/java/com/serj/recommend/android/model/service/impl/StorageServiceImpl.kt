@@ -13,11 +13,11 @@ import com.serj.recommend.android.model.Banner
 import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.User
-import com.serj.recommend.android.model.items.CategoryItem
 import com.serj.recommend.android.model.items.RecommendationItem
+import com.serj.recommend.android.model.items.RecommendationPreview
 import com.serj.recommend.android.model.items.UserItem
-import com.serj.recommend.android.model.service.AccountService
 import com.serj.recommend.android.model.service.StorageService
+import com.serj.recommend.android.ui.styles.BackgroundTypes
 import com.serj.recommend.android.ui.styles.ItemsShapes
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.tasks.await
@@ -25,8 +25,7 @@ import javax.inject.Inject
 
 class StorageServiceImpl @Inject constructor(
     private val firestore: FirebaseFirestore,
-    private val storage: FirebaseStorage,
-    private val auth: AccountService
+    private val storage: FirebaseStorage
 ) : StorageService {
 
     override val recommendations: Flow<List<Recommendation>>
@@ -44,7 +43,9 @@ class StorageServiceImpl @Inject constructor(
             .collection(CATEGORIES_COLLECTION)
             .dataObjects()
 
-    override suspend fun getRecommendation(recommendationId: String): Recommendation? {
+    override suspend fun getRecommendationById(
+        recommendationId: String
+    ): Recommendation? {
         var recommendation: Recommendation? = null
         var currentBackgroundImageReference: String? = null
         val currentParagraphsImagesReferences = hashMapOf<String, String?>()
@@ -57,15 +58,17 @@ class StorageServiceImpl @Inject constructor(
             .addOnSuccessListener { document ->
                 recommendation = document.toObject<Recommendation>()
                 if (recommendation != null) {
-                    if (recommendation!!.backgroundReferences["image"] != null) {
-                        currentBackgroundImageReference = recommendation!!.backgroundReferences["image"]
+                    if (recommendation!!.backgroundReferences[BackgroundTypes.image.name] != null) {
+                        currentBackgroundImageReference = recommendation!!
+                            .backgroundReferences[BackgroundTypes.image.name]
                     }
                     for (paragraph in recommendation!!.paragraphs) {
                         currentParagraphsImagesReferences[paragraph.getValue("title")] =
-                            paragraph.getOrDefault("image", null)
+                            paragraph.getOrDefault(BackgroundTypes.image.name, null)
                     }
                 }
-            }.addOnFailureListener {
+            }
+            .addOnFailureListener {
                 Log.v(TAG, "error getCategoryItem()")
             }
             .await()
@@ -79,7 +82,29 @@ class StorageServiceImpl @Inject constructor(
         return recommendation
     }
 
-    override suspend fun getRecommendationItem(recommendationId: String): RecommendationItem? {
+    override suspend fun getBannerById(
+        bannerId: String
+    ): Banner? {
+        var banner: Banner? = null
+
+        firestore
+            .collection(BANNERS_COLLECTION)
+            .document(bannerId)
+            .get()
+            .addOnSuccessListener { document ->
+                banner = document.toObject<Banner>()
+            }
+            .addOnFailureListener {
+                Log.v(TAG, "error getCategoryItem()")
+            }
+            .await()
+
+        return banner
+    }
+
+    override suspend fun getRecommendationItemById(
+        recommendationId: String
+    ): RecommendationItem? {
         var recommendationItem: RecommendationItem? = null
         var currentCoverType: String?
         var currentCoverReference: String? = null
@@ -114,8 +139,9 @@ class StorageServiceImpl @Inject constructor(
                                 recommendation.coversReferences[ItemsShapes.horizontal.name]
                         }
                     }
-                    if (recommendation.backgroundReferences["image"] != null) {
-                        currentBackgroundImageReference = recommendation.backgroundReferences["image"]
+                    if (recommendation.backgroundReferences[BackgroundTypes.image.name] != null) {
+                        currentBackgroundImageReference = recommendation
+                            .backgroundReferences[BackgroundTypes.image.name]
                     }
                     recommendationItem = RecommendationItem(
                         id = recommendation.id,
@@ -129,7 +155,8 @@ class StorageServiceImpl @Inject constructor(
                         isReposted = false,
                     )
                 }
-            }.addOnFailureListener {
+            }
+            .addOnFailureListener {
                 // Handle any errors
                 Log.v(TAG, "error getCategoryItem()")
             }
@@ -144,78 +171,10 @@ class StorageServiceImpl @Inject constructor(
         return recommendationItem
     }
 
-    override suspend fun getBanner(bannerId: String): Banner? {
-        var banner: Banner? = null
-        var currentCoverReference: String? = null
-        var currentBackgroundImageReference: String? = null
-
-        firestore
-            .collection(BANNERS_COLLECTION)
-            .document(bannerId)
-            .get()
-            .addOnSuccessListener { document ->
-                banner = document.toObject<Banner>()
-                if (banner?.backgroundReferences?.get("image") != null) {
-                    currentBackgroundImageReference = banner?.backgroundReferences?.get("image")
-                }
-                currentCoverReference = banner?.coverReference
-            }.addOnFailureListener {
-                Log.v(TAG, "error getCategoryItem()")
-            }
-            .await()
-
-        Log.v(TAG, "1 " + banner.toString())
-
-        banner?.cover = currentCoverReference?.let { downloadImage(it) }
-        banner?.backgroundImage = currentBackgroundImageReference?.let { downloadImage(it) }
-        for (recommendationId in banner?.recommendationIds!!) {
-            getCategoryItem(recommendationId)?.let { banner?.content?.add(it) }
-        }
-
-        Log.v(TAG, banner.toString())
-
-        return banner
-    }
-
-    override suspend fun getCategory(categoryId: String): Category? {
-        var category: Category? = null
-        var currentBackgroundImageReference: String? = null
-
-        firestore
-            .collection(CATEGORIES_COLLECTION)
-            .document(categoryId)
-            .get()
-            .addOnSuccessListener { document ->
-                val categoryData = document.toObject<Category>()
-                if (categoryData != null) {
-                    currentBackgroundImageReference = categoryData.backgroundImageReference
-                    category = Category(
-                        id = categoryData.id,
-                        title = categoryData.title,
-                        type = categoryData.type,
-                        backgroundImageReference = categoryData.backgroundImageReference,
-                        backgroundVideoReference = categoryData.backgroundVideoReference,
-                        color = categoryData.color,
-                        recommendationIds = categoryData.recommendationIds
-                    )
-                }
-            }.addOnFailureListener {
-                Log.v(TAG, "error getCategoryItem()")
-            }
-            .await()
-
-        category?.backgroundImage = currentBackgroundImageReference?.let { downloadImage(it) }
-        for (recommendationId in category?.recommendationIds!!) {
-            getCategoryItem(recommendationId)?.let { category?.content?.add(it) }
-        }
-
-        return category
-    }
-
-    override suspend fun getCategoryItem(recommendationId: String): CategoryItem? {
-        var categoryItem: CategoryItem? = null
-        var currentCoverType: String?
-        var currentCoverReference: String? = null
+    override suspend fun getRecommendationPreviewById(
+        recommendationId: String
+    ): RecommendationPreview? {
+        var recommendationPreview: RecommendationPreview? = null
 
         firestore
             .collection(RECOMMENDATIONS_COLLECTION)
@@ -224,48 +183,36 @@ class StorageServiceImpl @Inject constructor(
             .addOnSuccessListener { document ->
                 val recommendation = document.toObject<Recommendation>()
                 if (recommendation != null) {
-                    when {
-                        recommendation.coversReferences[ItemsShapes.horizontal.name] != null -> {
-                            currentCoverType = ItemsShapes.horizontal.name
-                            currentCoverReference =
-                                recommendation.coversReferences[ItemsShapes.horizontal.name]
-                        }
-                        recommendation.coversReferences[ItemsShapes.vertical.name] != null -> {
-                            currentCoverType = ItemsShapes.vertical.name
-                            currentCoverReference =
-                                recommendation.coversReferences[ItemsShapes.vertical.name]
-                        }
-                        recommendation.coversReferences[ItemsShapes.square.name] != null -> {
-                            currentCoverType = ItemsShapes.square.name
-                            currentCoverReference =
-                                recommendation.coversReferences[ItemsShapes.square.name]
-                        }
-                        else -> {
-                            currentCoverType = ItemsShapes.horizontal.name
-                            currentCoverReference =
-                                recommendation.coversReferences[ItemsShapes.horizontal.name]
-                        }
+                    val coverType = when {
+                        recommendation.coversReferences[ItemsShapes.horizontal.name] != null ->
+                            ItemsShapes.horizontal.name
+                        recommendation.coversReferences[ItemsShapes.square.name] != null ->
+                            ItemsShapes.square.name
+                        recommendation.coversReferences[ItemsShapes.vertical.name] != null ->
+                            ItemsShapes.vertical.name
+                        else -> ItemsShapes.horizontal.name
                     }
-
-                    categoryItem = CategoryItem(
+                    recommendationPreview = RecommendationPreview(
                         id = recommendation.id,
                         uid = recommendation.uid,
                         title = recommendation.title,
                         creator = recommendation.creator,
-                        coverType = currentCoverType
+                        coverReference = recommendation.coversReferences[coverType],
+                        coverType = coverType
                     )
                 }
-            }.addOnFailureListener {
+            }
+            .addOnFailureListener {
                 Log.v(TAG, "error getCategoryItem()")
             }
             .await()
 
-        categoryItem?.cover = currentCoverReference?.let { downloadImage(it) }
-
-        return categoryItem
+        return recommendationPreview
     }
 
-    override suspend fun getUserItem(uid: String): UserItem? {
+    override suspend fun getUserItem(
+        uid: String
+    ): UserItem? {
         var userItem: UserItem? = null
         var photoReference: String? = null
 
@@ -282,7 +229,8 @@ class StorageServiceImpl @Inject constructor(
                     )
                     photoReference = user.photoReference
                 }
-            }.addOnFailureListener {
+            }
+            .addOnFailureListener {
                 // Handle any errors
                 Log.v(TAG, "error getUserItem()")
             }
@@ -293,7 +241,9 @@ class StorageServiceImpl @Inject constructor(
         return userItem
     }
 
-    override suspend fun getFollowingRecommendations(followingUid: String): List<Recommendation> =
+    override suspend fun getFeedData(
+        followingUid: String
+    ): List<Recommendation> =
         firestore
             .collection(RECOMMENDATIONS_COLLECTION)
             .whereEqualTo("uid", followingUid)
@@ -308,10 +258,9 @@ class StorageServiceImpl @Inject constructor(
             .getReferenceFromUrl(gsReference)
             .getBytes(ONE_MEGABYTE)
             .addOnSuccessListener {
-                // Data for "images/island.jpg" is returned, use this as needed
                 bmp = BitmapFactory.decodeByteArray(it, 0, it.size)
-            }.addOnFailureListener {
-                // Handle any errors
+            }
+            .addOnFailureListener {
                 Log.v(TAG, "not downloaded !!!")
             }
             .await()

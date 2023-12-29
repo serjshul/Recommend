@@ -11,6 +11,7 @@ import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.service.LogService
 import com.serj.recommend.android.model.service.StorageService
 import com.serj.recommend.android.ui.screens.RecommendViewModel
+import com.serj.recommend.android.ui.styles.BackgroundTypes
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -28,7 +29,11 @@ class BannerViewModel @Inject constructor(
         if (bannerId != null) {
             launchCatching {
                 banner.value = storageService
-                    .getBanner(bannerId.idFromParameter()) ?: Banner()
+                    .getBannerById(bannerId.idFromParameter())
+
+                banner.value!!.backgroundImage = banner.value!!
+                    .backgroundReferences[BackgroundTypes.image.name]
+                    ?.let { storageService.downloadImage(it) }
             }
         }
     }

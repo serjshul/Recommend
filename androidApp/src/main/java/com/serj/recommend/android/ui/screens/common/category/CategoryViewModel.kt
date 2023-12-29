@@ -5,7 +5,6 @@ import androidx.lifecycle.SavedStateHandle
 import com.serj.recommend.android.CATEGORY_ID
 import com.serj.recommend.android.RECOMMENDATION_ID
 import com.serj.recommend.android.RecommendRoutes
-import com.serj.recommend.android.common.ext.idFromParameter
 import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.service.LogService
@@ -27,8 +26,11 @@ class CategoryViewModel @Inject constructor(
         val categoryId = savedStateHandle.get<String>(CATEGORY_ID)
         if (categoryId != null) {
             launchCatching {
+                /*
                 category.value = storageService
-                    .getCategory(categoryId.idFromParameter()) ?: Category()
+                    .getCategoryItem(categoryId.idFromParameter()) ?: Category()
+
+                 */
             }
         }
     }

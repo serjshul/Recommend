@@ -1,5 +1,6 @@
 package com.serj.recommend.android.ui.screens.main.home
 
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import com.serj.recommend.android.BANNER_ID
@@ -9,7 +10,6 @@ import com.serj.recommend.android.RecommendRoutes
 import com.serj.recommend.android.model.Banner
 import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.Recommendation
-import com.serj.recommend.android.model.service.ConfigurationService
 import com.serj.recommend.android.model.service.LogService
 import com.serj.recommend.android.model.service.StorageService
 import com.serj.recommend.android.ui.screens.RecommendViewModel
@@ -19,12 +19,11 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     logService: LogService,
-    private val storageService: StorageService,
-    private val configurationService: ConfigurationService
+    private val storageService: StorageService
 ) : RecommendViewModel(logService) {
 
     private val categories = storageService.categories
-    val currentCategories = mutableStateListOf<Category>()
+    val currentCategories = mutableStateListOf<MutableState<Category>>()
 
     private val banners = storageService.banners
     val currentBanner = mutableStateOf<Banner?>(null)
@@ -32,14 +31,40 @@ class HomeViewModel @Inject constructor(
     init {
         launchCatching {
             banners.collect { banners ->
-                currentBanner.value = banners.random().id?.let { storageService.getBanner(it) }
+                currentBanner.value = banners.random()
+
+                currentBanner.value!!.cover = currentBanner.value!!
+                    .coverReference?.let {
+                        storageService.downloadImage(it)
+                    }
             }
         }
 
         launchCatching {
             categories.collect { categories ->
-                for (category in categories) {
-                    storageService.getCategory(category.id)?.let { currentCategories.add(it) }
+                val shuffledCategories = categories.shuffled()
+
+                for (category in shuffledCategories) {
+                    val currentCategory = mutableStateOf(category)
+                    currentCategories.add(currentCategory)
+
+                    val shuffledRecommendationIds = currentCategory.value
+                        .recommendationIds.shuffled()
+                    for (i in shuffledRecommendationIds.indices) {
+                        if (i < AMOUNT_THRESHOLD) {
+                            storageService.getRecommendationPreviewById(shuffledRecommendationIds[i])
+                                ?.let { currentCategory.value.content!!.add(it) }
+                        } else {
+                            break
+                        }
+                    }
+
+                    // TODO: move in second thread for the parallel downloading
+                    for (item in currentCategory.value.content!!) {
+                        item.cover = item.coverReference?.let {
+                            storageService.downloadImage(it)
+                        }
+                    }
                 }
             }
         }
@@ -55,5 +80,9 @@ class HomeViewModel @Inject constructor(
 
     fun onCategoryClick(openScreen: (String) -> Unit, categoryId: String) {
         openScreen("${RecommendRoutes.CategoryScreen.name}?$CATEGORY_ID={${categoryId}}")
+    }
+
+    companion object {
+        private const val AMOUNT_THRESHOLD = 6
     }
 }

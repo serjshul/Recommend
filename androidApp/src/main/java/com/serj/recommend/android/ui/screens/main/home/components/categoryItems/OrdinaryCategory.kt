@@ -36,7 +36,7 @@ fun OrdinaryCategory(
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit,
     onCategoryClick: ((String) -> Unit, String) -> Unit
 ) {
-    if (category.content.isNotEmpty()) {
+    if (category.content!!.toList().isNotEmpty()) {
         Column(
             modifier = modifier.itemsInterval()
         ) {

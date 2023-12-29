@@ -78,7 +78,7 @@ fun CategoryScreenContent(
                     )
                 }
 
-                items(category.content) {
+                items(category.content!!.toList()) {
                     when (it.coverType) {
                         ItemsShapes.square.name -> {
                             SquareItemCard(

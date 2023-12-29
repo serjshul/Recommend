@@ -25,7 +25,7 @@ class RecommendationViewModel @Inject constructor(
         if (recommendationId != null) {
             launchCatching {
                 recommendation.value = storageService
-                    .getRecommendation(recommendationId.idFromParameter()) ?: Recommendation()
+                    .getRecommendationById(recommendationId.idFromParameter()) ?: Recommendation()
             }
         }
     }

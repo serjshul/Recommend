@@ -50,7 +50,7 @@ fun ExtendedCategory(
     onCategoryClick: ((String) -> Unit, String) -> Unit,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
 ) {
-    if (category.content.isNotEmpty()) {
+    if (category.content!!.toList().isNotEmpty()) {
         var sizeImage by remember { mutableStateOf(IntSize.Zero) }
 
         Box(
@@ -67,7 +67,7 @@ fun ExtendedCategory(
                         modifier = Modifier
                             .extendedCategoryBackgroundShape()
                             .onGloballyPositioned { sizeImage = it.size },
-                        bitmap = category.backgroundImage!!.asImageBitmap(),
+                        bitmap = category.backgroundImage.asImageBitmap(),
                         contentDescription = "background image",
                         contentScale = ContentScale.Crop
                     )
