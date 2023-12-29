@@ -173,7 +173,7 @@ fun RecommendationItemWithoutBackground(
                             if (cover != null) {
                                 Image(
                                     modifier = Modifier
-                                        .padding(bottom = 25.dp)
+                                        .padding(bottom = 30.dp)
                                         .size(200.dp)
                                         .clip(RoundedCornerShape(5.dp)),
                                     bitmap = cover.asImageBitmap(),
@@ -183,7 +183,7 @@ fun RecommendationItemWithoutBackground(
                             } else {
                                 SmallLoadingIndicator(
                                     modifier = Modifier
-                                        .padding(bottom = 25.dp)
+                                        .padding(bottom = 30.dp)
                                         .size(200.dp)
                                         .clip(RoundedCornerShape(5.dp)),
                                     backgroundColor = LightGray
@@ -242,8 +242,9 @@ fun RecommendationItemWithoutBackground(
                         modifier = Modifier.fillMaxWidth(),
                         text = title,
                         color = White,
-                        fontSize = 16.sp,
                         maxLines = 2,
+                        fontSize = 16.sp,
+                        lineHeight = 1.4.em,
                         fontWeight = FontWeight.Bold,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -256,6 +257,7 @@ fun RecommendationItemWithoutBackground(
                         color = White,
                         maxLines = 2,
                         fontSize = 14.sp,
+                        lineHeight = 1.4.em,
                         overflow = TextOverflow.Ellipsis
                     )
 

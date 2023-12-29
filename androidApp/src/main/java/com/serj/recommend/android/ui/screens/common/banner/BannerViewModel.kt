@@ -1,5 +1,7 @@
 package com.serj.recommend.android.ui.screens.common.banner
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import com.serj.recommend.android.BANNER_ID
@@ -8,6 +10,7 @@ import com.serj.recommend.android.RecommendRoutes
 import com.serj.recommend.android.common.ext.idFromParameter
 import com.serj.recommend.android.model.Banner
 import com.serj.recommend.android.model.Recommendation
+import com.serj.recommend.android.model.items.RecommendationItem
 import com.serj.recommend.android.model.service.LogService
 import com.serj.recommend.android.model.service.StorageService
 import com.serj.recommend.android.ui.screens.RecommendViewModel
@@ -23,17 +26,36 @@ class BannerViewModel @Inject constructor(
 ) : RecommendViewModel(logService) {
 
     val banner = mutableStateOf<Banner?>(null)
+    val currentRecommendations = mutableStateListOf<MutableState<RecommendationItem>>()
 
     init {
         val bannerId = savedStateHandle.get<String>(BANNER_ID)
         if (bannerId != null) {
             launchCatching {
-                banner.value = storageService
+                val currentBanner = storageService
                     .getBannerById(bannerId.idFromParameter())
-
-                banner.value!!.backgroundImage = banner.value!!
+                currentBanner!!.backgroundImage.value = currentBanner
                     .backgroundReferences[BackgroundTypes.image.name]
                     ?.let { storageService.downloadImage(it) }
+                banner.value = currentBanner
+
+                for (recommendationId in banner.value!!.recommendationIds!!) {
+                    val currentRecommendationItem = mutableStateOf(
+                        storageService.getRecommendationItemById(recommendationId)
+                    )
+                    currentRecommendations.add(currentRecommendationItem)
+
+                    currentRecommendationItem.value.cover.value = currentRecommendationItem.value
+                        .coverReference?.let { storageService.downloadImage(it) }
+                }
+
+                for (recommendationItem in currentRecommendations) {
+                    val imageReference = recommendationItem.value.backgroundImageReference
+                    if (imageReference != null) {
+                        recommendationItem.value.backgroundImage.value =
+                            storageService.downloadImage(imageReference)
+                    }
+                }
             }
         }
     }

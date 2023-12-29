@@ -239,9 +239,9 @@ fun RecommendationItemWithBackground(
                                 if (cover != null) {
                                     Image(
                                         modifier = Modifier
+                                            .padding(end = 10.dp)
                                             .height(100.dp)
                                             .width(165.dp)
-                                            .padding(end = 10.dp)
                                             .clip(RoundedCornerShape(5.dp)),
                                         bitmap = cover.asImageBitmap(),
                                         contentDescription = title,
@@ -250,9 +250,9 @@ fun RecommendationItemWithBackground(
                                 } else {
                                     SmallLoadingIndicator(
                                         modifier = Modifier
+                                            .padding(end = 10.dp)
                                             .height(100.dp)
                                             .width(165.dp)
-                                            .padding(end = 10.dp)
                                             .clip(RoundedCornerShape(5.dp)),
                                         backgroundColor = LightGray
                                     )
@@ -267,8 +267,9 @@ fun RecommendationItemWithBackground(
                             Text(
                                 text = title,
                                 color = White,
-                                fontSize = 16.sp,
                                 maxLines = 2,
+                                fontSize = 16.sp,
+                                lineHeight = 1.4.em,
                                 fontWeight = FontWeight.Bold,
                                 overflow = TextOverflow.Ellipsis
                             )
@@ -278,6 +279,7 @@ fun RecommendationItemWithBackground(
                                 color = White,
                                 maxLines = 2,
                                 fontSize = 14.sp,
+                                lineHeight = 1.4.em,
                                 overflow = TextOverflow.Ellipsis
                             )
                         }

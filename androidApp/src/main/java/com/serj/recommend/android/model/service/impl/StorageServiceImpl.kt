@@ -21,6 +21,7 @@ import com.serj.recommend.android.ui.styles.BackgroundTypes
 import com.serj.recommend.android.ui.styles.ItemsShapes
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.tasks.await
+import java.util.Date
 import javax.inject.Inject
 
 class StorageServiceImpl @Inject constructor(
@@ -102,13 +103,31 @@ class StorageServiceImpl @Inject constructor(
         return banner
     }
 
+    override suspend fun getCategoryById(
+        categoryId: String
+    ): Category? {
+        var category: Category? = null
+
+        firestore
+            .collection(CATEGORIES_COLLECTION)
+            .document(categoryId)
+            .get()
+            .addOnSuccessListener { document ->
+                category = document.toObject<Category>()
+            }
+            .addOnFailureListener {
+                Log.v(TAG, "error getCategoryById()")
+            }
+            .await()
+
+        return category
+    }
+
     override suspend fun getRecommendationItemById(
         recommendationId: String
-    ): RecommendationItem? {
-        var recommendationItem: RecommendationItem? = null
-        var currentCoverType: String?
-        var currentCoverReference: String? = null
-        var currentBackgroundImageReference: String? = null
+    ): RecommendationItem {
+        var recommendationItem = RecommendationItem()
+        var currentUserUid: String? = null
 
         firestore
             .collection(RECOMMENDATIONS_COLLECTION)
@@ -117,56 +136,39 @@ class StorageServiceImpl @Inject constructor(
             .addOnSuccessListener {document ->
                 val recommendation = document.toObject<Recommendation>()
                 if (recommendation != null) {
-                    when {
-                        recommendation.coversReferences[ItemsShapes.horizontal.name] != null -> {
-                            currentCoverType = ItemsShapes.horizontal.name
-                            currentCoverReference =
-                                recommendation.coversReferences[ItemsShapes.horizontal.name]
-                        }
-                        recommendation.coversReferences[ItemsShapes.vertical.name] != null -> {
-                            currentCoverType = ItemsShapes.vertical.name
-                            currentCoverReference =
-                                recommendation.coversReferences[ItemsShapes.vertical.name]
-                        }
-                        recommendation.coversReferences[ItemsShapes.square.name] != null -> {
-                            currentCoverType = ItemsShapes.square.name
-                            currentCoverReference =
-                                recommendation.coversReferences[ItemsShapes.square.name]
-                        }
-                        else -> {
-                            currentCoverType = ItemsShapes.horizontal.name
-                            currentCoverReference =
-                                recommendation.coversReferences[ItemsShapes.horizontal.name]
-                        }
-                    }
-                    if (recommendation.backgroundReferences[BackgroundTypes.image.name] != null) {
-                        currentBackgroundImageReference = recommendation
-                            .backgroundReferences[BackgroundTypes.image.name]
+                    currentUserUid = recommendation.uid
+                    val currentCoverType = when {
+                        recommendation.coversReferences[ItemsShapes.horizontal.name] != null ->
+                            ItemsShapes.horizontal.name
+                        recommendation.coversReferences[ItemsShapes.vertical.name] != null ->
+                            ItemsShapes.vertical.name
+                        recommendation.coversReferences[ItemsShapes.square.name] != null ->
+                            ItemsShapes.square.name
+                        else -> ItemsShapes.horizontal.name
                     }
                     recommendationItem = RecommendationItem(
                         id = recommendation.id,
-                        uid = recommendation.uid,
+                        uid = currentUserUid,
                         title = recommendation.title,
                         creator = recommendation.creator,
                         description = recommendation.description,
                         date = recommendation.date,
                         coverType = currentCoverType,
+                        coverReference = recommendation
+                            .coversReferences[currentCoverType],
+                        backgroundImageReference = recommendation
+                            .backgroundReferences[BackgroundTypes.image.name],
                         isLiked = false,
                         isReposted = false,
                     )
                 }
             }
             .addOnFailureListener {
-                // Handle any errors
-                Log.v(TAG, "error getCategoryItem()")
+                Log.v(TAG, "error getRecommendationItemById()")
             }
             .await()
 
-        recommendationItem?.user = recommendationItem?.uid?.let { getUserItem(it) }
-        recommendationItem?.cover = currentCoverReference?.let { downloadImage(it) }
-        recommendationItem?.backgroundImage = currentBackgroundImageReference?.let {
-            downloadImage(it)
-        }
+        recommendationItem.user = currentUserUid?.let { getUserItem(it) }
 
         return recommendationItem
     }
@@ -243,8 +245,8 @@ class StorageServiceImpl @Inject constructor(
 
     override suspend fun getFollowingRecommendationsIds(
         followingUid: String
-    ): List<String> {
-        val followingRecommendationsIds = arrayListOf<String>()
+    ): List<Pair<String, Date>> {
+        val followingRecommendationsIds = arrayListOf<Pair<String, Date>>()
 
         firestore
             .collection(RECOMMENDATIONS_COLLECTION)
@@ -253,7 +255,11 @@ class StorageServiceImpl @Inject constructor(
             .addOnSuccessListener {document ->
                 val recommendations = document.toObjects<Recommendation>()
                 for (recommendation in recommendations) {
-                    recommendation.id?.let { followingRecommendationsIds.add(it) }
+                    if (recommendation.id != null && recommendation.date != null) {
+                        followingRecommendationsIds.add(
+                            Pair(recommendation.id, recommendation.date)
+                        )
+                    }
                 }
             }
             .addOnFailureListener {

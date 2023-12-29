@@ -8,6 +8,7 @@ import com.serj.recommend.android.model.items.RecommendationItem
 import com.serj.recommend.android.model.items.RecommendationPreview
 import com.serj.recommend.android.model.items.UserItem
 import kotlinx.coroutines.flow.Flow
+import java.util.Date
 
 
 interface StorageService {
@@ -22,13 +23,15 @@ interface StorageService {
 
     suspend fun getBannerById(bannerId: String): Banner?
 
-    suspend fun getRecommendationItemById(recommendationId: String): RecommendationItem?
+    suspend fun getCategoryById(categoryId: String): Category?
+
+    suspend fun getRecommendationItemById(recommendationId: String): RecommendationItem
 
     suspend fun getRecommendationPreviewById(recommendationId: String): RecommendationPreview?
 
     suspend fun getUserItem(uid: String): UserItem?
 
-    suspend fun getFollowingRecommendationsIds(followingUid: String): List<String>
+    suspend fun getFollowingRecommendationsIds(followingUid: String): List<Pair<String, Date>>
 
     suspend fun downloadImage(gsReference: String): Bitmap?
 }

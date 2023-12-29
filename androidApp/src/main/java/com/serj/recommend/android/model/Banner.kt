@@ -1,6 +1,8 @@
 package com.serj.recommend.android.model
 
 import android.graphics.Bitmap
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import com.google.firebase.firestore.DocumentId
 import com.serj.recommend.android.model.items.RecommendationItem
 import java.util.Date
@@ -15,10 +17,10 @@ data class Banner(
     val description: String? = null,
 
     val coverReference: String? = null,
-    var cover: Bitmap? = null,
+    var cover: MutableState<Bitmap?> = mutableStateOf(null),
 
     val backgroundReferences: HashMap<String, String> = hashMapOf(),
-    var backgroundImage: Bitmap? = null,
+    var backgroundImage: MutableState<Bitmap?> = mutableStateOf(null),
     var backgroundVideo: String? = null,
 
     val date: Date? = null,

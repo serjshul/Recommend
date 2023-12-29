@@ -1,12 +1,16 @@
 package com.serj.recommend.android.ui.screens.common.category
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import com.serj.recommend.android.CATEGORY_ID
 import com.serj.recommend.android.RECOMMENDATION_ID
 import com.serj.recommend.android.RecommendRoutes
+import com.serj.recommend.android.common.ext.idFromParameter
 import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.Recommendation
+import com.serj.recommend.android.model.items.RecommendationItem
 import com.serj.recommend.android.model.service.LogService
 import com.serj.recommend.android.model.service.StorageService
 import com.serj.recommend.android.ui.screens.RecommendViewModel
@@ -21,16 +25,33 @@ class CategoryViewModel @Inject constructor(
 ) : RecommendViewModel(logService) {
 
     val category = mutableStateOf<Category?>(null)
+    val currentRecommendations = mutableStateListOf<MutableState<RecommendationItem>>()
 
     init {
         val categoryId = savedStateHandle.get<String>(CATEGORY_ID)
         if (categoryId != null) {
             launchCatching {
-                /*
-                category.value = storageService
-                    .getCategoryItem(categoryId.idFromParameter()) ?: Category()
+                val currentCategory = storageService
+                    .getCategoryById(categoryId.idFromParameter())
+                category.value = currentCategory
 
-                 */
+                for (recommendationId in category.value!!.recommendationIds) {
+                    val currentRecommendationItem = mutableStateOf(
+                        storageService.getRecommendationItemById(recommendationId)
+                    )
+                    currentRecommendations.add(currentRecommendationItem)
+
+                    currentRecommendationItem.value.cover.value = currentRecommendationItem.value
+                        .coverReference?.let { storageService.downloadImage(it) }
+                }
+
+                for (recommendationItem in currentRecommendations) {
+                    val imageReference = recommendationItem.value.backgroundImageReference
+                    if (imageReference != null) {
+                        recommendationItem.value.backgroundImage.value =
+                            storageService.downloadImage(imageReference)
+                    }
+                }
             }
         }
     }

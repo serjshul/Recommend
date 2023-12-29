@@ -3,15 +3,17 @@ package com.serj.recommend.android.ui.screens.common.category
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,17 +25,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.serj.recommend.android.R
-import com.serj.recommend.android.common.ext.itemsInterval
 import com.serj.recommend.android.common.ext.screenPaddingsInner
+import com.serj.recommend.android.common.ext.screenPaddingsOuter
 import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.Recommendation
-import com.serj.recommend.android.ui.components.items.cards.HorizontalItemCard
-import com.serj.recommend.android.ui.components.items.cards.SquareItemCard
-import com.serj.recommend.android.ui.components.items.cards.VerticalItemCard
+import com.serj.recommend.android.model.items.RecommendationItem
 import com.serj.recommend.android.ui.components.loadingIndicators.LargeLoadingIndicator
-import com.serj.recommend.android.ui.components.snackbar.SnackbarManager
-import com.serj.recommend.android.ui.styles.ItemsShapes
+import com.serj.recommend.android.ui.components.loadingIndicators.SmallLoadingIndicator
+import com.serj.recommend.android.ui.components.post.RecommendationItemWithBackground
+import com.serj.recommend.android.ui.components.post.RecommendationItemWithoutBackground
 import com.serj.recommend.android.ui.styles.LightGray
+import com.serj.recommend.android.ui.styles.White
 
 @Composable
 fun CategoryScreen(
@@ -43,10 +45,12 @@ fun CategoryScreen(
     viewModel: CategoryViewModel = hiltViewModel()
 ) {
     val category = viewModel.category
+    val currentRecommendations = viewModel.currentRecommendations
 
     CategoryScreenContent(
         modifier = modifier,
         category = category.value,
+        currentRecommendations = currentRecommendations,
         openScreen = openScreen,
         popUpScreen = popUpScreen,
         onRecommendationClick = viewModel::onRecommendationClick
@@ -57,6 +61,7 @@ fun CategoryScreen(
 fun CategoryScreenContent(
     modifier: Modifier = Modifier,
     category: Category?,
+    currentRecommendations: List<MutableState<RecommendationItem>>,
     openScreen: (String) -> Unit,
     popUpScreen: () -> Unit,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
@@ -78,53 +83,57 @@ fun CategoryScreenContent(
                     )
                 }
 
-                items(category.content!!.toList()) {
-                    when (it.coverType) {
-                        ItemsShapes.square.name -> {
-                            SquareItemCard(
-                                modifier = Modifier
-                                    .itemsInterval()
-                                    .screenPaddingsInner(),
-                                recommendationId = it.id,
-                                title = it.title,
-                                creator = it.creator,
-                                description = null,
-                                cover = it.cover,
-                                openScreen = openScreen,
-                                onRecommendationClick = onRecommendationClick
-                            )
+                if (currentRecommendations.isNotEmpty()) {
+                    item {
+                        Column(
+                            modifier = Modifier
+                                .screenPaddingsInner()
+                                .screenPaddingsOuter()
+                        ) {
+                            for (it in currentRecommendations) {
+                                val recommendationItem = it.value
+
+                                if (recommendationItem.backgroundImage.value != null ||
+                                    recommendationItem.backgroundVideo != null
+                                ) {
+                                    RecommendationItemWithBackground(
+                                        modifier = Modifier.padding(bottom = 15.dp),
+                                        user = recommendationItem.user,
+                                        date = recommendationItem.date,
+                                        description = recommendationItem.description,
+                                        backgroundImage = recommendationItem.backgroundImage.value,
+                                        title = recommendationItem.title,
+                                        creator = recommendationItem.creator,
+                                        coverType = recommendationItem.coverType,
+                                        cover = recommendationItem.cover.value,
+                                        recommendationId = recommendationItem.id,
+                                        openScreen = openScreen,
+                                        onRecommendationClick = onRecommendationClick
+                                    )
+                                } else {
+                                    RecommendationItemWithoutBackground(
+                                        modifier = Modifier.padding(bottom = 15.dp),
+                                        user = recommendationItem.user,
+                                        date = recommendationItem.date,
+                                        description = recommendationItem.description,
+                                        title = recommendationItem.title,
+                                        creator = recommendationItem.creator,
+                                        coverType = recommendationItem.coverType,
+                                        cover = recommendationItem.cover.value,
+                                        recommendationId = recommendationItem.id,
+                                        openScreen = openScreen,
+                                        onRecommendationClick = onRecommendationClick
+                                    )
+                                }
+                            }
                         }
-                        ItemsShapes.horizontal.name -> {
-                            HorizontalItemCard(
-                                modifier = Modifier
-                                    .itemsInterval()
-                                    .screenPaddingsInner(),
-                                recommendationId = it.id,
-                                title = it.title,
-                                creator = it.creator,
-                                description = null,
-                                cover = it.cover,
-                                openScreen = openScreen,
-                                onRecommendationClick = onRecommendationClick
-                            )
-                        }
-                        ItemsShapes.vertical.name -> {
-                            VerticalItemCard(
-                                modifier = Modifier
-                                    .itemsInterval()
-                                    .screenPaddingsInner(),
-                                recommendationId = it.id,
-                                title = it.title,
-                                creator = it.creator,
-                                description = null,
-                                cover = it.cover,
-                                openScreen = openScreen,
-                                onRecommendationClick = onRecommendationClick
-                            )
-                        }
-                        else -> {
-                            SnackbarManager.showMessage(R.string.error_cover_type)
-                        }
+                    }
+                } else {
+                    item {
+                        SmallLoadingIndicator(
+                            modifier = Modifier.size(300.dp),
+                            backgroundColor = White
+                        )
                     }
                 }
             }

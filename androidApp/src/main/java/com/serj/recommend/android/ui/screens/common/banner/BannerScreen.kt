@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.serj.recommend.android.common.ext.bannerContentShape
@@ -14,6 +15,7 @@ import com.serj.recommend.android.common.ext.screenPaddingsInner
 import com.serj.recommend.android.common.ext.screenPaddingsOuter
 import com.serj.recommend.android.model.Banner
 import com.serj.recommend.android.model.Recommendation
+import com.serj.recommend.android.model.items.RecommendationItem
 import com.serj.recommend.android.ui.components.loadingIndicators.LargeLoadingIndicator
 import com.serj.recommend.android.ui.screens.common.banner.components.BannerItems
 import com.serj.recommend.android.ui.screens.common.banner.components.Description
@@ -28,10 +30,12 @@ fun BannerScreen(
     viewModel: BannerViewModel = hiltViewModel()
 ) {
     val banner = viewModel.banner
+    val currentRecommendations = viewModel.currentRecommendations
 
     BannerScreenContent(
         modifier = modifier,
         banner = banner.value,
+        currentRecommendations = currentRecommendations,
         openScreen = openScreen,
         popUpScreen = popUpScreen,
         onRecommendationClick = viewModel::onRecommendationClick
@@ -42,6 +46,7 @@ fun BannerScreen(
 fun BannerScreenContent(
     modifier: Modifier = Modifier,
     banner: Banner?,
+    currentRecommendations: List<MutableState<RecommendationItem>>,
     openScreen: (String) -> Unit,
     popUpScreen: () -> Unit,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
@@ -62,7 +67,7 @@ fun BannerScreenContent(
                             creator = banner.creator,
                             type = banner.type,
                             backgroundVideo = banner.backgroundVideo,
-                            backgroundImage = banner.backgroundImage,
+                            backgroundImage = banner.backgroundImage.value,
                             popUpScreen = popUpScreen
                         )
 
@@ -82,8 +87,10 @@ fun BannerScreenContent(
                 }
                 item {
                     BannerItems(
-                        color = banner.color,
-                        banner = banner,
+                        modifier = Modifier
+                            .screenPaddingsInner()
+                            .screenPaddingsOuter(),
+                        currentRecommendations = currentRecommendations,
                         openScreen = openScreen,
                         onRecommendationClick = onRecommendationClick
                     )

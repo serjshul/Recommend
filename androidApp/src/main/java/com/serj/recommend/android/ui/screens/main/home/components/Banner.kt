@@ -64,12 +64,12 @@ fun Banner(
                 banner.backgroundVideo != null -> {
                     // TODO: add video player
                 }
-                banner.cover != null -> {
+                banner.cover.value != null -> {
                     Image(
                         modifier = Modifier
                             .matchParentSize()
                             .onGloballyPositioned { sizeImage = it.size },
-                        bitmap = banner.cover!!.asImageBitmap(),
+                        bitmap = banner.cover.value!!.asImageBitmap(),
                         contentDescription = banner.title,
                         contentScale = ContentScale.Crop
                     )

@@ -1,6 +1,8 @@
 package com.serj.recommend.android.model.items
 
 import android.graphics.Bitmap
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import com.google.firebase.firestore.DocumentId
 
 data class RecommendationPreview(
@@ -11,6 +13,6 @@ data class RecommendationPreview(
     val creator: String? = null,
 
     val coverReference: String? = null,
-    var cover: Bitmap? = null,
+    var cover: MutableState<Bitmap?> = mutableStateOf(null),
     var coverType: String? = null
 )

@@ -64,7 +64,7 @@ fun PagerCategory(
                     recommendationId = items[page % items.size].id,
                     title = items[page % items.size].title,
                     creator = items[page % items.size].creator,
-                    cover = items[page % items.size].cover,
+                    cover = items[page % items.size].cover.value,
                     isOnPager = true,
                     openScreen = openScreen,
                     onRecommendationClick = onRecommendationClick

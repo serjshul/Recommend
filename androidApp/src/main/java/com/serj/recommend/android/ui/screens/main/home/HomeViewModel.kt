@@ -33,7 +33,7 @@ class HomeViewModel @Inject constructor(
             banners.collect { banners ->
                 currentBanner.value = banners.random()
 
-                currentBanner.value!!.cover = currentBanner.value!!
+                currentBanner.value!!.cover.value = currentBanner.value!!
                     .coverReference?.let {
                         storageService.downloadImage(it)
                     }
@@ -61,7 +61,7 @@ class HomeViewModel @Inject constructor(
 
                     // TODO: move in second thread for the parallel downloading
                     for (item in currentCategory.value.content!!) {
-                        item.cover = item.coverReference?.let {
+                        item.cover.value = item.coverReference?.let {
                             storageService.downloadImage(it)
                         }
                     }

@@ -66,7 +66,7 @@ fun OrdinaryCategory(
                                 modifier = Modifier.categoryItemsInterval(),
                                 title = it.title,
                                 creator = it.creator,
-                                cover = it.cover,
+                                cover = it.cover.value,
                                 recommendationId = it.id,
                                 openScreen = openScreen,
                                 onRecommendationClick = onRecommendationClick
@@ -77,7 +77,7 @@ fun OrdinaryCategory(
                                 modifier = Modifier.categoryItemsInterval(),
                                 title = it.title,
                                 creator = it.creator,
-                                cover = it.cover,
+                                cover = it.cover.value,
                                 recommendationId = it.id,
                                 openScreen = openScreen,
                                 onRecommendationClick = onRecommendationClick
@@ -88,7 +88,7 @@ fun OrdinaryCategory(
                                 modifier = Modifier.categoryItemsInterval(),
                                 title = it.title,
                                 creator = it.creator,
-                                cover = it.cover,
+                                cover = it.cover.value,
                                 recommendationId = it.id,
                                 openScreen = openScreen,
                                 onRecommendationClick = onRecommendationClick

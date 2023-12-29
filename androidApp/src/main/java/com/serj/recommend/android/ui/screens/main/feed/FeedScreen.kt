@@ -1,4 +1,4 @@
-package com.serj.recommend.android.ui.screens
+package com.serj.recommend.android.ui.screens.main.feed
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Spacer
@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -17,10 +18,7 @@ import com.serj.recommend.android.model.items.RecommendationItem
 import com.serj.recommend.android.ui.components.loadingIndicators.LargeLoadingIndicator
 import com.serj.recommend.android.ui.components.post.RecommendationItemWithBackground
 import com.serj.recommend.android.ui.components.post.RecommendationItemWithoutBackground
-import com.serj.recommend.android.ui.screens.main.feed.FeedViewModel
-import com.serj.recommend.android.ui.styles.LightGray
 import com.serj.recommend.android.ui.styles.White
-
 
 @Composable
 fun FeedScreen(
@@ -39,7 +37,7 @@ fun FeedScreen(
 @Composable
 fun FeedScreenContent(
     modifier: Modifier = Modifier,
-    currentRecommendations: List<RecommendationItem>,
+    currentRecommendations: List<MutableState<RecommendationItem>>,
     openScreen: (String) -> Unit,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
 ) {
@@ -59,32 +57,35 @@ fun FeedScreenContent(
                 }
 
                 items(currentRecommendations) {
-                    if (it.backgroundImage != null || it.backgroundVideo != null) {
+                    val recommendationItem = it.value
+
+                    if (recommendationItem.backgroundImage.value != null ||
+                        recommendationItem.backgroundVideo != null) {
                         RecommendationItemWithBackground(
-                            modifier = Modifier.padding(bottom = 5.dp),
-                            user = it.user,
-                            date = it.date,
-                            description = it.description,
-                            backgroundImage = it.backgroundImage,
-                            title = it.title,
-                            creator = it.creator,
-                            coverType = it.coverType,
-                            cover = it.cover,
-                            recommendationId = it.id,
+                            modifier = Modifier.padding(bottom = 15.dp),
+                            user = recommendationItem.user,
+                            date = recommendationItem.date,
+                            description = recommendationItem.description,
+                            backgroundImage = recommendationItem.backgroundImage.value,
+                            title = recommendationItem.title,
+                            creator = recommendationItem.creator,
+                            coverType = recommendationItem.coverType,
+                            cover = recommendationItem.cover.value,
+                            recommendationId = recommendationItem.id,
                             openScreen = openScreen,
                             onRecommendationClick = onRecommendationClick
                         )
                     } else {
                         RecommendationItemWithoutBackground(
-                            modifier = Modifier.padding(bottom = 5.dp),
-                            user = it.user,
-                            date = it.date,
-                            description = it.description,
-                            title = it.title,
-                            creator = it.creator,
-                            coverType = it.coverType,
-                            cover = it.cover,
-                            recommendationId = it.id,
+                            modifier = Modifier.padding(bottom = 15.dp),
+                            user = recommendationItem.user,
+                            date = recommendationItem.date,
+                            description = recommendationItem.description,
+                            title = recommendationItem.title,
+                            creator = recommendationItem.creator,
+                            coverType = recommendationItem.coverType,
+                            cover = recommendationItem.cover.value,
+                            recommendationId = recommendationItem.id,
                             openScreen = openScreen,
                             onRecommendationClick = onRecommendationClick
                         )
@@ -92,7 +93,7 @@ fun FeedScreenContent(
                 }
             }
         } else {
-            LargeLoadingIndicator(backgroundColor = LightGray)
+            LargeLoadingIndicator(backgroundColor = White)
         }
     }
 }
