@@ -41,20 +41,20 @@ fun SquareItemTransparent(
             modifier = modifier
                 .height(270.dp)
                 .width(200.dp)
-                .clickable {
-                    if (recommendationId != null) {
-                        onRecommendationClick(
-                            openScreen,
-                            Recommendation(id = recommendationId)
-                        )
-                    }
-                }
         ) {
             if (cover != null) {
                 Image(
                     modifier = Modifier
                         .size(200.dp)
-                        .recommendationCoverShape(),
+                        .recommendationCoverShape()
+                        .clickable {
+                            if (recommendationId != null) {
+                                onRecommendationClick(
+                                    openScreen,
+                                    Recommendation(id = recommendationId)
+                                )
+                            }
+                        },
                     bitmap = cover.asImageBitmap(),
                     contentDescription = title,
                     contentScale = ContentScale.Crop
@@ -63,12 +63,29 @@ fun SquareItemTransparent(
                 SmallLoadingIndicator(
                     modifier = Modifier
                         .size(200.dp)
-                        .clip(RoundedCornerShape(5.dp)),
+                        .clip(RoundedCornerShape(5.dp))
+                        .clickable {
+                            if (recommendationId != null) {
+                                onRecommendationClick(
+                                    openScreen,
+                                    Recommendation(id = recommendationId)
+                                )
+                            }
+                        },
                     backgroundColor = LightGray
                 )
             }
 
             Text(
+                modifier = Modifier
+                    .clickable {
+                        if (recommendationId != null) {
+                            onRecommendationClick(
+                                openScreen,
+                                Recommendation(id = recommendationId)
+                            )
+                        }
+                    },
                 text = title,
                 color = Color.Black,
                 fontSize = 14.sp,

@@ -46,25 +46,9 @@ fun HorizontalItemTransparent(
                 .height(240.dp)
                 .fillMaxWidth()
                 .padding(start = 5.dp, end = 5.dp)
-                .clickable {
-                    if (recommendationId != null) {
-                        onRecommendationClick(
-                            openScreen,
-                            Recommendation(id = recommendationId)
-                        )
-                    }
-                }
             else modifier
                 .height(270.dp)
-                .width(330.dp)
-                .clickable {
-                    if (recommendationId != null) {
-                        onRecommendationClick(
-                            openScreen,
-                            Recommendation(id = recommendationId)
-                        )
-                    }
-                },
+                .width(330.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             if (cover != null) {
@@ -72,7 +56,15 @@ fun HorizontalItemTransparent(
                     modifier = Modifier
                         .height(200.dp)
                         .fillMaxWidth()
-                        .recommendationCoverShape(),
+                        .recommendationCoverShape()
+                        .clickable {
+                            if (recommendationId != null) {
+                                onRecommendationClick(
+                                    openScreen,
+                                    Recommendation(id = recommendationId)
+                                )
+                            }
+                        },
                     bitmap = cover.asImageBitmap(),
                     contentDescription = title,
                     contentScale = ContentScale.Crop
@@ -82,13 +74,30 @@ fun HorizontalItemTransparent(
                     modifier = Modifier
                         .height(200.dp)
                         .fillMaxWidth()
-                        .clip(RoundedCornerShape(5.dp)),
+                        .clip(RoundedCornerShape(5.dp))
+                        .clickable {
+                            if (recommendationId != null) {
+                                onRecommendationClick(
+                                    openScreen,
+                                    Recommendation(id = recommendationId)
+                                )
+                            }
+                        },
                     backgroundColor = LightGray
                 )
             }
 
             Text(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        if (recommendationId != null) {
+                            onRecommendationClick(
+                                openScreen,
+                                Recommendation(id = recommendationId)
+                            )
+                        }
+                    },
                 text = title,
                 color = Color.Black,
                 fontSize = 14.sp,
