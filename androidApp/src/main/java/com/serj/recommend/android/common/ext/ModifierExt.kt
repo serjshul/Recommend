@@ -116,17 +116,22 @@ fun Modifier.postShape(): Modifier {
 
 
 fun Modifier.fieldModifier(): Modifier {
-    return this.fillMaxWidth().padding(15.dp, 5.dp)
+    return this
+        .fillMaxWidth()
+        .padding(15.dp, 5.dp)
 }
 
 fun Modifier.basicButton(): Modifier {
-    return this.fillMaxWidth().padding(15.dp, 10.dp)
+    return this
+        .fillMaxWidth()
+        .padding(15.dp, 10.dp)
 }
 
-fun Modifier.textButton(): Modifier {
-    return this.fillMaxWidth().padding(15.dp, 10.dp, 15.dp, 20.dp)
-}
-
+fun Modifier.textButton() = this
+    .fillMaxWidth()
+    .padding(
+        15.dp, 10.dp, 15.dp, 20.dp
+    )
 
 
 fun Modifier.recommendationCoverShape(): Modifier {

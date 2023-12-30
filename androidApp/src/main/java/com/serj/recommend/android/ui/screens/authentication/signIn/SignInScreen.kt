@@ -29,9 +29,9 @@ import com.serj.recommend.android.ui.components.splash.AppLogo
 @Composable
 fun SignInScreen(
     modifier: Modifier = Modifier,
+    viewModel: SignInViewModel = hiltViewModel(),
     openScreen: (String) -> Unit,
-    openAndPopUp: (String, String) -> Unit,
-    viewModel: SignInViewModel = hiltViewModel()
+    openAndPopUp: (String, String) -> Unit
 ) {
     val uiState by viewModel.uiState
 
@@ -100,8 +100,8 @@ fun SignInScreenContent(
 
             AuthenticationTextButton(
                 text = R.string.forgot_password,
-                action = onForgotPasswordClick,
-                modifier = Modifier.textButton()
+                modifier = Modifier.textButton(),
+                action = onForgotPasswordClick
             )
         }
 

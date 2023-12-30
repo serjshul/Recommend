@@ -11,10 +11,10 @@ import androidx.compose.ui.res.stringResource
 
 @Composable
 fun AuthenticationTextButton(
-    modifier: Modifier = Modifier,
     @StringRes text: Int,
-    action: () -> Unit)
-{
+    modifier: Modifier = Modifier,
+    action: () -> Unit
+) {
     TextButton(
         onClick = action,
         modifier = modifier,
