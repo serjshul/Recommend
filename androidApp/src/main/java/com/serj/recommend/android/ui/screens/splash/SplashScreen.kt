@@ -1,4 +1,4 @@
-package com.serj.recommend.android.ui.screens.authentication.splash
+package com.serj.recommend.android.ui.screens.splash
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -22,7 +22,7 @@ import com.serj.recommend.android.ui.components.splash.AppLogo
 import com.serj.recommend.android.ui.components.authentication.AuthenticationButton
 import kotlinx.coroutines.delay
 
-private const val SPLASH_TIMEOUT = 1000L
+private const val SPLASH_TIMEOUT = 1_000L
 
 @Composable
 fun SplashScreen(
@@ -52,6 +52,9 @@ fun SplashScreenContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         if (shouldShowError) {
+            AppLogo(
+                size = 200.dp
+            )
             Text(text = stringResource(R.string.generic_error))
 
             AuthenticationButton(R.string.try_again, Modifier.basicButton()) {
@@ -61,12 +64,12 @@ fun SplashScreenContent(
             AppLogo(
                 size = 200.dp
             )
-        }
-    }
 
-    LaunchedEffect(true) {
-        delay(SPLASH_TIMEOUT)
-        onAppStart()
+            LaunchedEffect(true) {
+                delay(SPLASH_TIMEOUT)
+                onAppStart()
+            }
+        }
     }
 }
 
