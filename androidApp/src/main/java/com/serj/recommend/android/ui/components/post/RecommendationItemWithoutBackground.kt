@@ -48,10 +48,10 @@ import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.items.UserItem
 import com.serj.recommend.android.ui.components.loadingIndicators.SmallLoadingIndicator
 import com.serj.recommend.android.ui.components.media.ImageOrdinary
-import com.serj.recommend.android.ui.styles.Brown
-import com.serj.recommend.android.ui.styles.Gray
+import com.serj.recommend.android.ui.styles.Floss
 import com.serj.recommend.android.ui.styles.ItemsShapes
 import com.serj.recommend.android.ui.styles.LightGray
+import com.serj.recommend.android.ui.styles.TexasHeatwave
 import com.serj.recommend.android.ui.styles.White
 import java.util.Date
 
@@ -79,7 +79,7 @@ fun RecommendationItemWithoutBackground(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(
-                        Brush.verticalGradient(listOf(Brown, Gray))
+                        Brush.verticalGradient(listOf(Floss, TexasHeatwave))
                     )
             )
 

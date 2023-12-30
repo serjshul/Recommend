@@ -14,7 +14,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.serj.recommend.android.R
-import com.serj.recommend.android.ui.styles.Black
+import com.serj.recommend.android.ui.styles.TexasHeatwave
 import com.serj.recommend.android.ui.styles.White
 
 @Composable
@@ -28,8 +28,8 @@ fun InteractionPanel(
     ) {
         IconButton(
             modifier = Modifier
-                .size(35.dp)
-                .padding(end = 10.dp),
+                .padding(end = 8.dp)
+                .size(39.dp),
             onClick = { }
         ) {
             Icon(
@@ -41,8 +41,8 @@ fun InteractionPanel(
 
         IconButton(
             modifier = Modifier
-                .size(30.dp)
-                .padding(top = 7.dp, end = 6.dp),
+                .padding(top = 3.dp, end = 8.dp)
+                .size(34.dp),
             onClick = { }
         ) {
             Icon(
@@ -54,8 +54,8 @@ fun InteractionPanel(
 
         IconButton(
             modifier = Modifier
-                .size(30.dp)
-                .padding(top = 7.dp),
+                .padding(top = 3.dp)
+                .size(34.dp),
             onClick = { }
         ) {
             Icon(
@@ -72,7 +72,7 @@ fun InteractionPanel(
 fun InteractionPanelPreview() {
     InteractionPanel(
         modifier = Modifier
-            .background(Black)
+            .background(TexasHeatwave)
             .padding(15.dp)
     )
 }

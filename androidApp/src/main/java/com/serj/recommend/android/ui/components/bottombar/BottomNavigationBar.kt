@@ -1,22 +1,24 @@
 package com.serj.recommend.android.ui
 
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.serj.recommend.android.ui.components.bottombar.BottomNavigation
-import com.serj.recommend.android.ui.styles.TigerEye
+import com.serj.recommend.android.ui.styles.Black
+import com.serj.recommend.android.ui.styles.LightGray
+import com.serj.recommend.android.ui.styles.White
 
 @Composable
 fun BottomNavigationBar(
@@ -32,8 +34,8 @@ fun BottomNavigationBar(
     )
 
     NavigationBar(
-        modifier = modifier,
-        containerColor = Color.White
+        modifier = modifier.height(60.dp),
+        containerColor = White
     ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
@@ -43,9 +45,6 @@ fun BottomNavigationBar(
             val screenRoute = screen.route
 
             NavigationBarItem(
-                label = {
-                    Text(text = stringResource(id = screen.title))
-                },
                 icon = {
                     Icon(
                         imageVector = ImageVector.vectorResource(screen.icon),
@@ -63,11 +62,9 @@ fun BottomNavigationBar(
                     }
                 },
                 colors = NavigationBarItemDefaults.colors(
-                    indicatorColor = Color.White,
-                    unselectedTextColor = Color.Gray,
-                    unselectedIconColor = Color.Gray,
-                    selectedTextColor = TigerEye,
-                    selectedIconColor = TigerEye
+                    indicatorColor = White,
+                    unselectedIconColor = LightGray,
+                    selectedIconColor = Black
                 ),
             )
         }

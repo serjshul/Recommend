@@ -33,7 +33,7 @@ import com.serj.recommend.android.ui.screens.common.recommendation.components.He
 import com.serj.recommend.android.ui.screens.common.recommendation.components.Paragraphs
 import com.serj.recommend.android.ui.screens.common.recommendation.components.Quote
 import com.serj.recommend.android.ui.styles.Black
-import com.serj.recommend.android.ui.styles.Brown
+import com.serj.recommend.android.ui.styles.TexasHeatwave
 import com.serj.recommend.android.ui.styles.White
 
 @Composable
@@ -116,7 +116,7 @@ fun RecommendationScreenContent(
                             .itemsInterval()
                             .screenPaddingsInner(),
                         quote = recommendation.quote,
-                        color = recommendation.color?.toColor() ?: Brown
+                        color = recommendation.color?.toColor() ?: TexasHeatwave
                     )
                 }
 
