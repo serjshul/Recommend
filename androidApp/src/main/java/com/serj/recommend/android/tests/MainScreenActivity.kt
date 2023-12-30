@@ -16,6 +16,10 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainScreenActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent { MainScreen(rememberAppState()) }
+        setContent {
+            MainScreen(
+                appState = rememberAppState()
+            )
+        }
     }
 }
