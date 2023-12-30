@@ -1,6 +1,7 @@
 package com.serj.recommend.android.ui.screens.main.home
 
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import com.serj.recommend.android.BANNER_ID
@@ -24,6 +25,7 @@ class HomeViewModel @Inject constructor(
 
     private val categories = storageService.categories
     val currentCategories = mutableStateListOf<MutableState<Category>>()
+    val currentCategoriesAmount = mutableIntStateOf(0)
 
     private val banners = storageService.banners
     val currentBanner = mutableStateOf<Banner?>(null)
@@ -31,18 +33,19 @@ class HomeViewModel @Inject constructor(
     init {
         launchCatching {
             banners.collect { banners ->
-                currentBanner.value = banners.random()
-
-                currentBanner.value!!.cover.value = currentBanner.value!!
+                val randomBanner = banners.random()
+                randomBanner.cover.value = randomBanner
                     .coverReference?.let {
                         storageService.downloadImage(it)
                     }
+                currentBanner.value = randomBanner
             }
         }
 
         launchCatching {
             categories.collect { categories ->
                 val shuffledCategories = categories.shuffled()
+                currentCategoriesAmount.intValue = shuffledCategories.size
 
                 for (category in shuffledCategories) {
                     val currentCategory = mutableStateOf(category)
@@ -58,8 +61,6 @@ class HomeViewModel @Inject constructor(
                             break
                         }
                     }
-
-                    // TODO: move in second thread for the parallel downloading
                     for (item in currentCategory.value.content!!) {
                         item.cover.value = item.coverReference?.let {
                             storageService.downloadImage(it)

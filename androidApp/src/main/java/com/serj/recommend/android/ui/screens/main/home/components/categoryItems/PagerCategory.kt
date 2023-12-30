@@ -31,7 +31,7 @@ fun PagerCategory(
 ) {
     val items = category.content
 
-    if (items!!.toList().isNotEmpty()) {
+    if (items!!.isNotEmpty()) {
         Column(
             modifier = modifier
                 .fillMaxWidth()

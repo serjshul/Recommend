@@ -1,10 +1,15 @@
 package com.serj.recommend.android.ui.screens.common.banner.components
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.serj.recommend.android.model.Recommendation
@@ -18,10 +23,14 @@ import com.serj.recommend.android.ui.styles.White
 fun BannerItems(
     modifier: Modifier = Modifier,
     currentRecommendations: List<MutableState<RecommendationItem>>,
+    recommendationsAmount: Int,
     openScreen: (String) -> Unit,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
 ) {
     if (currentRecommendations.isNotEmpty()) {
+        var isLoading by rememberSaveable { mutableStateOf(true) }
+        var currentCategoriesAmount = 0
+
         Column (
             modifier = modifier
         ) {
@@ -59,11 +68,25 @@ fun BannerItems(
                         onRecommendationClick = onRecommendationClick
                     )
                 }
+
+                currentCategoriesAmount++
+                isLoading = currentCategoriesAmount < recommendationsAmount
+            }
+
+            if (isLoading) {
+                SmallLoadingIndicator(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(80.dp),
+                    backgroundColor = White
+                )
             }
         }
     } else {
         SmallLoadingIndicator(
-            modifier = Modifier.size(300.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(200.dp),
             backgroundColor = White
         )
     }

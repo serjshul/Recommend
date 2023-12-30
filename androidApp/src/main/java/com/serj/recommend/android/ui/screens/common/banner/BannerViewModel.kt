@@ -1,6 +1,7 @@
 package com.serj.recommend.android.ui.screens.common.banner
 
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
@@ -27,6 +28,7 @@ class BannerViewModel @Inject constructor(
 
     val banner = mutableStateOf<Banner?>(null)
     val currentRecommendations = mutableStateListOf<MutableState<RecommendationItem>>()
+    val currentRecommendationsAmount = mutableIntStateOf(0)
 
     init {
         val bannerId = savedStateHandle.get<String>(BANNER_ID)
@@ -34,12 +36,14 @@ class BannerViewModel @Inject constructor(
             launchCatching {
                 val currentBanner = storageService
                     .getBannerById(bannerId.idFromParameter())
-                currentBanner!!.backgroundImage.value = currentBanner
-                    .backgroundReferences[BackgroundTypes.image.name]
+                currentBanner?.backgroundImage?.value = currentBanner
+                    ?.backgroundReferences?.get(BackgroundTypes.image.name)
                     ?.let { storageService.downloadImage(it) }
                 banner.value = currentBanner
 
-                for (recommendationId in banner.value!!.recommendationIds!!) {
+                currentRecommendationsAmount.intValue =
+                    banner.value?.recommendationIds!!.size
+                for (recommendationId in banner.value?.recommendationIds!!) {
                     val currentRecommendationItem = mutableStateOf(
                         storageService.getRecommendationItemById(recommendationId)
                     )

@@ -21,15 +21,15 @@ data class Recommendation(
     val description: String? = null,
     val quote: String? = null,
     val paragraphs: ArrayList<HashMap<String, String>> = arrayListOf(),
-    var paragraphsImages: HashMap<String, MutableState<Bitmap?>> = hashMapOf(),
+    val paragraphsImages: HashMap<String, MutableState<Bitmap?>> = hashMapOf(),
 
     val coversReferences: HashMap<String, String> = hashMapOf(),
-    var cover: MutableState<Bitmap?> = mutableStateOf(null),
+    val cover: MutableState<Bitmap?> = mutableStateOf(null),
     var coverType: String? = null,
 
     val backgroundReferences: HashMap<String, String> = hashMapOf(),
-    var backgroundImage: MutableState<Bitmap?> = mutableStateOf(null),
-    var backgroundVideo: String? = null,
+    val backgroundImage: MutableState<Bitmap?> = mutableStateOf(null),
+    val backgroundVideo: String? = null,
 
     val likes: ArrayList<String> = arrayListOf(),
     val comments: ArrayList<String> = arrayListOf(),

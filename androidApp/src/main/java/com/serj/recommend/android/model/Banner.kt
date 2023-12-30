@@ -17,11 +17,11 @@ data class Banner(
     val description: String? = null,
 
     val coverReference: String? = null,
-    var cover: MutableState<Bitmap?> = mutableStateOf(null),
+    val cover: MutableState<Bitmap?> = mutableStateOf(null),
 
     val backgroundReferences: HashMap<String, String> = hashMapOf(),
-    var backgroundImage: MutableState<Bitmap?> = mutableStateOf(null),
-    var backgroundVideo: String? = null,
+    val backgroundImage: MutableState<Bitmap?> = mutableStateOf(null),
+    val backgroundVideo: String? = null,
 
     val date: Date? = null,
     val color: String? = null,

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -14,6 +15,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -46,11 +51,13 @@ fun CategoryScreen(
 ) {
     val category = viewModel.category
     val currentRecommendations = viewModel.currentRecommendations
+    val currentRecommendationsAmount = viewModel.currentRecommendationsAmount.intValue
 
     CategoryScreenContent(
         modifier = modifier,
         category = category.value,
         currentRecommendations = currentRecommendations,
+        recommendationsAmount = currentRecommendationsAmount,
         openScreen = openScreen,
         popUpScreen = popUpScreen,
         onRecommendationClick = viewModel::onRecommendationClick
@@ -62,6 +69,7 @@ fun CategoryScreenContent(
     modifier: Modifier = Modifier,
     category: Category?,
     currentRecommendations: List<MutableState<RecommendationItem>>,
+    recommendationsAmount: Int,
     openScreen: (String) -> Unit,
     popUpScreen: () -> Unit,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
@@ -85,6 +93,9 @@ fun CategoryScreenContent(
 
                 if (currentRecommendations.isNotEmpty()) {
                     item {
+                        var isLoading by rememberSaveable { mutableStateOf(true) }
+                        var currentRecommendationsAmount = 0
+
                         Column(
                             modifier = Modifier
                                 .screenPaddingsInner()
@@ -125,6 +136,18 @@ fun CategoryScreenContent(
                                         onRecommendationClick = onRecommendationClick
                                     )
                                 }
+
+                                currentRecommendationsAmount++
+                                isLoading = currentRecommendationsAmount < recommendationsAmount
+                            }
+
+                            if (isLoading) {
+                                SmallLoadingIndicator(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(80.dp),
+                                    backgroundColor = White
+                                )
                             }
                         }
                     }

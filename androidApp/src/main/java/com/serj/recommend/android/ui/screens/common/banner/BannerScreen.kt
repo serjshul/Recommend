@@ -31,11 +31,13 @@ fun BannerScreen(
 ) {
     val banner = viewModel.banner
     val currentRecommendations = viewModel.currentRecommendations
+    val currentRecommendationsAmount = viewModel.currentRecommendationsAmount
 
     BannerScreenContent(
         modifier = modifier,
         banner = banner.value,
         currentRecommendations = currentRecommendations,
+        recommendationsAmount = currentRecommendationsAmount.intValue,
         openScreen = openScreen,
         popUpScreen = popUpScreen,
         onRecommendationClick = viewModel::onRecommendationClick
@@ -47,6 +49,7 @@ fun BannerScreenContent(
     modifier: Modifier = Modifier,
     banner: Banner?,
     currentRecommendations: List<MutableState<RecommendationItem>>,
+    recommendationsAmount: Int,
     openScreen: (String) -> Unit,
     popUpScreen: () -> Unit,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
@@ -91,6 +94,7 @@ fun BannerScreenContent(
                             .screenPaddingsInner()
                             .screenPaddingsOuter(),
                         currentRecommendations = currentRecommendations,
+                        recommendationsAmount = recommendationsAmount,
                         openScreen = openScreen,
                         onRecommendationClick = onRecommendationClick
                     )

@@ -1,6 +1,7 @@
 package com.serj.recommend.android.ui.screens.common.category
 
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
@@ -26,6 +27,7 @@ class CategoryViewModel @Inject constructor(
 
     val category = mutableStateOf<Category?>(null)
     val currentRecommendations = mutableStateListOf<MutableState<RecommendationItem>>()
+    val currentRecommendationsAmount = mutableIntStateOf(0)
 
     init {
         val categoryId = savedStateHandle.get<String>(CATEGORY_ID)
@@ -35,7 +37,10 @@ class CategoryViewModel @Inject constructor(
                     .getCategoryById(categoryId.idFromParameter())
                 category.value = currentCategory
 
-                for (recommendationId in category.value!!.recommendationIds) {
+                currentRecommendationsAmount.intValue =
+                    category.value?.recommendationIds!!.size
+
+                for (recommendationId in category.value?.recommendationIds!!) {
                     val currentRecommendationItem = mutableStateOf(
                         storageService.getRecommendationItemById(recommendationId)
                     )

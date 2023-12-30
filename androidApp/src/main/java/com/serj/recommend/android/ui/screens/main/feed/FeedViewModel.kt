@@ -1,6 +1,7 @@
 package com.serj.recommend.android.ui.screens.main.feed
 
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import com.serj.recommend.android.RECOMMENDATION_ID
@@ -24,6 +25,7 @@ class FeedViewModel @Inject constructor(
 
     private val currentUser = accountService.currentUser
     val currentRecommendations = mutableStateListOf<MutableState<RecommendationItem>>()
+    val currentRecommendationsAmount = mutableIntStateOf(0)
 
     init {
         launchCatching {
@@ -35,6 +37,7 @@ class FeedViewModel @Inject constructor(
                         storageService.getFollowingRecommendationsIds(followingUid)
                     )
                 }
+                currentRecommendationsAmount.intValue = followingRecommendationsIds.size
                 followingRecommendationsIds.sortByDescending { it.second }
 
                 for (recommendationId in followingRecommendationsIds) {

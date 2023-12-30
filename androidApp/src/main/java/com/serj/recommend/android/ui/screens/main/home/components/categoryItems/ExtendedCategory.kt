@@ -50,7 +50,7 @@ fun ExtendedCategory(
     onCategoryClick: ((String) -> Unit, String) -> Unit,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
 ) {
-    if (category.content!!.toList().isNotEmpty()) {
+    if (category.content!!.isNotEmpty()) {
         var sizeImage by remember { mutableStateOf(IntSize.Zero) }
 
         Box(

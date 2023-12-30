@@ -13,6 +13,6 @@ data class RecommendationPreview(
     val creator: String? = null,
 
     val coverReference: String? = null,
-    var cover: MutableState<Bitmap?> = mutableStateOf(null),
+    val cover: MutableState<Bitmap?> = mutableStateOf(null),
     var coverType: String? = null
 )
