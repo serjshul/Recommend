@@ -12,8 +12,8 @@ import com.serj.recommend.android.common.ext.idFromParameter
 import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.items.RecommendationItem
-import com.serj.recommend.android.model.service.LogService
-import com.serj.recommend.android.model.service.StorageService
+import com.serj.recommend.android.repository.LogService
+import com.serj.recommend.android.repository.StorageService
 import com.serj.recommend.android.ui.screens.RecommendViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject

@@ -8,9 +8,9 @@ import com.serj.recommend.android.RECOMMENDATION_ID
 import com.serj.recommend.android.RecommendRoutes
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.items.RecommendationItem
-import com.serj.recommend.android.model.service.AccountService
-import com.serj.recommend.android.model.service.LogService
-import com.serj.recommend.android.model.service.StorageService
+import com.serj.recommend.android.repository.AccountService
+import com.serj.recommend.android.repository.LogService
+import com.serj.recommend.android.repository.StorageService
 import com.serj.recommend.android.ui.screens.RecommendViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.Date
@@ -18,9 +18,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FeedViewModel @Inject constructor(
-    logService: LogService,
+    private val logService: LogService,
     private val storageService: StorageService,
-    accountService: AccountService
+    private val accountService: AccountService
 ) : RecommendViewModel(logService) {
 
     private val currentUser = accountService.currentUser

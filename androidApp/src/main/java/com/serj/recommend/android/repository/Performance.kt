@@ -1,4 +1,4 @@
-package com.serj.recommend.android.model.service
+package com.serj.recommend.android.repository
 
 import com.google.firebase.perf.trace
 import com.google.firebase.perf.metrics.Trace

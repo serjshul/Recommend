@@ -2,7 +2,7 @@ package com.serj.recommend.android.model
 
 import android.graphics.Bitmap
 import com.google.firebase.firestore.DocumentId
-import com.serj.recommend.android.model.items.RecommendationPreview
+import com.serj.recommend.android.model.items.RecommendationPreviewItem
 import com.serj.recommend.android.ui.screens.main.home.CategoryType
 
 data class Category(
@@ -18,5 +18,5 @@ data class Category(
     val backgroundVideo: String? = null,
 
     val recommendationIds: ArrayList<String> = arrayListOf(),
-    val content: ArrayList<RecommendationPreview>? = arrayListOf()
+    val content: ArrayList<RecommendationPreviewItem>? = arrayListOf()
 )

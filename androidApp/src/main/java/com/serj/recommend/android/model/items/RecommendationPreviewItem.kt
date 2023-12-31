@@ -5,7 +5,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import com.google.firebase.firestore.DocumentId
 
-data class RecommendationPreview(
+data class RecommendationPreviewItem(
     @DocumentId val id: String? = null,
     val uid: String? = null,
 

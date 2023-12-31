@@ -1,4 +1,4 @@
-package com.serj.recommend.android.model.service.impl
+package com.serj.recommend.android.repository.impl
 
 import android.content.ContentValues.TAG
 import android.graphics.Bitmap
@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.dataObjects
 import com.google.firebase.firestore.toObject
 import com.google.firebase.firestore.toObjects
@@ -15,9 +16,9 @@ import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.User
 import com.serj.recommend.android.model.items.RecommendationItem
-import com.serj.recommend.android.model.items.RecommendationPreview
+import com.serj.recommend.android.model.items.RecommendationPreviewItem
 import com.serj.recommend.android.model.items.UserItem
-import com.serj.recommend.android.model.service.StorageService
+import com.serj.recommend.android.repository.StorageService
 import com.serj.recommend.android.ui.styles.BackgroundTypes
 import com.serj.recommend.android.ui.styles.ItemsShapes
 import kotlinx.coroutines.flow.Flow
@@ -68,6 +69,8 @@ class StorageServiceImpl @Inject constructor(
                             paragraph.getOrDefault(BackgroundTypes.image.name, null)
                     }
                 }
+
+                Log.v(TAG, recommendation.toString())
             }
             .addOnFailureListener {
                 Log.v(TAG, "error getCategoryItem()")
@@ -95,7 +98,7 @@ class StorageServiceImpl @Inject constructor(
         firestore
             .collection(BANNERS_COLLECTION)
             .document(bannerId)
-            .get()
+            .get(Source.CACHE)
             .addOnSuccessListener { document ->
                 banner = document.toObject<Banner>()
             }
@@ -179,8 +182,8 @@ class StorageServiceImpl @Inject constructor(
 
     override suspend fun getRecommendationPreviewById(
         recommendationId: String
-    ): RecommendationPreview? {
-        var recommendationPreview: RecommendationPreview? = null
+    ): RecommendationPreviewItem? {
+        var recommendationPreview: RecommendationPreviewItem? = null
 
         firestore
             .collection(RECOMMENDATIONS_COLLECTION)
@@ -198,7 +201,7 @@ class StorageServiceImpl @Inject constructor(
                             ItemsShapes.vertical.name
                         else -> ItemsShapes.horizontal.name
                     }
-                    recommendationPreview = RecommendationPreview(
+                    recommendationPreview = RecommendationPreviewItem(
                         id = recommendation.id,
                         uid = recommendation.uid,
                         title = recommendation.title,
@@ -255,9 +258,9 @@ class StorageServiceImpl @Inject constructor(
         firestore
             .collection(RECOMMENDATIONS_COLLECTION)
             .whereEqualTo("uid", followingUid)
-            .get()
-            .addOnSuccessListener {document ->
-                val recommendations = document.toObjects<Recommendation>()
+            .get(Source.CACHE)
+            .addOnSuccessListener {documents ->
+                val recommendations = documents.toObjects<Recommendation>()
                 for (recommendation in recommendations) {
                     if (recommendation.id != null && recommendation.date != null) {
                         followingRecommendationsIds.add(

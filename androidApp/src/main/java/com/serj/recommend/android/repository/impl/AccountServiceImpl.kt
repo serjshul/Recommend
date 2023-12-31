@@ -1,4 +1,4 @@
-package com.serj.recommend.android.model.service.impl
+package com.serj.recommend.android.repository.impl
 
 import android.content.ContentValues
 import android.graphics.Bitmap
@@ -10,7 +10,7 @@ import com.google.firebase.firestore.toObject
 import com.google.firebase.storage.FirebaseStorage
 import com.serj.recommend.android.R
 import com.serj.recommend.android.model.User
-import com.serj.recommend.android.model.service.AccountService
+import com.serj.recommend.android.repository.AccountService
 import com.serj.recommend.android.ui.components.snackbar.SnackbarManager
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
