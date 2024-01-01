@@ -1,12 +1,12 @@
 package com.serj.recommend.android.ui.screens.main.home.components
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -30,22 +30,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.google.firebase.storage.StorageReference
 import com.serj.recommend.android.model.Banner
-import com.serj.recommend.android.ui.components.loadingIndicators.SmallLoadingIndicator
-import com.serj.recommend.android.ui.styles.White
+import com.serj.recommend.android.ui.components.media.CustomGlideImage
 
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun Banner(
     modifier: Modifier = Modifier,
     banner: Banner? = null,
+    coverReference: StorageReference?,
     openScreen: (String) -> Unit,
     onBannerClick: ((String) -> Unit, String) -> Unit
 ) {
@@ -60,39 +61,23 @@ fun Banner(
                 .height(520.dp)
                 .padding(bottom = 30.dp)
         ) {
-            when {
-                banner.backgroundVideo != null -> {
-                    // TODO: add video player
-                }
-                banner.cover.value != null -> {
-                    Image(
-                        modifier = Modifier
-                            .matchParentSize()
-                            .onGloballyPositioned { sizeImage = it.size },
-                        bitmap = banner.cover.value!!.asImageBitmap(),
-                        contentDescription = banner.title,
-                        contentScale = ContentScale.Crop
+            CustomGlideImage(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .onGloballyPositioned { sizeImage = it.size },
+                url = coverReference
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(Color.Transparent, Color.White),
+                            startY = sizeImage.height.toFloat() / 7,
+                            endY = sizeImage.height.toFloat()
+                        )
                     )
-                    Box(
-                        modifier = Modifier
-                            .matchParentSize()
-                            .background(
-                                Brush.verticalGradient(
-                                    colors = listOf(Color.Transparent, Color.White),
-                                    startY = sizeImage.height.toFloat() / 7,
-                                    endY = sizeImage.height.toFloat()
-                                )
-                            )
-                    )
-                }
-                else -> {
-                    SmallLoadingIndicator(
-                        modifier = Modifier
-                            .matchParentSize(),
-                        backgroundColor = White
-                    )
-                }
-            }
+            )
 
             Column(
                 modifier = Modifier

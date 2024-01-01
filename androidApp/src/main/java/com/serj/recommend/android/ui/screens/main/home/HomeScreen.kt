@@ -78,6 +78,7 @@ fun HomeScreenContent(
                 item {
                     Banner(
                         banner = banner,
+                        coverReference = banner.coverReference.value,
                         openScreen = openScreen,
                         onBannerClick = onBannerClick
                     )

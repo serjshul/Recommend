@@ -69,8 +69,8 @@ fun BannerScreenContent(
                             title = banner.title,
                             creator = banner.creator,
                             type = banner.type,
-                            backgroundVideo = banner.backgroundVideo,
-                            backgroundImage = banner.backgroundImage.value,
+                            backgroundImageReference = banner.backgroundImageReference.value,
+                            backgroundVideoReference = banner.backgroundVideoReference.value,
                             popUpScreen = popUpScreen
                         )
 

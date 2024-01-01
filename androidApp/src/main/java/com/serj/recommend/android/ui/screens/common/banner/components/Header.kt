@@ -1,6 +1,5 @@
 package com.serj.recommend.android.ui.screens.common.banner.components
 
-import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -23,42 +22,31 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.google.firebase.storage.StorageReference
 import com.serj.recommend.android.R
 import com.serj.recommend.android.common.ext.bannerHeaderShape
 import com.serj.recommend.android.common.ext.mediaHeaderShape
-import com.serj.recommend.android.ui.components.loadingIndicators.SmallLoadingIndicator
-import com.serj.recommend.android.ui.components.media.ImageShaded
-import com.serj.recommend.android.ui.styles.LightGray
+import com.serj.recommend.android.ui.components.media.CustomGlideImage
 
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun Header(
     modifier: Modifier = Modifier,
     title: String?,
     creator: String?,
     type: ArrayList<String>?,
-    backgroundVideo: String? = null,
-    backgroundImage: Bitmap?,
+    backgroundImageReference: StorageReference?,
+    backgroundVideoReference: StorageReference?,
     popUpScreen: () -> Unit
 ) {
     Box(
         modifier = modifier.bannerHeaderShape()
     ) {
-        when {
-            backgroundVideo != null -> {
-                // TODO: add video player
-            }
-            backgroundImage != null -> {
-                ImageShaded(
-                    modifier = Modifier.mediaHeaderShape(),
-                    image = backgroundImage
-                )
-            }
-            else -> {
-                SmallLoadingIndicator(
-                    backgroundColor = LightGray
-                )
-            }
-        }
+        CustomGlideImage(
+            modifier = Modifier.mediaHeaderShape(),
+            url = backgroundImageReference
+        )
 
         HeaderTopBar(
             popUpScreen = popUpScreen

@@ -47,14 +47,14 @@ class FeedViewModel @Inject constructor(
                     currentRecommendations.add(currentRecommendationItem)
 
                     currentRecommendationItem.value.cover.value = currentRecommendationItem.value
-                        .coverReference?.let { storageService.downloadImage(it) }
+                        .coverReference?.let { storageService.getImageUrlFromFirestoreResponse(it) }
                 }
 
                 for (recommendationItem in currentRecommendations) {
                     val imageReference = recommendationItem.value.backgroundImageReference
                     if (imageReference != null) {
                         recommendationItem.value.backgroundImage.value =
-                            storageService.downloadImage(imageReference)
+                            storageService.getImageUrlFromFirestoreResponse(imageReference)
                     }
                 }
             }

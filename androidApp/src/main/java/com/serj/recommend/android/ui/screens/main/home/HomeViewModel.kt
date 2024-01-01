@@ -34,10 +34,9 @@ class HomeViewModel @Inject constructor(
         launchCatching {
             banners.collect { banners ->
                 val randomBanner = banners.random()
-                randomBanner.cover.value = randomBanner
-                    .coverReference?.let {
-                        storageService.downloadImage(it)
-                    }
+                randomBanner.coverReference.value = randomBanner.coverUrl?.let {
+                    storageService.getReference(it)
+                }
                 currentBanner.value = randomBanner
             }
         }
@@ -63,7 +62,7 @@ class HomeViewModel @Inject constructor(
                     }
                     for (item in currentCategory.value.content!!) {
                         item.cover.value = item.coverReference?.let {
-                            storageService.downloadImage(it)
+                            storageService.getImageUrlFromFirestoreResponse(it)
                         }
                     }
                 }

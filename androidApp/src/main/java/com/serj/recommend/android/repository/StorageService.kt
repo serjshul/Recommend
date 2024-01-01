@@ -1,6 +1,7 @@
 package com.serj.recommend.android.repository
 
 import android.graphics.Bitmap
+import com.google.firebase.storage.StorageReference
 import com.serj.recommend.android.model.Banner
 import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.Recommendation
@@ -33,5 +34,7 @@ interface StorageService {
 
     suspend fun getFollowingRecommendationsIds(followingUid: String): List<Pair<String, Date>>
 
-    suspend fun downloadImage(gsReference: String): Bitmap?
+    suspend fun getReference(url: String): StorageReference
+
+    suspend fun getImageUrlFromFirestoreResponse(gsReference: String): Bitmap?
 }

@@ -15,7 +15,6 @@ import com.serj.recommend.android.model.items.RecommendationItem
 import com.serj.recommend.android.repository.LogService
 import com.serj.recommend.android.repository.StorageService
 import com.serj.recommend.android.ui.screens.RecommendViewModel
-import com.serj.recommend.android.ui.styles.BackgroundTypes
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -36,9 +35,12 @@ class BannerViewModel @Inject constructor(
             launchCatching {
                 val currentBanner = storageService
                     .getBannerById(bannerId.idFromParameter())
-                currentBanner?.backgroundImage?.value = currentBanner
-                    ?.backgroundReferences?.get(BackgroundTypes.image.name)
-                    ?.let { storageService.downloadImage(it) }
+                if (currentBanner != null) {
+                    currentBanner.backgroundImageReference.value =
+                        currentBanner.backgroundImageUrl?.let {
+                            storageService.getReference(it)
+                        }
+                }
                 banner.value = currentBanner
 
                 currentRecommendationsAmount.intValue =
@@ -50,14 +52,14 @@ class BannerViewModel @Inject constructor(
                     currentRecommendations.add(currentRecommendationItem)
 
                     currentRecommendationItem.value.cover.value = currentRecommendationItem.value
-                        .coverReference?.let { storageService.downloadImage(it) }
+                        .coverReference?.let { storageService.getImageUrlFromFirestoreResponse(it) }
                 }
 
                 for (recommendationItem in currentRecommendations) {
                     val imageReference = recommendationItem.value.backgroundImageReference
                     if (imageReference != null) {
                         recommendationItem.value.backgroundImage.value =
-                            storageService.downloadImage(imageReference)
+                            storageService.getImageUrlFromFirestoreResponse(imageReference)
                     }
                 }
             }

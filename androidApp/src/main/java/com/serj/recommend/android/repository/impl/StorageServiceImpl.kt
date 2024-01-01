@@ -11,6 +11,7 @@ import com.google.firebase.firestore.dataObjects
 import com.google.firebase.firestore.toObject
 import com.google.firebase.firestore.toObjects
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import com.serj.recommend.android.model.Banner
 import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.Recommendation
@@ -77,12 +78,12 @@ class StorageServiceImpl @Inject constructor(
             }
             .await()
 
-        recommendation?.backgroundImage?.value = currentBackgroundImageReference?.let { downloadImage(it) }
+        recommendation?.backgroundImage?.value = currentBackgroundImageReference?.let { getImageUrlFromFirestoreResponse(it) }
         for ((title, reference) in currentParagraphsImagesReferences) {
             recommendation?.paragraphsImages?.set(
                 title,
                 mutableStateOf(
-                    reference?.let { downloadImage(it) }
+                    reference?.let { getImageUrlFromFirestoreResponse(it) }
                 )
             )
         }
@@ -245,7 +246,7 @@ class StorageServiceImpl @Inject constructor(
             }
             .await()
 
-        userItem?.photo = photoReference?.let { downloadImage(it) }
+        userItem?.photo = photoReference?.let { getImageUrlFromFirestoreResponse(it) }
 
         return userItem
     }
@@ -278,7 +279,10 @@ class StorageServiceImpl @Inject constructor(
         return followingRecommendationsIds
     }
 
-    override suspend fun downloadImage(gsReference: String): Bitmap? {
+    override suspend fun getReference(url: String): StorageReference =
+        storage.getReferenceFromUrl(url)
+
+    override suspend fun getImageUrlFromFirestoreResponse(gsReference: String): Bitmap? {
         var bmp: Bitmap? = null
 
         storage
