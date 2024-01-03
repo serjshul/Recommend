@@ -1,4 +1,4 @@
-package com.serj.recommend.android.repository.model
+package com.serj.recommend.android.services.model
 
 sealed class Response<out T> {
     data object Loading: Response<Nothing>()

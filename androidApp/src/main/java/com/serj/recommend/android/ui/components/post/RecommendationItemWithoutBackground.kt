@@ -1,6 +1,5 @@
 package com.serj.recommend.android.ui.components.post
 
-import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -33,7 +32,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -42,15 +40,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import com.google.firebase.storage.StorageReference
 import com.serj.recommend.android.R
 import com.serj.recommend.android.common.ext.postShape
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.items.UserItem
-import com.serj.recommend.android.ui.components.loadingIndicators.SmallLoadingIndicator
-import com.serj.recommend.android.ui.components.media.ImageOrdinary
+import com.serj.recommend.android.ui.components.media.CustomGlideImage
 import com.serj.recommend.android.ui.styles.Floss
 import com.serj.recommend.android.ui.styles.ItemsShapes
-import com.serj.recommend.android.ui.styles.LightGray
 import com.serj.recommend.android.ui.styles.TexasHeatwave
 import com.serj.recommend.android.ui.styles.White
 import java.util.Date
@@ -62,7 +59,7 @@ fun RecommendationItemWithoutBackground(
     date: Date?,
     description: String?,
     coverType: String? = ItemsShapes.horizontal.name,
-    cover: Bitmap? = null,
+    coverReference: StorageReference?,
     title: String?,
     creator: String?,
     recommendationId: String?,
@@ -92,12 +89,12 @@ fun RecommendationItemWithoutBackground(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    if (user.photo != null) {
-                        ImageOrdinary(
+                    if (user.photoReference != null) {
+                        CustomGlideImage(
                             modifier = Modifier
                                 .size(40.dp)
                                 .clip(CircleShape),
-                            image = user.photo!!
+                            reference = user.photoReference
                         )
                     } else {
                         Image(
@@ -170,76 +167,71 @@ fun RecommendationItemWithoutBackground(
                 ) {
                     when (coverType) {
                         ItemsShapes.square.name -> {
-                            if (cover != null) {
-                                Image(
-                                    modifier = Modifier
-                                        .padding(bottom = 30.dp)
-                                        .size(200.dp)
-                                        .clip(RoundedCornerShape(5.dp)),
-                                    bitmap = cover.asImageBitmap(),
-                                    contentDescription = title,
-                                    contentScale = ContentScale.Crop
-                                )
-                            } else {
-                                SmallLoadingIndicator(
-                                    modifier = Modifier
-                                        .padding(bottom = 30.dp)
-                                        .size(200.dp)
-                                        .clip(RoundedCornerShape(5.dp)),
-                                    backgroundColor = LightGray
-                                )
-                            }
+                            CustomGlideImage(
+                                modifier =  Modifier
+                                    .padding(bottom = 30.dp)
+                                    .size(200.dp)
+                                    .clip(RoundedCornerShape(5.dp))
+                                    .clickable {
+                                        if (recommendationId != null) {
+                                            onRecommendationClick(
+                                                openScreen,
+                                                Recommendation(id = recommendationId)
+                                            )
+                                        }
+                                    },
+                                reference = coverReference
+                            )
                         }
                         ItemsShapes.vertical.name -> {
-                            if (cover != null) {
-                                Image(
-                                    modifier = Modifier
-                                        .padding(bottom = 25.dp)
-                                        .height(200.dp)
-                                        .width(135.dp)
-                                        .clip(RoundedCornerShape(5.dp)),
-                                    bitmap = cover.asImageBitmap(),
-                                    contentDescription = title,
-                                    contentScale = ContentScale.Crop
-                                )
-                            } else {
-                                SmallLoadingIndicator(
-                                    modifier = Modifier
-                                        .padding(bottom = 25.dp)
-                                        .height(200.dp)
-                                        .width(135.dp)
-                                        .clip(RoundedCornerShape(5.dp)),
-                                    backgroundColor = LightGray
-                                )
-                            }
+                            CustomGlideImage(
+                                modifier = Modifier
+                                    .padding(bottom = 25.dp)
+                                    .height(200.dp)
+                                    .width(135.dp)
+                                    .clip(RoundedCornerShape(5.dp))
+                                    .clickable {
+                                        if (recommendationId != null) {
+                                            onRecommendationClick(
+                                                openScreen,
+                                                Recommendation(id = recommendationId)
+                                            )
+                                        }
+                                    },
+                                reference = coverReference
+                            )
                         }
                         else -> {
-                            if (cover != null) {
-                                Image(
-                                    modifier = Modifier
-                                        .padding(bottom = 40.dp)
-                                        .height(170.dp)
-                                        .width(300.dp)
-                                        .clip(RoundedCornerShape(5.dp)),
-                                    bitmap = cover.asImageBitmap(),
-                                    contentDescription = title,
-                                    contentScale = ContentScale.Crop
-                                )
-                            } else {
-                                SmallLoadingIndicator(
-                                    modifier = Modifier
-                                        .padding(bottom = 40.dp)
-                                        .height(170.dp)
-                                        .width(300.dp)
-                                        .clip(RoundedCornerShape(5.dp)),
-                                    backgroundColor = LightGray
-                                )
-                            }
+                            CustomGlideImage(
+                                modifier = Modifier
+                                    .padding(bottom = 40.dp)
+                                    .height(170.dp)
+                                    .width(300.dp)
+                                    .clip(RoundedCornerShape(5.dp))
+                                    .clickable {
+                                        if (recommendationId != null) {
+                                            onRecommendationClick(
+                                                openScreen,
+                                                Recommendation(id = recommendationId)
+                                            )
+                                        }
+                                    },
+                                reference = coverReference
+                            )
                         }
                     }
 
                     Text(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                if (recommendationId != null) {
+                                    onRecommendationClick(
+                                        openScreen,
+                                        Recommendation(id = recommendationId)
+                                    )
+                                }
+                            },
                         text = title,
                         color = White,
                         maxLines = 2,
@@ -306,6 +298,7 @@ fun PostWithoutBackgroundPreview() {
                         "text text text text text text text text text text text text text text",
                 title = "title",
                 creator = "creator",
+                coverReference = null,
                 recommendationId = "",
                 openScreen = { },
                 onRecommendationClick = { _: (String) -> Unit, _: Recommendation -> }

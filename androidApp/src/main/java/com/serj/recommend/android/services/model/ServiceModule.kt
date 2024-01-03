@@ -1,13 +1,13 @@
-package com.serj.recommend.android.repository.model
+package com.serj.recommend.android.services.model
 
-import com.serj.recommend.android.repository.AccountService
-import com.serj.recommend.android.repository.ConfigurationService
-import com.serj.recommend.android.repository.LogService
-import com.serj.recommend.android.repository.StorageService
-import com.serj.recommend.android.repository.impl.AccountServiceImpl
-import com.serj.recommend.android.repository.impl.ConfigurationServiceImpl
-import com.serj.recommend.android.repository.impl.LogServiceImpl
-import com.serj.recommend.android.repository.impl.StorageServiceImpl
+import com.serj.recommend.android.services.AccountService
+import com.serj.recommend.android.services.ConfigurationService
+import com.serj.recommend.android.services.LogService
+import com.serj.recommend.android.services.StorageService
+import com.serj.recommend.android.services.impl.AccountServiceImpl
+import com.serj.recommend.android.services.impl.ConfigurationServiceImpl
+import com.serj.recommend.android.services.impl.LogServiceImpl
+import com.serj.recommend.android.services.impl.StorageServiceImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

@@ -1,8 +1,8 @@
-package com.serj.recommend.android.repository.impl
+package com.serj.recommend.android.services.impl
 
 import com.google.firebase.Firebase
 import com.google.firebase.crashlytics.crashlytics
-import com.serj.recommend.android.repository.LogService
+import com.serj.recommend.android.services.LogService
 import javax.inject.Inject
 
 

@@ -45,7 +45,7 @@ fun Header(
     ) {
         CustomGlideImage(
             modifier = Modifier.mediaHeaderShape(),
-            url = backgroundImageReference
+            reference = backgroundImageReference
         )
 
         HeaderTopBar(

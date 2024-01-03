@@ -27,11 +27,8 @@ import com.serj.recommend.android.ui.screens.main.home.components.Banner
 import com.serj.recommend.android.ui.screens.main.home.components.categoryItems.ExtendedCategory
 import com.serj.recommend.android.ui.screens.main.home.components.categoryItems.OrdinaryCategory
 import com.serj.recommend.android.ui.screens.main.home.components.categoryItems.PagerCategory
+import com.serj.recommend.android.ui.styles.CategoryTypes
 import com.serj.recommend.android.ui.styles.White
-
-enum class CategoryType {
-    ordinary, extended, pager
-}
 
 @Composable
 fun HomeScreen(
@@ -78,7 +75,7 @@ fun HomeScreenContent(
                 item {
                     Banner(
                         banner = banner,
-                        coverReference = banner.coverReference.value,
+                        coverReference = banner.coverReference,
                         openScreen = openScreen,
                         onBannerClick = onBannerClick
                     )
@@ -87,7 +84,7 @@ fun HomeScreenContent(
                 items(categories) { category ->
                     val value = category.value
                     when (value.type) {
-                        CategoryType.extended.name -> {
+                        CategoryTypes.extended.name -> {
                             ExtendedCategory(
                                 category = value,
                                 openScreen = openScreen,
@@ -95,7 +92,7 @@ fun HomeScreenContent(
                                 onCategoryClick = onCategoryClick
                             )
                         }
-                        CategoryType.pager.name -> {
+                        CategoryTypes.pager.name -> {
                             PagerCategory(
                                 category = value,
                                 openScreen = openScreen,

@@ -1,10 +1,7 @@
-package com.serj.recommend.android.repository.impl
+package com.serj.recommend.android.services.impl
 
 import android.content.ContentValues.TAG
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.util.Log
-import androidx.compose.runtime.mutableStateOf
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.dataObjects
@@ -19,7 +16,7 @@ import com.serj.recommend.android.model.User
 import com.serj.recommend.android.model.items.RecommendationItem
 import com.serj.recommend.android.model.items.RecommendationPreviewItem
 import com.serj.recommend.android.model.items.UserItem
-import com.serj.recommend.android.repository.StorageService
+import com.serj.recommend.android.services.StorageService
 import com.serj.recommend.android.ui.styles.BackgroundTypes
 import com.serj.recommend.android.ui.styles.ItemsShapes
 import kotlinx.coroutines.flow.Flow
@@ -51,8 +48,6 @@ class StorageServiceImpl @Inject constructor(
         recommendationId: String
     ): Recommendation? {
         var recommendation: Recommendation? = null
-        var currentBackgroundImageReference: String? = null
-        val currentParagraphsImagesReferences = hashMapOf<String, String?>()
 
         firestore
             .collection(RECOMMENDATIONS_COLLECTION)
@@ -61,32 +56,33 @@ class StorageServiceImpl @Inject constructor(
             .addOnSuccessListener { document ->
                 recommendation = document.toObject<Recommendation>()
                 if (recommendation != null) {
-                    if (recommendation!!.backgroundReferences[BackgroundTypes.image.name] != null) {
-                        currentBackgroundImageReference = recommendation!!
-                            .backgroundReferences[BackgroundTypes.image.name]
+                    if (recommendation!!.backgroundUrl[BackgroundTypes.image.name] != null) {
+                        recommendation!!.backgroundImageReference =
+                            recommendation!!
+                                .backgroundUrl[BackgroundTypes.image.name]
+                                ?.let { storage.getReferenceFromUrl(it) }
                     }
+                    /*
+                    if (recommendation!!.backgroundUrl[BackgroundTypes.video.name] != null) {
+                        recommendation!!.backgroundVideoReference =
+                            recommendation!!
+                                .backgroundUrl[BackgroundTypes.video.name]
+                                ?.let { storage.getReference(it) }
+                    }
+
+                     */
                     for (paragraph in recommendation!!.paragraphs) {
-                        currentParagraphsImagesReferences[paragraph.getValue("title")] =
-                            paragraph.getOrDefault(BackgroundTypes.image.name, null)
+                        recommendation!!.paragraphsReferences[paragraph.getValue("title")] =
+                            paragraph
+                                .getOrDefault(BackgroundTypes.image.name, null)
+                                ?.let { storage.getReferenceFromUrl(it) }
                     }
                 }
-
-                Log.v(TAG, recommendation.toString())
             }
             .addOnFailureListener {
-                Log.v(TAG, "error getCategoryItem()")
+                Log.v(TAG, "error getRecommendationById()")
             }
             .await()
-
-        recommendation?.backgroundImage?.value = currentBackgroundImageReference?.let { getImageUrlFromFirestoreResponse(it) }
-        for ((title, reference) in currentParagraphsImagesReferences) {
-            recommendation?.paragraphsImages?.set(
-                title,
-                mutableStateOf(
-                    reference?.let { getImageUrlFromFirestoreResponse(it) }
-                )
-            )
-        }
 
         return recommendation
     }
@@ -99,12 +95,29 @@ class StorageServiceImpl @Inject constructor(
         firestore
             .collection(BANNERS_COLLECTION)
             .document(bannerId)
-            .get(Source.CACHE)
+            .get()
             .addOnSuccessListener { document ->
                 banner = document.toObject<Banner>()
+                if (banner != null) {
+                    banner!!.coverReference = banner!!.coverUrl
+                        ?.let { storage.getReferenceFromUrl(it) }
+                    if (banner!!.backgroundUrl[BackgroundTypes.image.name] != null) {
+                        banner!!.backgroundImageReference = banner!!
+                            .backgroundUrl[BackgroundTypes.image.name]
+                            ?.let { storage.getReferenceFromUrl(it) }
+                    }
+                    /*
+                    if (banner!!.backgroundUrl[BackgroundTypes.video.name] != null) {
+                        banner!!.backgroundVideoReference = banner!!
+                            .backgroundUrl[BackgroundTypes.video.name]
+                            ?.let { storage.getReference(it) }
+                    }
+
+                     */
+                }
             }
             .addOnFailureListener {
-                Log.v(TAG, "error getCategoryItem()")
+                Log.v(TAG, "error getBannerById()")
             }
             .await()
 
@@ -122,6 +135,21 @@ class StorageServiceImpl @Inject constructor(
             .get()
             .addOnSuccessListener { document ->
                 category = document.toObject<Category>()
+                if (category != null) {
+                    if (category!!.backgroundUrl[BackgroundTypes.image.name] != null) {
+                        category!!.backgroundImageReference = category!!
+                            .backgroundUrl[BackgroundTypes.image.name]
+                            ?.let { storage.getReferenceFromUrl(it) }
+                    }
+                    /*
+                    if (category!!.backgroundUrl[BackgroundTypes.video.name] != null) {
+                        category!!.backgroundVideoReference = category!!
+                            .backgroundUrl[BackgroundTypes.video.name]
+                            ?.let { storage.getReferenceFromUrl(it) }
+                    }
+
+                     */
+                }
             }
             .addOnFailureListener {
                 Log.v(TAG, "error getCategoryById()")
@@ -133,8 +161,8 @@ class StorageServiceImpl @Inject constructor(
 
     override suspend fun getRecommendationItemById(
         recommendationId: String
-    ): RecommendationItem {
-        var recommendationItem = RecommendationItem()
+    ): RecommendationItem? {
+        var recommendationItem: RecommendationItem? = null
         var currentUserUid: String? = null
 
         firestore
@@ -144,16 +172,9 @@ class StorageServiceImpl @Inject constructor(
             .addOnSuccessListener {document ->
                 val recommendation = document.toObject<Recommendation>()
                 if (recommendation != null) {
+                    val currentCoverType = getCoverType(recommendation.coversUrl)
                     currentUserUid = recommendation.uid
-                    val currentCoverType = when {
-                        recommendation.coversReferences[ItemsShapes.horizontal.name] != null ->
-                            ItemsShapes.horizontal.name
-                        recommendation.coversReferences[ItemsShapes.vertical.name] != null ->
-                            ItemsShapes.vertical.name
-                        recommendation.coversReferences[ItemsShapes.square.name] != null ->
-                            ItemsShapes.square.name
-                        else -> ItemsShapes.horizontal.name
-                    }
+
                     recommendationItem = RecommendationItem(
                         id = recommendation.id,
                         uid = currentUserUid,
@@ -163,9 +184,14 @@ class StorageServiceImpl @Inject constructor(
                         date = recommendation.date,
                         coverType = currentCoverType,
                         coverReference = recommendation
-                            .coversReferences[currentCoverType],
+                            .coversUrl[currentCoverType]
+                            ?.let { storage.getReferenceFromUrl(it) },
                         backgroundImageReference = recommendation
-                            .backgroundReferences[BackgroundTypes.image.name],
+                            .backgroundUrl[BackgroundTypes.image.name]
+                            ?.let { storage.getReferenceFromUrl(it) },
+                        backgroundVideoReference = null, /*recommendation
+                            .backgroundUrl[BackgroundTypes.video.name]
+                            ?.let { storage.getReference(it) }, */
                         isLiked = false,
                         isReposted = false,
                     )
@@ -176,7 +202,7 @@ class StorageServiceImpl @Inject constructor(
             }
             .await()
 
-        recommendationItem.user = currentUserUid?.let { getUserItem(it) }
+        recommendationItem?.user = currentUserUid?.let { getUserItemByUid(it) }
 
         return recommendationItem
     }
@@ -193,21 +219,17 @@ class StorageServiceImpl @Inject constructor(
             .addOnSuccessListener { document ->
                 val recommendation = document.toObject<Recommendation>()
                 if (recommendation != null) {
-                    val coverType = when {
-                        recommendation.coversReferences[ItemsShapes.horizontal.name] != null ->
-                            ItemsShapes.horizontal.name
-                        recommendation.coversReferences[ItemsShapes.square.name] != null ->
-                            ItemsShapes.square.name
-                        recommendation.coversReferences[ItemsShapes.vertical.name] != null ->
-                            ItemsShapes.vertical.name
-                        else -> ItemsShapes.horizontal.name
-                    }
+                    val coverType = getCoverType(recommendation.coversUrl)
+
+                    val coverReference = recommendation.coversUrl[coverType]
+                        ?.let { storage.getReferenceFromUrl(it) }
+
                     recommendationPreview = RecommendationPreviewItem(
                         id = recommendation.id,
                         uid = recommendation.uid,
                         title = recommendation.title,
                         creator = recommendation.creator,
-                        coverReference = recommendation.coversReferences[coverType],
+                        coverReference = coverReference,
                         coverType = coverType
                     )
                 }
@@ -220,11 +242,10 @@ class StorageServiceImpl @Inject constructor(
         return recommendationPreview
     }
 
-    override suspend fun getUserItem(
+    override suspend fun getUserItemByUid(
         uid: String
     ): UserItem? {
         var userItem: UserItem? = null
-        var photoReference: String? = null
 
         firestore
             .collection(USERS_COLLECTION)
@@ -236,8 +257,9 @@ class StorageServiceImpl @Inject constructor(
                     userItem = UserItem(
                         uid = user.uid,
                         nickname = user.nickname,
+                        photoReference = user.photoUrl
+                            ?.let { storage.getReferenceFromUrl(it) }
                     )
-                    photoReference = user.photoReference
                 }
             }
             .addOnFailureListener {
@@ -245,8 +267,6 @@ class StorageServiceImpl @Inject constructor(
                 Log.v(TAG, "error getUserItem()")
             }
             .await()
-
-        userItem?.photo = photoReference?.let { getImageUrlFromFirestoreResponse(it) }
 
         return userItem
     }
@@ -279,24 +299,20 @@ class StorageServiceImpl @Inject constructor(
         return followingRecommendationsIds
     }
 
-    override suspend fun getReference(url: String): StorageReference =
-        storage.getReferenceFromUrl(url)
+    override suspend fun getStorageReferenceFromUrl(
+        url: String
+    ): StorageReference = storage.getReferenceFromUrl(url)
 
-    override suspend fun getImageUrlFromFirestoreResponse(gsReference: String): Bitmap? {
-        var bmp: Bitmap? = null
-
-        storage
-            .getReferenceFromUrl(gsReference)
-            .getBytes(ONE_MEGABYTE)
-            .addOnSuccessListener {
-                bmp = BitmapFactory.decodeByteArray(it, 0, it.size)
-            }
-            .addOnFailureListener {
-                Log.v(TAG, "not downloaded !!!")
-            }
-            .await()
-
-        return bmp
+    private fun getCoverType(coversUrl: HashMap<String, String>): String {
+        return when {
+            coversUrl[ItemsShapes.square.name] != null ->
+                ItemsShapes.square.name
+            coversUrl[ItemsShapes.horizontal.name] != null ->
+                ItemsShapes.horizontal.name
+            coversUrl[ItemsShapes.vertical.name] != null ->
+                ItemsShapes.vertical.name
+            else -> ItemsShapes.horizontal.name
+        }
     }
 
     companion object {
@@ -304,7 +320,5 @@ class StorageServiceImpl @Inject constructor(
         private const val CATEGORIES_COLLECTION = "categories"
         private const val BANNERS_COLLECTION = "banners"
         private const val USERS_COLLECTION = "users"
-
-        private const val ONE_MEGABYTE: Long = 1024 * 1024
     }
 }

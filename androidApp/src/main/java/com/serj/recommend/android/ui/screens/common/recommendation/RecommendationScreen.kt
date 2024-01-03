@@ -83,8 +83,8 @@ fun RecommendationScreenContent(
                             creator = recommendation.creator,
                             tags = recommendation.tags,
                             year = recommendation.year,
-                            backgroundImage = recommendation.backgroundImage.value,
-                            backgroundVideo = recommendation.backgroundVideo,
+                            backgroundImageReference = recommendation.backgroundImageReference,
+                            backgroundVideoReference = recommendation.backgroundVideoReference,
                             popUpScreen = popUpScreen
                         )
 
@@ -105,7 +105,7 @@ fun RecommendationScreenContent(
                     Paragraphs(
                         modifier = Modifier.screenPaddingsInner(),
                         paragraphs = recommendation.paragraphs,
-                        paragraphsImages = recommendation.paragraphsImages,
+                        paragraphsReferences = recommendation.paragraphsReferences,
                         color = recommendation.color?.toColor() ?: Black
                     )
                 }
@@ -149,7 +149,7 @@ fun RecommendationScreenContent(
                     )
                 }
 
-                if (recommendation.comments.isNotEmpty()) {
+                if (recommendation.commentedBy.isNotEmpty()) {
                     item {
                         /*
                         CommentsList(

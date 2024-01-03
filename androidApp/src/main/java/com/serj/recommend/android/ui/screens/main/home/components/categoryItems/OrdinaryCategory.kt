@@ -36,7 +36,7 @@ fun OrdinaryCategory(
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit,
     onCategoryClick: ((String) -> Unit, String) -> Unit
 ) {
-    if (category.content!!.isNotEmpty()) {
+    if (category.id != null && category.content!!.isNotEmpty() && category.title != null) {
         Column(
             modifier = modifier.itemsInterval()
         ) {
@@ -66,7 +66,7 @@ fun OrdinaryCategory(
                                 modifier = Modifier.categoryItemsInterval(),
                                 title = it.title,
                                 creator = it.creator,
-                                cover = it.cover.value,
+                                coverReference = it.coverReference,
                                 recommendationId = it.id,
                                 openScreen = openScreen,
                                 onRecommendationClick = onRecommendationClick
@@ -77,7 +77,7 @@ fun OrdinaryCategory(
                                 modifier = Modifier.categoryItemsInterval(),
                                 title = it.title,
                                 creator = it.creator,
-                                cover = it.cover.value,
+                                coverReference = it.coverReference,
                                 recommendationId = it.id,
                                 openScreen = openScreen,
                                 onRecommendationClick = onRecommendationClick
@@ -88,7 +88,7 @@ fun OrdinaryCategory(
                                 modifier = Modifier.categoryItemsInterval(),
                                 title = it.title,
                                 creator = it.creator,
-                                cover = it.cover.value,
+                                coverReference = it.coverReference,
                                 recommendationId = it.id,
                                 openScreen = openScreen,
                                 onRecommendationClick = onRecommendationClick

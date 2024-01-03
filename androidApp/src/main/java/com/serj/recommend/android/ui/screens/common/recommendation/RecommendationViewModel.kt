@@ -5,8 +5,8 @@ import androidx.lifecycle.SavedStateHandle
 import com.serj.recommend.android.RECOMMENDATION_ID
 import com.serj.recommend.android.common.ext.idFromParameter
 import com.serj.recommend.android.model.Recommendation
-import com.serj.recommend.android.repository.LogService
-import com.serj.recommend.android.repository.StorageService
+import com.serj.recommend.android.services.LogService
+import com.serj.recommend.android.services.StorageService
 import com.serj.recommend.android.ui.screens.RecommendViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject

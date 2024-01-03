@@ -1,7 +1,5 @@
 package com.serj.recommend.android.ui.components.items.transparent
 
-import android.graphics.Bitmap
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,16 +11,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import com.google.firebase.storage.StorageReference
 import com.serj.recommend.android.model.Recommendation
-import com.serj.recommend.android.ui.components.loadingIndicators.SmallLoadingIndicator
-import com.serj.recommend.android.ui.styles.LightGray
+import com.serj.recommend.android.ui.components.media.CustomGlideImage
 
 @Composable
 fun VerticalItemTransparent(
@@ -30,51 +26,31 @@ fun VerticalItemTransparent(
     recommendationId: String?,
     title: String?,
     creator: String?,
-    cover: Bitmap?,
+    coverReference: StorageReference?,
     openScreen: (String) -> Unit,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
 ) {
     if (title != null && creator != null) {
         Column(
-            modifier = Modifier
+            modifier = modifier
                 .height(370.dp)
                 .width(200.dp)
         ) {
-            if (cover != null) {
-                Image(
-                    modifier = modifier
-                        .height(300.dp)
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(5.dp))
-                        .clickable {
-                            if (recommendationId != null) {
-                                onRecommendationClick(
-                                    openScreen,
-                                    Recommendation(id = recommendationId)
-                                )
-                            }
-                        },
-                    bitmap = cover.asImageBitmap(),
-                    contentDescription = title,
-                    contentScale = ContentScale.Crop
-                )
-            } else {
-                SmallLoadingIndicator(
-                    modifier = Modifier
-                        .height(300.dp)
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(5.dp))
-                        .clickable {
-                            if (recommendationId != null) {
-                                onRecommendationClick(
-                                    openScreen,
-                                    Recommendation(id = recommendationId)
-                                )
-                            }
-                        },
-                    backgroundColor = LightGray
-                )
-            }
+            CustomGlideImage(
+                modifier = Modifier
+                    .height(300.dp)
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(5.dp))
+                    .clickable {
+                        if (recommendationId != null) {
+                            onRecommendationClick(
+                                openScreen,
+                                Recommendation(id = recommendationId)
+                            )
+                        }
+                    },
+                reference = coverReference
+            )
 
             Text(
                 modifier = Modifier
@@ -114,7 +90,7 @@ fun VerticalItemTransparentPreview() {
                 "Title Title Title Title Title Title",
         creator = "Creator Creator Creator Creator Creator Creator Creator Creator Creator " +
                 "Creator Creator Creator Creator",
-        cover = null,
+        coverReference = null,
         openScreen = { },
         onRecommendationClick = { _: (String) -> Unit, _: Recommendation -> }
     )

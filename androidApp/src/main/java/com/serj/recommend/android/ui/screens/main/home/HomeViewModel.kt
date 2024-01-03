@@ -11,8 +11,8 @@ import com.serj.recommend.android.RecommendRoutes
 import com.serj.recommend.android.model.Banner
 import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.Recommendation
-import com.serj.recommend.android.repository.LogService
-import com.serj.recommend.android.repository.StorageService
+import com.serj.recommend.android.services.LogService
+import com.serj.recommend.android.services.StorageService
 import com.serj.recommend.android.ui.screens.RecommendViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -34,8 +34,8 @@ class HomeViewModel @Inject constructor(
         launchCatching {
             banners.collect { banners ->
                 val randomBanner = banners.random()
-                randomBanner.coverReference.value = randomBanner.coverUrl?.let {
-                    storageService.getReference(it)
+                randomBanner.coverReference = randomBanner.coverUrl?.let {
+                    storageService.getStorageReferenceFromUrl(it)
                 }
                 currentBanner.value = randomBanner
             }
@@ -54,16 +54,12 @@ class HomeViewModel @Inject constructor(
                         .recommendationIds.shuffled()
                     for (i in shuffledRecommendationIds.indices) {
                         if (i < AMOUNT_THRESHOLD) {
-                            storageService.getRecommendationPreviewById(shuffledRecommendationIds[i])
-                                ?.let { currentCategory.value.content!!.add(it) }
-                        } else {
-                            break
-                        }
-                    }
-                    for (item in currentCategory.value.content!!) {
-                        item.cover.value = item.coverReference?.let {
-                            storageService.getImageUrlFromFirestoreResponse(it)
-                        }
+                            storageService
+                                .getRecommendationPreviewById(shuffledRecommendationIds[i])
+                                ?.let {
+                                    currentCategory.value.content!!.add(it)
+                                }
+                        } else break
                     }
                 }
             }

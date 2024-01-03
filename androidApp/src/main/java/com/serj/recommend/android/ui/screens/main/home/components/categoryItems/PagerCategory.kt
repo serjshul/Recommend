@@ -31,7 +31,7 @@ fun PagerCategory(
 ) {
     val items = category.content
 
-    if (items!!.isNotEmpty()) {
+    if (category.id != null && items!!.isNotEmpty() && category.title != null) {
         Column(
             modifier = modifier
                 .fillMaxWidth()
@@ -64,7 +64,7 @@ fun PagerCategory(
                     recommendationId = items[page % items.size].id,
                     title = items[page % items.size].title,
                     creator = items[page % items.size].creator,
-                    cover = items[page % items.size].cover.value,
+                    coverReference = items[page % items.size].coverReference,
                     isOnPager = true,
                     openScreen = openScreen,
                     onRecommendationClick = onRecommendationClick

@@ -12,8 +12,8 @@ import com.serj.recommend.android.common.ext.idFromParameter
 import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.items.RecommendationItem
-import com.serj.recommend.android.repository.LogService
-import com.serj.recommend.android.repository.StorageService
+import com.serj.recommend.android.services.LogService
+import com.serj.recommend.android.services.StorageService
 import com.serj.recommend.android.ui.screens.RecommendViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -26,7 +26,7 @@ class CategoryViewModel @Inject constructor(
 ) : RecommendViewModel(logService) {
 
     val category = mutableStateOf<Category?>(null)
-    val currentRecommendations = mutableStateListOf<MutableState<RecommendationItem>>()
+    val currentRecommendations = mutableStateListOf<MutableState<RecommendationItem?>>()
     val currentRecommendationsAmount = mutableIntStateOf(0)
 
     init {
@@ -37,25 +37,16 @@ class CategoryViewModel @Inject constructor(
                     .getCategoryById(categoryId.idFromParameter())
                 category.value = currentCategory
 
-                currentRecommendationsAmount.intValue =
-                    category.value?.recommendationIds!!.size
+                if (category.value?.recommendationIds?.size != null) {
+                    currentRecommendationsAmount.intValue =
+                        category.value?.recommendationIds?.size!!
+                }
 
                 for (recommendationId in category.value?.recommendationIds!!) {
                     val currentRecommendationItem = mutableStateOf(
                         storageService.getRecommendationItemById(recommendationId)
                     )
                     currentRecommendations.add(currentRecommendationItem)
-
-                    currentRecommendationItem.value.cover.value = currentRecommendationItem.value
-                        .coverReference?.let { storageService.getImageUrlFromFirestoreResponse(it) }
-                }
-
-                for (recommendationItem in currentRecommendations) {
-                    val imageReference = recommendationItem.value.backgroundImageReference
-                    if (imageReference != null) {
-                        recommendationItem.value.backgroundImage.value =
-                            storageService.getImageUrlFromFirestoreResponse(imageReference)
-                    }
                 }
             }
         }

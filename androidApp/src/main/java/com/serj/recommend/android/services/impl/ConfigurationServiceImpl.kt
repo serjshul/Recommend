@@ -1,11 +1,11 @@
-package com.serj.recommend.android.repository.impl
+package com.serj.recommend.android.services.impl
 
 import com.google.firebase.BuildConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.get
 import com.google.firebase.remoteconfig.remoteConfigSettings
-import com.serj.recommend.android.repository.ConfigurationService
-import com.serj.recommend.android.repository.model.trace
+import com.serj.recommend.android.services.ConfigurationService
+import com.serj.recommend.android.services.model.trace
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import com.serj.recommend.android.R.xml as AppConfig

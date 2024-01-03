@@ -65,7 +65,7 @@ fun Banner(
                 modifier = Modifier
                     .fillMaxSize()
                     .onGloballyPositioned { sizeImage = it.size },
-                url = coverReference
+                reference = coverReference
             )
             Box(
                 modifier = Modifier

@@ -68,7 +68,7 @@ fun CategoryScreen(
 fun CategoryScreenContent(
     modifier: Modifier = Modifier,
     category: Category?,
-    currentRecommendations: List<MutableState<RecommendationItem>>,
+    currentRecommendations: List<MutableState<RecommendationItem?>>,
     recommendationsAmount: Int,
     openScreen: (String) -> Unit,
     popUpScreen: () -> Unit,
@@ -85,10 +85,12 @@ fun CategoryScreenContent(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 item {
-                    CategoryTitle(
-                        title = category.title,
-                        popUpScreen = popUpScreen
-                    )
+                    category.title?.let {
+                        CategoryTitle(
+                            title = it,
+                            popUpScreen = popUpScreen
+                        )
+                    }
                 }
 
                 if (currentRecommendations.isNotEmpty()) {
@@ -104,37 +106,40 @@ fun CategoryScreenContent(
                             for (it in currentRecommendations) {
                                 val recommendationItem = it.value
 
-                                if (recommendationItem.backgroundImage.value != null ||
-                                    recommendationItem.backgroundVideo != null
-                                ) {
-                                    RecommendationItemWithBackground(
-                                        modifier = Modifier.padding(bottom = 15.dp),
-                                        user = recommendationItem.user,
-                                        date = recommendationItem.date,
-                                        description = recommendationItem.description,
-                                        backgroundImage = recommendationItem.backgroundImage.value,
-                                        title = recommendationItem.title,
-                                        creator = recommendationItem.creator,
-                                        coverType = recommendationItem.coverType,
-                                        cover = recommendationItem.cover.value,
-                                        recommendationId = recommendationItem.id,
-                                        openScreen = openScreen,
-                                        onRecommendationClick = onRecommendationClick
-                                    )
-                                } else {
-                                    RecommendationItemWithoutBackground(
-                                        modifier = Modifier.padding(bottom = 15.dp),
-                                        user = recommendationItem.user,
-                                        date = recommendationItem.date,
-                                        description = recommendationItem.description,
-                                        title = recommendationItem.title,
-                                        creator = recommendationItem.creator,
-                                        coverType = recommendationItem.coverType,
-                                        cover = recommendationItem.cover.value,
-                                        recommendationId = recommendationItem.id,
-                                        openScreen = openScreen,
-                                        onRecommendationClick = onRecommendationClick
-                                    )
+                                if (recommendationItem != null) {
+                                    if (recommendationItem.backgroundImageReference != null ||
+                                        recommendationItem.backgroundVideoReference != null
+                                    ) {
+                                        RecommendationItemWithBackground(
+                                            modifier = Modifier.padding(bottom = 15.dp),
+                                            user = recommendationItem.user,
+                                            date = recommendationItem.date,
+                                            description = recommendationItem.description,
+                                            backgroundImageReference = recommendationItem.backgroundImageReference,
+                                            backgroundVideoReference = recommendationItem.backgroundVideoReference,
+                                            title = recommendationItem.title,
+                                            creator = recommendationItem.creator,
+                                            coverType = recommendationItem.coverType,
+                                            coverReference = recommendationItem.coverReference,
+                                            recommendationId = recommendationItem.id,
+                                            openScreen = openScreen,
+                                            onRecommendationClick = onRecommendationClick
+                                        )
+                                    } else {
+                                        RecommendationItemWithoutBackground(
+                                            modifier = Modifier.padding(bottom = 15.dp),
+                                            user = recommendationItem.user,
+                                            date = recommendationItem.date,
+                                            description = recommendationItem.description,
+                                            title = recommendationItem.title,
+                                            creator = recommendationItem.creator,
+                                            coverType = recommendationItem.coverType,
+                                            coverReference = recommendationItem.coverReference,
+                                            recommendationId = recommendationItem.id,
+                                            openScreen = openScreen,
+                                            onRecommendationClick = onRecommendationClick
+                                        )
+                                    }
                                 }
 
                                 currentRecommendationsAmount++

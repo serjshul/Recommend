@@ -1,6 +1,5 @@
 package com.serj.recommend.android.ui.screens.main.home.components.categoryItems
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -19,10 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
@@ -38,6 +34,7 @@ import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.ui.components.items.transparent.HorizontalItemTransparent
 import com.serj.recommend.android.ui.components.items.transparent.SquareItemTransparent
 import com.serj.recommend.android.ui.components.items.transparent.VerticalItemTransparent
+import com.serj.recommend.android.ui.components.media.CustomGlideImage
 import com.serj.recommend.android.ui.components.snackbar.SnackbarManager
 import com.serj.recommend.android.ui.screens.main.home.components.ShowAllButton
 import com.serj.recommend.android.ui.styles.ItemsShapes
@@ -50,7 +47,7 @@ fun ExtendedCategory(
     onCategoryClick: ((String) -> Unit, String) -> Unit,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
 ) {
-    if (category.content!!.isNotEmpty()) {
+    if (category.id != null && category.title != null && category.content!!.isNotEmpty()) {
         var sizeImage by remember { mutableStateOf(IntSize.Zero) }
 
         Box(
@@ -59,25 +56,15 @@ fun ExtendedCategory(
                 .padding(top = 10.dp)
         ) {
             when {
-                category.backgroundVideo != null -> {
+                category.backgroundVideoReference != null -> {
                     // TODO: add video player
                 }
-                category.backgroundImage != null -> {
-                    Image(
+                else -> {
+                    CustomGlideImage(
                         modifier = Modifier
                             .extendedCategoryBackgroundShape()
                             .onGloballyPositioned { sizeImage = it.size },
-                        bitmap = category.backgroundImage.asImageBitmap(),
-                        contentDescription = "background image",
-                        contentScale = ContentScale.Crop
-                    )
-                }
-                else -> {
-                    Image(
-                        modifier = Modifier.extendedCategoryBackgroundShape(),
-                        painter = painterResource(id = R.drawable.gradient),
-                        contentDescription = "background gradient",
-                        contentScale = ContentScale.Crop
+                        reference = category.backgroundImageReference
                     )
                 }
             }
@@ -100,7 +87,7 @@ fun ExtendedCategory(
                     .align(Alignment.CenterStart)
                     .clickable { onCategoryClick(openScreen, category.id) },
                 text = category.title,
-                color = if (category.backgroundImage != null)
+                color = if (category.backgroundImageReference != null)
                     category.color?.toColor() ?: Color.Black
                 else Color.Black,
                 fontSize = 22.sp,
@@ -123,7 +110,7 @@ fun ExtendedCategory(
                                 modifier = Modifier.categoryItemsInterval(),
                                 title = it.title,
                                 creator = it.creator,
-                                cover = it.cover.value,
+                                coverReference = it.coverReference,
                                 recommendationId = it.id,
                                 openScreen = openScreen,
                                 onRecommendationClick = onRecommendationClick
@@ -134,7 +121,7 @@ fun ExtendedCategory(
                                 modifier = Modifier.categoryItemsInterval(),
                                 title = it.title,
                                 creator = it.creator,
-                                cover = it.cover.value,
+                                coverReference = it.coverReference,
                                 recommendationId = it.id,
                                 openScreen = openScreen,
                                 onRecommendationClick = onRecommendationClick
@@ -145,7 +132,7 @@ fun ExtendedCategory(
                                 modifier = Modifier.categoryItemsInterval(),
                                 title = it.title,
                                 creator = it.creator,
-                                cover = it.cover.value,
+                                coverReference = it.coverReference,
                                 recommendationId = it.id,
                                 openScreen = openScreen,
                                 onRecommendationClick = onRecommendationClick

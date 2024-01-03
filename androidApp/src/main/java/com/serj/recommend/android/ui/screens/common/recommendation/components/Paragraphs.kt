@@ -1,21 +1,20 @@
 package com.serj.recommend.android.ui.screens.common.recommendation.components
 
-import android.graphics.Bitmap
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import com.google.firebase.storage.StorageReference
 import com.serj.recommend.android.common.ext.recommendationMediaClip
 import com.serj.recommend.android.common.ext.recommendationMediaShape
 import com.serj.recommend.android.common.ext.recommendationParagraphShape
 import com.serj.recommend.android.common.ext.textInterval
 import com.serj.recommend.android.common.ext.textShape
 import com.serj.recommend.android.common.ext.toParagraphText
+import com.serj.recommend.android.ui.components.media.CustomGlideImage
 import com.serj.recommend.android.ui.components.media.CustomVideoPlayer
-import com.serj.recommend.android.ui.components.media.ImageOrdinary
 import com.serj.recommend.android.ui.components.text.TextParagraphs
 import com.serj.recommend.android.ui.components.text.Title
 
@@ -23,7 +22,7 @@ import com.serj.recommend.android.ui.components.text.Title
 fun Paragraphs(
     modifier: Modifier = Modifier,
     paragraphs: ArrayList<HashMap<String, String>>,
-    paragraphsImages: Map<String, MutableState<Bitmap?>>,
+    paragraphsReferences: HashMap<String, StorageReference?>,
     color: Color
 ) {
     Column(
@@ -35,8 +34,8 @@ fun Paragraphs(
             Paragraph(
                 modifier = Modifier.recommendationParagraphShape(),
                 title = paragraphs[i]["title"] ?: "",
-                image = paragraphsImages[paragraphs[i]["title"]]?.value,
-                video = paragraphs[i]["video"],
+                imageReference = paragraphsReferences[paragraphs[i]["title"]],
+                videoReference = null,
                 text = paragraphs[i]["text"] ?: "",
                 color = color
             )
@@ -48,8 +47,8 @@ fun Paragraphs(
 fun Paragraph(
     modifier: Modifier = Modifier,
     title: String,
-    image: Bitmap?,
-    video: String?,
+    imageReference: StorageReference?,
+    videoReference: StorageReference?,
     text: String,
     color: Color
 ) {
@@ -64,15 +63,15 @@ fun Paragraph(
             color = color
         )
 
-        if (video != null) {
+        if (videoReference != null) {
             CustomVideoPlayer()
-        } else if (image != null) {
-            ImageOrdinary(
+        } else if (imageReference != null) {
+            CustomGlideImage(
                 modifier = Modifier
                     .recommendationMediaShape()
                     .textInterval()
                     .recommendationMediaClip(),
-                image = image
+                reference = imageReference
             )
         }
 

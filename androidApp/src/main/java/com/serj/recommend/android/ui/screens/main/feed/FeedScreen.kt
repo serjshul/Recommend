@@ -53,7 +53,7 @@ fun FeedScreen(
 @Composable
 fun FeedScreenContent(
     modifier: Modifier = Modifier,
-    currentRecommendations: List<MutableState<RecommendationItem>>,
+    currentRecommendations: List<MutableState<RecommendationItem?>>,
     recommendationsAmount: Int,
     openScreen: (String) -> Unit,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
@@ -96,36 +96,39 @@ fun FeedScreenContent(
                 items(currentRecommendations) {
                     val recommendationItem = it.value
 
-                    if (recommendationItem.backgroundImage.value != null ||
-                        recommendationItem.backgroundVideo != null) {
-                        RecommendationItemWithBackground(
-                            modifier = Modifier.padding(bottom = 15.dp),
-                            user = recommendationItem.user,
-                            date = recommendationItem.date,
-                            description = recommendationItem.description,
-                            backgroundImage = recommendationItem.backgroundImage.value,
-                            title = recommendationItem.title,
-                            creator = recommendationItem.creator,
-                            coverType = recommendationItem.coverType,
-                            cover = recommendationItem.cover.value,
-                            recommendationId = recommendationItem.id,
-                            openScreen = openScreen,
-                            onRecommendationClick = onRecommendationClick
-                        )
-                    } else {
-                        RecommendationItemWithoutBackground(
-                            modifier = Modifier.padding(bottom = 15.dp),
-                            user = recommendationItem.user,
-                            date = recommendationItem.date,
-                            description = recommendationItem.description,
-                            title = recommendationItem.title,
-                            creator = recommendationItem.creator,
-                            coverType = recommendationItem.coverType,
-                            cover = recommendationItem.cover.value,
-                            recommendationId = recommendationItem.id,
-                            openScreen = openScreen,
-                            onRecommendationClick = onRecommendationClick
-                        )
+                    if (recommendationItem != null) {
+                        if (recommendationItem.backgroundImageReference != null ||
+                            recommendationItem.backgroundVideoReference != null) {
+                            RecommendationItemWithBackground(
+                                modifier = Modifier.padding(bottom = 15.dp),
+                                user = recommendationItem.user,
+                                date = recommendationItem.date,
+                                description = recommendationItem.description,
+                                backgroundImageReference = recommendationItem.backgroundImageReference,
+                                backgroundVideoReference = recommendationItem.backgroundVideoReference,
+                                title = recommendationItem.title,
+                                creator = recommendationItem.creator,
+                                coverType = recommendationItem.coverType,
+                                coverReference = recommendationItem.coverReference,
+                                recommendationId = recommendationItem.id,
+                                openScreen = openScreen,
+                                onRecommendationClick = onRecommendationClick
+                            )
+                        } else {
+                            RecommendationItemWithoutBackground(
+                                modifier = Modifier.padding(bottom = 15.dp),
+                                user = recommendationItem.user,
+                                date = recommendationItem.date,
+                                description = recommendationItem.description,
+                                title = recommendationItem.title,
+                                creator = recommendationItem.creator,
+                                coverType = recommendationItem.coverType,
+                                coverReference = recommendationItem.coverReference,
+                                recommendationId = recommendationItem.id,
+                                openScreen = openScreen,
+                                onRecommendationClick = onRecommendationClick
+                            )
+                        }
                     }
 
                     currentRecommendationsAmount++

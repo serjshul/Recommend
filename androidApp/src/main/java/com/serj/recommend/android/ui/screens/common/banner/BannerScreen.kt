@@ -48,7 +48,7 @@ fun BannerScreen(
 fun BannerScreenContent(
     modifier: Modifier = Modifier,
     banner: Banner?,
-    currentRecommendations: List<MutableState<RecommendationItem>>,
+    currentRecommendations: List<MutableState<RecommendationItem?>>,
     recommendationsAmount: Int,
     openScreen: (String) -> Unit,
     popUpScreen: () -> Unit,
@@ -69,8 +69,8 @@ fun BannerScreenContent(
                             title = banner.title,
                             creator = banner.creator,
                             type = banner.type,
-                            backgroundImageReference = banner.backgroundImageReference.value,
-                            backgroundVideoReference = banner.backgroundVideoReference.value,
+                            backgroundImageReference = banner.backgroundImageReference,
+                            backgroundVideoReference = banner.backgroundVideoReference,
                             popUpScreen = popUpScreen
                         )
 

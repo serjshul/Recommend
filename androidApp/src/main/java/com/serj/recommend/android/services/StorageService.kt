@@ -1,6 +1,5 @@
-package com.serj.recommend.android.repository
+package com.serj.recommend.android.services
 
-import android.graphics.Bitmap
 import com.google.firebase.storage.StorageReference
 import com.serj.recommend.android.model.Banner
 import com.serj.recommend.android.model.Category
@@ -10,7 +9,6 @@ import com.serj.recommend.android.model.items.RecommendationPreviewItem
 import com.serj.recommend.android.model.items.UserItem
 import kotlinx.coroutines.flow.Flow
 import java.util.Date
-
 
 interface StorageService {
 
@@ -26,15 +24,13 @@ interface StorageService {
 
     suspend fun getCategoryById(categoryId: String): Category?
 
-    suspend fun getRecommendationItemById(recommendationId: String): RecommendationItem
+    suspend fun getRecommendationItemById(recommendationId: String): RecommendationItem?
 
     suspend fun getRecommendationPreviewById(recommendationId: String): RecommendationPreviewItem?
 
-    suspend fun getUserItem(uid: String): UserItem?
+    suspend fun getUserItemByUid(uid: String): UserItem?
 
     suspend fun getFollowingRecommendationsIds(followingUid: String): List<Pair<String, Date>>
 
-    suspend fun getReference(url: String): StorageReference
-
-    suspend fun getImageUrlFromFirestoreResponse(gsReference: String): Bitmap?
+    suspend fun getStorageReferenceFromUrl(url: String): StorageReference
 }

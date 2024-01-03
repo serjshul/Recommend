@@ -1,4 +1,4 @@
-package com.serj.recommend.android.repository.impl
+package com.serj.recommend.android.services.impl
 
 import android.content.ContentValues
 import android.graphics.Bitmap
@@ -10,7 +10,7 @@ import com.google.firebase.firestore.toObject
 import com.google.firebase.storage.FirebaseStorage
 import com.serj.recommend.android.R
 import com.serj.recommend.android.model.User
-import com.serj.recommend.android.repository.AccountService
+import com.serj.recommend.android.services.AccountService
 import com.serj.recommend.android.ui.components.snackbar.SnackbarManager
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -81,7 +81,7 @@ class AccountServiceImpl @Inject constructor(
                         nickname = user.nickname,
                         name = user.name,
                         dateOfBirth = user.dateOfBirth,
-                        photoReference = user.photoReference,
+                        photoUrl = user.photoUrl,
                         followers = user.followers,
                         following = user.following,
                         postsIds = user.postsIds,
@@ -95,7 +95,9 @@ class AccountServiceImpl @Inject constructor(
             }
             .await()
 
-        currentUser?.photo = currentUser?.photoReference?.let { downloadImage(it) }
+        currentUser?.photoReference = currentUser?.photoUrl?.let {
+            storage.getReference(it)
+        }
 
         return currentUser
     }

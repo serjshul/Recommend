@@ -1,4 +1,4 @@
-package com.serj.recommend.android.repository
+package com.serj.recommend.android.services
 
 import android.graphics.Bitmap
 import com.serj.recommend.android.model.User

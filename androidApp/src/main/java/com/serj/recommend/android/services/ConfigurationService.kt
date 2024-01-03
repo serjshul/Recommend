@@ -1,4 +1,4 @@
-package com.serj.recommend.android.repository
+package com.serj.recommend.android.services
 
 
 interface ConfigurationService {

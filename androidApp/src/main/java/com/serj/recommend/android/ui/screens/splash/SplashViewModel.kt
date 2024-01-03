@@ -2,9 +2,9 @@ package com.serj.recommend.android.ui.screens.splash
 
 import androidx.compose.runtime.mutableStateOf
 import com.serj.recommend.android.RecommendRoutes
-import com.serj.recommend.android.repository.AccountService
-import com.serj.recommend.android.repository.ConfigurationService
-import com.serj.recommend.android.repository.LogService
+import com.serj.recommend.android.services.AccountService
+import com.serj.recommend.android.services.ConfigurationService
+import com.serj.recommend.android.services.LogService
 import com.serj.recommend.android.ui.screens.RecommendViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject

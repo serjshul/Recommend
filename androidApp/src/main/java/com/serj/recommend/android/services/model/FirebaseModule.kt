@@ -1,4 +1,4 @@
-package com.serj.recommend.android.repository.model
+package com.serj.recommend.android.services.model
 
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
