@@ -5,9 +5,9 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
-import com.serj.recommend.android.CATEGORY_ID
-import com.serj.recommend.android.RECOMMENDATION_ID
 import com.serj.recommend.android.RecommendRoutes
+import com.serj.recommend.android.common.Constants.CATEGORY_ID
+import com.serj.recommend.android.common.Constants.RECOMMENDATION_ID
 import com.serj.recommend.android.common.ext.idFromParameter
 import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.Recommendation

@@ -1,4 +1,4 @@
-package com.serj.recommend.android.ui.screens.main.home.components.categoryItems
+package com.serj.recommend.android.ui.components.categories
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -31,13 +31,13 @@ import com.serj.recommend.android.common.ext.screenPaddingsInner
 import com.serj.recommend.android.common.ext.toColor
 import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.Recommendation
-import com.serj.recommend.android.ui.components.items.transparent.HorizontalItemTransparent
-import com.serj.recommend.android.ui.components.items.transparent.SquareItemTransparent
-import com.serj.recommend.android.ui.components.items.transparent.VerticalItemTransparent
+import com.serj.recommend.android.ui.components.recommendationPreviews.HorizontalItemTransparent
+import com.serj.recommend.android.ui.components.recommendationPreviews.SquareItemTransparent
+import com.serj.recommend.android.ui.components.recommendationPreviews.VerticalItemTransparent
 import com.serj.recommend.android.ui.components.media.CustomGlideImage
 import com.serj.recommend.android.ui.components.snackbar.SnackbarManager
 import com.serj.recommend.android.ui.screens.main.home.components.ShowAllButton
-import com.serj.recommend.android.ui.styles.ItemsShapes
+import com.serj.recommend.android.ui.components.recommendationPreviews.ItemsShapes
 
 @Composable
 fun ExtendedCategory(

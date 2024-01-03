@@ -1,4 +1,4 @@
-package com.serj.recommend.android.ui.components.items.transparent
+package com.serj.recommend.android.ui.components.recommendationPreviews
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column

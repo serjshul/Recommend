@@ -2,7 +2,7 @@ package com.serj.recommend.android.model.items
 
 import com.google.firebase.firestore.DocumentId
 import com.google.firebase.storage.StorageReference
-import com.serj.recommend.android.ui.styles.ItemsShapes
+import com.serj.recommend.android.ui.components.recommendationPreviews.ItemsShapes
 import java.util.Date
 
 data class RecommendationItem(

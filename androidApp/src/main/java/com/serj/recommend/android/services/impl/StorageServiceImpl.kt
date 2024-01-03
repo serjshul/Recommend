@@ -17,8 +17,8 @@ import com.serj.recommend.android.model.items.RecommendationItem
 import com.serj.recommend.android.model.items.RecommendationPreviewItem
 import com.serj.recommend.android.model.items.UserItem
 import com.serj.recommend.android.services.StorageService
-import com.serj.recommend.android.ui.styles.BackgroundTypes
-import com.serj.recommend.android.ui.styles.ItemsShapes
+import com.serj.recommend.android.ui.components.media.BackgroundTypes
+import com.serj.recommend.android.ui.components.recommendationPreviews.ItemsShapes
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.tasks.await
 import java.util.Date

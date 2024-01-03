@@ -3,7 +3,7 @@ package com.serj.recommend.android.model
 import com.google.firebase.firestore.DocumentId
 import com.google.firebase.storage.StorageReference
 import com.serj.recommend.android.model.items.RecommendationPreviewItem
-import com.serj.recommend.android.ui.styles.CategoryTypes
+import com.serj.recommend.android.ui.components.categories.CategoryTypes
 
 data class Category(
     @DocumentId val id: String? = null,

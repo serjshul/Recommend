@@ -2,7 +2,7 @@ package com.serj.recommend.android.ui.screens.common.recommendation
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
-import com.serj.recommend.android.RECOMMENDATION_ID
+import com.serj.recommend.android.common.Constants.RECOMMENDATION_ID
 import com.serj.recommend.android.common.ext.idFromParameter
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.services.LogService

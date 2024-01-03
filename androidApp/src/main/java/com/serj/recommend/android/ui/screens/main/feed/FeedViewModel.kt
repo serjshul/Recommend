@@ -4,8 +4,8 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import com.serj.recommend.android.RECOMMENDATION_ID
 import com.serj.recommend.android.RecommendRoutes
+import com.serj.recommend.android.common.Constants.RECOMMENDATION_ID
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.items.RecommendationItem
 import com.serj.recommend.android.services.AccountService

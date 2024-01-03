@@ -4,10 +4,10 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import com.serj.recommend.android.BANNER_ID
-import com.serj.recommend.android.CATEGORY_ID
-import com.serj.recommend.android.RECOMMENDATION_ID
 import com.serj.recommend.android.RecommendRoutes
+import com.serj.recommend.android.common.Constants.BANNER_ID
+import com.serj.recommend.android.common.Constants.CATEGORY_ID
+import com.serj.recommend.android.common.Constants.RECOMMENDATION_ID
 import com.serj.recommend.android.model.Banner
 import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.Recommendation

@@ -24,10 +24,10 @@ import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.ui.components.loadingIndicators.LargeLoadingIndicator
 import com.serj.recommend.android.ui.components.loadingIndicators.SmallLoadingIndicator
 import com.serj.recommend.android.ui.screens.main.home.components.Banner
-import com.serj.recommend.android.ui.screens.main.home.components.categoryItems.ExtendedCategory
-import com.serj.recommend.android.ui.screens.main.home.components.categoryItems.OrdinaryCategory
-import com.serj.recommend.android.ui.screens.main.home.components.categoryItems.PagerCategory
-import com.serj.recommend.android.ui.styles.CategoryTypes
+import com.serj.recommend.android.ui.components.categories.ExtendedCategory
+import com.serj.recommend.android.ui.components.categories.OrdinaryCategory
+import com.serj.recommend.android.ui.components.categories.PagerCategory
+import com.serj.recommend.android.ui.components.categories.CategoryTypes
 import com.serj.recommend.android.ui.styles.White
 
 @Composable

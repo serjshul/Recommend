@@ -1,4 +1,4 @@
-package com.serj.recommend.android
+package com.serj.recommend.android.services
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -13,6 +13,8 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import com.serj.recommend.android.R
+import com.serj.recommend.android.RecommendActivity
 import kotlin.random.Random
 
 class RecommendMessagingService : FirebaseMessagingService() {

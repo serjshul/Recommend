@@ -46,7 +46,7 @@ import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.items.UserItem
 import com.serj.recommend.android.ui.components.media.CustomGlideImage
 import com.serj.recommend.android.ui.components.media.CustomGlideImageShaded
-import com.serj.recommend.android.ui.styles.ItemsShapes
+import com.serj.recommend.android.ui.components.recommendationPreviews.ItemsShapes
 import com.serj.recommend.android.ui.styles.White
 import java.util.Date
 

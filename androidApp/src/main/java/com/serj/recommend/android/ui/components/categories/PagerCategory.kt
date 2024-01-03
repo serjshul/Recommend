@@ -1,4 +1,4 @@
-package com.serj.recommend.android.ui.screens.main.home.components.categoryItems
+package com.serj.recommend.android.ui.components.categories
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.sp
 import com.serj.recommend.android.common.ext.screenPaddingsInner
 import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.Recommendation
-import com.serj.recommend.android.ui.components.items.transparent.HorizontalItemTransparent
+import com.serj.recommend.android.ui.components.recommendationPreviews.HorizontalItemTransparent
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

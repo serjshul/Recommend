@@ -38,7 +38,7 @@ fun CommentFullItem(
     comment: String
 ) {
     // TODO: getting photo and date from firestore
-    val photo = R.drawable.profile_photo
+    val photo = R.drawable.background
     val date = "04/12/2023 22:04"
 
     var isLiked by rememberSaveable { mutableStateOf(false) }
@@ -90,7 +90,7 @@ fun CommentFullItem(
                 .size(20.dp)
                 .clickable { isLiked = !isLiked }
                 .align(Alignment.Top),
-            painter = if (isLiked) painterResource(id = R.drawable.icon_liked)
+            painter = if (isLiked) painterResource(id = R.drawable.icon_like_1)
             else painterResource(id = R.drawable.icon_unliked),
             contentDescription = if (isLiked) "liked"
             else "unliked",
