@@ -20,7 +20,7 @@ import com.serj.recommend.android.ui.screens.main.home.HomeScreen
 import com.serj.recommend.android.ui.screens.main.profile.ProfileScreen
 import com.serj.recommend.android.ui.screens.main.rec.RecScreen
 import com.serj.recommend.android.ui.screens.main.search.SearchScreen
-import com.serj.recommend.android.ui.styles.MyApplicationTheme
+import com.serj.recommend.android.ui.styles.RecommendTheme
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -28,7 +28,7 @@ fun MainScreen(
     appState: RecommendAppState,
     modifier: Modifier = Modifier
 ) {
-    MyApplicationTheme {
+    RecommendTheme {
         val navController = rememberNavController()
 
         Surface(

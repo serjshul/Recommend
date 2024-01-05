@@ -1,16 +1,12 @@
 package com.serj.recommend.android.model
 
-import android.graphics.Bitmap
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
 import com.google.firebase.firestore.DocumentId
+import com.google.firebase.storage.StorageReference
 import java.util.Date
 
 data class Recommendation(
     @DocumentId val id: String? = null,
     val uid: String? = null,
-    val date: Date? = null,
-    val color: String? = null,
 
     val title: String? = null,
     val type: String? = null,
@@ -21,18 +17,21 @@ data class Recommendation(
     val description: String? = null,
     val quote: String? = null,
     val paragraphs: ArrayList<HashMap<String, String>> = arrayListOf(),
-    val paragraphsImages: HashMap<String, MutableState<Bitmap?>> = hashMapOf(),
+    val paragraphsReferences: HashMap<String, StorageReference?> = hashMapOf(),
 
-    val coversReferences: HashMap<String, String> = hashMapOf(),
-    val cover: MutableState<Bitmap?> = mutableStateOf(null),
+    val date: Date? = null,
+    val color: String? = null,
+
     var coverType: String? = null,
+    val coversUrl: HashMap<String, String> = hashMapOf(),
+    val coverReference: StorageReference? = null,
 
-    val backgroundReferences: HashMap<String, String> = hashMapOf(),
-    val backgroundImage: MutableState<Bitmap?> = mutableStateOf(null),
-    val backgroundVideo: String? = null,
+    val backgroundUrl: HashMap<String, String> = hashMapOf(),
+    var backgroundImageReference: StorageReference? = null,
+    var backgroundVideoReference: StorageReference? = null,
 
-    val likes: ArrayList<String> = arrayListOf(),
-    val comments: ArrayList<String> = arrayListOf(),
-    val reposts: ArrayList<String> = arrayListOf(),
+    val likedBy: ArrayList<String> = arrayListOf(),
+    val commentedBy: ArrayList<String> = arrayListOf(),
+    val repostedBy: ArrayList<String> = arrayListOf(),
     val views: Int = 0
 )

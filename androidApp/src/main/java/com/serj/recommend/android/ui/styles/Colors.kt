@@ -3,16 +3,15 @@ package com.serj.recommend.android.ui.styles
 import androidx.compose.ui.graphics.Color
 
 // Recommend palette
-val Muesli = Color(0xFFA67A53)
-val TigerEye = Color(0xFFB87446)
-val AppleRed = Color(0xFF6E0103)
+val WhiteLinen = Color(0xFFEDE8DD)
+val Floss = Color(0xFFD4B9B0)
+val Hazelnut = Color(0xFFCEA88F)
+val TexasHeatwave = Color(0xFF955741)
+val KiriumeRed = Color(0xFF8D332F)
+val TangerineYellow = Color(0xFFFFC70F)
 
-val Brown = Color(0xFFA15F4E)
-val Rose = Color(0xFFB88386)
-val DarkRed = Color(0xFF50151E)
-
-val White = Color(0xFFFFFFFF)
-val Black = Color(0xFF000000)
-val Gray = Color(0xFF888888)
-val LightGray = Color(0xFFD9D9D9)
-val DarkGray = Color(0xff3B3A38)
+val White = Color.White
+val Black = Color.Black
+val Gray = Color.Gray
+val LightGray = Color.LightGray
+val DarkGray = Color.DarkGray

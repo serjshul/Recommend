@@ -26,14 +26,14 @@ import com.serj.recommend.android.common.ext.screenPaddingsOuter
 import com.serj.recommend.android.common.ext.toColor
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.ui.components.loadingIndicators.LargeLoadingIndicator
-import com.serj.recommend.android.ui.components.post.InfoPanel
-import com.serj.recommend.android.ui.components.post.InteractionPanel
+import com.serj.recommend.android.ui.components.social.InfoPanel
+import com.serj.recommend.android.ui.components.social.InteractionPanel
 import com.serj.recommend.android.ui.screens.common.recommendation.components.Description
 import com.serj.recommend.android.ui.screens.common.recommendation.components.Header
 import com.serj.recommend.android.ui.screens.common.recommendation.components.Paragraphs
 import com.serj.recommend.android.ui.screens.common.recommendation.components.Quote
 import com.serj.recommend.android.ui.styles.Black
-import com.serj.recommend.android.ui.styles.Brown
+import com.serj.recommend.android.ui.styles.TexasHeatwave
 import com.serj.recommend.android.ui.styles.White
 
 @Composable
@@ -83,8 +83,8 @@ fun RecommendationScreenContent(
                             creator = recommendation.creator,
                             tags = recommendation.tags,
                             year = recommendation.year,
-                            backgroundImage = recommendation.backgroundImage.value,
-                            backgroundVideo = recommendation.backgroundVideo,
+                            backgroundImageReference = recommendation.backgroundImageReference,
+                            backgroundVideoReference = recommendation.backgroundVideoReference,
                             popUpScreen = popUpScreen
                         )
 
@@ -105,7 +105,7 @@ fun RecommendationScreenContent(
                     Paragraphs(
                         modifier = Modifier.screenPaddingsInner(),
                         paragraphs = recommendation.paragraphs,
-                        paragraphsImages = recommendation.paragraphsImages,
+                        paragraphsReferences = recommendation.paragraphsReferences,
                         color = recommendation.color?.toColor() ?: Black
                     )
                 }
@@ -116,7 +116,7 @@ fun RecommendationScreenContent(
                             .itemsInterval()
                             .screenPaddingsInner(),
                         quote = recommendation.quote,
-                        color = recommendation.color?.toColor() ?: Brown
+                        color = recommendation.color?.toColor() ?: TexasHeatwave
                     )
                 }
 
@@ -149,7 +149,7 @@ fun RecommendationScreenContent(
                     )
                 }
 
-                if (recommendation.comments.isNotEmpty()) {
+                if (recommendation.commentedBy.isNotEmpty()) {
                     item {
                         /*
                         CommentsList(

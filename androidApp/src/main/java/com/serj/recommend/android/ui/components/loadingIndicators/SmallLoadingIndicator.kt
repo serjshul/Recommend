@@ -10,7 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.serj.recommend.android.ui.styles.TigerEye
+import com.serj.recommend.android.ui.styles.TexasHeatwave
 
 @Composable
 fun SmallLoadingIndicator(
@@ -26,7 +26,7 @@ fun SmallLoadingIndicator(
             modifier = Modifier
                 .width(34.dp)
                 .align(Alignment.Center),
-            trackColor = TigerEye,
+            trackColor = TexasHeatwave,
             color = backgroundColor
         )
     }

@@ -1,10 +1,8 @@
 package com.serj.recommend.android.model.items
 
-import android.graphics.Bitmap
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
 import com.google.firebase.firestore.DocumentId
-import com.serj.recommend.android.ui.styles.ItemsShapes
+import com.google.firebase.storage.StorageReference
+import com.serj.recommend.android.ui.components.recommendationPreviews.ItemsShapes
 import java.util.Date
 
 data class RecommendationItem(
@@ -16,14 +14,11 @@ data class RecommendationItem(
     val description: String? = null,
     val date: Date? = null,
 
-    val coverReference: String? = null,
-    var cover: MutableState<Bitmap?> = mutableStateOf(null),
     val coverType: String? = ItemsShapes.horizontal.name,
+    val coverReference: StorageReference? = null,
 
-    val backgroundImageReference: String? = null,
-    var backgroundImage: MutableState<Bitmap?> = mutableStateOf(null),
-    val backgroundVideoReference: String? = null,
-    var backgroundVideo: String? = null,
+    val backgroundImageReference: StorageReference? = null,
+    val backgroundVideoReference: StorageReference? = null,
 
     var user: UserItem? = null,
 

@@ -1,6 +1,5 @@
 package com.serj.recommend.android.ui.screens.common.recommendation.components
 
-import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -28,11 +27,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import com.google.firebase.storage.StorageReference
 import com.serj.recommend.android.R
 import com.serj.recommend.android.common.ext.mediaHeaderShape
 import com.serj.recommend.android.common.ext.recommendationHeaderShape
 import com.serj.recommend.android.common.ext.topBarShape
-import com.serj.recommend.android.ui.components.media.ImageShaded
+import com.serj.recommend.android.ui.components.media.CustomGlideImageShaded
 
 @Composable
 fun Header(
@@ -42,21 +42,21 @@ fun Header(
     creator: String,
     tags: List<String>,
     year: Int,
-    backgroundImage: Bitmap?,
-    backgroundVideo: String?,
+    backgroundImageReference: StorageReference?,
+    backgroundVideoReference: StorageReference?,
     popUpScreen: () -> Unit
 ) {
     Box(
         modifier = modifier.recommendationHeaderShape()
     ) {
         when {
-            backgroundVideo != null -> {
+            backgroundVideoReference != null -> {
                 // TODO: add video player
             }
-            backgroundImage != null -> {
-                ImageShaded(
+            backgroundImageReference != null -> {
+                CustomGlideImageShaded(
                     modifier = Modifier.mediaHeaderShape(),
-                    image = backgroundImage
+                    reference = backgroundImageReference
                 )
             }
             else -> {
@@ -227,8 +227,8 @@ fun HeaderPreview() {
         creator = "Creator",
         tags = arrayListOf("Tags"),
         year = 2023,
-        backgroundImage = null,
-        backgroundVideo = null,
+        backgroundImageReference = null,
+        backgroundVideoReference = null,
         popUpScreen = { }
     )
 }

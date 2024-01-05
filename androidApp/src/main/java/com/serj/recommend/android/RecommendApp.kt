@@ -25,22 +25,28 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.serj.recommend.android.common.Constants.BANNER_ID
+import com.serj.recommend.android.common.Constants.BANNER_ID_ARG
+import com.serj.recommend.android.common.Constants.CATEGORY_ID
+import com.serj.recommend.android.common.Constants.CATEGORY_ID_ARG
+import com.serj.recommend.android.common.Constants.RECOMMENDATION_ID
+import com.serj.recommend.android.common.Constants.RECOMMENDATION_ID_ARG
 import com.serj.recommend.android.ui.components.snackbar.SnackbarManager
 import com.serj.recommend.android.ui.screens.authentication.resetPassword.ResetPasswordScreen
 import com.serj.recommend.android.ui.screens.authentication.signIn.SignInScreen
 import com.serj.recommend.android.ui.screens.authentication.signUp.SignUpScreen
-import com.serj.recommend.android.ui.screens.splash.SplashScreen
 import com.serj.recommend.android.ui.screens.common.banner.BannerScreen
 import com.serj.recommend.android.ui.screens.common.category.CategoryScreen
 import com.serj.recommend.android.ui.screens.common.recommendation.RecommendationScreen
 import com.serj.recommend.android.ui.screens.main.MainScreen
-import com.serj.recommend.android.ui.styles.MyApplicationTheme
+import com.serj.recommend.android.ui.screens.splash.SplashScreen
+import com.serj.recommend.android.ui.styles.RecommendTheme
 import kotlinx.coroutines.CoroutineScope
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun RecommendApp() {
-    MyApplicationTheme {
+    RecommendTheme {
         Surface(color = MaterialTheme.colors.background) {
             val appState = rememberAppState()
 

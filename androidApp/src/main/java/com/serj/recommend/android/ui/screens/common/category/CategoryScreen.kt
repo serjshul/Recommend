@@ -3,14 +3,14 @@ package com.serj.recommend.android.ui.screens.common.category
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.TopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,16 +30,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.serj.recommend.android.R
-import com.serj.recommend.android.common.ext.screenPaddingsInner
-import com.serj.recommend.android.common.ext.screenPaddingsOuter
 import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.items.RecommendationItem
-import com.serj.recommend.android.ui.components.loadingIndicators.LargeLoadingIndicator
 import com.serj.recommend.android.ui.components.loadingIndicators.SmallLoadingIndicator
-import com.serj.recommend.android.ui.components.post.RecommendationItemWithBackground
-import com.serj.recommend.android.ui.components.post.RecommendationItemWithoutBackground
-import com.serj.recommend.android.ui.styles.LightGray
+import com.serj.recommend.android.ui.components.recommendationPreviews.RecommendationItem
 import com.serj.recommend.android.ui.styles.White
 
 @Composable
@@ -75,95 +70,62 @@ fun CategoryScreenContent(
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
 ) {
     Scaffold(
-        modifier = modifier
-    ) { paddingValues ->
-        if (category != null) {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues),
-                horizontalAlignment = Alignment.CenterHorizontally
+        modifier = modifier,
+        topBar = {
+            TopAppBar(
+                backgroundColor = White
             ) {
-                item {
-                    CategoryTitle(
-                        title = category.title,
-                        popUpScreen = popUpScreen
-                    )
-                }
-
-                if (currentRecommendations.isNotEmpty()) {
-                    item {
-                        var isLoading by rememberSaveable { mutableStateOf(true) }
-                        var currentRecommendationsAmount = 0
-
-                        Column(
-                            modifier = Modifier
-                                .screenPaddingsInner()
-                                .screenPaddingsOuter()
-                        ) {
-                            for (it in currentRecommendations) {
-                                val recommendationItem = it.value
-
-                                if (recommendationItem.backgroundImage.value != null ||
-                                    recommendationItem.backgroundVideo != null
-                                ) {
-                                    RecommendationItemWithBackground(
-                                        modifier = Modifier.padding(bottom = 15.dp),
-                                        user = recommendationItem.user,
-                                        date = recommendationItem.date,
-                                        description = recommendationItem.description,
-                                        backgroundImage = recommendationItem.backgroundImage.value,
-                                        title = recommendationItem.title,
-                                        creator = recommendationItem.creator,
-                                        coverType = recommendationItem.coverType,
-                                        cover = recommendationItem.cover.value,
-                                        recommendationId = recommendationItem.id,
-                                        openScreen = openScreen,
-                                        onRecommendationClick = onRecommendationClick
-                                    )
-                                } else {
-                                    RecommendationItemWithoutBackground(
-                                        modifier = Modifier.padding(bottom = 15.dp),
-                                        user = recommendationItem.user,
-                                        date = recommendationItem.date,
-                                        description = recommendationItem.description,
-                                        title = recommendationItem.title,
-                                        creator = recommendationItem.creator,
-                                        coverType = recommendationItem.coverType,
-                                        cover = recommendationItem.cover.value,
-                                        recommendationId = recommendationItem.id,
-                                        openScreen = openScreen,
-                                        onRecommendationClick = onRecommendationClick
-                                    )
-                                }
-
-                                currentRecommendationsAmount++
-                                isLoading = currentRecommendationsAmount < recommendationsAmount
-                            }
-
-                            if (isLoading) {
-                                SmallLoadingIndicator(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(80.dp),
-                                    backgroundColor = White
-                                )
-                            }
-                        }
-                    }
-                } else {
-                    item {
-                        SmallLoadingIndicator(
-                            modifier = Modifier.size(300.dp),
-                            backgroundColor = White
+                if (category != null) {
+                    category.title?.let {
+                        CategoryTitle(
+                            title = it,
+                            popUpScreen = popUpScreen
                         )
                     }
                 }
             }
-        } else {
-            LargeLoadingIndicator(
-                backgroundColor = LightGray
-            )
+        }
+    ) { paddingValues ->
+        var isLoading by rememberSaveable { mutableStateOf(true) }
+        var currentRecommendationsAmount = 0
+
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            items(currentRecommendations) {
+                RecommendationItem(
+                    modifier = Modifier.padding(bottom = 10.dp),
+                    user = it.value.user,
+                    date = it.value.date,
+                    description = it.value.description,
+                    backgroundImageReference = it.value.backgroundImageReference,
+                    backgroundVideoReference = it.value.backgroundVideoReference,
+                    title = it.value.title,
+                    creator = it.value.creator,
+                    coverType = it.value.coverType,
+                    coverReference = it.value.coverReference,
+                    recommendationId = it.value.id,
+                    openScreen = openScreen,
+                    onRecommendationClick = onRecommendationClick
+                )
+
+                currentRecommendationsAmount++
+                isLoading = currentRecommendationsAmount < recommendationsAmount
+            }
+
+            if (isLoading) {
+                item {
+                    SmallLoadingIndicator(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(80.dp),
+                        backgroundColor = White
+                    )
+                }
+            }
         }
     }
 }

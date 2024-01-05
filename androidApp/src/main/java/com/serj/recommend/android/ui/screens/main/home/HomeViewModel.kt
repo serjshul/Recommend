@@ -4,15 +4,15 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import com.serj.recommend.android.BANNER_ID
-import com.serj.recommend.android.CATEGORY_ID
-import com.serj.recommend.android.RECOMMENDATION_ID
 import com.serj.recommend.android.RecommendRoutes
+import com.serj.recommend.android.common.Constants.BANNER_ID
+import com.serj.recommend.android.common.Constants.CATEGORY_ID
+import com.serj.recommend.android.common.Constants.RECOMMENDATION_ID
 import com.serj.recommend.android.model.Banner
 import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.Recommendation
-import com.serj.recommend.android.model.service.LogService
-import com.serj.recommend.android.model.service.StorageService
+import com.serj.recommend.android.services.LogService
+import com.serj.recommend.android.services.StorageService
 import com.serj.recommend.android.ui.screens.RecommendViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -34,10 +34,9 @@ class HomeViewModel @Inject constructor(
         launchCatching {
             banners.collect { banners ->
                 val randomBanner = banners.random()
-                randomBanner.cover.value = randomBanner
-                    .coverReference?.let {
-                        storageService.downloadImage(it)
-                    }
+                randomBanner.coverReference = randomBanner.coverUrl?.let {
+                    storageService.getStorageReferenceFromUrl(it)
+                }
                 currentBanner.value = randomBanner
             }
         }
@@ -55,16 +54,12 @@ class HomeViewModel @Inject constructor(
                         .recommendationIds.shuffled()
                     for (i in shuffledRecommendationIds.indices) {
                         if (i < AMOUNT_THRESHOLD) {
-                            storageService.getRecommendationPreviewById(shuffledRecommendationIds[i])
-                                ?.let { currentCategory.value.content!!.add(it) }
-                        } else {
-                            break
-                        }
-                    }
-                    for (item in currentCategory.value.content!!) {
-                        item.cover.value = item.coverReference?.let {
-                            storageService.downloadImage(it)
-                        }
+                            storageService
+                                .getRecommendationPreviewById(shuffledRecommendationIds[i])
+                                ?.let {
+                                    currentCategory.value.content.add(it)
+                                }
+                        } else break
                     }
                 }
             }
@@ -84,6 +79,6 @@ class HomeViewModel @Inject constructor(
     }
 
     companion object {
-        private const val AMOUNT_THRESHOLD = 6
+        const val AMOUNT_THRESHOLD = 6
     }
 }

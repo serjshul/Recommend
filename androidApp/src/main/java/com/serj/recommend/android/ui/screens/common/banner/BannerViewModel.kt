@@ -5,17 +5,16 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
-import com.serj.recommend.android.BANNER_ID
-import com.serj.recommend.android.RECOMMENDATION_ID
 import com.serj.recommend.android.RecommendRoutes
+import com.serj.recommend.android.common.Constants.BANNER_ID
+import com.serj.recommend.android.common.Constants.RECOMMENDATION_ID
 import com.serj.recommend.android.common.ext.idFromParameter
 import com.serj.recommend.android.model.Banner
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.items.RecommendationItem
-import com.serj.recommend.android.model.service.LogService
-import com.serj.recommend.android.model.service.StorageService
+import com.serj.recommend.android.services.LogService
+import com.serj.recommend.android.services.StorageService
 import com.serj.recommend.android.ui.screens.RecommendViewModel
-import com.serj.recommend.android.ui.styles.BackgroundTypes
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -36,28 +35,19 @@ class BannerViewModel @Inject constructor(
             launchCatching {
                 val currentBanner = storageService
                     .getBannerById(bannerId.idFromParameter())
-                currentBanner?.backgroundImage?.value = currentBanner
-                    ?.backgroundReferences?.get(BackgroundTypes.image.name)
-                    ?.let { storageService.downloadImage(it) }
                 banner.value = currentBanner
 
-                currentRecommendationsAmount.intValue =
-                    banner.value?.recommendationIds!!.size
-                for (recommendationId in banner.value?.recommendationIds!!) {
-                    val currentRecommendationItem = mutableStateOf(
-                        storageService.getRecommendationItemById(recommendationId)
-                    )
-                    currentRecommendations.add(currentRecommendationItem)
-
-                    currentRecommendationItem.value.cover.value = currentRecommendationItem.value
-                        .coverReference?.let { storageService.downloadImage(it) }
+                if (banner.value?.recommendationIds?.size != null) {
+                    currentRecommendationsAmount.intValue =
+                        banner.value?.recommendationIds?.size!!
                 }
-
-                for (recommendationItem in currentRecommendations) {
-                    val imageReference = recommendationItem.value.backgroundImageReference
-                    if (imageReference != null) {
-                        recommendationItem.value.backgroundImage.value =
-                            storageService.downloadImage(imageReference)
+                for (recommendationId in banner.value?.recommendationIds!!) {
+                    val currentRecommendationItem = storageService
+                        .getRecommendationItemById(recommendationId)
+                    if (currentRecommendationItem != null) {
+                        currentRecommendations.add(
+                            mutableStateOf(currentRecommendationItem)
+                        )
                     }
                 }
             }

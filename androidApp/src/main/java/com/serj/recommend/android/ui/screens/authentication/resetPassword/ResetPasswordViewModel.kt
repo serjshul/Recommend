@@ -4,8 +4,8 @@ import androidx.compose.runtime.mutableStateOf
 import com.serj.recommend.android.R
 import com.serj.recommend.android.RecommendRoutes
 import com.serj.recommend.android.common.ext.isValidEmail
-import com.serj.recommend.android.model.service.AccountService
-import com.serj.recommend.android.model.service.LogService
+import com.serj.recommend.android.services.AccountService
+import com.serj.recommend.android.services.LogService
 import com.serj.recommend.android.ui.components.snackbar.SnackbarManager
 import com.serj.recommend.android.ui.screens.RecommendViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel

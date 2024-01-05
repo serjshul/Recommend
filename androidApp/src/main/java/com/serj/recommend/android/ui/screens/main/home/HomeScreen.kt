@@ -21,17 +21,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.serj.recommend.android.model.Banner
 import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.Recommendation
+import com.serj.recommend.android.ui.components.categories.CategoryTypes
+import com.serj.recommend.android.ui.components.categories.ExtendedCategory
+import com.serj.recommend.android.ui.components.categories.OrdinaryCategory
+import com.serj.recommend.android.ui.components.categories.PagerCategory
 import com.serj.recommend.android.ui.components.loadingIndicators.LargeLoadingIndicator
 import com.serj.recommend.android.ui.components.loadingIndicators.SmallLoadingIndicator
 import com.serj.recommend.android.ui.screens.main.home.components.Banner
-import com.serj.recommend.android.ui.screens.main.home.components.categoryItems.ExtendedCategory
-import com.serj.recommend.android.ui.screens.main.home.components.categoryItems.OrdinaryCategory
-import com.serj.recommend.android.ui.screens.main.home.components.categoryItems.PagerCategory
 import com.serj.recommend.android.ui.styles.White
-
-enum class CategoryType {
-    ordinary, extended, pager
-}
 
 @Composable
 fun HomeScreen(
@@ -78,25 +75,25 @@ fun HomeScreenContent(
                 item {
                     Banner(
                         banner = banner,
+                        coverReference = banner.coverReference,
                         openScreen = openScreen,
                         onBannerClick = onBannerClick
                     )
                 }
 
                 items(categories) { category ->
-                    val value = category.value
-                    when (value.type) {
-                        CategoryType.extended.name -> {
+                    when (category.value.type) {
+                        CategoryTypes.extended.name -> {
                             ExtendedCategory(
-                                category = value,
+                                category = category.value,
                                 openScreen = openScreen,
                                 onRecommendationClick = onRecommendationClick,
                                 onCategoryClick = onCategoryClick
                             )
                         }
-                        CategoryType.pager.name -> {
+                        CategoryTypes.pager.name -> {
                             PagerCategory(
-                                category = value,
+                                category = category.value,
                                 openScreen = openScreen,
                                 onRecommendationClick = onRecommendationClick,
                                 onCategoryClick = onCategoryClick
@@ -104,7 +101,7 @@ fun HomeScreenContent(
                         }
                         else -> {
                             OrdinaryCategory(
-                                category = value,
+                                category = category.value,
                                 openScreen = openScreen,
                                 onRecommendationClick = onRecommendationClick,
                                 onCategoryClick = onCategoryClick
@@ -116,8 +113,8 @@ fun HomeScreenContent(
                     isLoading = currentCategoriesAmount < categoriesAmount
                 }
 
-                item {
-                    if (isLoading) {
+                if (isLoading) {
+                    item {
                         SmallLoadingIndicator(
                             modifier = Modifier
                                 .fillMaxWidth()
