@@ -57,7 +57,7 @@ class HomeViewModel @Inject constructor(
                             storageService
                                 .getRecommendationPreviewById(shuffledRecommendationIds[i])
                                 ?.let {
-                                    currentCategory.value.content!!.add(it)
+                                    currentCategory.value.content.add(it)
                                 }
                         } else break
                     }
@@ -79,6 +79,6 @@ class HomeViewModel @Inject constructor(
     }
 
     companion object {
-        private const val AMOUNT_THRESHOLD = 6
+        const val AMOUNT_THRESHOLD = 6
     }
 }

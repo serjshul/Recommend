@@ -26,7 +26,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.serj.recommend.android.R
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.items.RecommendationItem
-import com.serj.recommend.android.ui.components.loadingIndicators.LargeLoadingIndicator
 import com.serj.recommend.android.ui.components.loadingIndicators.SmallLoadingIndicator
 import com.serj.recommend.android.ui.components.recommendationPreviews.RecommendationItem
 import com.serj.recommend.android.ui.styles.White
@@ -77,47 +76,43 @@ fun FeedScreenContent(
             }
         }
     ) { paddingValues ->
-        if (currentRecommendations.isNotEmpty()) {
-            var isLoading by remember { mutableStateOf(true) }
-            var currentRecommendationsAmount = 0
+        var isLoading by remember { mutableStateOf(true) }
+        var currentRecommendationsAmount = 0
 
-            LazyColumn(
-                modifier = Modifier
-                    .padding(paddingValues)
-            ) {
-                items(currentRecommendations) {
-                    RecommendationItem(
-                        modifier = Modifier.padding(bottom = 10.dp),
-                        user = it.value.user,
-                        date = it.value.date,
-                        description = it.value.description,
-                        backgroundImageReference = it.value.backgroundImageReference,
-                        backgroundVideoReference = it.value.backgroundVideoReference,
-                        title = it.value.title,
-                        creator = it.value.creator,
-                        coverType = it.value.coverType,
-                        coverReference = it.value.coverReference,
-                        recommendationId = it.value.id,
-                        openScreen = openScreen,
-                        onRecommendationClick = onRecommendationClick
+        LazyColumn(
+            modifier = Modifier
+                .padding(paddingValues)
+        ) {
+            items(currentRecommendations) {
+                RecommendationItem(
+                    modifier = Modifier.padding(bottom = 10.dp),
+                    user = it.value.user,
+                    date = it.value.date,
+                    description = it.value.description,
+                    backgroundImageReference = it.value.backgroundImageReference,
+                    backgroundVideoReference = it.value.backgroundVideoReference,
+                    title = it.value.title,
+                    creator = it.value.creator,
+                    coverType = it.value.coverType,
+                    coverReference = it.value.coverReference,
+                    recommendationId = it.value.id,
+                    openScreen = openScreen,
+                    onRecommendationClick = onRecommendationClick
+                )
+                currentRecommendationsAmount++
+                isLoading = currentRecommendationsAmount < recommendationsAmount
+            }
+
+            if (isLoading) {
+                item {
+                    SmallLoadingIndicator(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(80.dp),
+                        backgroundColor = White
                     )
-                    currentRecommendationsAmount++
-                    isLoading = currentRecommendationsAmount < recommendationsAmount
-                }
-
-                if (isLoading) {
-                    item {
-                        SmallLoadingIndicator(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(80.dp),
-                            backgroundColor = White
-                        )
-                    }
                 }
             }
-        } else {
-            LargeLoadingIndicator(backgroundColor = White)
         }
     }
 }

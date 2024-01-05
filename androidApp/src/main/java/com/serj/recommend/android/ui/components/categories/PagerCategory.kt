@@ -31,11 +31,11 @@ fun PagerCategory(
 ) {
     val items = category.content
 
-    if (category.id != null && items!!.isNotEmpty() && category.title != null) {
+    if (category.id != null && items.isNotEmpty() && category.title != null) {
         Column(
             modifier = modifier
                 .fillMaxWidth()
-                .padding(bottom = 20.dp)
+                .padding(bottom = 30.dp)
         ) {
             Text(
                 modifier = Modifier

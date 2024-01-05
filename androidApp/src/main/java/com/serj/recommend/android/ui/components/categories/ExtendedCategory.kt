@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
@@ -13,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,13 +33,16 @@ import com.serj.recommend.android.common.ext.screenPaddingsInner
 import com.serj.recommend.android.common.ext.toColor
 import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.Recommendation
+import com.serj.recommend.android.ui.components.loadingIndicators.SmallLoadingIndicator
+import com.serj.recommend.android.ui.components.media.CustomGlideImage
+import com.serj.recommend.android.ui.components.recommendationPreviews.ItemsShapes
 import com.serj.recommend.android.ui.components.recommendationPreviews.transparent.HorizontalItemTransparent
 import com.serj.recommend.android.ui.components.recommendationPreviews.transparent.SquareItemTransparent
 import com.serj.recommend.android.ui.components.recommendationPreviews.transparent.VerticalItemTransparent
-import com.serj.recommend.android.ui.components.media.CustomGlideImage
 import com.serj.recommend.android.ui.components.snackbar.SnackbarManager
+import com.serj.recommend.android.ui.screens.main.home.HomeViewModel.Companion.AMOUNT_THRESHOLD
 import com.serj.recommend.android.ui.screens.main.home.components.ShowAllButton
-import com.serj.recommend.android.ui.components.recommendationPreviews.ItemsShapes
+import com.serj.recommend.android.ui.styles.White
 
 @Composable
 fun ExtendedCategory(
@@ -47,8 +52,10 @@ fun ExtendedCategory(
     onCategoryClick: ((String) -> Unit, String) -> Unit,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
 ) {
-    if (category.id != null && category.title != null && category.content!!.isNotEmpty()) {
+    if (category.id != null && category.title != null) {
         var sizeImage by remember { mutableStateOf(IntSize.Zero) }
+        var isLoading by rememberSaveable { mutableStateOf(true) }
+        var currentItemsAmount = 0
 
         Box(
             modifier = modifier
@@ -142,15 +149,30 @@ fun ExtendedCategory(
                             SnackbarManager.showMessage(R.string.error_cover_type)
                         }
                     }
+                    currentItemsAmount++
+                    isLoading = currentItemsAmount < AMOUNT_THRESHOLD
                 }
 
-                item {
-                    ShowAllButton(
-                        modifier = Modifier.padding(start = 35.dp, end = 50.dp, bottom = 30.dp),
-                        categoryId = category.id,
-                        openScreen = openScreen,
-                        onCategoryClick = onCategoryClick
-                    )
+                if (isLoading) {
+                    if (currentItemsAmount != 0) {
+                        item {
+                            SmallLoadingIndicator(
+                                modifier = Modifier
+                                    .width(130.dp)
+                                    .fillParentMaxHeight(),
+                                backgroundColor = White
+                            )
+                        }
+                    }
+                } else {
+                    item {
+                        ShowAllButton(
+                            modifier = Modifier.padding(start = 35.dp, end = 50.dp, bottom = 30.dp),
+                            categoryId = category.id,
+                            openScreen = openScreen,
+                            onCategoryClick = onCategoryClick
+                        )
+                    }
                 }
             }
         }
