@@ -1,9 +1,8 @@
 package com.serj.recommend.android.services.impl
 
 import android.content.ContentValues
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.util.Log
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.toObject
@@ -11,6 +10,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.serj.recommend.android.R
 import com.serj.recommend.android.model.User
 import com.serj.recommend.android.services.AccountService
+import com.serj.recommend.android.services.model.trace
 import com.serj.recommend.android.ui.components.snackbar.SnackbarManager
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -66,6 +66,17 @@ class AccountServiceImpl @Inject constructor(
         auth.sendPasswordResetEmail(email).await()
     }
 
+    override suspend fun linkAccount(email: String, password: String): Unit =
+        trace(LINK_ACCOUNT_TRACE) {
+            val credential = EmailAuthProvider
+                .getCredential(email, password)
+
+            auth
+                .currentUser!!
+                .linkWithCredential(credential)
+                .await()
+        }
+
     override suspend fun getUser(uid: String): User? {
         var currentUser: User? = null
 
@@ -102,28 +113,9 @@ class AccountServiceImpl @Inject constructor(
         return currentUser
     }
 
-    override suspend fun downloadImage(gsReference: String): Bitmap? {
-        var bmp: Bitmap? = null
-
-        storage
-            .getReferenceFromUrl(gsReference)
-            .getBytes(ONE_MEGABYTE)
-            .addOnSuccessListener {
-                // Data for "images/island.jpg" is returned, use this as needed
-                bmp = BitmapFactory.decodeByteArray(it, 0, it.size)
-            }.addOnFailureListener {
-                // Handle any errors
-                Log.v(ContentValues.TAG, "not downloaded !!!")
-            }
-            .await()
-
-        return bmp
-    }
-
-
     companion object {
-        private const val USERS_COLLECTION = "users"
+        private const val LINK_ACCOUNT_TRACE = "linkAccount"
 
-        private const val ONE_MEGABYTE: Long = 1024 * 1024
+        private const val USERS_COLLECTION = "users"
     }
 }

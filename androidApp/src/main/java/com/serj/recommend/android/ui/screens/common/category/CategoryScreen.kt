@@ -30,9 +30,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.serj.recommend.android.R
-import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.items.RecommendationItem
+import com.serj.recommend.android.services.GetCategoryByIdResponse
+import com.serj.recommend.android.services.model.Response.Failure
+import com.serj.recommend.android.services.model.Response.Success
+import com.serj.recommend.android.ui.components.loadingIndicators.LargeLoadingIndicator
 import com.serj.recommend.android.ui.components.loadingIndicators.SmallLoadingIndicator
 import com.serj.recommend.android.ui.components.recommendationPreviews.RecommendationItem
 import com.serj.recommend.android.ui.styles.White
@@ -44,13 +47,13 @@ fun CategoryScreen(
     popUpScreen: () -> Unit,
     viewModel: CategoryViewModel = hiltViewModel()
 ) {
-    val category = viewModel.category
+    val categoryResponse = viewModel.categoryResponse
     val currentRecommendations = viewModel.currentRecommendations
     val currentRecommendationsAmount = viewModel.currentRecommendationsAmount.intValue
 
     CategoryScreenContent(
         modifier = modifier,
-        category = category.value,
+        categoryResponse = categoryResponse.value,
         currentRecommendations = currentRecommendations,
         recommendationsAmount = currentRecommendationsAmount,
         openScreen = openScreen,
@@ -62,70 +65,84 @@ fun CategoryScreen(
 @Composable
 fun CategoryScreenContent(
     modifier: Modifier = Modifier,
-    category: Category?,
+    categoryResponse: GetCategoryByIdResponse?,
     currentRecommendations: List<MutableState<RecommendationItem>>,
     recommendationsAmount: Int,
     openScreen: (String) -> Unit,
     popUpScreen: () -> Unit,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
 ) {
-    Scaffold(
-        modifier = modifier,
-        topBar = {
-            TopAppBar(
-                backgroundColor = White
-            ) {
-                if (category != null) {
-                    category.title?.let {
-                        CategoryTitle(
-                            title = it,
-                            popUpScreen = popUpScreen
+    when (categoryResponse) {
+        is Success -> {
+            val category = categoryResponse.data
+
+            Scaffold(
+                modifier = modifier,
+                topBar = {
+                    TopAppBar(
+                        backgroundColor = White
+                    ) {
+                        if (category != null) {
+                            category.title?.let {
+                                CategoryTitle(
+                                    title = it,
+                                    popUpScreen = popUpScreen
+                                )
+                            }
+                        }
+                    }
+                }
+            ) { paddingValues ->
+                var isLoading by rememberSaveable { mutableStateOf(true) }
+                var currentRecommendationsAmount = 0
+
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    items(currentRecommendations) {
+                        RecommendationItem(
+                            modifier = Modifier.padding(bottom = 10.dp),
+                            user = it.value.user,
+                            date = it.value.date,
+                            description = it.value.description,
+                            backgroundImageReference = it.value.backgroundImageReference,
+                            backgroundVideoReference = it.value.backgroundVideoReference,
+                            title = it.value.title,
+                            creator = it.value.creator,
+                            coverType = it.value.coverType,
+                            coverReference = it.value.coverReference,
+                            recommendationId = it.value.id,
+                            openScreen = openScreen,
+                            onRecommendationClick = onRecommendationClick
                         )
+
+                        currentRecommendationsAmount++
+                        isLoading = currentRecommendationsAmount < recommendationsAmount
+                    }
+
+                    if (isLoading) {
+                        item {
+                            SmallLoadingIndicator(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(80.dp),
+                                backgroundColor = White
+                            )
+                        }
                     }
                 }
             }
         }
-    ) { paddingValues ->
-        var isLoading by rememberSaveable { mutableStateOf(true) }
-        var currentRecommendationsAmount = 0
-
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            items(currentRecommendations) {
-                RecommendationItem(
-                    modifier = Modifier.padding(bottom = 10.dp),
-                    user = it.value.user,
-                    date = it.value.date,
-                    description = it.value.description,
-                    backgroundImageReference = it.value.backgroundImageReference,
-                    backgroundVideoReference = it.value.backgroundVideoReference,
-                    title = it.value.title,
-                    creator = it.value.creator,
-                    coverType = it.value.coverType,
-                    coverReference = it.value.coverReference,
-                    recommendationId = it.value.id,
-                    openScreen = openScreen,
-                    onRecommendationClick = onRecommendationClick
-                )
-
-                currentRecommendationsAmount++
-                isLoading = currentRecommendationsAmount < recommendationsAmount
-            }
-
-            if (isLoading) {
-                item {
-                    SmallLoadingIndicator(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(80.dp),
-                        backgroundColor = White
-                    )
-                }
-            }
+        is Failure -> {
+            print(categoryResponse.e)
+        }
+        else -> {
+            LargeLoadingIndicator(
+                backgroundColor = White
+            )
         }
     }
 }

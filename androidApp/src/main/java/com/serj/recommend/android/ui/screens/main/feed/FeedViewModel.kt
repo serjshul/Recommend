@@ -11,6 +11,7 @@ import com.serj.recommend.android.model.items.RecommendationItem
 import com.serj.recommend.android.services.AccountService
 import com.serj.recommend.android.services.LogService
 import com.serj.recommend.android.services.StorageService
+import com.serj.recommend.android.services.model.Response
 import com.serj.recommend.android.ui.screens.RecommendViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.Date
@@ -34,20 +35,26 @@ class FeedViewModel @Inject constructor(
 
                 if (user.following != null) {
                     for (followingUid in user.following) {
-                        followingRecommendationsIds.addAll(
+                        val followingRecommendationsIdsResponse =
                             storageService.getFollowingRecommendationsIds(followingUid)
-                        )
+                        if (followingRecommendationsIdsResponse is Response.Success &&
+                            followingRecommendationsIdsResponse.data != null) {
+                            followingRecommendationsIds.addAll(
+                                followingRecommendationsIdsResponse.data
+                            )
+                        }
                     }
                 }
                 currentRecommendationsAmount.intValue = followingRecommendationsIds.size
                 followingRecommendationsIds.sortByDescending { it.second }
 
                 for (recommendationId in followingRecommendationsIds) {
-                    val currentRecommendationItem = storageService
+                    val currentRecommendationItemResponse = storageService
                         .getRecommendationItemById(recommendationId.first)
-                    if (currentRecommendationItem != null) {
+                    if (currentRecommendationItemResponse is Response.Success &&
+                        currentRecommendationItemResponse.data != null) {
                         currentRecommendations.add(
-                            mutableStateOf(currentRecommendationItem)
+                            mutableStateOf(currentRecommendationItemResponse.data)
                         )
                     }
                 }

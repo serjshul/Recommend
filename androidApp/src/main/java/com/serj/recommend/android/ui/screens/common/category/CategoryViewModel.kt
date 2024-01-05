@@ -12,8 +12,10 @@ import com.serj.recommend.android.common.ext.idFromParameter
 import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.items.RecommendationItem
+import com.serj.recommend.android.services.GetCategoryByIdResponse
 import com.serj.recommend.android.services.LogService
 import com.serj.recommend.android.services.StorageService
+import com.serj.recommend.android.services.model.Response
 import com.serj.recommend.android.ui.screens.RecommendViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -25,7 +27,7 @@ class CategoryViewModel @Inject constructor(
     private val storageService: StorageService
 ) : RecommendViewModel(logService) {
 
-    val category = mutableStateOf<Category?>(null)
+    val categoryResponse = mutableStateOf<GetCategoryByIdResponse?>(null)
     val currentRecommendations = mutableStateListOf<MutableState<RecommendationItem>>()
     val currentRecommendationsAmount = mutableIntStateOf(0)
 
@@ -33,21 +35,24 @@ class CategoryViewModel @Inject constructor(
         val categoryId = savedStateHandle.get<String>(CATEGORY_ID)
         if (categoryId != null) {
             launchCatching {
-                val currentCategory = storageService
+                categoryResponse.value = storageService
                     .getCategoryById(categoryId.idFromParameter())
-                category.value = currentCategory
 
-                if (category.value?.recommendationIds?.size != null) {
-                    currentRecommendationsAmount.intValue =
-                        category.value?.recommendationIds?.size!!
-                }
-
-                for (recommendationId in category.value?.recommendationIds!!) {
-                    val currentRecommendationItem = storageService.getRecommendationItemById(recommendationId)
-                    if (currentRecommendationItem != null) {
-                        currentRecommendations.add(
-                            mutableStateOf(currentRecommendationItem)
-                        )
+                if (categoryResponse.value is Response.Success) {
+                    val currentCategory = (categoryResponse.value as Response.Success<Category?>).data
+                    if (currentCategory?.recommendationIds?.size != null) {
+                        currentRecommendationsAmount.intValue =
+                            currentCategory.recommendationIds.size
+                    }
+                    for (recommendationId in currentCategory?.recommendationIds!!) {
+                        val currentRecommendationItemResponse =
+                            storageService.getRecommendationItemById(recommendationId)
+                        if (currentRecommendationItemResponse is Response.Success &&
+                            currentRecommendationItemResponse.data != null) {
+                            currentRecommendations.add(
+                                mutableStateOf(currentRecommendationItemResponse.data)
+                            )
+                        }
                     }
                 }
             }
