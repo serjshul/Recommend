@@ -24,7 +24,7 @@ class FeedViewModel @Inject constructor(
 ) : RecommendViewModel(logService) {
 
     private val currentUser = accountService.currentUser
-    val currentRecommendations = mutableStateListOf<MutableState<RecommendationItem?>>()
+    val currentRecommendations = mutableStateListOf<MutableState<RecommendationItem>>()
     val currentRecommendationsAmount = mutableIntStateOf(0)
 
     init {
@@ -43,10 +43,13 @@ class FeedViewModel @Inject constructor(
                 followingRecommendationsIds.sortByDescending { it.second }
 
                 for (recommendationId in followingRecommendationsIds) {
-                    val currentRecommendationItem = mutableStateOf(
-                        storageService.getRecommendationItemById(recommendationId.first)
-                    )
-                    currentRecommendations.add(currentRecommendationItem)
+                    val currentRecommendationItem = storageService
+                        .getRecommendationItemById(recommendationId.first)
+                    if (currentRecommendationItem != null) {
+                        currentRecommendations.add(
+                            mutableStateOf(currentRecommendationItem)
+                        )
+                    }
                 }
             }
         }

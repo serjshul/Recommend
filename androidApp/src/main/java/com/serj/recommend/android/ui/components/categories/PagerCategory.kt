@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.sp
 import com.serj.recommend.android.common.ext.screenPaddingsInner
 import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.Recommendation
-import com.serj.recommend.android.ui.components.recommendationPreviews.HorizontalItemTransparent
+import com.serj.recommend.android.ui.components.recommendationPreviews.transparent.HorizontalItemTransparent
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

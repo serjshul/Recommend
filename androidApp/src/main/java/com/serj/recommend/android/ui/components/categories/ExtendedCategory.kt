@@ -31,9 +31,9 @@ import com.serj.recommend.android.common.ext.screenPaddingsInner
 import com.serj.recommend.android.common.ext.toColor
 import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.Recommendation
-import com.serj.recommend.android.ui.components.recommendationPreviews.HorizontalItemTransparent
-import com.serj.recommend.android.ui.components.recommendationPreviews.SquareItemTransparent
-import com.serj.recommend.android.ui.components.recommendationPreviews.VerticalItemTransparent
+import com.serj.recommend.android.ui.components.recommendationPreviews.transparent.HorizontalItemTransparent
+import com.serj.recommend.android.ui.components.recommendationPreviews.transparent.SquareItemTransparent
+import com.serj.recommend.android.ui.components.recommendationPreviews.transparent.VerticalItemTransparent
 import com.serj.recommend.android.ui.components.media.CustomGlideImage
 import com.serj.recommend.android.ui.components.snackbar.SnackbarManager
 import com.serj.recommend.android.ui.screens.main.home.components.ShowAllButton

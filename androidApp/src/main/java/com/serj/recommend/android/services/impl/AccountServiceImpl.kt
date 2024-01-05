@@ -84,7 +84,7 @@ class AccountServiceImpl @Inject constructor(
                         photoUrl = user.photoUrl,
                         followers = user.followers,
                         following = user.following,
-                        postsIds = user.postsIds,
+                        recommendationsIds = user.recommendationsIds,
                         likedIds = user.likedIds,
                         savedIds = user.savedIds
                     )
@@ -96,7 +96,7 @@ class AccountServiceImpl @Inject constructor(
             .await()
 
         currentUser?.photoReference = currentUser?.photoUrl?.let {
-            storage.getReference(it)
+            storage.getReferenceFromUrl(it)
         }
 
         return currentUser

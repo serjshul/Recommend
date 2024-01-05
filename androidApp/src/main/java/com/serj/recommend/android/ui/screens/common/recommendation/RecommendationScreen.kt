@@ -26,8 +26,8 @@ import com.serj.recommend.android.common.ext.screenPaddingsOuter
 import com.serj.recommend.android.common.ext.toColor
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.ui.components.loadingIndicators.LargeLoadingIndicator
-import com.serj.recommend.android.ui.components.post.InfoPanel
-import com.serj.recommend.android.ui.components.post.InteractionPanel
+import com.serj.recommend.android.ui.components.social.InfoPanel
+import com.serj.recommend.android.ui.components.social.InteractionPanel
 import com.serj.recommend.android.ui.screens.common.recommendation.components.Description
 import com.serj.recommend.android.ui.screens.common.recommendation.components.Header
 import com.serj.recommend.android.ui.screens.common.recommendation.components.Paragraphs

@@ -3,21 +3,29 @@ package com.serj.recommend.android.ui.screens.common.banner
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.serj.recommend.android.common.ext.bannerContentShape
 import com.serj.recommend.android.common.ext.screenPaddingsInner
-import com.serj.recommend.android.common.ext.screenPaddingsOuter
 import com.serj.recommend.android.model.Banner
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.items.RecommendationItem
 import com.serj.recommend.android.ui.components.loadingIndicators.LargeLoadingIndicator
-import com.serj.recommend.android.ui.screens.common.banner.components.BannerItems
+import com.serj.recommend.android.ui.components.loadingIndicators.SmallLoadingIndicator
+import com.serj.recommend.android.ui.components.recommendationPreviews.RecommendationItem
 import com.serj.recommend.android.ui.screens.common.banner.components.Description
 import com.serj.recommend.android.ui.screens.common.banner.components.Header
 import com.serj.recommend.android.ui.styles.White
@@ -48,7 +56,7 @@ fun BannerScreen(
 fun BannerScreenContent(
     modifier: Modifier = Modifier,
     banner: Banner?,
-    currentRecommendations: List<MutableState<RecommendationItem?>>,
+    currentRecommendations: List<MutableState<RecommendationItem>>,
     recommendationsAmount: Int,
     openScreen: (String) -> Unit,
     popUpScreen: () -> Unit,
@@ -58,6 +66,9 @@ fun BannerScreenContent(
         modifier = modifier
     ) { paddingValues ->
         if (banner != null) {
+            var isLoading by rememberSaveable { mutableStateOf(true) }
+            var currentRecommendationsAmount = 0
+
             LazyColumn(
                 modifier = Modifier.padding(paddingValues)
             ) {
@@ -78,7 +89,7 @@ fun BannerScreenContent(
                             modifier = Modifier
                                 .bannerContentShape()
                                 .screenPaddingsInner()
-                                .screenPaddingsOuter()
+                                .padding(top = 15.dp, bottom = 20.dp)
                         ) {
                             Description(
                                 modifier = Modifier,
@@ -88,16 +99,37 @@ fun BannerScreenContent(
                         }
                     }
                 }
-                item {
-                    BannerItems(
-                        modifier = Modifier
-                            .screenPaddingsInner()
-                            .screenPaddingsOuter(),
-                        currentRecommendations = currentRecommendations,
-                        recommendationsAmount = recommendationsAmount,
+
+                items(currentRecommendations) {
+                    RecommendationItem(
+                        modifier = Modifier.padding(bottom = 10.dp),
+                        user = it.value.user,
+                        date = it.value.date,
+                        description = it.value.description,
+                        backgroundImageReference = it.value.backgroundImageReference,
+                        backgroundVideoReference = it.value.backgroundVideoReference,
+                        title = it.value.title,
+                        creator = it.value.creator,
+                        coverType = it.value.coverType,
+                        coverReference = it.value.coverReference,
+                        recommendationId = it.value.id,
                         openScreen = openScreen,
                         onRecommendationClick = onRecommendationClick
                     )
+
+                    currentRecommendationsAmount++
+                    isLoading = currentRecommendationsAmount < recommendationsAmount
+                }
+
+                if (isLoading) {
+                    item {
+                        SmallLoadingIndicator(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(80.dp),
+                            backgroundColor = White
+                        )
+                    }
                 }
             }
         } else {

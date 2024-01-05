@@ -26,7 +26,7 @@ class CategoryViewModel @Inject constructor(
 ) : RecommendViewModel(logService) {
 
     val category = mutableStateOf<Category?>(null)
-    val currentRecommendations = mutableStateListOf<MutableState<RecommendationItem?>>()
+    val currentRecommendations = mutableStateListOf<MutableState<RecommendationItem>>()
     val currentRecommendationsAmount = mutableIntStateOf(0)
 
     init {
@@ -43,10 +43,12 @@ class CategoryViewModel @Inject constructor(
                 }
 
                 for (recommendationId in category.value?.recommendationIds!!) {
-                    val currentRecommendationItem = mutableStateOf(
-                        storageService.getRecommendationItemById(recommendationId)
-                    )
-                    currentRecommendations.add(currentRecommendationItem)
+                    val currentRecommendationItem = storageService.getRecommendationItemById(recommendationId)
+                    if (currentRecommendationItem != null) {
+                        currentRecommendations.add(
+                            mutableStateOf(currentRecommendationItem)
+                        )
+                    }
                 }
             }
         }

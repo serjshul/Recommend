@@ -17,7 +17,7 @@ data class User(
     val followers: ArrayList<String>? = null,
     val following: ArrayList<String>? = null,
 
-    val postsIds: ArrayList<String>? = null,
+    val recommendationsIds: ArrayList<String>? = null,
 
     val likedIds: ArrayList<String>? = null,
     val savedIds: ArrayList<String>? = null

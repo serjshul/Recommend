@@ -26,7 +26,7 @@ class BannerViewModel @Inject constructor(
 ) : RecommendViewModel(logService) {
 
     val banner = mutableStateOf<Banner?>(null)
-    val currentRecommendations = mutableStateListOf<MutableState<RecommendationItem?>>()
+    val currentRecommendations = mutableStateListOf<MutableState<RecommendationItem>>()
     val currentRecommendationsAmount = mutableIntStateOf(0)
 
     init {
@@ -42,10 +42,13 @@ class BannerViewModel @Inject constructor(
                         banner.value?.recommendationIds?.size!!
                 }
                 for (recommendationId in banner.value?.recommendationIds!!) {
-                    val currentRecommendationItem = mutableStateOf(
-                        storageService.getRecommendationItemById(recommendationId)
-                    )
-                    currentRecommendations.add(currentRecommendationItem)
+                    val currentRecommendationItem = storageService
+                        .getRecommendationItemById(recommendationId)
+                    if (currentRecommendationItem != null) {
+                        currentRecommendations.add(
+                            mutableStateOf(currentRecommendationItem)
+                        )
+                    }
                 }
             }
         }

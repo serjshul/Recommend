@@ -2,12 +2,10 @@ package com.serj.recommend.android.ui.screens.main.feed
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.TopAppBar
@@ -17,7 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,8 +28,7 @@ import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.items.RecommendationItem
 import com.serj.recommend.android.ui.components.loadingIndicators.LargeLoadingIndicator
 import com.serj.recommend.android.ui.components.loadingIndicators.SmallLoadingIndicator
-import com.serj.recommend.android.ui.components.post.RecommendationItemWithBackground
-import com.serj.recommend.android.ui.components.post.RecommendationItemWithoutBackground
+import com.serj.recommend.android.ui.components.recommendationPreviews.RecommendationItem
 import com.serj.recommend.android.ui.styles.White
 
 @Composable
@@ -53,7 +50,7 @@ fun FeedScreen(
 @Composable
 fun FeedScreenContent(
     modifier: Modifier = Modifier,
-    currentRecommendations: List<MutableState<RecommendationItem?>>,
+    currentRecommendations: List<MutableState<RecommendationItem>>,
     recommendationsAmount: Int,
     openScreen: (String) -> Unit,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
@@ -81,62 +78,35 @@ fun FeedScreenContent(
         }
     ) { paddingValues ->
         if (currentRecommendations.isNotEmpty()) {
-            var isLoading by rememberSaveable { mutableStateOf(true) }
+            var isLoading by remember { mutableStateOf(true) }
             var currentRecommendationsAmount = 0
 
             LazyColumn(
                 modifier = Modifier
                     .padding(paddingValues)
-                    .padding(start = 5.dp, end = 5.dp)
             ) {
-                item {
-                    Spacer(modifier = Modifier.size(5.dp))
-                }
-
                 items(currentRecommendations) {
-                    val recommendationItem = it.value
-
-                    if (recommendationItem != null) {
-                        if (recommendationItem.backgroundImageReference != null ||
-                            recommendationItem.backgroundVideoReference != null) {
-                            RecommendationItemWithBackground(
-                                modifier = Modifier.padding(bottom = 15.dp),
-                                user = recommendationItem.user,
-                                date = recommendationItem.date,
-                                description = recommendationItem.description,
-                                backgroundImageReference = recommendationItem.backgroundImageReference,
-                                backgroundVideoReference = recommendationItem.backgroundVideoReference,
-                                title = recommendationItem.title,
-                                creator = recommendationItem.creator,
-                                coverType = recommendationItem.coverType,
-                                coverReference = recommendationItem.coverReference,
-                                recommendationId = recommendationItem.id,
-                                openScreen = openScreen,
-                                onRecommendationClick = onRecommendationClick
-                            )
-                        } else {
-                            RecommendationItemWithoutBackground(
-                                modifier = Modifier.padding(bottom = 15.dp),
-                                user = recommendationItem.user,
-                                date = recommendationItem.date,
-                                description = recommendationItem.description,
-                                title = recommendationItem.title,
-                                creator = recommendationItem.creator,
-                                coverType = recommendationItem.coverType,
-                                coverReference = recommendationItem.coverReference,
-                                recommendationId = recommendationItem.id,
-                                openScreen = openScreen,
-                                onRecommendationClick = onRecommendationClick
-                            )
-                        }
-                    }
-
+                    RecommendationItem(
+                        modifier = Modifier.padding(bottom = 10.dp),
+                        user = it.value.user,
+                        date = it.value.date,
+                        description = it.value.description,
+                        backgroundImageReference = it.value.backgroundImageReference,
+                        backgroundVideoReference = it.value.backgroundVideoReference,
+                        title = it.value.title,
+                        creator = it.value.creator,
+                        coverType = it.value.coverType,
+                        coverReference = it.value.coverReference,
+                        recommendationId = it.value.id,
+                        openScreen = openScreen,
+                        onRecommendationClick = onRecommendationClick
+                    )
                     currentRecommendationsAmount++
                     isLoading = currentRecommendationsAmount < recommendationsAmount
                 }
 
-                item {
-                    if (isLoading) {
+                if (isLoading) {
+                    item {
                         SmallLoadingIndicator(
                             modifier = Modifier
                                 .fillMaxWidth()
