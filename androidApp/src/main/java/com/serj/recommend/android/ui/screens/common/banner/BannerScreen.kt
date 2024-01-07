@@ -22,7 +22,7 @@ import com.serj.recommend.android.common.ext.bannerContentShape
 import com.serj.recommend.android.common.ext.screenPaddingsInner
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.items.RecommendationItem
-import com.serj.recommend.android.services.GetBannerByIdResponse
+import com.serj.recommend.android.services.BannerResponse
 import com.serj.recommend.android.services.model.Response.Failure
 import com.serj.recommend.android.services.model.Response.Success
 import com.serj.recommend.android.ui.components.loadingIndicators.LargeLoadingIndicator
@@ -57,7 +57,7 @@ fun BannerScreen(
 @Composable
 fun BannerScreenContent(
     modifier: Modifier = Modifier,
-    bannerResponse: GetBannerByIdResponse?,
+    bannerResponse: BannerResponse?,
     currentRecommendations: List<MutableState<RecommendationItem>>,
     recommendationsAmount: Int,
     openScreen: (String) -> Unit,
@@ -108,7 +108,7 @@ fun BannerScreenContent(
                         items(currentRecommendations) {
                             RecommendationItem(
                                 modifier = Modifier.padding(bottom = 10.dp),
-                                user = it.value.user,
+                                user = it.value.userItem,
                                 date = it.value.date,
                                 description = it.value.description,
                                 backgroundImageReference = it.value.backgroundImageReference,

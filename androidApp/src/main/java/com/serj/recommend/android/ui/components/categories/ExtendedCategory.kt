@@ -52,7 +52,7 @@ fun ExtendedCategory(
     onCategoryClick: ((String) -> Unit, String) -> Unit,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
 ) {
-    if (category.id != null && category.title != null) {
+    if (category.title != null) {
         var sizeImage by remember { mutableStateOf(IntSize.Zero) }
         var isLoading by rememberSaveable { mutableStateOf(true) }
         var currentItemsAmount = 0
@@ -91,7 +91,7 @@ fun ExtendedCategory(
                 modifier = Modifier
                     .screenPaddingsInner()
                     .padding(top = 10.dp, bottom = 10.dp)
-                    .align(Alignment.CenterStart)
+                    .align(Alignment.TopStart)
                     .clickable { onCategoryClick(openScreen, category.id) },
                 text = category.title,
                 color = if (category.backgroundImageReference != null)

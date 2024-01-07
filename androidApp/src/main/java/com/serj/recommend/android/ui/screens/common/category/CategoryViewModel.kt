@@ -12,7 +12,7 @@ import com.serj.recommend.android.common.ext.idFromParameter
 import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.items.RecommendationItem
-import com.serj.recommend.android.services.GetCategoryByIdResponse
+import com.serj.recommend.android.services.CategoryResponse
 import com.serj.recommend.android.services.LogService
 import com.serj.recommend.android.services.StorageService
 import com.serj.recommend.android.services.model.Response
@@ -27,7 +27,7 @@ class CategoryViewModel @Inject constructor(
     private val storageService: StorageService
 ) : RecommendViewModel(logService) {
 
-    val categoryResponse = mutableStateOf<GetCategoryByIdResponse?>(null)
+    val categoryResponse = mutableStateOf<CategoryResponse?>(null)
     val currentRecommendations = mutableStateListOf<MutableState<RecommendationItem>>()
     val currentRecommendationsAmount = mutableIntStateOf(0)
 

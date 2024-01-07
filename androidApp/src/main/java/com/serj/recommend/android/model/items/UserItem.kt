@@ -8,5 +8,6 @@ data class UserItem(
 
     val nickname: String? = null,
 
-    val photoReference: StorageReference? = null
+    val photoUrl: String? = null,
+    var photoReference: StorageReference? = null
 )

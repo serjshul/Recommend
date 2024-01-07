@@ -64,4 +64,6 @@
 
     <string name="error_cover_type">Wrong cover type</string>
     <string name="error_category_type">Wrong category type</string>
+
+    <string name="error_feed">Has no feed!</string>
 </resources>

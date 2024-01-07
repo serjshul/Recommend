@@ -5,36 +5,34 @@ import com.serj.recommend.android.model.Banner
 import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.items.RecommendationItem
-import com.serj.recommend.android.model.items.RecommendationPreviewItem
+import com.serj.recommend.android.model.items.RecommendationPreview
 import com.serj.recommend.android.model.items.UserItem
 import com.serj.recommend.android.services.model.Response
 import kotlinx.coroutines.flow.Flow
-import java.util.Date
 
-typealias GetRecommendationByIdResponse = Response<Recommendation?>
-typealias GetBannerByIdResponse = Response<Banner?>
-typealias GetCategoryByIdResponse = Response<Category?>
-typealias GetRecommendationItemByIdResponse = Response<RecommendationItem?>
-typealias GetRecommendationPreviewByIdResponse = Response<RecommendationPreviewItem?>
-typealias GetUserItemByUidResponse = Response<UserItem?>
-typealias GetFollowingRecommendationsIdsResponse = Response<List<Pair<String, Date>>>
-typealias GetStorageReferenceFromUrlResponse = Response<StorageReference>
+typealias RecommendationResponse = Response<Recommendation?>
+typealias BannerResponse = Response<Banner?>
+typealias CategoryResponse = Response<Category?>
+typealias RecommendationItemResponse = Response<RecommendationItem?>
+typealias RecommendationPreviewResponse = Response<RecommendationPreview?>
+typealias UserItemResponse = Response<UserItem?>
+typealias FollowingRecommendationsIdsResponse = Response<List<String>>
+typealias StorageReferenceFromUrlResponse = Response<StorageReference>
 
 interface StorageService {
 
-    val recommendations: Flow<List<Recommendation>>
     val banners: Flow<List<Banner>>
     val categories: Flow<List<Category>>
 
-    suspend fun getRecommendationById(recommendationId: String): GetRecommendationByIdResponse
-    suspend fun getBannerById(bannerId: String): GetBannerByIdResponse
-    suspend fun getCategoryById(categoryId: String): GetCategoryByIdResponse
+    suspend fun getRecommendationById(recommendationId: String): RecommendationResponse
+    suspend fun getBannerById(bannerId: String): BannerResponse
+    suspend fun getCategoryById(categoryId: String): CategoryResponse
 
-    suspend fun getRecommendationItemById(recommendationId: String): GetRecommendationItemByIdResponse
-    suspend fun getRecommendationPreviewById(recommendationId: String): GetRecommendationPreviewByIdResponse
-    suspend fun getUserItemByUid(uid: String): GetUserItemByUidResponse
+    suspend fun getRecommendationItemById(recommendationId: String): RecommendationItemResponse
+    suspend fun getRecommendationPreviewById(recommendationId: String): RecommendationPreviewResponse
+    suspend fun getUserItemByUid(uid: String): UserItemResponse
 
-    suspend fun getFollowingRecommendationsIds(followingUid: String): GetFollowingRecommendationsIdsResponse
+    suspend fun getFollowingRecommendationsIds(followingUids: List<String>): FollowingRecommendationsIdsResponse
 
-    fun getStorageReferenceFromUrl(url: String): GetStorageReferenceFromUrlResponse
+    fun getStorageReferenceFromUrl(url: String): StorageReferenceFromUrlResponse
 }

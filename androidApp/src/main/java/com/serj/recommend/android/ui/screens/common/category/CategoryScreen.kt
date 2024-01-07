@@ -32,7 +32,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.serj.recommend.android.R
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.items.RecommendationItem
-import com.serj.recommend.android.services.GetCategoryByIdResponse
+import com.serj.recommend.android.services.CategoryResponse
 import com.serj.recommend.android.services.model.Response.Failure
 import com.serj.recommend.android.services.model.Response.Success
 import com.serj.recommend.android.ui.components.loadingIndicators.LargeLoadingIndicator
@@ -65,7 +65,7 @@ fun CategoryScreen(
 @Composable
 fun CategoryScreenContent(
     modifier: Modifier = Modifier,
-    categoryResponse: GetCategoryByIdResponse?,
+    categoryResponse: CategoryResponse?,
     currentRecommendations: List<MutableState<RecommendationItem>>,
     recommendationsAmount: Int,
     openScreen: (String) -> Unit,
@@ -105,7 +105,7 @@ fun CategoryScreenContent(
                     items(currentRecommendations) {
                         RecommendationItem(
                             modifier = Modifier.padding(bottom = 10.dp),
-                            user = it.value.user,
+                            user = it.value.userItem,
                             date = it.value.date,
                             description = it.value.description,
                             backgroundImageReference = it.value.backgroundImageReference,

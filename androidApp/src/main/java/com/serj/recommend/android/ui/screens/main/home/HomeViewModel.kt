@@ -13,6 +13,7 @@ import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.services.LogService
 import com.serj.recommend.android.services.StorageService
 import com.serj.recommend.android.services.model.Response
+import com.serj.recommend.android.ui.components.media.BackgroundTypes
 import com.serj.recommend.android.ui.screens.RecommendViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -51,8 +52,27 @@ class HomeViewModel @Inject constructor(
                 currentCategoriesAmount.intValue = shuffledCategories.size
 
                 for (category in shuffledCategories) {
-                    val currentCategory = category
-                    val shuffledRecommendationIds = currentCategory
+                    if (category.backgroundUrl[BackgroundTypes.image.name] != null) {
+                        val categoryBackgroundImageResponse = storageService
+                            .getStorageReferenceFromUrl(
+                                category.backgroundUrl[BackgroundTypes.image.name]!!
+                            )
+                        if (categoryBackgroundImageResponse is Response.Success &&
+                            categoryBackgroundImageResponse.data != null) {
+                            category.backgroundImageReference = categoryBackgroundImageResponse.data
+                        }
+                    }
+                    if (category.backgroundUrl[BackgroundTypes.video.name] != null) {
+                        val categoryBackgroundVideoResponse = storageService
+                            .getStorageReferenceFromUrl(
+                                category.backgroundUrl[BackgroundTypes.video.name]!!
+                            )
+                        if (categoryBackgroundVideoResponse is Response.Success &&
+                            categoryBackgroundVideoResponse.data != null) {
+                            category.backgroundVideoReference = categoryBackgroundVideoResponse.data
+                        }
+                    }
+                    val shuffledRecommendationIds = category
                         .recommendationIds.shuffled()
                     for (i in shuffledRecommendationIds.indices) {
                         if (i < AMOUNT_THRESHOLD) {
@@ -60,11 +80,11 @@ class HomeViewModel @Inject constructor(
                                 .getRecommendationPreviewById(shuffledRecommendationIds[i])
                             if (recommendationPreviewResponse is Response.Success &&
                                 recommendationPreviewResponse.data != null) {
-                                currentCategory.content.add(recommendationPreviewResponse.data)
+                                category.content.add(recommendationPreviewResponse.data)
                             }
                         } else break
                     }
-                    currentCategories.add(currentCategory)
+                    currentCategories.add(category)
                 }
             }
         }

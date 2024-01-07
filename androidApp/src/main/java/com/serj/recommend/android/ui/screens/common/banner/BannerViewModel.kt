@@ -12,7 +12,7 @@ import com.serj.recommend.android.common.ext.idFromParameter
 import com.serj.recommend.android.model.Banner
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.items.RecommendationItem
-import com.serj.recommend.android.services.GetBannerByIdResponse
+import com.serj.recommend.android.services.BannerResponse
 import com.serj.recommend.android.services.LogService
 import com.serj.recommend.android.services.StorageService
 import com.serj.recommend.android.services.model.Response.Success
@@ -27,7 +27,7 @@ class BannerViewModel @Inject constructor(
     private val storageService: StorageService
 ) : RecommendViewModel(logService) {
 
-    val bannerResponse = mutableStateOf<GetBannerByIdResponse?>(null)
+    val bannerResponse = mutableStateOf<BannerResponse?>(null)
     val currentRecommendations = mutableStateListOf<MutableState<RecommendationItem>>()
     val currentRecommendationsAmount = mutableIntStateOf(0)
 

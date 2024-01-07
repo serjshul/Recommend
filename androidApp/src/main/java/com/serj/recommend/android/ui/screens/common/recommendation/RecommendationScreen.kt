@@ -24,7 +24,7 @@ import com.serj.recommend.android.common.ext.recommendationContentShape
 import com.serj.recommend.android.common.ext.screenPaddingsInner
 import com.serj.recommend.android.common.ext.screenPaddingsOuter
 import com.serj.recommend.android.common.ext.toColor
-import com.serj.recommend.android.services.GetRecommendationByIdResponse
+import com.serj.recommend.android.services.RecommendationResponse
 import com.serj.recommend.android.services.model.Response.Failure
 import com.serj.recommend.android.services.model.Response.Success
 import com.serj.recommend.android.ui.components.loadingIndicators.LargeLoadingIndicator
@@ -57,7 +57,7 @@ fun RecommendationScreen(
 @Composable
 fun RecommendationScreenContent(
     modifier: Modifier = Modifier,
-    recommendationResponse: GetRecommendationByIdResponse?,
+    recommendationResponse: RecommendationResponse?,
     popUpScreen: () -> Unit
 ) {
     when (recommendationResponse) {

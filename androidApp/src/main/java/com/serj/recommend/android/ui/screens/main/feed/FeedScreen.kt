@@ -12,7 +12,6 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,7 +36,7 @@ fun FeedScreen(
 ) {
     val currentRecommendations = viewModel.currentRecommendations
     val currentRecommendationsAmount = viewModel.currentRecommendationsAmount.intValue
-    
+
     FeedScreenContent(
         currentRecommendations = currentRecommendations,
         recommendationsAmount = currentRecommendationsAmount,
@@ -49,7 +48,7 @@ fun FeedScreen(
 @Composable
 fun FeedScreenContent(
     modifier: Modifier = Modifier,
-    currentRecommendations: List<MutableState<RecommendationItem>>,
+    currentRecommendations: List<RecommendationItem>,
     recommendationsAmount: Int,
     openScreen: (String) -> Unit,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
@@ -86,16 +85,16 @@ fun FeedScreenContent(
             items(currentRecommendations) {
                 RecommendationItem(
                     modifier = Modifier.padding(bottom = 10.dp),
-                    user = it.value.user,
-                    date = it.value.date,
-                    description = it.value.description,
-                    backgroundImageReference = it.value.backgroundImageReference,
-                    backgroundVideoReference = it.value.backgroundVideoReference,
-                    title = it.value.title,
-                    creator = it.value.creator,
-                    coverType = it.value.coverType,
-                    coverReference = it.value.coverReference,
-                    recommendationId = it.value.id,
+                    user = it.userItem,
+                    date = it.date,
+                    description = it.description,
+                    backgroundImageReference = it.backgroundImageReference,
+                    backgroundVideoReference = it.backgroundVideoReference,
+                    title = it.title,
+                    creator = it.creator,
+                    coverType = it.coverType,
+                    coverReference = it.coverReference,
+                    recommendationId = it.id,
                     openScreen = openScreen,
                     onRecommendationClick = onRecommendationClick
                 )
