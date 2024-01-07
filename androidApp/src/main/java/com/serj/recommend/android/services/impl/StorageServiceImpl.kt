@@ -1,5 +1,7 @@
 package com.serj.recommend.android.services.impl
 
+import android.content.ContentValues
+import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.dataObjects
@@ -171,7 +173,8 @@ class StorageServiceImpl @Inject constructor(
     }
 
     override suspend fun getRecommendationPreviewById(
-        recommendationId: String
+        recommendationId: String,
+        coverType: String
     ): RecommendationPreviewResponse {
         return try {
             val recommendationPreviewSnapshot = firestore
@@ -182,9 +185,12 @@ class StorageServiceImpl @Inject constructor(
             val data = recommendationPreviewSnapshot.toObject<RecommendationPreview>()
 
             if (data != null) {
-                val coverType = getCoverType(data.coversUrl)
-                data.coverType = coverType
-                data.coverReference = data.coversUrl[coverType]
+                val availableCoverTypes = getAvailableCoverTypes(data.coversUrl)
+                val currentCoverType = if (availableCoverTypes.contains(coverType)) coverType
+                else getCoverType(data.coversUrl)
+                Log.v(ContentValues.TAG, data.coversUrl.toString())
+                data.coverType = currentCoverType
+                data.coverReference = data.coversUrl[currentCoverType]
                     ?.let { storage.getReferenceFromUrl(it) }
                 Success(data)
             } else {
@@ -260,17 +266,23 @@ class StorageServiceImpl @Inject constructor(
         }
     }
 
-    private fun getCoverType(coversUrl: HashMap<String, String>): String {
+    private fun getCoverType(
+        coversUrl: HashMap<String, String>
+    ): String {
         return when {
             coversUrl[ItemsShapes.square.name] != null ->
                 ItemsShapes.square.name
-            coversUrl[ItemsShapes.horizontal.name] != null ->
-                ItemsShapes.horizontal.name
             coversUrl[ItemsShapes.vertical.name] != null ->
                 ItemsShapes.vertical.name
+            coversUrl[ItemsShapes.horizontal.name] != null ->
+                ItemsShapes.horizontal.name
             else -> ItemsShapes.horizontal.name
         }
     }
+
+    private fun getAvailableCoverTypes(
+        coversUrl: HashMap<String, String>
+    ): List<String> = coversUrl.keys.toList()
 
     companion object {
         private const val RECOMMENDATIONS_COLLECTION = "recommendations"

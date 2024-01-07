@@ -111,7 +111,7 @@ fun ExtendedCategory(
                 }
 
                 items(category.content) {
-                    when (it.coverType) {
+                    when (category.coverType) {
                         ItemsShapes.horizontal.name -> {
                             HorizontalItemTransparent(
                                 modifier = Modifier.categoryItemsInterval(),

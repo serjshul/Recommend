@@ -47,7 +47,7 @@ fun OrdinaryCategory(
     var isLoading by rememberSaveable { mutableStateOf(true) }
     var currentItemsAmount = 0
 
-    if (category.id != null && category.title != null) {
+    if (category.title != null) {
         Column(
             modifier = modifier.itemsInterval()
         ) {
@@ -71,7 +71,7 @@ fun OrdinaryCategory(
                 }
 
                 items(category.content) {
-                    when (it.coverType) {
+                    when (category.coverType) {
                         ItemsShapes.square.name -> {
                             SquareItemTransparent(
                                 modifier = Modifier.categoryItemsInterval(),

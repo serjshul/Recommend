@@ -24,15 +24,19 @@ interface StorageService {
     val banners: Flow<List<Banner>>
     val categories: Flow<List<Category>>
 
-    suspend fun getRecommendationById(recommendationId: String): RecommendationResponse
+    suspend fun getRecommendationById(recommendationId: String):
+            RecommendationResponse
     suspend fun getBannerById(bannerId: String): BannerResponse
     suspend fun getCategoryById(categoryId: String): CategoryResponse
 
-    suspend fun getRecommendationItemById(recommendationId: String): RecommendationItemResponse
-    suspend fun getRecommendationPreviewById(recommendationId: String): RecommendationPreviewResponse
+    suspend fun getRecommendationItemById(recommendationId: String):
+            RecommendationItemResponse
+    suspend fun getRecommendationPreviewById(recommendationId: String, coverType: String):
+            RecommendationPreviewResponse
     suspend fun getUserItemByUid(uid: String): UserItemResponse
 
-    suspend fun getFollowingRecommendationsIds(followingUids: List<String>): FollowingRecommendationsIdsResponse
+    suspend fun getFollowingRecommendationsIds(followingUids: List<String>):
+            FollowingRecommendationsIdsResponse
 
     fun getStorageReferenceFromUrl(url: String): StorageReferenceFromUrlResponse
 }

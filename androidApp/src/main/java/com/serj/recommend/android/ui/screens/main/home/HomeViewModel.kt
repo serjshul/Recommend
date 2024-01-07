@@ -77,7 +77,10 @@ class HomeViewModel @Inject constructor(
                     for (i in shuffledRecommendationIds.indices) {
                         if (i < AMOUNT_THRESHOLD) {
                             val recommendationPreviewResponse = storageService
-                                .getRecommendationPreviewById(shuffledRecommendationIds[i])
+                                .getRecommendationPreviewById(
+                                    shuffledRecommendationIds[i],
+                                    category.coverType
+                                )
                             if (recommendationPreviewResponse is Response.Success &&
                                 recommendationPreviewResponse.data != null) {
                                 category.content.add(recommendationPreviewResponse.data)

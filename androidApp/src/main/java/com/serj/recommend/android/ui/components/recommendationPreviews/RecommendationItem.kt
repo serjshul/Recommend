@@ -163,7 +163,8 @@ fun RecommendationItem(
                         start = 15.dp,
                         top = if (backgroundSize.height == 0) 75.dp
                         else with(LocalDensity.current) { backgroundSize.height.toDp() -
-                                coverSize.height.toDp() / 3 }
+                                coverSize.height.toDp() / 3 },
+                        end = 15.dp
                     )
             ) {
                 Row {
@@ -228,7 +229,7 @@ fun RecommendationItem(
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(start = 10.dp)
+                            .padding(start = 10.dp, )
                             .align(Alignment.Bottom)
                     ) {
                         Text(
