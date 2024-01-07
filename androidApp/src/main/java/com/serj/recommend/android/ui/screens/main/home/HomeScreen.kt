@@ -9,7 +9,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -54,7 +53,7 @@ fun HomeScreen(
 fun HomeScreenContent(
     modifier: Modifier = Modifier,
     banner: Banner?,
-    categories: List<MutableState<Category>>,
+    categories: List<Category>,
     categoriesAmount: Int,
     openScreen: (String) -> Unit,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit,
@@ -81,11 +80,11 @@ fun HomeScreenContent(
                     )
                 }
 
-                items(categories) { category ->
-                    when (category.value.type) {
+                items(categories, key = { it.id }) { category ->
+                    when (category.type) {
                         CategoryTypes.extended.name -> {
                             ExtendedCategory(
-                                category = category.value,
+                                category = category,
                                 openScreen = openScreen,
                                 onRecommendationClick = onRecommendationClick,
                                 onCategoryClick = onCategoryClick
@@ -93,7 +92,7 @@ fun HomeScreenContent(
                         }
                         CategoryTypes.pager.name -> {
                             PagerCategory(
-                                category = category.value,
+                                category = category,
                                 openScreen = openScreen,
                                 onRecommendationClick = onRecommendationClick,
                                 onCategoryClick = onCategoryClick
@@ -101,7 +100,7 @@ fun HomeScreenContent(
                         }
                         else -> {
                             OrdinaryCategory(
-                                category = category.value,
+                                category = category,
                                 openScreen = openScreen,
                                 onRecommendationClick = onRecommendationClick,
                                 onCategoryClick = onCategoryClick

@@ -14,13 +14,15 @@ data class RecommendationItem(
     val description: String? = null,
     val date: Date? = null,
 
-    val coverType: String? = ItemsShapes.horizontal.name,
-    val coverReference: StorageReference? = null,
+    val coversUrl: HashMap<String, String> = hashMapOf(),
+    var coverReference: StorageReference? = null,
+    var coverType: String? = ItemsShapes.horizontal.name,
 
-    val backgroundImageReference: StorageReference? = null,
-    val backgroundVideoReference: StorageReference? = null,
+    val backgroundUrl: HashMap<String, String> = hashMapOf(),
+    var backgroundImageReference: StorageReference? = null,
+    var backgroundVideoReference: StorageReference? = null,
 
-    var user: UserItem? = null,
+    var userItem: UserItem? = null,
 
     val isLiked: Boolean = false,
     val isReposted: Boolean = false,

@@ -1,9 +1,8 @@
 package com.serj.recommend.android.ui.screens.main.feed
 
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
+import com.serj.recommend.android.R
 import com.serj.recommend.android.RecommendRoutes
 import com.serj.recommend.android.common.Constants.RECOMMENDATION_ID
 import com.serj.recommend.android.model.Recommendation
@@ -11,44 +10,48 @@ import com.serj.recommend.android.model.items.RecommendationItem
 import com.serj.recommend.android.services.AccountService
 import com.serj.recommend.android.services.LogService
 import com.serj.recommend.android.services.StorageService
+import com.serj.recommend.android.services.model.Response
+import com.serj.recommend.android.ui.components.snackbar.SnackbarManager
 import com.serj.recommend.android.ui.screens.RecommendViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
 class FeedViewModel @Inject constructor(
-    private val logService: LogService,
+    logService: LogService,
     private val storageService: StorageService,
     private val accountService: AccountService
 ) : RecommendViewModel(logService) {
 
-    private val currentUser = accountService.currentUser
-    val currentRecommendations = mutableStateListOf<MutableState<RecommendationItem>>()
+    val currentRecommendations = mutableStateListOf<RecommendationItem>()
     val currentRecommendationsAmount = mutableIntStateOf(0)
 
     init {
         launchCatching {
-            currentUser.collect {user ->
-                val followingRecommendationsIds = arrayListOf<Pair<String, Date>>()
-
+            accountService.currentUser.collect {user ->
                 if (user.following != null) {
-                    for (followingUid in user.following) {
-                        followingRecommendationsIds.addAll(
-                            storageService.getFollowingRecommendationsIds(followingUid)
-                        )
-                    }
-                }
-                currentRecommendationsAmount.intValue = followingRecommendationsIds.size
-                followingRecommendationsIds.sortByDescending { it.second }
-
-                for (recommendationId in followingRecommendationsIds) {
-                    val currentRecommendationItem = storageService
-                        .getRecommendationItemById(recommendationId.first)
-                    if (currentRecommendationItem != null) {
-                        currentRecommendations.add(
-                            mutableStateOf(currentRecommendationItem)
-                        )
+                    val followingRecommendationsIdsResponse =
+                        storageService.getFollowingRecommendationsIds(user.following)
+                    when (followingRecommendationsIdsResponse) {
+                        is Response.Success -> {
+                            if (followingRecommendationsIdsResponse.data != null) {
+                                currentRecommendationsAmount.intValue =
+                                    followingRecommendationsIdsResponse.data.size
+                                for (followingId in followingRecommendationsIdsResponse.data) {
+                                    val recommendationItemResponse = storageService
+                                        .getRecommendationItemById(followingId)
+                                    if (recommendationItemResponse is Response.Success &&
+                                        recommendationItemResponse.data != null) {
+                                        currentRecommendations.add(
+                                            recommendationItemResponse.data
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                        else -> {
+                            SnackbarManager.showMessage(R.string.error_feed)
+                        }
                     }
                 }
             }

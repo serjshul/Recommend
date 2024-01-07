@@ -22,9 +22,9 @@ data class Recommendation(
     val date: Date? = null,
     val color: String? = null,
 
-    var coverType: String? = null,
     val coversUrl: HashMap<String, String> = hashMapOf(),
     val coverReference: StorageReference? = null,
+    var coverType: String? = null,
 
     val backgroundUrl: HashMap<String, String> = hashMapOf(),
     var backgroundImageReference: StorageReference? = null,

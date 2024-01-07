@@ -1,6 +1,5 @@
 package com.serj.recommend.android.ui.screens.main.home
 
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -13,6 +12,8 @@ import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.services.LogService
 import com.serj.recommend.android.services.StorageService
+import com.serj.recommend.android.services.model.Response
+import com.serj.recommend.android.ui.components.media.BackgroundTypes
 import com.serj.recommend.android.ui.screens.RecommendViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -24,7 +25,7 @@ class HomeViewModel @Inject constructor(
 ) : RecommendViewModel(logService) {
 
     private val categories = storageService.categories
-    val currentCategories = mutableStateListOf<MutableState<Category>>()
+    val currentCategories = mutableStateListOf<Category>()
     val currentCategoriesAmount = mutableIntStateOf(0)
 
     private val banners = storageService.banners
@@ -34,8 +35,12 @@ class HomeViewModel @Inject constructor(
         launchCatching {
             banners.collect { banners ->
                 val randomBanner = banners.random()
-                randomBanner.coverReference = randomBanner.coverUrl?.let {
+                val coverReferenceResponse = randomBanner.coverUrl?.let {
                     storageService.getStorageReferenceFromUrl(it)
+                }
+                if (coverReferenceResponse is Response.Success &&
+                    coverReferenceResponse.data != null) {
+                    randomBanner.coverReference =coverReferenceResponse.data
                 }
                 currentBanner.value = randomBanner
             }
@@ -47,20 +52,42 @@ class HomeViewModel @Inject constructor(
                 currentCategoriesAmount.intValue = shuffledCategories.size
 
                 for (category in shuffledCategories) {
-                    val currentCategory = mutableStateOf(category)
-                    currentCategories.add(currentCategory)
-
-                    val shuffledRecommendationIds = currentCategory.value
+                    if (category.backgroundUrl[BackgroundTypes.image.name] != null) {
+                        val categoryBackgroundImageResponse = storageService
+                            .getStorageReferenceFromUrl(
+                                category.backgroundUrl[BackgroundTypes.image.name]!!
+                            )
+                        if (categoryBackgroundImageResponse is Response.Success &&
+                            categoryBackgroundImageResponse.data != null) {
+                            category.backgroundImageReference = categoryBackgroundImageResponse.data
+                        }
+                    }
+                    if (category.backgroundUrl[BackgroundTypes.video.name] != null) {
+                        val categoryBackgroundVideoResponse = storageService
+                            .getStorageReferenceFromUrl(
+                                category.backgroundUrl[BackgroundTypes.video.name]!!
+                            )
+                        if (categoryBackgroundVideoResponse is Response.Success &&
+                            categoryBackgroundVideoResponse.data != null) {
+                            category.backgroundVideoReference = categoryBackgroundVideoResponse.data
+                        }
+                    }
+                    val shuffledRecommendationIds = category
                         .recommendationIds.shuffled()
                     for (i in shuffledRecommendationIds.indices) {
                         if (i < AMOUNT_THRESHOLD) {
-                            storageService
-                                .getRecommendationPreviewById(shuffledRecommendationIds[i])
-                                ?.let {
-                                    currentCategory.value.content.add(it)
-                                }
+                            val recommendationPreviewResponse = storageService
+                                .getRecommendationPreviewById(
+                                    shuffledRecommendationIds[i],
+                                    category.coverType
+                                )
+                            if (recommendationPreviewResponse is Response.Success &&
+                                recommendationPreviewResponse.data != null) {
+                                category.content.add(recommendationPreviewResponse.data)
+                            }
                         } else break
                     }
+                    currentCategories.add(category)
                 }
             }
         }
