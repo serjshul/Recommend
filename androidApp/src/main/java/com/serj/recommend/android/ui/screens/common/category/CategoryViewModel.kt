@@ -40,11 +40,11 @@ class CategoryViewModel @Inject constructor(
 
                 if (categoryResponse.value is Response.Success) {
                     val currentCategory = (categoryResponse.value as Response.Success<Category?>).data
-                    if (currentCategory?.recommendationIds?.size != null) {
+                    if (currentCategory?.recommendationsIds?.size != null) {
                         currentRecommendationsAmount.intValue =
-                            currentCategory.recommendationIds.size
+                            currentCategory.recommendationsIds.size
                     }
-                    for (recommendationId in currentCategory?.recommendationIds!!) {
+                    for (recommendationId in currentCategory?.recommendationsIds!!) {
                         val currentRecommendationItemResponse =
                             storageService.getRecommendationItemById(recommendationId)
                         if (currentRecommendationItemResponse is Response.Success &&
