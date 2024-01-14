@@ -123,7 +123,7 @@ fun HeaderTopBar(
                 .padding(20.dp)
                 .align(Alignment.TopStart)
                 .clickable { popUpScreen() },
-            painter = painterResource(id = R.drawable.icon_arrow_back_white),
+            painter = painterResource(id = R.drawable.ic_arrow_back_white),
             contentDescription = "button_back",
             contentScale = ContentScale.Crop
         )

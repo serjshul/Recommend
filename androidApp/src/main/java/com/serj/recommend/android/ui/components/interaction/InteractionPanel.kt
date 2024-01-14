@@ -77,8 +77,8 @@ fun InteractionPanel(
 
             Icon(
                 ImageVector.vectorResource(
-                    id = if (isLiked.value) R.drawable.icon_like_1
-                    else R.drawable.icon_like_bordered_1
+                    id = if (isLiked.value) R.drawable.interaction_like_filled
+                    else R.drawable.interaction_like_bordered
                 ),
                 contentDescription = "like",
                 tint = tint,
@@ -107,7 +107,7 @@ fun InteractionPanel(
             ) { 29.dp }
 
             Icon(
-                ImageVector.vectorResource(id = R.drawable.icon_comment_1),
+                ImageVector.vectorResource(id = R.drawable.interaction_comment),
                 contentDescription = "Comment",
                 tint = Black,
                 modifier = Modifier.size(size)
@@ -142,7 +142,7 @@ fun InteractionPanel(
             ) { 29.dp }
 
             Icon(
-                ImageVector.vectorResource(id = R.drawable.icon_repost_1),
+                ImageVector.vectorResource(id = R.drawable.interaction_repost),
                 contentDescription = "Repost",
                 tint = tint,
                 modifier = Modifier.size(size)

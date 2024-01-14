@@ -163,7 +163,7 @@ fun CategoryTitle(
                 .padding(20.dp)
                 .align(Alignment.CenterStart)
                 .clickable { popUpScreen() },
-            painter = painterResource(id = R.drawable.icon_arrow_back_black),
+            painter = painterResource(id = R.drawable.ic_arrow_back_black),
             contentDescription = "button_back",
             contentScale = ContentScale.Crop
         )
