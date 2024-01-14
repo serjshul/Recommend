@@ -39,7 +39,7 @@ fun InteractionPanel(
     tintData: Color = Black
 ) {
     val isLiked = remember { mutableStateOf(false) }
-    val isReposted = remember { mutableStateOf(false) }
+    val isCommented = remember { mutableStateOf(false) }
 
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -49,8 +49,7 @@ fun InteractionPanel(
             checked = isLiked.value,
             onCheckedChange = {
                 isLiked.value = !isLiked.value
-            },
-            modifier = Modifier.padding(end = 5.dp)
+            }
         ) {
             val transition = updateTransition(isLiked.value, label = "likeTransition")
             val tint by transition.animateColor(label = "likeTint") { isLiked ->
@@ -62,9 +61,9 @@ fun InteractionPanel(
                         keyframes {
                             durationMillis = 250
                             29.dp at 0 with LinearOutSlowInEasing
-                            34.dp at 15 with FastOutLinearInEasing
-                            39.dp at 75
-                            34.dp at 150
+                            32.dp at 15 with FastOutLinearInEasing
+                            35.dp at 75
+                            32.dp at 150
                         }
                     } else {
                         spring(stiffness = Spring.StiffnessVeryLow)
@@ -84,16 +83,31 @@ fun InteractionPanel(
             )
         }
 
-        IconButton(
-            modifier = Modifier
-                .padding(top = 3.dp, end = 8.dp)
-                .size(34.dp),
-            onClick = { }
+        IconToggleButton(
+            checked = isCommented.value,
+            onCheckedChange = {
+                isCommented.value = !isCommented.value
+            }
         ) {
+            val transition = updateTransition(isCommented.value, label = "CommentTransition")
+            val size by transition.animateDp(
+                transitionSpec = {
+                    keyframes {
+                        durationMillis = 250
+                        29.dp at 0 with LinearOutSlowInEasing
+                        32.dp at 15 with FastOutLinearInEasing
+                        35.dp at 75
+                        32.dp at 150
+                    }
+                },
+                label = "CommentSize"
+            ) { 29.dp }
+
             Icon(
                 ImageVector.vectorResource(id = R.drawable.icon_comment_1),
                 contentDescription = "Comment",
-                tint = tintData
+                tint = Black,
+                modifier = Modifier.size(size)
             )
         }
 
