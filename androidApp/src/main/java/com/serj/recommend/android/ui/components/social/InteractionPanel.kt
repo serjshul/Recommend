@@ -10,11 +10,10 @@ import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.IconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.runtime.Composable
@@ -40,10 +39,12 @@ fun InteractionPanel(
 ) {
     val isLiked = remember { mutableStateOf(false) }
     val isCommented = remember { mutableStateOf(false) }
+    val isReposted = remember { mutableStateOf(false) }
 
     Row(
         modifier = modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Start
     ) {
         IconToggleButton(
             checked = isLiked.value,
@@ -111,16 +112,38 @@ fun InteractionPanel(
             )
         }
 
-        IconButton(
-            modifier = Modifier
-                .padding(top = 3.dp)
-                .size(34.dp),
-            onClick = { }
+        IconToggleButton(
+            checked = isReposted.value,
+            onCheckedChange = {
+                isReposted.value = !isReposted.value
+            }
         ) {
+            val transition = updateTransition(isReposted.value, label = "repostTransition")
+            val tint by transition.animateColor(label = "repostTint") { isLiked ->
+                if (isReposted.value) Color.Green else Color.Black
+            }
+            val size by transition.animateDp(
+                transitionSpec = {
+                    if (false isTransitioningTo true) {
+                        keyframes {
+                            durationMillis = 250
+                            29.dp at 0 with LinearOutSlowInEasing
+                            32.dp at 15 with FastOutLinearInEasing
+                            35.dp at 75
+                            32.dp at 150
+                        }
+                    } else {
+                        spring(stiffness = Spring.StiffnessVeryLow)
+                    }
+                },
+                label = "repostSize"
+            ) { 29.dp }
+
             Icon(
                 ImageVector.vectorResource(id = R.drawable.icon_repost_1),
                 contentDescription = "Repost",
-                tint = tintData
+                tint = tint,
+                modifier = Modifier.size(size)
             )
         }
     }
