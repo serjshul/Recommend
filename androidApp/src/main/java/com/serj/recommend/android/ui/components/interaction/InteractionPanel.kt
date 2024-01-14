@@ -1,4 +1,4 @@
-package com.serj.recommend.android.ui.components.social
+package com.serj.recommend.android.ui.components.interaction
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.animateColor
@@ -29,6 +29,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.serj.recommend.android.R
 import com.serj.recommend.android.ui.styles.Black
+import com.serj.recommend.android.ui.styles.KiriumeRed
+import com.serj.recommend.android.ui.styles.Red
 import com.serj.recommend.android.ui.styles.White
 
 @SuppressLint("UnusedTransitionTargetStateParameter")
@@ -54,7 +56,7 @@ fun InteractionPanel(
         ) {
             val transition = updateTransition(isLiked.value, label = "likeTransition")
             val tint by transition.animateColor(label = "likeTint") { isLiked ->
-                if (isLiked) Color.Red else Color.Black
+                if (isLiked) Red else Black
             }
             val size by transition.animateDp(
                 transitionSpec = {
@@ -120,7 +122,7 @@ fun InteractionPanel(
         ) {
             val transition = updateTransition(isReposted.value, label = "repostTransition")
             val tint by transition.animateColor(label = "repostTint") { isLiked ->
-                if (isReposted.value) Color.Green else Color.Black
+                if (isReposted.value) KiriumeRed else Black
             }
             val size by transition.animateDp(
                 transitionSpec = {
@@ -153,7 +155,6 @@ fun InteractionPanel(
 @Composable
 fun InteractionPanelPreview() {
     InteractionPanel(
-        modifier = Modifier
-            .background(White)
+        modifier = Modifier.background(White)
     )
 }

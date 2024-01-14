@@ -28,8 +28,8 @@ import com.serj.recommend.android.services.RecommendationResponse
 import com.serj.recommend.android.services.model.Response.Failure
 import com.serj.recommend.android.services.model.Response.Success
 import com.serj.recommend.android.ui.components.loadingIndicators.LargeLoadingIndicator
-import com.serj.recommend.android.ui.components.social.InfoPanel
-import com.serj.recommend.android.ui.components.social.InteractionPanel
+import com.serj.recommend.android.ui.screens.common.recommendation.components.InfoPanel
+import com.serj.recommend.android.ui.components.interaction.InteractionPanel
 import com.serj.recommend.android.ui.screens.common.recommendation.components.Description
 import com.serj.recommend.android.ui.screens.common.recommendation.components.Header
 import com.serj.recommend.android.ui.screens.common.recommendation.components.Paragraphs

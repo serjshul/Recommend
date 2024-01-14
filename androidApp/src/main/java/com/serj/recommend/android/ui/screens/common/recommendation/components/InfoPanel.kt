@@ -1,4 +1,4 @@
-package com.serj.recommend.android.ui.components.social
+package com.serj.recommend.android.ui.screens.common.recommendation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.material3.Text
