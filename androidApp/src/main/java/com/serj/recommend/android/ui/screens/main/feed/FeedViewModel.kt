@@ -1,7 +1,5 @@
 package com.serj.recommend.android.ui.screens.main.feed
 
-import android.content.ContentValues.TAG
-import android.util.Log
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -38,7 +36,6 @@ class FeedViewModel @Inject constructor(
                 val currentLikedIds = user.likedIds
                 val followingRecommendationsIdsResponse = storageService
                     .getFollowingRecommendationsIds(user.following)
-                Log.v(TAG, followingRecommendationsIdsResponse.toString())
 
                 if (followingRecommendationsIdsResponse is Response.Success &&
                     followingRecommendationsIdsResponse.data != null) {
@@ -60,7 +57,7 @@ class FeedViewModel @Inject constructor(
     }
 
     fun onLikeClick(isLiked: Boolean, uid: String, recommendationId: String) =
-        storageService.setLikeToRecommendation(isLiked, uid, recommendationId)
+        storageService.likeOrUnlikeRecommendation(isLiked, uid, recommendationId)
 
     fun onRecommendationClick(openScreen: (String) -> Unit, recommendation: Recommendation) {
         openScreen("${RecommendRoutes.RecommendationScreen.name}?$RECOMMENDATION_ID={${recommendation.id}}")

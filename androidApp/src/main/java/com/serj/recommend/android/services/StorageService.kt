@@ -18,7 +18,7 @@ typealias GetRecommendationPreviewResponse = Response<RecommendationPreview?>
 typealias GetUserItemResponse = Response<UserItem?>
 typealias GetFollowingRecommendationsIdsResponse = Response<List<String>>
 typealias GetStorageReferenceFromUrlResponse = Response<StorageReference>
-typealias SetLikeToRecommendationResponse = Response<Boolean>
+typealias LikeOrUnlikeRecommendationResponse = Response<Boolean>
 
 interface StorageService {
 
@@ -38,8 +38,8 @@ interface StorageService {
             GetRecommendationPreviewResponse
     suspend fun getUserItemByUid(uid: String): GetUserItemResponse
 
-    fun setLikeToRecommendation(isLiked: Boolean, uid: String, recommendationId: String):
-            SetLikeToRecommendationResponse
+    fun likeOrUnlikeRecommendation(isLiked: Boolean, uid: String, recommendationId: String):
+            LikeOrUnlikeRecommendationResponse
 
     suspend fun getFollowingRecommendationsIds(followingUids: List<String>):
             GetFollowingRecommendationsIdsResponse

@@ -69,7 +69,7 @@ class BannerViewModel @Inject constructor(
     }
 
     fun onLikeClick(isLiked: Boolean, uid: String, recommendationId: String) =
-        storageService.setLikeToRecommendation(isLiked, uid, recommendationId)
+        storageService.likeOrUnlikeRecommendation(isLiked, uid, recommendationId)
 
     fun onRecommendationClick(openScreen: (String) -> Unit, recommendation: Recommendation) {
         openScreen("${RecommendRoutes.RecommendationScreen.name}?$RECOMMENDATION_ID={${recommendation.id}}")

@@ -26,7 +26,7 @@ import com.serj.recommend.android.services.GetRecommendationPreviewResponse
 import com.serj.recommend.android.services.GetRecommendationResponse
 import com.serj.recommend.android.services.GetStorageReferenceFromUrlResponse
 import com.serj.recommend.android.services.GetUserItemResponse
-import com.serj.recommend.android.services.SetLikeToRecommendationResponse
+import com.serj.recommend.android.services.LikeOrUnlikeRecommendationResponse
 import com.serj.recommend.android.services.StorageService
 import com.serj.recommend.android.services.model.Response.Failure
 import com.serj.recommend.android.services.model.Response.Success
@@ -191,7 +191,6 @@ class StorageServiceImpl @Inject constructor(
                 val availableCoverTypes = getAvailableCoverTypes(data.coversUrl)
                 val currentCoverType = if (availableCoverTypes.contains(coverType)) coverType
                 else getCoverType(data.coversUrl)
-                Log.v(TAG, data.coversUrl.toString())
                 data.coverType = currentCoverType
                 data.coverReference = data.coversUrl[currentCoverType]
                     ?.let { storage.getReferenceFromUrl(it) }
@@ -227,11 +226,11 @@ class StorageServiceImpl @Inject constructor(
         }
     }
 
-    override fun setLikeToRecommendation(
+    override fun likeOrUnlikeRecommendation(
         isLiked: Boolean,
         uid: String,
         recommendationId: String
-    ): SetLikeToRecommendationResponse {
+    ): LikeOrUnlikeRecommendationResponse {
         return try {
             if (!isLiked) {
                 firestore

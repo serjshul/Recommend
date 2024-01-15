@@ -110,13 +110,13 @@ fun NavGraphBuilder.recommendGraph(
     composable(RecommendRoutes.SplashScreen.name) {
         SplashScreen(
             modifier = modifier,
-            openScreen = { route -> appState.navigate(route) }
+            openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) }
         )
     }
     composable(RecommendRoutes.SignUpScreen.name) {
         SignUpScreen(
             modifier = modifier,
-            openScreen = { route -> appState.navigate(route) }
+            openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) }
         )
     }
     composable(RecommendRoutes.SignInScreen.name) {
@@ -129,11 +129,14 @@ fun NavGraphBuilder.recommendGraph(
     composable(RecommendRoutes.ResetPasswordScreen.name) {
         ResetPasswordScreen(
             modifier = modifier,
-            openScreen = { route -> appState.navigate(route) }
+            openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) }
         )
     }
     composable(RecommendRoutes.MainScreen.name) {
-        MainScreen(appState, modifier)
+        MainScreen(
+            modifier = modifier,
+            appState = appState
+        )
     }
     composable(
         route = "${RecommendRoutes.RecommendationScreen.name}$RECOMMENDATION_ID_ARG",

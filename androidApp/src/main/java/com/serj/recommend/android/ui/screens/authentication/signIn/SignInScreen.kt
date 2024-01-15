@@ -40,9 +40,9 @@ fun SignInScreen(
         uiState = uiState,
         onEmailChange = viewModel::onEmailChange,
         onPasswordChange = viewModel::onPasswordChange,
-        onSignInClick = { viewModel.onSignInClick(openScreen) },
-        onSignUpClick = { viewModel.onSignUpClick(openAndPopUp) },
-        onForgotPasswordClick = { viewModel.onForgotPasswordClick(openAndPopUp) }
+        onSignInClick = { viewModel.onSignInClick(openAndPopUp) },
+        onSignUpClick = { viewModel.onSignUpClick(openScreen) },
+        onForgotPasswordClick = { viewModel.onForgotPasswordClick(openScreen) }
     )
 }
 
