@@ -24,14 +24,14 @@ import com.serj.recommend.android.common.ext.recommendationContentShape
 import com.serj.recommend.android.common.ext.screenPaddingsInner
 import com.serj.recommend.android.common.ext.screenPaddingsOuter
 import com.serj.recommend.android.common.ext.toColor
-import com.serj.recommend.android.services.RecommendationResponse
+import com.serj.recommend.android.services.GetRecommendationResponse
 import com.serj.recommend.android.services.model.Response.Failure
 import com.serj.recommend.android.services.model.Response.Success
+import com.serj.recommend.android.ui.components.interaction.InteractionPanel
 import com.serj.recommend.android.ui.components.loadingIndicators.LargeLoadingIndicator
-import com.serj.recommend.android.ui.components.social.InfoPanel
-import com.serj.recommend.android.ui.components.social.InteractionPanel
 import com.serj.recommend.android.ui.screens.common.recommendation.components.Description
 import com.serj.recommend.android.ui.screens.common.recommendation.components.Header
+import com.serj.recommend.android.ui.screens.common.recommendation.components.InfoPanel
 import com.serj.recommend.android.ui.screens.common.recommendation.components.Paragraphs
 import com.serj.recommend.android.ui.screens.common.recommendation.components.Quote
 import com.serj.recommend.android.ui.styles.Black
@@ -44,11 +44,11 @@ fun RecommendationScreen(
     popUpScreen: () -> Unit,
     viewModel: RecommendationViewModel = hiltViewModel()
 ) {
-    val recommendationResponse by viewModel.recommendationResponse
+    val recommendationResponse by viewModel.getRecommendationResponse
 
     RecommendationScreenContent(
         modifier = modifier,
-        recommendationResponse = recommendationResponse,
+        getRecommendationResponse = recommendationResponse,
         popUpScreen = popUpScreen
     )
 }
@@ -57,12 +57,12 @@ fun RecommendationScreen(
 @Composable
 fun RecommendationScreenContent(
     modifier: Modifier = Modifier,
-    recommendationResponse: RecommendationResponse?,
+    getRecommendationResponse: GetRecommendationResponse?,
     popUpScreen: () -> Unit
 ) {
-    when (recommendationResponse) {
+    when (getRecommendationResponse) {
         is Success -> {
-            val recommendation = recommendationResponse.data
+            val recommendation = getRecommendationResponse.data
             val sheetState = rememberModalBottomSheetState()
             var showBottomSheet by remember { mutableStateOf(false) }
 
@@ -151,7 +151,11 @@ fun RecommendationScreenContent(
                                 InteractionPanel(
                                     modifier = Modifier
                                         .itemsInterval()
-                                        .screenPaddingsInner()
+                                        .screenPaddingsInner(),
+                                    isLiked = false,
+                                    recommendationId = recommendation.id,
+                                    currentUserUid = "",
+                                    onLikeClick = { b: Boolean, s1: String, s2: String -> Success(true) }
                                 )
                             }
 
@@ -193,7 +197,7 @@ fun RecommendationScreenContent(
             }
         }
         is Failure -> {
-            print(recommendationResponse.e)
+            print(getRecommendationResponse.e)
         }
         else -> {
             LargeLoadingIndicator(

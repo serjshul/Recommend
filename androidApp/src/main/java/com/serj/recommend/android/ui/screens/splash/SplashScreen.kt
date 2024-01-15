@@ -18,8 +18,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.serj.recommend.android.R
 import com.serj.recommend.android.common.ext.basicButton
-import com.serj.recommend.android.ui.components.splash.AppLogo
 import com.serj.recommend.android.ui.components.authentication.AuthenticationButton
+import com.serj.recommend.android.ui.components.splash.AppLogo
 import kotlinx.coroutines.delay
 
 private const val SPLASH_TIMEOUT = 1_000L
@@ -27,12 +27,12 @@ private const val SPLASH_TIMEOUT = 1_000L
 @Composable
 fun SplashScreen(
     modifier: Modifier = Modifier,
-    openScreen: (String) -> Unit,
+    openAndPopUp: (String, String) -> Unit,
     viewModel: SplashViewModel = hiltViewModel()
 ) {
     SplashScreenContent(
         modifier = modifier,
-        onAppStart = { viewModel.onAppStart(openScreen) },
+        onAppStart = { viewModel.onAppStart(openAndPopUp) },
         shouldShowError = viewModel.addRecommenderSystem.value
     )
 }

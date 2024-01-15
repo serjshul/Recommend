@@ -38,7 +38,7 @@ class AccountServiceImpl @Inject constructor(
             }
         }
 
-    override val currentUserId: String
+    override val currentUid: String
         get() = auth.currentUser?.uid.orEmpty()
 
     override val hasUser: Boolean

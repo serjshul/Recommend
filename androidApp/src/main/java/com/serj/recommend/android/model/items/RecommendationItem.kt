@@ -24,6 +24,6 @@ data class RecommendationItem(
 
     var userItem: UserItem? = null,
 
-    val isLiked: Boolean = false,
-    val isReposted: Boolean = false,
+    var isLiked: Boolean = false,
+    var isReposted: Boolean = false,
 )

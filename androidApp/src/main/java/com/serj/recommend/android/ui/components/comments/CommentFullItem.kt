@@ -90,8 +90,8 @@ fun CommentFullItem(
                 .size(20.dp)
                 .clickable { isLiked = !isLiked }
                 .align(Alignment.Top),
-            painter = if (isLiked) painterResource(id = R.drawable.icon_like_1)
-            else painterResource(id = R.drawable.icon_unliked),
+            painter = if (isLiked) painterResource(id = R.drawable.interaction_like_filled)
+            else painterResource(id = R.drawable.interaction_like_bordered),
             contentDescription = if (isLiked) "liked"
             else "unliked",
             contentScale = ContentScale.Crop

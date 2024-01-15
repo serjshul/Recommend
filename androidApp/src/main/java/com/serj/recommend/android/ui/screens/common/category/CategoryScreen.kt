@@ -32,7 +32,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.serj.recommend.android.R
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.items.RecommendationItem
-import com.serj.recommend.android.services.CategoryResponse
+import com.serj.recommend.android.services.GetCategoryResponse
+import com.serj.recommend.android.services.model.Response
 import com.serj.recommend.android.services.model.Response.Failure
 import com.serj.recommend.android.services.model.Response.Success
 import com.serj.recommend.android.ui.components.loadingIndicators.LargeLoadingIndicator
@@ -47,17 +48,20 @@ fun CategoryScreen(
     popUpScreen: () -> Unit,
     viewModel: CategoryViewModel = hiltViewModel()
 ) {
-    val categoryResponse = viewModel.categoryResponse
+    val categoryResponse = viewModel.getCategoryResponse
     val currentRecommendations = viewModel.currentRecommendations
     val currentRecommendationsAmount = viewModel.currentRecommendationsAmount.intValue
+    val currentUid = viewModel.currentUid
 
     CategoryScreenContent(
         modifier = modifier,
-        categoryResponse = categoryResponse.value,
+        currentUid = currentUid.value,
+        getCategoryResponse = categoryResponse.value,
         currentRecommendations = currentRecommendations,
         recommendationsAmount = currentRecommendationsAmount,
         openScreen = openScreen,
         popUpScreen = popUpScreen,
+        onLikeClick = viewModel::onLikeClick,
         onRecommendationClick = viewModel::onRecommendationClick
     )
 }
@@ -65,16 +69,18 @@ fun CategoryScreen(
 @Composable
 fun CategoryScreenContent(
     modifier: Modifier = Modifier,
-    categoryResponse: CategoryResponse?,
+    currentUid: String?,
+    getCategoryResponse: GetCategoryResponse?,
     currentRecommendations: List<MutableState<RecommendationItem>>,
     recommendationsAmount: Int,
     openScreen: (String) -> Unit,
     popUpScreen: () -> Unit,
+    onLikeClick: (Boolean, String, String) -> Response<Boolean>,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
 ) {
-    when (categoryResponse) {
+    when (getCategoryResponse) {
         is Success -> {
-            val category = categoryResponse.data
+            val category = getCategoryResponse.data
 
             Scaffold(
                 modifier = modifier,
@@ -114,7 +120,10 @@ fun CategoryScreenContent(
                             creator = it.value.creator,
                             coverType = it.value.coverType,
                             coverReference = it.value.coverReference,
+                            isLiked = it.value.isLiked,
                             recommendationId = it.value.id,
+                            currentUserUid = currentUid,
+                            onLikeClick = onLikeClick,
                             openScreen = openScreen,
                             onRecommendationClick = onRecommendationClick
                         )
@@ -137,7 +146,7 @@ fun CategoryScreenContent(
             }
         }
         is Failure -> {
-            print(categoryResponse.e)
+            print(getCategoryResponse.e)
         }
         else -> {
             LargeLoadingIndicator(
@@ -163,7 +172,7 @@ fun CategoryTitle(
                 .padding(20.dp)
                 .align(Alignment.CenterStart)
                 .clickable { popUpScreen() },
-            painter = painterResource(id = R.drawable.icon_arrow_back_black),
+            painter = painterResource(id = R.drawable.ic_arrow_back_black),
             contentDescription = "button_back",
             contentScale = ContentScale.Crop
         )

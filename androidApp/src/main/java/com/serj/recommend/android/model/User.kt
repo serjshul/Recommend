@@ -14,11 +14,11 @@ data class User(
     val photoUrl: String? = null,
     var photoReference: StorageReference? = null,
 
-    val followers: ArrayList<String>? = null,
-    val following: ArrayList<String>? = null,
+    val followers: ArrayList<String> = arrayListOf(),
+    val following: ArrayList<String> = arrayListOf(),
 
-    val recommendationsIds: ArrayList<String>? = null,
+    val recommendationsIds: ArrayList<String> = arrayListOf(),
 
-    val likedIds: ArrayList<String>? = null,
-    val savedIds: ArrayList<String>? = null
+    val likedIds: ArrayList<String> = arrayListOf(),
+    val savedIds: ArrayList<String> = arrayListOf()
 )

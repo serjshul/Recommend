@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 interface AccountService {
 
     val currentUser: Flow<User>
-    val currentUserId: String
+    val currentUid: String
     val hasUser: Boolean
 
     suspend fun signUp(email: String, password: String)

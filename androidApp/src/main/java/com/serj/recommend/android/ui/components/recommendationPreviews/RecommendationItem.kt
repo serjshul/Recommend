@@ -41,9 +41,10 @@ import androidx.compose.ui.unit.sp
 import com.google.firebase.storage.StorageReference
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.items.UserItem
+import com.serj.recommend.android.services.model.Response
+import com.serj.recommend.android.ui.components.interaction.InteractionPanel
 import com.serj.recommend.android.ui.components.media.CustomGlideImage
 import com.serj.recommend.android.ui.components.media.CustomGlideImageShaded
-import com.serj.recommend.android.ui.components.social.InteractionPanel
 import com.serj.recommend.android.ui.styles.Black
 import com.serj.recommend.android.ui.styles.LightGray
 import com.serj.recommend.android.ui.styles.White
@@ -61,8 +62,11 @@ fun RecommendationItem(
     backgroundVideoReference: StorageReference?,
     title: String?,
     creator: String?,
+    isLiked: Boolean,
     recommendationId: String?,
+    currentUserUid: String?,
     openScreen: (String) -> Unit,
+    onLikeClick: (Boolean, String, String) -> Response<Boolean>,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -267,18 +271,18 @@ fun RecommendationItem(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(
-                        start = 15.dp,
                         top = if (backgroundSize.height == 0)
                             with(LocalDensity.current) { 75.dp + coverSize.height.toDp() + 10.dp }
                         else with(LocalDensity.current) { backgroundSize.height.toDp() +
                                 (coverSize.height.toDp() / 3) * 2 + 10.dp },
-                        end = 15.dp,
                         bottom = 15.dp
                     )
             ) {
 
                 Text(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 15.dp, end = 15.dp),
                     text = description,
                     color = Black,
                     fontSize = 14.sp,
@@ -286,7 +290,11 @@ fun RecommendationItem(
                 )
 
                 InteractionPanel(
-                    modifier = Modifier.padding(top = 10.dp)
+                    modifier = Modifier.padding(start = 5.dp, top = 5.dp),
+                    isLiked = isLiked,
+                    recommendationId = recommendationId,
+                    currentUserUid = currentUserUid,
+                    onLikeClick = onLikeClick
                 )
             }
         }
@@ -322,8 +330,11 @@ fun PostWithBackgroundPreview() {
                 title = "title",
                 creator = "creator",
                 coverType = ItemsShapes.horizontal.name,
+                isLiked = true,
                 recommendationId = "",
+                currentUserUid = "",
                 openScreen = { },
+                onLikeClick = { b: Boolean, s1: String, s2: String -> Response.Success(true) },
                 onRecommendationClick = { _: (String) -> Unit, _: Recommendation -> }
             )
         }

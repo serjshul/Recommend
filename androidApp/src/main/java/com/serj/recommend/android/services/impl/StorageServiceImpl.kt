@@ -1,12 +1,12 @@
 package com.serj.recommend.android.services.impl
 
-import android.content.ContentValues
+import android.content.ContentValues.TAG
 import android.util.Log
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.dataObjects
 import com.google.firebase.firestore.toObject
-import com.google.firebase.firestore.toObjects
 import com.google.firebase.storage.FirebaseStorage
 import com.serj.recommend.android.common.BannerNotFoundException
 import com.serj.recommend.android.common.CategoryNotFoundException
@@ -18,15 +18,16 @@ import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.items.RecommendationItem
 import com.serj.recommend.android.model.items.RecommendationPreview
 import com.serj.recommend.android.model.items.UserItem
-import com.serj.recommend.android.services.BannerResponse
-import com.serj.recommend.android.services.CategoryResponse
-import com.serj.recommend.android.services.FollowingRecommendationsIdsResponse
-import com.serj.recommend.android.services.RecommendationItemResponse
-import com.serj.recommend.android.services.RecommendationPreviewResponse
-import com.serj.recommend.android.services.RecommendationResponse
-import com.serj.recommend.android.services.StorageReferenceFromUrlResponse
+import com.serj.recommend.android.services.GetBannerResponse
+import com.serj.recommend.android.services.GetCategoryResponse
+import com.serj.recommend.android.services.GetFollowingRecommendationsIdsResponse
+import com.serj.recommend.android.services.GetRecommendationItemResponse
+import com.serj.recommend.android.services.GetRecommendationPreviewResponse
+import com.serj.recommend.android.services.GetRecommendationResponse
+import com.serj.recommend.android.services.GetStorageReferenceFromUrlResponse
+import com.serj.recommend.android.services.GetUserItemResponse
+import com.serj.recommend.android.services.LikeOrUnlikeRecommendationResponse
 import com.serj.recommend.android.services.StorageService
-import com.serj.recommend.android.services.UserItemResponse
 import com.serj.recommend.android.services.model.Response.Failure
 import com.serj.recommend.android.services.model.Response.Success
 import com.serj.recommend.android.ui.components.media.BackgroundTypes
@@ -56,7 +57,7 @@ class StorageServiceImpl @Inject constructor(
 
     override suspend fun getRecommendationById(
         recommendationId: String
-    ): RecommendationResponse {
+    ): GetRecommendationResponse {
         return try {
             val recommendationSnapshot = firestore
                 .collection(RECOMMENDATIONS_COLLECTION)
@@ -87,7 +88,7 @@ class StorageServiceImpl @Inject constructor(
 
     override suspend fun getBannerById(
         bannerId: String
-    ): BannerResponse {
+    ): GetBannerResponse {
         return try {
             val bannerSnapshot = firestore
                 .collection(BANNERS_COLLECTION)
@@ -115,7 +116,7 @@ class StorageServiceImpl @Inject constructor(
 
     override suspend fun getCategoryById(
         categoryId: String
-    ): CategoryResponse {
+    ): GetCategoryResponse {
         return try {
             val categorySnapshot = firestore
                 .collection(CATEGORIES_COLLECTION)
@@ -140,8 +141,9 @@ class StorageServiceImpl @Inject constructor(
     }
 
     override suspend fun getRecommendationItemById(
-        recommendationId: String
-    ): RecommendationItemResponse {
+        recommendationId: String,
+        currentUserLikedIds: ArrayList<String>
+    ): GetRecommendationItemResponse {
         return try {
             val recommendationItemSnapshot = firestore
                 .collection(RECOMMENDATIONS_COLLECTION)
@@ -163,6 +165,7 @@ class StorageServiceImpl @Inject constructor(
                     ?.let { storage.getReferenceFromUrl(it) }
                 data.backgroundImageReference = data.backgroundUrl[BackgroundTypes.image.name]
                     ?.let { storage.getReferenceFromUrl(it) }
+                data.isLiked = currentUserLikedIds.contains(data.id)
                 Success(data)
             } else {
                 Failure(RecommendationNotFoundException())
@@ -175,7 +178,7 @@ class StorageServiceImpl @Inject constructor(
     override suspend fun getRecommendationPreviewById(
         recommendationId: String,
         coverType: String
-    ): RecommendationPreviewResponse {
+    ): GetRecommendationPreviewResponse {
         return try {
             val recommendationPreviewSnapshot = firestore
                 .collection(RECOMMENDATIONS_COLLECTION)
@@ -188,7 +191,6 @@ class StorageServiceImpl @Inject constructor(
                 val availableCoverTypes = getAvailableCoverTypes(data.coversUrl)
                 val currentCoverType = if (availableCoverTypes.contains(coverType)) coverType
                 else getCoverType(data.coversUrl)
-                Log.v(ContentValues.TAG, data.coversUrl.toString())
                 data.coverType = currentCoverType
                 data.coverReference = data.coversUrl[currentCoverType]
                     ?.let { storage.getReferenceFromUrl(it) }
@@ -203,7 +205,7 @@ class StorageServiceImpl @Inject constructor(
 
     override suspend fun getUserItemByUid(
         uid: String
-    ): UserItemResponse {
+    ): GetUserItemResponse {
         return try {
             val recommendationPreviewSnapshot = firestore
                 .collection(USERS_COLLECTION)
@@ -224,12 +226,66 @@ class StorageServiceImpl @Inject constructor(
         }
     }
 
+    override fun likeOrUnlikeRecommendation(
+        isLiked: Boolean,
+        uid: String,
+        recommendationId: String
+    ): LikeOrUnlikeRecommendationResponse {
+        return try {
+            if (!isLiked) {
+                firestore
+                    .collection(USERS_COLLECTION)
+                    .document(uid)
+                    .update(LIKED_IDS_FIELD, FieldValue.arrayUnion(recommendationId))
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful)
+                            Log.d(TAG, "User DocumentSnapshot successfully updated!")
+                        else
+                            Log.w(TAG, "Error updating user document: $task")
+                    }
+                firestore
+                    .collection(RECOMMENDATIONS_COLLECTION)
+                    .document(recommendationId)
+                    .update(LIKED_BY_FIELD, FieldValue.arrayUnion(uid))
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful)
+                            Log.d(TAG, "Recommendation DocumentSnapshot successfully updated!")
+                        else
+                            Log.w(TAG, "Error updating recommendation document: $task")
+                    }
+            } else {
+                firestore
+                    .collection(USERS_COLLECTION)
+                    .document(uid)
+                    .update(LIKED_IDS_FIELD, FieldValue.arrayRemove(recommendationId))
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful)
+                            Log.d(TAG, "User DocumentSnapshot successfully updated!")
+                        else
+                            Log.w(TAG, "Error updating user document: $task")
+                    }
+                firestore
+                    .collection(RECOMMENDATIONS_COLLECTION)
+                    .document(recommendationId)
+                    .update(LIKED_BY_FIELD, FieldValue.arrayRemove(uid))
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful)
+                            Log.d(TAG, "Recommendation DocumentSnapshot successfully updated!")
+                        else
+                            Log.w(TAG, "Error updating recommendation document: $task")
+                    }
+            }
+            Success(true)
+        } catch (e: Exception) {
+            Failure(e)
+        }
+    }
+
     override suspend fun getFollowingRecommendationsIds(
         followingUids: List<String>
-    ): FollowingRecommendationsIdsResponse {
+    ): GetFollowingRecommendationsIdsResponse {
         return try {
             val followingRecommendationsIds = mutableListOf<Pair<String, Date>>()
-
             for (followingUid in followingUids) {
                 val recommendationSnapshot = firestore
                     .collection(RECOMMENDATIONS_COLLECTION)
@@ -238,16 +294,15 @@ class StorageServiceImpl @Inject constructor(
                     .limit(10)
                     .get()
                     .await()
-                val data = recommendationSnapshot.toObjects<RecommendationItem>()
-                for (item in data) {
-                    if (item.id != null && item.date != null) {
-                        followingRecommendationsIds.add(
-                            Pair(item.id, item.date)
+                for (item in recommendationSnapshot) {
+                    followingRecommendationsIds.add(
+                        Pair(
+                            item.id,
+                            item.getTimestamp(DATE_FIELD)!!.toDate()
                         )
-                    }
+                    )
                 }
             }
-
             followingRecommendationsIds.sortByDescending { it.second }
             Success(followingRecommendationsIds.map { it.first })
         } catch (e: Exception) {
@@ -257,7 +312,7 @@ class StorageServiceImpl @Inject constructor(
 
     override fun getStorageReferenceFromUrl(
         url: String
-    ): StorageReferenceFromUrlResponse {
+    ): GetStorageReferenceFromUrlResponse {
         return try {
             val storageReference = storage.getReferenceFromUrl(url)
             Success(storageReference)
@@ -292,5 +347,7 @@ class StorageServiceImpl @Inject constructor(
 
         private const val USER_ID_FIELD = "uid"
         private const val DATE_FIELD = "date"
+        private const val LIKED_IDS_FIELD = "likedIds"
+        private const val LIKED_BY_FIELD = "likedBy"
     }
 }

@@ -4,7 +4,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import com.serj.recommend.android.common.Constants.RECOMMENDATION_ID
 import com.serj.recommend.android.common.ext.idFromParameter
-import com.serj.recommend.android.services.RecommendationResponse
+import com.serj.recommend.android.services.GetRecommendationResponse
 import com.serj.recommend.android.services.LogService
 import com.serj.recommend.android.services.StorageService
 import com.serj.recommend.android.ui.screens.RecommendViewModel
@@ -18,13 +18,13 @@ class RecommendationViewModel @Inject constructor(
     private val storageService: StorageService
 ) : RecommendViewModel(logService) {
 
-    val recommendationResponse = mutableStateOf<RecommendationResponse?>(null)
+    val getRecommendationResponse = mutableStateOf<GetRecommendationResponse?>(null)
 
     init {
         val recommendationId = savedStateHandle.get<String>(RECOMMENDATION_ID)
         if (recommendationId != null) {
             launchCatching {
-                recommendationResponse.value = storageService
+                getRecommendationResponse.value = storageService
                     .getRecommendationById(
                         recommendationId.idFromParameter()
                     )

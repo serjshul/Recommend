@@ -24,10 +24,10 @@ class SplashViewModel @Inject constructor(
         }
     }
 
-    fun onAppStart(openScreen: (String) -> Unit) {
+    fun onAppStart(openAndPopUp: (String, String) -> Unit) {
         if (accountService.hasUser)
-            openScreen(RecommendRoutes.MainScreen.name)
+            openAndPopUp(RecommendRoutes.MainScreen.name, RecommendRoutes.SplashScreen.name)
         else
-            openScreen(RecommendRoutes.SignInScreen.name)
+            openAndPopUp(RecommendRoutes.SignInScreen.name, RecommendRoutes.SplashScreen.name)
     }
 }

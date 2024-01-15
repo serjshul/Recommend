@@ -25,6 +25,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.serj.recommend.android.R
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.items.RecommendationItem
+import com.serj.recommend.android.services.model.Response
 import com.serj.recommend.android.ui.components.loadingIndicators.SmallLoadingIndicator
 import com.serj.recommend.android.ui.components.recommendationPreviews.RecommendationItem
 import com.serj.recommend.android.ui.styles.White
@@ -34,13 +35,16 @@ fun FeedScreen(
     openScreen: (String) -> Unit,
     viewModel: FeedViewModel = hiltViewModel()
 ) {
+    val currentUid = viewModel.currentUid
     val currentRecommendations = viewModel.currentRecommendations
     val currentRecommendationsAmount = viewModel.currentRecommendationsAmount.intValue
 
     FeedScreenContent(
+        currentUserUid = currentUid.value,
         currentRecommendations = currentRecommendations,
         recommendationsAmount = currentRecommendationsAmount,
         openScreen = openScreen,
+        onLikeClick = viewModel::onLikeClick,
         onRecommendationClick = viewModel::onRecommendationClick
     )
 }
@@ -48,9 +52,11 @@ fun FeedScreen(
 @Composable
 fun FeedScreenContent(
     modifier: Modifier = Modifier,
+    currentUserUid: String?,
     currentRecommendations: List<RecommendationItem>,
     recommendationsAmount: Int,
     openScreen: (String) -> Unit,
+    onLikeClick: (Boolean, String, String) -> Response<Boolean>,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
 ) {
     Scaffold(
@@ -94,8 +100,11 @@ fun FeedScreenContent(
                     creator = it.creator,
                     coverType = it.coverType,
                     coverReference = it.coverReference,
+                    isLiked = it.isLiked,
                     recommendationId = it.id,
+                    currentUserUid = currentUserUid,
                     openScreen = openScreen,
+                    onLikeClick = onLikeClick,
                     onRecommendationClick = onRecommendationClick
                 )
                 currentRecommendationsAmount++
