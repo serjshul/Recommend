@@ -28,6 +28,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.serj.recommend.android.R
+import com.serj.recommend.android.services.model.Response
 import com.serj.recommend.android.ui.styles.Black
 import com.serj.recommend.android.ui.styles.KiriumeRed
 import com.serj.recommend.android.ui.styles.Red
@@ -37,7 +38,10 @@ import com.serj.recommend.android.ui.styles.White
 @Composable
 fun InteractionPanel(
     modifier: Modifier = Modifier,
-    tintData: Color = Black
+    tintData: Color = Black,
+    recommendationId: String?,
+    currentUserUid: String?,
+    onLikeClick: (Boolean, String, String) -> Response<Boolean>,
 ) {
     val isLiked = remember { mutableStateOf(false) }
     val isCommented = remember { mutableStateOf(false) }
@@ -51,6 +55,9 @@ fun InteractionPanel(
         IconToggleButton(
             checked = isLiked.value,
             onCheckedChange = {
+                if (currentUserUid != null && recommendationId != null) {
+                    onLikeClick(isLiked.value, currentUserUid, recommendationId)
+                }
                 isLiked.value = !isLiked.value
             }
         ) {
@@ -155,6 +162,9 @@ fun InteractionPanel(
 @Composable
 fun InteractionPanelPreview() {
     InteractionPanel(
-        modifier = Modifier.background(White)
+        modifier = Modifier.background(White),
+        recommendationId = "",
+        currentUserUid = "",
+        onLikeClick = { b: Boolean, s1: String, s2: String -> Response.Success(true) }
     )
 }

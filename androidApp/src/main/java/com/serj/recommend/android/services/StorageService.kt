@@ -10,14 +10,15 @@ import com.serj.recommend.android.model.items.UserItem
 import com.serj.recommend.android.services.model.Response
 import kotlinx.coroutines.flow.Flow
 
-typealias RecommendationResponse = Response<Recommendation?>
-typealias BannerResponse = Response<Banner?>
-typealias CategoryResponse = Response<Category?>
-typealias RecommendationItemResponse = Response<RecommendationItem?>
-typealias RecommendationPreviewResponse = Response<RecommendationPreview?>
-typealias UserItemResponse = Response<UserItem?>
-typealias FollowingRecommendationsIdsResponse = Response<List<String>>
-typealias StorageReferenceFromUrlResponse = Response<StorageReference>
+typealias GetRecommendationResponse = Response<Recommendation?>
+typealias GetBannerResponse = Response<Banner?>
+typealias GetCategoryResponse = Response<Category?>
+typealias GetRecommendationItemResponse = Response<RecommendationItem?>
+typealias GetRecommendationPreviewResponse = Response<RecommendationPreview?>
+typealias GetUserItemResponse = Response<UserItem?>
+typealias GetFollowingRecommendationsIdsResponse = Response<List<String>>
+typealias GetStorageReferenceFromUrlResponse = Response<StorageReference>
+typealias SetLikeToRecommendationResponse = Response<Boolean>
 
 interface StorageService {
 
@@ -25,18 +26,21 @@ interface StorageService {
     val categories: Flow<List<Category>>
 
     suspend fun getRecommendationById(recommendationId: String):
-            RecommendationResponse
-    suspend fun getBannerById(bannerId: String): BannerResponse
-    suspend fun getCategoryById(categoryId: String): CategoryResponse
+            GetRecommendationResponse
+    suspend fun getBannerById(bannerId: String): GetBannerResponse
+    suspend fun getCategoryById(categoryId: String): GetCategoryResponse
 
     suspend fun getRecommendationItemById(recommendationId: String):
-            RecommendationItemResponse
+            GetRecommendationItemResponse
     suspend fun getRecommendationPreviewById(recommendationId: String, coverType: String):
-            RecommendationPreviewResponse
-    suspend fun getUserItemByUid(uid: String): UserItemResponse
+            GetRecommendationPreviewResponse
+    suspend fun getUserItemByUid(uid: String): GetUserItemResponse
+
+    fun setLikeToRecommendation(isLiked: Boolean, uid: String, recommendationId: String):
+            SetLikeToRecommendationResponse
 
     suspend fun getFollowingRecommendationsIds(followingUids: List<String>):
-            FollowingRecommendationsIdsResponse
+            GetFollowingRecommendationsIdsResponse
 
-    fun getStorageReferenceFromUrl(url: String): StorageReferenceFromUrlResponse
+    fun getStorageReferenceFromUrl(url: String): GetStorageReferenceFromUrlResponse
 }

@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.sp
 import com.google.firebase.storage.StorageReference
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.items.UserItem
+import com.serj.recommend.android.services.model.Response
 import com.serj.recommend.android.ui.components.interaction.InteractionPanel
 import com.serj.recommend.android.ui.components.media.CustomGlideImage
 import com.serj.recommend.android.ui.components.media.CustomGlideImageShaded
@@ -62,7 +63,9 @@ fun RecommendationItem(
     title: String?,
     creator: String?,
     recommendationId: String?,
+    currentUserUid: String?,
     openScreen: (String) -> Unit,
+    onLikeClick: (Boolean, String, String) -> Response<Boolean>,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -286,7 +289,10 @@ fun RecommendationItem(
                 )
 
                 InteractionPanel(
-                    modifier = Modifier.padding(start = 5.dp, top = 5.dp)
+                    modifier = Modifier.padding(start = 5.dp, top = 5.dp),
+                    recommendationId = recommendationId,
+                    currentUserUid = currentUserUid,
+                    onLikeClick = onLikeClick
                 )
             }
         }
@@ -323,7 +329,9 @@ fun PostWithBackgroundPreview() {
                 creator = "creator",
                 coverType = ItemsShapes.horizontal.name,
                 recommendationId = "",
+                currentUserUid = "",
                 openScreen = { },
+                onLikeClick = { b: Boolean, s1: String, s2: String -> Response.Success(true) },
                 onRecommendationClick = { _: (String) -> Unit, _: Recommendation -> }
             )
         }

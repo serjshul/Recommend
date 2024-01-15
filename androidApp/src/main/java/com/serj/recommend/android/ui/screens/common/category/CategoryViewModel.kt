@@ -12,7 +12,7 @@ import com.serj.recommend.android.common.ext.idFromParameter
 import com.serj.recommend.android.model.Category
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.items.RecommendationItem
-import com.serj.recommend.android.services.CategoryResponse
+import com.serj.recommend.android.services.GetCategoryResponse
 import com.serj.recommend.android.services.LogService
 import com.serj.recommend.android.services.StorageService
 import com.serj.recommend.android.services.model.Response
@@ -27,7 +27,7 @@ class CategoryViewModel @Inject constructor(
     private val storageService: StorageService
 ) : RecommendViewModel(logService) {
 
-    val categoryResponse = mutableStateOf<CategoryResponse?>(null)
+    val getCategoryResponse = mutableStateOf<GetCategoryResponse?>(null)
     val currentRecommendations = mutableStateListOf<MutableState<RecommendationItem>>()
     val currentRecommendationsAmount = mutableIntStateOf(0)
 
@@ -35,11 +35,11 @@ class CategoryViewModel @Inject constructor(
         val categoryId = savedStateHandle.get<String>(CATEGORY_ID)
         if (categoryId != null) {
             launchCatching {
-                categoryResponse.value = storageService
+                getCategoryResponse.value = storageService
                     .getCategoryById(categoryId.idFromParameter())
 
-                if (categoryResponse.value is Response.Success) {
-                    val currentCategory = (categoryResponse.value as Response.Success<Category?>).data
+                if (getCategoryResponse.value is Response.Success) {
+                    val currentCategory = (getCategoryResponse.value as Response.Success<Category?>).data
                     if (currentCategory?.recommendationsIds?.size != null) {
                         currentRecommendationsAmount.intValue =
                             currentCategory.recommendationsIds.size

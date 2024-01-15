@@ -2,6 +2,7 @@ package com.serj.recommend.android.ui.screens.main.feed
 
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import com.serj.recommend.android.R
 import com.serj.recommend.android.RecommendRoutes
 import com.serj.recommend.android.common.Constants.RECOMMENDATION_ID
@@ -23,40 +24,43 @@ class FeedViewModel @Inject constructor(
     private val accountService: AccountService
 ) : RecommendViewModel(logService) {
 
+    val currentUserUid = mutableStateOf<String?>(null)
     val currentRecommendations = mutableStateListOf<RecommendationItem>()
     val currentRecommendationsAmount = mutableIntStateOf(0)
 
     init {
         launchCatching {
             accountService.currentUser.collect {user ->
-                if (user.following != null) {
-                    val followingRecommendationsIdsResponse =
-                        storageService.getFollowingRecommendationsIds(user.following)
-                    when (followingRecommendationsIdsResponse) {
-                        is Response.Success -> {
-                            if (followingRecommendationsIdsResponse.data != null) {
-                                currentRecommendationsAmount.intValue =
-                                    followingRecommendationsIdsResponse.data.size
-                                for (followingId in followingRecommendationsIdsResponse.data) {
-                                    val recommendationItemResponse = storageService
-                                        .getRecommendationItemById(followingId)
-                                    if (recommendationItemResponse is Response.Success &&
-                                        recommendationItemResponse.data != null) {
-                                        currentRecommendations.add(
-                                            recommendationItemResponse.data
-                                        )
-                                    }
+                currentUserUid.value = user.uid
+                val followingRecommendationsIdsResponse =
+                    storageService.getFollowingRecommendationsIds(user.following)
+                when (followingRecommendationsIdsResponse) {
+                    is Response.Success -> {
+                        if (followingRecommendationsIdsResponse.data != null) {
+                            currentRecommendationsAmount.intValue =
+                                followingRecommendationsIdsResponse.data.size
+                            for (followingId in followingRecommendationsIdsResponse.data) {
+                                val recommendationItemResponse = storageService
+                                    .getRecommendationItemById(followingId)
+                                if (recommendationItemResponse is Response.Success &&
+                                    recommendationItemResponse.data != null) {
+                                    currentRecommendations.add(
+                                        recommendationItemResponse.data
+                                    )
                                 }
                             }
                         }
-                        else -> {
-                            SnackbarManager.showMessage(R.string.error_feed)
-                        }
+                    }
+                    else -> {
+                        SnackbarManager.showMessage(R.string.error_feed)
                     }
                 }
             }
         }
     }
+
+    fun onLikeClick(isLiked: Boolean, uid: String, recommendationId: String) =
+        storageService.setLikeToRecommendation(isLiked, uid, recommendationId)
 
     fun onRecommendationClick(openScreen: (String) -> Unit, recommendation: Recommendation) {
         openScreen("${RecommendRoutes.RecommendationScreen.name}?$RECOMMENDATION_ID={${recommendation.id}}")

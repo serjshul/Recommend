@@ -12,7 +12,7 @@ import com.serj.recommend.android.common.ext.idFromParameter
 import com.serj.recommend.android.model.Banner
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.items.RecommendationItem
-import com.serj.recommend.android.services.BannerResponse
+import com.serj.recommend.android.services.GetBannerResponse
 import com.serj.recommend.android.services.LogService
 import com.serj.recommend.android.services.StorageService
 import com.serj.recommend.android.services.model.Response.Success
@@ -27,7 +27,7 @@ class BannerViewModel @Inject constructor(
     private val storageService: StorageService
 ) : RecommendViewModel(logService) {
 
-    val bannerResponse = mutableStateOf<BannerResponse?>(null)
+    val getBannerResponse = mutableStateOf<GetBannerResponse?>(null)
     val currentRecommendations = mutableStateListOf<MutableState<RecommendationItem>>()
     val currentRecommendationsAmount = mutableIntStateOf(0)
 
@@ -35,11 +35,11 @@ class BannerViewModel @Inject constructor(
         val bannerId = savedStateHandle.get<String>(BANNER_ID)
         if (bannerId != null) {
             launchCatching {
-                bannerResponse.value = storageService
+                getBannerResponse.value = storageService
                     .getBannerById(bannerId.idFromParameter())
 
-                if (bannerResponse.value is Success) {
-                    val currentBanner = (bannerResponse.value as Success<Banner?>).data
+                if (getBannerResponse.value is Success) {
+                    val currentBanner = (getBannerResponse.value as Success<Banner?>).data
                     if (currentBanner?.recommendationIds?.size != null) {
                         currentRecommendationsAmount.intValue =
                             currentBanner.recommendationIds.size
