@@ -30,8 +30,10 @@ interface StorageService {
     suspend fun getBannerById(bannerId: String): GetBannerResponse
     suspend fun getCategoryById(categoryId: String): GetCategoryResponse
 
-    suspend fun getRecommendationItemById(recommendationId: String):
-            GetRecommendationItemResponse
+    suspend fun getRecommendationItemById(
+        recommendationId: String, currentUserLikedIds: ArrayList<String>
+    ): GetRecommendationItemResponse
+
     suspend fun getRecommendationPreviewById(recommendationId: String, coverType: String):
             GetRecommendationPreviewResponse
     suspend fun getUserItemByUid(uid: String): GetUserItemResponse

@@ -35,12 +35,12 @@ fun FeedScreen(
     openScreen: (String) -> Unit,
     viewModel: FeedViewModel = hiltViewModel()
 ) {
-    val currentUserUid = viewModel.currentUserUid
+    val currentUid = viewModel.currentUid
     val currentRecommendations = viewModel.currentRecommendations
     val currentRecommendationsAmount = viewModel.currentRecommendationsAmount.intValue
 
     FeedScreenContent(
-        currentUserUid = currentUserUid.value,
+        currentUserUid = currentUid.value,
         currentRecommendations = currentRecommendations,
         recommendationsAmount = currentRecommendationsAmount,
         openScreen = openScreen,
@@ -100,6 +100,7 @@ fun FeedScreenContent(
                     creator = it.creator,
                     coverType = it.coverType,
                     coverReference = it.coverReference,
+                    isLiked = it.isLiked,
                     recommendationId = it.id,
                     currentUserUid = currentUserUid,
                     openScreen = openScreen,

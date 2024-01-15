@@ -22,7 +22,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,12 +37,12 @@ import com.serj.recommend.android.ui.styles.White
 @Composable
 fun InteractionPanel(
     modifier: Modifier = Modifier,
-    tintData: Color = Black,
+    isLiked: Boolean,
     recommendationId: String?,
     currentUserUid: String?,
     onLikeClick: (Boolean, String, String) -> Response<Boolean>,
 ) {
-    val isLiked = remember { mutableStateOf(false) }
+    val isCurrentlyLiked = remember { mutableStateOf(isLiked) }
     val isCommented = remember { mutableStateOf(false) }
     val isReposted = remember { mutableStateOf(false) }
 
@@ -53,15 +52,15 @@ fun InteractionPanel(
         horizontalArrangement = Arrangement.Start
     ) {
         IconToggleButton(
-            checked = isLiked.value,
+            checked = isCurrentlyLiked.value,
             onCheckedChange = {
                 if (currentUserUid != null && recommendationId != null) {
-                    onLikeClick(isLiked.value, currentUserUid, recommendationId)
+                    onLikeClick(isCurrentlyLiked.value, currentUserUid, recommendationId)
                 }
-                isLiked.value = !isLiked.value
+                isCurrentlyLiked.value = !isCurrentlyLiked.value
             }
         ) {
-            val transition = updateTransition(isLiked.value, label = "likeTransition")
+            val transition = updateTransition(isCurrentlyLiked.value, label = "likeTransition")
             val tint by transition.animateColor(label = "likeTint") { isLiked ->
                 if (isLiked) Red else Black
             }
@@ -84,7 +83,7 @@ fun InteractionPanel(
 
             Icon(
                 ImageVector.vectorResource(
-                    id = if (isLiked.value) R.drawable.interaction_like_filled
+                    id = if (isCurrentlyLiked.value) R.drawable.interaction_like_filled
                     else R.drawable.interaction_like_bordered
                 ),
                 contentDescription = "like",
@@ -163,6 +162,7 @@ fun InteractionPanel(
 fun InteractionPanelPreview() {
     InteractionPanel(
         modifier = Modifier.background(White),
+        isLiked = true,
         recommendationId = "",
         currentUserUid = "",
         onLikeClick = { b: Boolean, s1: String, s2: String -> Response.Success(true) }

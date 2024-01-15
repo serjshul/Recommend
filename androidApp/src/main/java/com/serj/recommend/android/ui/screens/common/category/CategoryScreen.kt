@@ -33,6 +33,7 @@ import com.serj.recommend.android.R
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.items.RecommendationItem
 import com.serj.recommend.android.services.GetCategoryResponse
+import com.serj.recommend.android.services.model.Response
 import com.serj.recommend.android.services.model.Response.Failure
 import com.serj.recommend.android.services.model.Response.Success
 import com.serj.recommend.android.ui.components.loadingIndicators.LargeLoadingIndicator
@@ -50,14 +51,17 @@ fun CategoryScreen(
     val categoryResponse = viewModel.getCategoryResponse
     val currentRecommendations = viewModel.currentRecommendations
     val currentRecommendationsAmount = viewModel.currentRecommendationsAmount.intValue
+    val currentUid = viewModel.currentUid
 
     CategoryScreenContent(
         modifier = modifier,
+        currentUid = currentUid.value,
         getCategoryResponse = categoryResponse.value,
         currentRecommendations = currentRecommendations,
         recommendationsAmount = currentRecommendationsAmount,
         openScreen = openScreen,
         popUpScreen = popUpScreen,
+        onLikeClick = viewModel::onLikeClick,
         onRecommendationClick = viewModel::onRecommendationClick
     )
 }
@@ -65,11 +69,13 @@ fun CategoryScreen(
 @Composable
 fun CategoryScreenContent(
     modifier: Modifier = Modifier,
+    currentUid: String?,
     getCategoryResponse: GetCategoryResponse?,
     currentRecommendations: List<MutableState<RecommendationItem>>,
     recommendationsAmount: Int,
     openScreen: (String) -> Unit,
     popUpScreen: () -> Unit,
+    onLikeClick: (Boolean, String, String) -> Response<Boolean>,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
 ) {
     when (getCategoryResponse) {
@@ -114,9 +120,10 @@ fun CategoryScreenContent(
                             creator = it.value.creator,
                             coverType = it.value.coverType,
                             coverReference = it.value.coverReference,
+                            isLiked = it.value.isLiked,
                             recommendationId = it.value.id,
-                            currentUserUid = "",
-                            onLikeClick = { b: Boolean, s1: String, s2: String -> Success(true) },
+                            currentUserUid = currentUid,
+                            onLikeClick = onLikeClick,
                             openScreen = openScreen,
                             onRecommendationClick = onRecommendationClick
                         )

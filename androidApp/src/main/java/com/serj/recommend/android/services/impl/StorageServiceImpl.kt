@@ -7,7 +7,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.dataObjects
 import com.google.firebase.firestore.toObject
-import com.google.firebase.firestore.toObjects
 import com.google.firebase.storage.FirebaseStorage
 import com.serj.recommend.android.common.BannerNotFoundException
 import com.serj.recommend.android.common.CategoryNotFoundException
@@ -142,7 +141,8 @@ class StorageServiceImpl @Inject constructor(
     }
 
     override suspend fun getRecommendationItemById(
-        recommendationId: String
+        recommendationId: String,
+        currentUserLikedIds: ArrayList<String>
     ): GetRecommendationItemResponse {
         return try {
             val recommendationItemSnapshot = firestore
@@ -165,6 +165,7 @@ class StorageServiceImpl @Inject constructor(
                     ?.let { storage.getReferenceFromUrl(it) }
                 data.backgroundImageReference = data.backgroundUrl[BackgroundTypes.image.name]
                     ?.let { storage.getReferenceFromUrl(it) }
+                data.isLiked = currentUserLikedIds.contains(data.id)
                 Success(data)
             } else {
                 Failure(RecommendationNotFoundException())
@@ -286,7 +287,6 @@ class StorageServiceImpl @Inject constructor(
     ): GetFollowingRecommendationsIdsResponse {
         return try {
             val followingRecommendationsIds = mutableListOf<Pair<String, Date>>()
-
             for (followingUid in followingUids) {
                 val recommendationSnapshot = firestore
                     .collection(RECOMMENDATIONS_COLLECTION)
@@ -295,16 +295,15 @@ class StorageServiceImpl @Inject constructor(
                     .limit(10)
                     .get()
                     .await()
-                val data = recommendationSnapshot.toObjects<RecommendationItem>()
-                for (item in data) {
-                    if (item.id != null && item.date != null) {
-                        followingRecommendationsIds.add(
-                            Pair(item.id, item.date)
+                for (item in recommendationSnapshot) {
+                    followingRecommendationsIds.add(
+                        Pair(
+                            item.id,
+                            item.getTimestamp(DATE_FIELD)!!.toDate()
                         )
-                    }
+                    )
                 }
             }
-
             followingRecommendationsIds.sortByDescending { it.second }
             Success(followingRecommendationsIds.map { it.first })
         } catch (e: Exception) {

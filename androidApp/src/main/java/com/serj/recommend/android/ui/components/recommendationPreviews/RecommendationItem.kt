@@ -62,6 +62,7 @@ fun RecommendationItem(
     backgroundVideoReference: StorageReference?,
     title: String?,
     creator: String?,
+    isLiked: Boolean,
     recommendationId: String?,
     currentUserUid: String?,
     openScreen: (String) -> Unit,
@@ -290,6 +291,7 @@ fun RecommendationItem(
 
                 InteractionPanel(
                     modifier = Modifier.padding(start = 5.dp, top = 5.dp),
+                    isLiked = isLiked,
                     recommendationId = recommendationId,
                     currentUserUid = currentUserUid,
                     onLikeClick = onLikeClick
@@ -328,6 +330,7 @@ fun PostWithBackgroundPreview() {
                 title = "title",
                 creator = "creator",
                 coverType = ItemsShapes.horizontal.name,
+                isLiked = true,
                 recommendationId = "",
                 currentUserUid = "",
                 openScreen = { },
