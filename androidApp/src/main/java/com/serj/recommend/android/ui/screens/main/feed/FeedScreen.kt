@@ -11,9 +11,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.TopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,7 +19,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
@@ -64,9 +61,6 @@ fun FeedScreenContent(
     onLikeClick: (Boolean, String, String) -> Response<Boolean>,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
 ) {
-    val sheetState = rememberModalBottomSheetState()
-    var showBottomSheet by remember { mutableStateOf(false) }
-
     Scaffold(
         modifier = modifier
             .fillMaxSize()
@@ -108,6 +102,7 @@ fun FeedScreenContent(
                     creator = it.creator,
                     coverType = it.coverType,
                     coverReference = it.coverReference,
+                    comments = it.comments,
                     isLiked = it.isLiked,
                     recommendationId = it.id,
                     currentUserUid = currentUserUid,
@@ -128,21 +123,6 @@ fun FeedScreenContent(
                         backgroundColor = White
                     )
                 }
-            }
-        }
-
-        if (showBottomSheet) {
-            ModalBottomSheet(
-                onDismissRequest = { showBottomSheet = false },
-                sheetState = sheetState,
-                containerColor = Color.White
-            ) {
-                /*
-                CommentsBottomSheet(
-                    comments = recommendation.comments
-                )
-
-                 */
             }
         }
     }

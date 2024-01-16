@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.google.firebase.storage.StorageReference
+import com.serj.recommend.android.model.Comment
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.items.UserItem
 import com.serj.recommend.android.services.model.Response
@@ -63,6 +64,7 @@ fun RecommendationItem(
     title: String?,
     creator: String?,
     isLiked: Boolean,
+    comments: List<Comment>,
     recommendationId: String?,
     currentUserUid: String?,
     openScreen: (String) -> Unit,
@@ -292,6 +294,7 @@ fun RecommendationItem(
                 InteractionPanel(
                     modifier = Modifier.padding(start = 5.dp, top = 5.dp),
                     isLiked = isLiked,
+                    comments = comments,
                     recommendationId = recommendationId,
                     currentUserUid = currentUserUid,
                     onLikeClick = onLikeClick
@@ -330,6 +333,7 @@ fun PostWithBackgroundPreview() {
                 title = "title",
                 creator = "creator",
                 coverType = ItemsShapes.horizontal.name,
+                comments = arrayListOf(),
                 isLiked = true,
                 recommendationId = "",
                 currentUserUid = "",

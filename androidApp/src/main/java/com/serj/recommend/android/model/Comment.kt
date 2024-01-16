@@ -1,6 +1,7 @@
 package com.serj.recommend.android.model
 
 import com.google.firebase.firestore.DocumentId
+import com.serj.recommend.android.model.items.UserItem
 import java.util.Date
 
 data class Comment(
@@ -10,6 +11,8 @@ data class Comment(
 
     val text: String? = null,
     val date: Date? = null,
+
+    var userItem: UserItem? = null,
 
     val likedBy: ArrayList<String>? = arrayListOf(),
 )

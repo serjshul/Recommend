@@ -14,30 +14,39 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconToggleButton
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.serj.recommend.android.R
+import com.serj.recommend.android.model.Comment
 import com.serj.recommend.android.services.model.Response
+import com.serj.recommend.android.ui.components.comments.CommentsBottomSheet
 import com.serj.recommend.android.ui.styles.Black
 import com.serj.recommend.android.ui.styles.KiriumeRed
 import com.serj.recommend.android.ui.styles.Red
 import com.serj.recommend.android.ui.styles.White
 
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedTransitionTargetStateParameter")
 @Composable
 fun InteractionPanel(
     modifier: Modifier = Modifier,
     isLiked: Boolean,
+    comments: List<Comment>,
     recommendationId: String?,
     currentUserUid: String?,
     onLikeClick: (Boolean, String, String) -> Response<Boolean>
@@ -45,6 +54,9 @@ fun InteractionPanel(
     val isCurrentlyLiked = remember { mutableStateOf(isLiked) }
     val isCommented = remember { mutableStateOf(false) }
     val isReposted = remember { mutableStateOf(false) }
+
+    val sheetState = rememberModalBottomSheetState()
+    var showBottomSheet by remember { mutableStateOf(false) }
 
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -96,6 +108,7 @@ fun InteractionPanel(
             checked = isCommented.value,
             onCheckedChange = {
                 isCommented.value = !isCommented.value
+                showBottomSheet = true
             }
         ) {
             val transition = updateTransition(isCommented.value, label = "CommentTransition")
@@ -155,6 +168,18 @@ fun InteractionPanel(
             )
         }
     }
+
+    if (showBottomSheet) {
+        ModalBottomSheet(
+            onDismissRequest = { showBottomSheet = false },
+            sheetState = sheetState,
+            containerColor = Color.White
+        ) {
+            CommentsBottomSheet(
+                comments = comments
+            )
+        }
+    }
 }
 
 @Preview
@@ -163,6 +188,7 @@ fun InteractionPanelPreview() {
     InteractionPanel(
         modifier = Modifier.background(White),
         isLiked = true,
+        comments = arrayListOf(),
         recommendationId = "",
         currentUserUid = "",
         onLikeClick = { b: Boolean, s1: String, s2: String -> Response.Success(true) }

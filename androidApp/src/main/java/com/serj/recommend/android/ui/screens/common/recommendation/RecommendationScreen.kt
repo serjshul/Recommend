@@ -153,6 +153,7 @@ fun RecommendationScreenContent(
                                         .itemsInterval()
                                         .screenPaddingsInner(),
                                     isLiked = false,
+                                    comments = recommendation.comments,
                                     recommendationId = recommendation.id,
                                     currentUserUid = "",
                                     onLikeClick = { b: Boolean, s1: String, s2: String -> Success(true) }

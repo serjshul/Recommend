@@ -121,6 +121,7 @@ fun CategoryScreenContent(
                             coverType = it.value.coverType,
                             coverReference = it.value.coverReference,
                             isLiked = it.value.isLiked,
+                            comments = it.value.comments,
                             recommendationId = it.value.id,
                             currentUserUid = currentUid,
                             onLikeClick = onLikeClick,

@@ -246,6 +246,14 @@ class StorageServiceImpl @Inject constructor(
                 .get()
                 .await()
             val commentsData = commentsSnapshot.toObjects<Comment>()
+
+            for (comment in commentsData) {
+                val userItemResponse = comment.userId?.let { getUserItemByUid(it) }
+                if (userItemResponse is Success && userItemResponse.data != null) {
+                    comment.userItem = userItemResponse.data
+                }
+            }
+
             Success(commentsData)
         } catch (e: Exception) {
             Failure(e)

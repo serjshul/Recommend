@@ -123,6 +123,7 @@ fun BannerScreenContent(
                                 coverType = it.value.coverType,
                                 coverReference = it.value.coverReference,
                                 isLiked = it.value.isLiked,
+                                comments = it.value.comments,
                                 recommendationId = it.value.id,
                                 currentUserUid = currentUid,
                                 openScreen = openScreen,
