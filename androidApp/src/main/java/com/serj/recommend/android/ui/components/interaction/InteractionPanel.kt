@@ -40,7 +40,7 @@ fun InteractionPanel(
     isLiked: Boolean,
     recommendationId: String?,
     currentUserUid: String?,
-    onLikeClick: (Boolean, String, String) -> Response<Boolean>,
+    onLikeClick: (Boolean, String, String) -> Response<Boolean>
 ) {
     val isCurrentlyLiked = remember { mutableStateOf(isLiked) }
     val isCommented = remember { mutableStateOf(false) }

@@ -15,11 +15,14 @@ fun CommentsBottomSheet(
         modifier = modifier
     ) {
         for (comment in comments) {
+            /*
             CommentFullItem(
                 modifier = Modifier,
                 user = comment["userId"] ?: "",
                 comment = comment["text"] ?: "",
             )
+
+             */
         }
     }
 }

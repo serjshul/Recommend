@@ -159,7 +159,7 @@ fun RecommendationScreenContent(
                                 )
                             }
 
-                            if (recommendation.commentedBy.isNotEmpty()) {
+                            if (recommendation.comments.isNotEmpty()) {
                                 item {
                                     /*
                                             CommentsList(

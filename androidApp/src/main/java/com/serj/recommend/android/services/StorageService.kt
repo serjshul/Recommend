@@ -3,6 +3,7 @@ package com.serj.recommend.android.services
 import com.google.firebase.storage.StorageReference
 import com.serj.recommend.android.model.Banner
 import com.serj.recommend.android.model.Category
+import com.serj.recommend.android.model.Comment
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.items.RecommendationItem
 import com.serj.recommend.android.model.items.RecommendationPreview
@@ -16,6 +17,7 @@ typealias GetCategoryResponse = Response<Category?>
 typealias GetRecommendationItemResponse = Response<RecommendationItem?>
 typealias GetRecommendationPreviewResponse = Response<RecommendationPreview?>
 typealias GetUserItemResponse = Response<UserItem?>
+typealias GetCommentsResponse = Response<List<Comment>>
 typealias GetFollowingRecommendationsIdsResponse = Response<List<String>>
 typealias GetStorageReferenceFromUrlResponse = Response<StorageReference>
 typealias LikeOrUnlikeRecommendationResponse = Response<Boolean>
@@ -37,6 +39,8 @@ interface StorageService {
     suspend fun getRecommendationPreviewById(recommendationId: String, coverType: String):
             GetRecommendationPreviewResponse
     suspend fun getUserItemByUid(uid: String): GetUserItemResponse
+
+    suspend fun getComments(recommendationId: String): GetCommentsResponse
 
     fun likeOrUnlikeRecommendation(isLiked: Boolean, uid: String, recommendationId: String):
             LikeOrUnlikeRecommendationResponse
