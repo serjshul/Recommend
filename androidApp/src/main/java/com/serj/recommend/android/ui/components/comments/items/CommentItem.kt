@@ -1,4 +1,4 @@
-package com.serj.recommend.android.ui.components.comments
+package com.serj.recommend.android.ui.components.comments.items
 
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.FastOutLinearInEasing
@@ -8,7 +8,6 @@ import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.updateTransition
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,8 +28,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -59,7 +56,6 @@ fun CommentItem(
     isLiked: Boolean,
     onLikeClick: (Boolean, String, String) -> Response<Boolean>
 ) {
-    val photo = R.drawable.background
     val createdTime = getCreatedTime(date)
 
     val isCurrentlyLiked = remember { mutableStateOf(isLiked) }
@@ -74,16 +70,6 @@ fun CommentItem(
             modifier = Modifier
                 .size(50.dp)
         ) {
-            Image(
-                modifier = Modifier
-                    .size(40.dp)
-                    .clip(CircleShape),
-                painter = painterResource(id = photo),
-                contentDescription = "photo",
-                contentScale = ContentScale.Crop,
-                alignment = Alignment.TopStart
-            )
-
             CustomGlideImage(
                 modifier = Modifier
                     .size(40.dp)
@@ -180,7 +166,7 @@ fun CommentFullItemPreview() {
         isLiked = false,
         text = "The saga about a back-stabbing media dynasty won best drama series, " +
                 "best actor, best actress and best supporting actor",
-        date = Date(Date().time - 365 * 24 * 60 * 60 * 1000L),
+        date = Date(Date().time - 22 * 60 * 60 * 1000L),
         onLikeClick = { _: Boolean, _: String, _: String -> Response.Success(true) }
     )
 }

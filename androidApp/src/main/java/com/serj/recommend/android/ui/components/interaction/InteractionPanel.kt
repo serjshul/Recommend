@@ -20,6 +20,7 @@ import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,17 +47,18 @@ import com.serj.recommend.android.ui.styles.White
 fun InteractionPanel(
     modifier: Modifier = Modifier,
     isLiked: Boolean,
+    isCommentClicked: MutableState<Boolean>,
     comments: List<Comment>,
     recommendationId: String?,
     currentUserUid: String?,
     onLikeClick: (Boolean, String, String) -> Response<Boolean>
 ) {
     val isCurrentlyLiked = remember { mutableStateOf(isLiked) }
-    val isCommented = remember { mutableStateOf(false) }
-    val isReposted = remember { mutableStateOf(false) }
+    val isCurrentlyReposted = remember { mutableStateOf(false) }
 
-    val sheetState = rememberModalBottomSheetState()
-    var showBottomSheet by remember { mutableStateOf(false) }
+    val isCommentCurrentlyClicked = remember { mutableStateOf(false) }
+    val commentSheetState = rememberModalBottomSheetState()
+    var showCommentsBottomSheet by remember { isCommentClicked }
 
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -105,13 +107,13 @@ fun InteractionPanel(
         }
 
         IconToggleButton(
-            checked = isCommented.value,
+            checked = isCommentCurrentlyClicked.value,
             onCheckedChange = {
-                isCommented.value = !isCommented.value
-                showBottomSheet = true
+                isCommentCurrentlyClicked.value = !isCommentCurrentlyClicked.value
+                showCommentsBottomSheet = true
             }
         ) {
-            val transition = updateTransition(isCommented.value, label = "CommentTransition")
+            val transition = updateTransition(isCommentCurrentlyClicked.value, label = "CommentTransition")
             val size by transition.animateDp(
                 transitionSpec = {
                     keyframes {
@@ -134,14 +136,14 @@ fun InteractionPanel(
         }
 
         IconToggleButton(
-            checked = isReposted.value,
+            checked = isCurrentlyReposted.value,
             onCheckedChange = {
-                isReposted.value = !isReposted.value
+                isCurrentlyReposted.value = !isCurrentlyReposted.value
             }
         ) {
-            val transition = updateTransition(isReposted.value, label = "repostTransition")
+            val transition = updateTransition(isCurrentlyReposted.value, label = "repostTransition")
             val tint by transition.animateColor(label = "repostTint") { isLiked ->
-                if (isReposted.value) KiriumeRed else Black
+                if (isCurrentlyReposted.value) KiriumeRed else Black
             }
             val size by transition.animateDp(
                 transitionSpec = {
@@ -169,10 +171,10 @@ fun InteractionPanel(
         }
     }
 
-    if (showBottomSheet) {
+    if (showCommentsBottomSheet) {
         ModalBottomSheet(
-            onDismissRequest = { showBottomSheet = false },
-            sheetState = sheetState,
+            onDismissRequest = { showCommentsBottomSheet = false },
+            sheetState = commentSheetState,
             containerColor = Color.White
         ) {
             CommentsBottomSheet(
@@ -185,12 +187,15 @@ fun InteractionPanel(
 @Preview
 @Composable
 fun InteractionPanelPreview() {
+    val isCommentClicked = remember { mutableStateOf(false) }
+
     InteractionPanel(
         modifier = Modifier.background(White),
         isLiked = true,
+        isCommentClicked = isCommentClicked,
         comments = arrayListOf(),
         recommendationId = "",
         currentUserUid = "",
-        onLikeClick = { b: Boolean, s1: String, s2: String -> Response.Success(true) }
+        onLikeClick = { _: Boolean, _: String, _: String -> Response.Success(true) }
     )
 }

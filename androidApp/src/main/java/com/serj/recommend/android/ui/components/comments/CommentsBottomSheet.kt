@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.serj.recommend.android.model.Comment
 import com.serj.recommend.android.services.model.Response
+import com.serj.recommend.android.ui.components.comments.items.CommentItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

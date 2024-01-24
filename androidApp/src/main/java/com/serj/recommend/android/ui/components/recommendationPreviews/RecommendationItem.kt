@@ -39,10 +39,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.google.firebase.storage.StorageReference
+import com.serj.recommend.android.common.getCreatedTime
 import com.serj.recommend.android.model.Comment
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.items.UserItem
 import com.serj.recommend.android.services.model.Response
+import com.serj.recommend.android.ui.components.comments.CommentsShortList
 import com.serj.recommend.android.ui.components.interaction.InteractionPanel
 import com.serj.recommend.android.ui.components.media.CustomGlideImage
 import com.serj.recommend.android.ui.components.media.CustomGlideImageShaded
@@ -71,12 +73,16 @@ fun RecommendationItem(
     onLikeClick: (Boolean, String, String) -> Response<Boolean>,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
 ) {
-    var expanded by remember { mutableStateOf(false) }
+    val isCommentClicked = remember { mutableStateOf(false) }
+    var isDropDownExpanded by remember { mutableStateOf(false) }
+
     var backgroundSize by remember { mutableStateOf(IntSize.Zero) }
     var coverSize by remember { mutableStateOf(IntSize.Zero) }
 
     if (user?.nickname != null && date != null && description != null &&
         title != null && creator != null) {
+        val createdTime = getCreatedTime(date)
+
         Box(
             modifier = modifier
                 .fillMaxWidth()
@@ -126,7 +132,7 @@ fun RecommendationItem(
 
                     Text(
                         modifier = Modifier.weight(1f),
-                        text = "16h",
+                        text = createdTime,
                         color = if (backgroundSize.height == 0) Black
                         else White,
                         fontSize = 14.sp
@@ -137,7 +143,7 @@ fun RecommendationItem(
                             .weight(1f)
                     ) {
                         IconButton(
-                            onClick = { expanded = true }
+                            onClick = { isDropDownExpanded = true }
                         ) {
                             Icon(
                                 Icons.Default.MoreVert,
@@ -148,8 +154,8 @@ fun RecommendationItem(
                         }
 
                         DropdownMenu(
-                            expanded = expanded,
-                            onDismissRequest = { expanded = false }
+                            expanded = isDropDownExpanded,
+                            onDismissRequest = { isDropDownExpanded = false }
                         ) {
                             Text(
                                 modifier = Modifier
@@ -192,7 +198,6 @@ fun RecommendationItem(
                                 reference = coverReference
                             )
                         }
-
                         ItemsShapes.vertical.name -> {
                             CustomGlideImage(
                                 modifier = Modifier
@@ -211,7 +216,6 @@ fun RecommendationItem(
                                 reference = coverReference
                             )
                         }
-
                         else -> {
                             CustomGlideImage(
                                 modifier = Modifier
@@ -235,7 +239,7 @@ fun RecommendationItem(
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(start = 10.dp, )
+                            .padding(start = 10.dp)
                             .align(Alignment.Bottom)
                     ) {
                         Text(
@@ -275,8 +279,10 @@ fun RecommendationItem(
                     .padding(
                         top = if (backgroundSize.height == 0)
                             with(LocalDensity.current) { 75.dp + coverSize.height.toDp() + 10.dp }
-                        else with(LocalDensity.current) { backgroundSize.height.toDp() +
-                                (coverSize.height.toDp() / 3) * 2 + 10.dp },
+                        else with(LocalDensity.current) {
+                            backgroundSize.height.toDp() +
+                                    (coverSize.height.toDp() / 3) * 2 + 10.dp
+                        },
                         bottom = 15.dp
                     )
             ) {
@@ -291,9 +297,20 @@ fun RecommendationItem(
                     lineHeight = 1.4.em
                 )
 
+                if (comments.isNotEmpty()) {
+                    CommentsShortList(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 15.dp, end = 15.dp, top = 5.dp)
+                            .clickable { isCommentClicked.value = true },
+                        comments = comments
+                    )
+                }
+
                 InteractionPanel(
                     modifier = Modifier.padding(start = 5.dp, top = 5.dp),
                     isLiked = isLiked,
+                    isCommentClicked = isCommentClicked,
                     comments = comments,
                     recommendationId = recommendationId,
                     currentUserUid = currentUserUid,
@@ -307,6 +324,25 @@ fun RecommendationItem(
 @Preview
 @Composable
 fun PostWithBackgroundPreview() {
+    val comments = listOf(
+        Comment(
+            text = "preview  preview preview preview preview preview preview",
+            userItem = UserItem(nickname = "preview")
+        ),
+        Comment(
+            text = "preview  preview preview preview preview preview preview",
+            userItem = UserItem(nickname = "preview")
+        ),
+        Comment(
+            text = "preview  preview preview preview preview preview preview",
+            userItem = UserItem(nickname = "preview")
+        ),
+        Comment(
+            text = "preview  preview preview preview preview preview preview",
+            userItem = UserItem(nickname = "preview")
+        )
+    )
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -333,12 +369,12 @@ fun PostWithBackgroundPreview() {
                 title = "title",
                 creator = "creator",
                 coverType = ItemsShapes.horizontal.name,
-                comments = arrayListOf(),
+                comments = comments,
                 isLiked = true,
                 recommendationId = "",
                 currentUserUid = "",
                 openScreen = { },
-                onLikeClick = { b: Boolean, s1: String, s2: String -> Response.Success(true) },
+                onLikeClick = { _: Boolean, _: String, _: String -> Response.Success(true) },
                 onRecommendationClick = { _: (String) -> Unit, _: Recommendation -> }
             )
         }

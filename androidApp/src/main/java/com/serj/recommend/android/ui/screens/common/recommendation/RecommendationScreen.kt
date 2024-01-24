@@ -148,11 +148,13 @@ fun RecommendationScreenContent(
                             }
 
                             item {
+                                val isCommentClicked = remember { mutableStateOf(false) }
                                 InteractionPanel(
                                     modifier = Modifier
                                         .itemsInterval()
                                         .screenPaddingsInner(),
                                     isLiked = false,
+                                    isCommentClicked = isCommentClicked,
                                     comments = recommendation.comments,
                                     recommendationId = recommendation.id,
                                     currentUserUid = "",
