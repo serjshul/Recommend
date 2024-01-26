@@ -22,7 +22,14 @@ fun Description(
 
     TextParagraphs(
         modifier = modifier
-            .clip(RoundedCornerShape(10.dp, 10.dp, 0.dp, 0.dp))
+            .clip(
+                RoundedCornerShape(
+                    topStart = 10.dp,
+                    topEnd = 10.dp,
+                    bottomStart = 0.dp,
+                    bottomEnd = 0.dp
+                )
+            )
             .background(White)
             .screenPaddingsInner()
             .screenPaddingsOuter(),
@@ -34,10 +41,11 @@ fun Description(
 @Composable
 fun DescriptionPreview() {
     Description(
-        modifier = Modifier,
-        description = "In a world divided by factions based on virtues, Tris learns she's " +
-                "Divergent and won't fit in. When she discovers a plot to destroy Divergents, " +
-                "Tris and the mysterious Four must find out what makes Divergents dangerous " +
-                "before it's too late."
+        description = "description description description description description description " +
+                "description description description description description description " +
+                "description description description description description description\n" +
+                "description description description description description description " +
+                "description description description description description description " +
+                "description description description description description description "
     )
 }

@@ -36,9 +36,11 @@ import com.serj.recommend.android.ui.components.interaction.InteractionPanel
 import com.serj.recommend.android.ui.components.loadingIndicators.LargeLoadingIndicator
 import com.serj.recommend.android.ui.screens.common.recommendation.components.Description
 import com.serj.recommend.android.ui.screens.common.recommendation.components.Header
+import com.serj.recommend.android.ui.screens.common.recommendation.components.HeaderBackground
 import com.serj.recommend.android.ui.screens.common.recommendation.components.InfoPanel
 import com.serj.recommend.android.ui.screens.common.recommendation.components.Paragraphs
 import com.serj.recommend.android.ui.screens.common.recommendation.components.Quote
+import com.serj.recommend.android.ui.screens.common.recommendation.components.RecommendationTopBar
 import com.serj.recommend.android.ui.styles.Black
 import com.serj.recommend.android.ui.styles.TexasHeatwave
 import com.serj.recommend.android.ui.styles.White
@@ -70,9 +72,21 @@ fun RecommendationScreenContent(
         is Success -> {
             val recommendation = getRecommendationResponse.data
             val sheetState = rememberModalBottomSheetState()
-            var showBottomSheet by remember { mutableStateOf(false) }
+            var showBottomSheet by remember {
+                mutableStateOf(false)
+            }
 
             val lazyListState: LazyListState = rememberLazyListState()
+            val currentOffset by remember {
+                derivedStateOf {
+                    lazyListState.firstVisibleItemScrollOffset
+                }
+            }
+            val isBackgroundHidden by remember {
+                derivedStateOf {
+                    lazyListState.firstVisibleItemIndex > 0
+                }
+            }
 
             Scaffold(
                 modifier = modifier
@@ -88,21 +102,13 @@ fun RecommendationScreenContent(
                                 .padding(paddingValues)
                                 .fillMaxSize()
                         ) {
-                            Header(
+                            HeaderBackground(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .align(Alignment.TopCenter)
-                                    .alpha(
-                                        100 / remember { derivedStateOf { lazyListState.firstVisibleItemScrollOffset } }.value.toFloat()
-                                    ),
-                                title = recommendation.title,
-                                type = recommendation.type,
-                                creator = recommendation.creator,
-                                tags = recommendation.tags,
-                                year = recommendation.year,
+                                    .alpha(150 / currentOffset.toFloat()),
                                 backgroundImageReference = recommendation.backgroundImageReference,
-                                backgroundVideoReference = recommendation.backgroundVideoReference,
-                                popUpScreen = popUpScreen
+                                backgroundVideoReference = recommendation.backgroundVideoReference
                             )
 
                             LazyColumn(
@@ -112,8 +118,17 @@ fun RecommendationScreenContent(
                                 state = lazyListState
                             ) {
                                 item {
+                                    Header(
+                                        modifier = Modifier.padding(top = 200.dp),
+                                        title = recommendation.title,
+                                        creator = recommendation.creator,
+                                        tags = recommendation.tags,
+                                        year = recommendation.year
+                                    )
+                                }
+
+                                item {
                                     Description(
-                                        modifier = Modifier.padding(top = 380.dp),
                                         description = recommendation.description
                                     )
                                 }
@@ -185,6 +200,14 @@ fun RecommendationScreenContent(
                                     }
                                 }
                             }
+
+                            RecommendationTopBar(
+                                modifier = Modifier
+                                    .align(Alignment.TopCenter),
+                                type = recommendation.type,
+                                isBackgroundHidden = isBackgroundHidden,
+                                popUpScreen = popUpScreen
+                            )
                         }
 
                         if (showBottomSheet) {
