@@ -27,7 +27,7 @@ import com.serj.recommend.android.common.ext.toColor
 import com.serj.recommend.android.common.ext.toParagraphText
 import com.serj.recommend.android.ui.components.loadingIndicators.SmallLoadingIndicator
 import com.serj.recommend.android.ui.components.text.TextParagraphs
-import com.serj.recommend.android.ui.styles.KiriumeRed
+import com.serj.recommend.android.ui.styles.primary
 import com.serj.recommend.android.ui.styles.White
 
 @Composable
@@ -68,7 +68,7 @@ fun Description(
                         .padding(top = 2.dp)
                         .clickable { isOpened = true },
                     text = "Read all",
-                    color = color?.toColor() ?: KiriumeRed,
+                    color = color?.toColor() ?: primary,
                     fontWeight = FontWeight.Bold,
                     fontSize = 14.sp
                 )
@@ -78,7 +78,7 @@ fun Description(
                         .padding(top = 10.dp)
                         .clickable { isOpened = false },
                     text = "Close",
-                    color = color?.toColor() ?: KiriumeRed,
+                    color = color?.toColor() ?: primary,
                     fontWeight = FontWeight.Bold,
                     fontSize = 14.sp
                 )

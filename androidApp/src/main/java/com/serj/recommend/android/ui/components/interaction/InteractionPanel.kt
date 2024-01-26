@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import com.serj.recommend.android.R
 import com.serj.recommend.android.services.model.Response
 import com.serj.recommend.android.ui.styles.Black
-import com.serj.recommend.android.ui.styles.KiriumeRed
+import com.serj.recommend.android.ui.styles.primary
 import com.serj.recommend.android.ui.styles.Red
 import com.serj.recommend.android.ui.styles.White
 
@@ -128,7 +128,7 @@ fun InteractionPanel(
         ) {
             val transition = updateTransition(isReposted.value, label = "repostTransition")
             val tint by transition.animateColor(label = "repostTint") { isLiked ->
-                if (isReposted.value) KiriumeRed else Black
+                if (isReposted.value) primary else Black
             }
             val size by transition.animateDp(
                 transitionSpec = {

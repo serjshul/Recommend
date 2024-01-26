@@ -24,8 +24,8 @@ fun Description(
         modifier = modifier
             .clip(
                 RoundedCornerShape(
-                    topStart = 10.dp,
-                    topEnd = 10.dp,
+                    topStart = 20.dp,
+                    topEnd = 20.dp,
                     bottomStart = 0.dp,
                     bottomEnd = 0.dp
                 )

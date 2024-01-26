@@ -29,7 +29,9 @@ import com.serj.recommend.android.common.ext.itemsInterval
 import com.serj.recommend.android.common.ext.screenPaddingsInner
 import com.serj.recommend.android.common.ext.toColor
 import com.serj.recommend.android.model.Recommendation
+import com.serj.recommend.android.model.items.UserItem
 import com.serj.recommend.android.services.GetRecommendationResponse
+import com.serj.recommend.android.services.GetUserItemResponse
 import com.serj.recommend.android.services.model.Response.Failure
 import com.serj.recommend.android.services.model.Response.Success
 import com.serj.recommend.android.ui.components.interaction.InteractionPanel
@@ -42,7 +44,6 @@ import com.serj.recommend.android.ui.screens.common.recommendation.components.Pa
 import com.serj.recommend.android.ui.screens.common.recommendation.components.Quote
 import com.serj.recommend.android.ui.screens.common.recommendation.components.RecommendationTopBar
 import com.serj.recommend.android.ui.styles.Black
-import com.serj.recommend.android.ui.styles.TexasHeatwave
 import com.serj.recommend.android.ui.styles.White
 import java.util.Date
 
@@ -53,10 +54,12 @@ fun RecommendationScreen(
     viewModel: RecommendationViewModel = hiltViewModel()
 ) {
     val recommendationResponse by viewModel.getRecommendationResponse
+    val getUserItemResponse by viewModel.getUserItemResponse
 
     RecommendationScreenContent(
         modifier = modifier,
         getRecommendationResponse = recommendationResponse,
+        getUserItemResponse = getUserItemResponse,
         popUpScreen = popUpScreen
     )
 }
@@ -66,6 +69,7 @@ fun RecommendationScreen(
 fun RecommendationScreenContent(
     modifier: Modifier = Modifier,
     getRecommendationResponse: GetRecommendationResponse?,
+    getUserItemResponse: GetUserItemResponse?,
     popUpScreen: () -> Unit
 ) {
     when (getRecommendationResponse) {
@@ -106,7 +110,8 @@ fun RecommendationScreenContent(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .align(Alignment.TopCenter)
-                                    .alpha(150 / currentOffset.toFloat()),
+                                    .alpha(80 / currentOffset.toFloat()),
+                                color = recommendation.color?.toColor(),
                                 backgroundImageReference = recommendation.backgroundImageReference,
                                 backgroundVideoReference = recommendation.backgroundVideoReference
                             )
@@ -118,13 +123,20 @@ fun RecommendationScreenContent(
                                 state = lazyListState
                             ) {
                                 item {
-                                    Header(
-                                        modifier = Modifier.padding(top = 200.dp),
-                                        title = recommendation.title,
-                                        creator = recommendation.creator,
-                                        tags = recommendation.tags,
-                                        year = recommendation.year
-                                    )
+                                    if (getUserItemResponse is Success) {
+                                        val userItem = getUserItemResponse.data
+                                        if (userItem != null) {
+                                            Header(
+                                                modifier = Modifier.padding(top = 50.dp),
+                                                title = recommendation.title,
+                                                creator = recommendation.creator,
+                                                tags = recommendation.tags,
+                                                year = recommendation.year,
+                                                photoReference = userItem.photoReference,
+                                                nickname = userItem.nickname
+                                            )
+                                        }
+                                    }
                                 }
 
                                 item {
@@ -148,7 +160,7 @@ fun RecommendationScreenContent(
                                             .itemsInterval()
                                             .screenPaddingsInner(),
                                         quote = recommendation.quote,
-                                        color = recommendation.color?.toColor() ?: TexasHeatwave
+                                        color = recommendation.color?.toColor()
                                     )
                                 }
 
@@ -205,6 +217,7 @@ fun RecommendationScreenContent(
                                 modifier = Modifier
                                     .align(Alignment.TopCenter),
                                 type = recommendation.type,
+                                color = recommendation.color?.toColor(),
                                 isBackgroundHidden = isBackgroundHidden,
                                 popUpScreen = popUpScreen
                             )
@@ -250,34 +263,44 @@ fun RecommendationScreenContentPreview() {
             id = "recommendationId",
             uid = "userId",
             title = "Title",
-            type = "Preview",
-            creator = "Preview",
-            tags = listOf("Preview", "Preview", "Preview"),
+            type = "Type",
+            creator = "Creator",
+            tags = listOf("Tag", "Tag", "Tag", "Tag", "Tag", "Tag"),
             year = 2023,
-            description = "Preview preview preview preview preview preview preview preview " +
-                    "preview preview preview preview preview preview preview preview preview",
-            quote = "Preview preview\nPreview preview\nPreview preview\nPreview preview",
+            description = "Description description description description description description " +
+                    "description description description description description description " +
+                    "description description description description description description\n" +
+                    "Description description description description description description " +
+                    "description description description description description description " +
+                    "description description description description description description ",
+            quote = "Quote quote\nQuote quote\nQuote quote\nQuote quote",
             paragraphs = arrayListOf(
                 hashMapOf(
-                    "title" to "Preview",
-                    "text" to "Preview preview preview preview preview preview preview preview " +
-                            "preview preview preview preview preview preview preview preview" +
-                            "preview preview preview preview preview preview preview preview" +
-                            "preview preview preview preview preview preview preview preview"
+                    "title" to "Paragraph title",
+                    "text" to "Text text text text text text text text text text text text text " +
+                            "text text text text text text text text text text text text text " +
+                            "text text text text text text text text text text text text text\n" +
+                            "Text text text text text text text text text text text text text " +
+                            "text text text text text text text text text text text text text " +
+                            "text text text text text text text text text text text text text"
                 ),
                 hashMapOf(
-                    "title" to "Preview",
-                    "text" to "Preview preview preview preview preview preview preview preview " +
-                            "preview preview preview preview preview preview preview preview" +
-                            "preview preview preview preview preview preview preview preview" +
-                            "preview preview preview preview preview preview preview preview"
+                    "title" to "Paragraph title",
+                    "text" to "Text text text text text text text text text text text text text " +
+                            "text text text text text text text text text text text text text " +
+                            "text text text text text text text text text text text text text\n" +
+                            "Text text text text text text text text text text text text text " +
+                            "text text text text text text text text text text text text text " +
+                            "text text text text text text text text text text text text text"
                 ),
                 hashMapOf(
-                    "title" to "Preview",
-                    "text" to "Preview preview preview preview preview preview preview preview " +
-                            "preview preview preview preview preview preview preview preview" +
-                            "preview preview preview preview preview preview preview preview" +
-                            "preview preview preview preview preview preview preview preview"
+                    "title" to "Paragraph title",
+                    "text" to "Text text text text text text text text text text text text text " +
+                            "text text text text text text text text text text text text text " +
+                            "text text text text text text text text text text text text text\n" +
+                            "Text text text text text text text text text text text text text " +
+                            "text text text text text text text text text text text text text " +
+                            "text text text text text text text text text text text text text"
                 )
             ),
             date = Date(0),
@@ -288,10 +311,17 @@ fun RecommendationScreenContentPreview() {
             views = 0
         )
     )
+    val getUserItemResponse = Success(
+        UserItem(
+            uid = "userId",
+            nickname = "nickname"
+        )
+    )
 
     RecommendationScreenContent(
         modifier = Modifier,
         getRecommendationResponse = getRecommendationResponse,
+        getUserItemResponse = getUserItemResponse,
         popUpScreen = { }
     )
 }

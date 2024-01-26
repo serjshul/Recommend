@@ -17,6 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import com.google.firebase.storage.StorageReference
 
 @Composable
 fun Header(
@@ -24,14 +25,27 @@ fun Header(
     title: String,
     creator: String,
     tags: List<String>,
-    year: Int
+    year: Int,
+    photoReference: StorageReference?,
+    nickname: String?
 ) {
     Column(
         modifier = modifier
     ) {
+        if (nickname != null) {
+            UserInfo(
+                photoReference = photoReference,
+                nickname = nickname
+            )
+        }
+
         Text(
             modifier = Modifier
-                .padding(start = 15.dp, end = 15.dp, top = 20.dp)
+                .padding(
+                    start = 15.dp,
+                    end = 15.dp,
+                    top = if (nickname != null) 140.dp else 196.dp
+                )
                 .align(Alignment.CenterHorizontally),
             text = title,
             color = Color.White,
@@ -125,6 +139,8 @@ fun RecommendationHeaderPreview() {
         title = "Title",
         creator = "Creator",
         tags = listOf("tag", "tag", "tag", "tag", "tag", "tag", "tag", "tag", "tag", "tag", "tag", "tag"),
-        year = 2023
+        year = 2023,
+        photoReference = null,
+        nickname = "nickname"
     )
 }
