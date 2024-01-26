@@ -31,7 +31,7 @@ fun Modifier.itemsInterval(): Modifier {
 fun Modifier.recommendationHeaderShape(): Modifier {
     return this
         .fillMaxWidth()
-        .height(400.dp)
+        .height(450.dp)
 }
 
 fun Modifier.recommendationContentShape(): Modifier {

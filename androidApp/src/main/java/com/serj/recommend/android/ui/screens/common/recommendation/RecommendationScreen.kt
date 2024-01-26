@@ -95,7 +95,7 @@ fun RecommendationScreenContent(
             Scaffold(
                 modifier = modifier
             ) { paddingValues ->
-                if (recommendation != null) {
+                if (recommendation != null && getUserItemResponse is Success) {
                     if (recommendation.title != null && recommendation.type != null &&
                         recommendation.creator != null && recommendation.tags != null &&
                         recommendation.year != null && recommendation.description != null &&
@@ -123,19 +123,17 @@ fun RecommendationScreenContent(
                                 state = lazyListState
                             ) {
                                 item {
-                                    if (getUserItemResponse is Success) {
-                                        val userItem = getUserItemResponse.data
-                                        if (userItem != null) {
-                                            Header(
-                                                modifier = Modifier.padding(top = 50.dp),
-                                                title = recommendation.title,
-                                                creator = recommendation.creator,
-                                                tags = recommendation.tags,
-                                                year = recommendation.year,
-                                                photoReference = userItem.photoReference,
-                                                nickname = userItem.nickname
-                                            )
-                                        }
+                                    val userItem = getUserItemResponse.data
+                                    if (userItem != null) {
+                                        Header(
+                                            modifier = Modifier.padding(top = 50.dp),
+                                            title = recommendation.title,
+                                            creator = recommendation.creator,
+                                            tags = recommendation.tags,
+                                            year = recommendation.year,
+                                            photoReference = userItem.photoReference,
+                                            nickname = userItem.nickname
+                                        )
                                     }
                                 }
 

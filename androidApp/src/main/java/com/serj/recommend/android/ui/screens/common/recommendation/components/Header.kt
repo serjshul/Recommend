@@ -44,7 +44,7 @@ fun Header(
                 .padding(
                     start = 15.dp,
                     end = 15.dp,
-                    top = if (nickname != null) 140.dp else 196.dp
+                    top = if (nickname != null) 190.dp else 246.dp
                 )
                 .align(Alignment.CenterHorizontally),
             text = title,
