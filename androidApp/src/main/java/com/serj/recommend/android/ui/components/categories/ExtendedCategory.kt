@@ -42,7 +42,6 @@ import com.serj.recommend.android.ui.components.recommendationPreviews.transpare
 import com.serj.recommend.android.ui.components.snackbar.SnackbarManager
 import com.serj.recommend.android.ui.screens.main.home.HomeViewModel.Companion.AMOUNT_THRESHOLD
 import com.serj.recommend.android.ui.screens.main.home.components.ShowAllButton
-import com.serj.recommend.android.ui.styles.White
 
 @Composable
 fun ExtendedCategory(
@@ -160,7 +159,7 @@ fun ExtendedCategory(
                                 modifier = Modifier
                                     .width(130.dp)
                                     .fillParentMaxHeight(),
-                                backgroundColor = White
+                                backgroundColor = Color.White
                             )
                         }
                     }

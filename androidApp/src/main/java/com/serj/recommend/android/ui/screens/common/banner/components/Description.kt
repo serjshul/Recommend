@@ -18,6 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntSize
@@ -28,7 +29,6 @@ import com.serj.recommend.android.common.ext.toParagraphText
 import com.serj.recommend.android.ui.components.loadingIndicators.SmallLoadingIndicator
 import com.serj.recommend.android.ui.components.text.TextParagraphs
 import com.serj.recommend.android.ui.styles.primary
-import com.serj.recommend.android.ui.styles.White
 
 @Composable
 fun Description(
@@ -106,7 +106,7 @@ fun TextHider(
             .fillMaxSize()
             .background(
                 Brush.verticalGradient(
-                    colors = listOf(Color.Transparent, Color.White),
+                    colors = listOf(Color.Transparent, White),
                     startY = textSize.height.toFloat() / 7,
                     endY = textSize.height.toFloat()
                 )

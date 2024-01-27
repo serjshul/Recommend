@@ -1,17 +1,17 @@
 package com.serj.recommend.android.ui.screens.common.recommendation.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.serj.recommend.android.common.ext.screenPaddingsInner
-import com.serj.recommend.android.common.ext.screenPaddingsOuter
 import com.serj.recommend.android.common.ext.toParagraphText
 import com.serj.recommend.android.ui.components.text.TextParagraphs
-import com.serj.recommend.android.ui.styles.White
 
 @Composable
 fun Description(
@@ -30,9 +30,9 @@ fun Description(
                     bottomEnd = 0.dp
                 )
             )
-            .background(White)
+            .background(Color.White)
             .screenPaddingsInner()
-            .screenPaddingsOuter(),
+            .padding(top = 15.dp, bottom = 10.dp),
         paragraphTexts = paragraphs
     )
 }

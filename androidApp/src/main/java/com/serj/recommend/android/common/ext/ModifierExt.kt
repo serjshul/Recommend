@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 
 fun Modifier.textInterval(): Modifier {
     return this
-        .padding(bottom = 11.dp)
+        .padding(bottom = 6.dp)
 }
 
 fun Modifier.textShape(): Modifier {
@@ -72,12 +72,12 @@ fun Modifier.topBarShape(): Modifier {
 
 fun Modifier.screenPaddingsInner(): Modifier {
     return this
-        .padding(start = 15.dp, end = 15.dp)
+        .padding(start = 10.dp, end = 10.dp)
 }
 
 fun Modifier.screenPaddingsOuter(): Modifier {
     return this
-        .padding(top = 15.dp, bottom = 15.dp)
+        .padding(top = 10.dp, bottom = 10.dp)
 }
 
 fun Modifier.bannerHeaderShape(): Modifier {

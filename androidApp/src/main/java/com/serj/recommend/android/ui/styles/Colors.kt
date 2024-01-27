@@ -7,10 +7,3 @@ val secondary = Color(0xFF541010)
 val background = Color(0xFFBFC1B2)
 val filling = Color(0xFFD7CFB8)
 val outline = Color(0xFF3e392b)
-
-val White = Color.White
-val Black = Color.Black
-val Gray = Color.Gray
-val LightGray = Color.LightGray
-val DarkGray = Color.DarkGray
-val Red = Color.Red

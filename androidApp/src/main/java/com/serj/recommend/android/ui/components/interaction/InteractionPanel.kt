@@ -22,16 +22,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color.Companion.Black
+import androidx.compose.ui.graphics.Color.Companion.Red
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.serj.recommend.android.R
 import com.serj.recommend.android.services.model.Response
-import com.serj.recommend.android.ui.styles.Black
 import com.serj.recommend.android.ui.styles.primary
-import com.serj.recommend.android.ui.styles.Red
-import com.serj.recommend.android.ui.styles.White
 
 @SuppressLint("UnusedTransitionTargetStateParameter")
 @Composable

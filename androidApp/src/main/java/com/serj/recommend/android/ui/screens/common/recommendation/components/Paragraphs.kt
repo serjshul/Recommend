@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.White
 import com.google.firebase.storage.StorageReference
 import com.serj.recommend.android.common.ext.recommendationMediaClip
 import com.serj.recommend.android.common.ext.recommendationMediaShape
@@ -18,7 +19,6 @@ import com.serj.recommend.android.ui.components.media.CustomGlideImage
 import com.serj.recommend.android.ui.components.media.CustomVideoPlayer
 import com.serj.recommend.android.ui.components.text.TextParagraphs
 import com.serj.recommend.android.ui.components.text.Title
-import com.serj.recommend.android.ui.styles.White
 
 @Composable
 fun Paragraphs(

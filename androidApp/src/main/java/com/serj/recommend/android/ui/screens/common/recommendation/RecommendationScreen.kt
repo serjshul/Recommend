@@ -43,8 +43,6 @@ import com.serj.recommend.android.ui.screens.common.recommendation.components.In
 import com.serj.recommend.android.ui.screens.common.recommendation.components.Paragraphs
 import com.serj.recommend.android.ui.screens.common.recommendation.components.Quote
 import com.serj.recommend.android.ui.screens.common.recommendation.components.RecommendationTopBar
-import com.serj.recommend.android.ui.styles.Black
-import com.serj.recommend.android.ui.styles.White
 import java.util.Date
 
 @Composable
@@ -148,7 +146,7 @@ fun RecommendationScreenContent(
                                         modifier = Modifier,
                                         paragraphs = recommendation.paragraphs,
                                         paragraphsReferences = recommendation.paragraphsReferences,
-                                        color = recommendation.color?.toColor() ?: Black
+                                        color = recommendation.color?.toColor() ?: Color.Black
                                     )
                                 }
 
@@ -247,7 +245,7 @@ fun RecommendationScreenContent(
         }
         else -> {
             LargeLoadingIndicator(
-                backgroundColor = White
+                backgroundColor = Color.White
             )
         }
     }

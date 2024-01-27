@@ -18,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
@@ -28,7 +29,6 @@ import com.serj.recommend.android.model.items.RecommendationItem
 import com.serj.recommend.android.services.model.Response
 import com.serj.recommend.android.ui.components.loadingIndicators.SmallLoadingIndicator
 import com.serj.recommend.android.ui.components.recommendationPreviews.RecommendationItem
-import com.serj.recommend.android.ui.styles.White
 
 @Composable
 fun FeedScreen(
