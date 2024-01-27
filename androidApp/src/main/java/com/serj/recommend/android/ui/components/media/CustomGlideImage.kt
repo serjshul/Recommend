@@ -15,12 +15,12 @@ import com.serj.recommend.android.ui.styles.Gray
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun CustomGlideImage(
-    modifier: Modifier = Modifier,
-    reference: StorageReference?
+    reference: StorageReference?,
+    modifier: Modifier = Modifier
 ) {
     GlideImage(
-        modifier = modifier,
         model = reference,
+        modifier = modifier,
         loading = placeholder(ColorPainter(Gray)),
         failure = placeholder(R.drawable.glide_failure),
         transition = CrossFade,
