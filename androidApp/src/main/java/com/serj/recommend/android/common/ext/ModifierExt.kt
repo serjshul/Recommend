@@ -45,7 +45,6 @@ fun Modifier.recommendationParagraphShape(): Modifier {
     return this
         .fillMaxWidth()
         .wrapContentHeight()
-        .padding(bottom = 20.dp)
 }
 
 fun Modifier.recommendationMediaShape(): Modifier {

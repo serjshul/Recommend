@@ -2,12 +2,10 @@ package com.serj.recommend.android.ui.screens.common.recommendation
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
@@ -25,8 +23,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.serj.recommend.android.common.ext.itemsInterval
-import com.serj.recommend.android.common.ext.screenPaddingsInner
 import com.serj.recommend.android.common.ext.toColor
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.items.UserItem
@@ -34,12 +30,11 @@ import com.serj.recommend.android.services.GetRecommendationResponse
 import com.serj.recommend.android.services.GetUserItemResponse
 import com.serj.recommend.android.services.model.Response.Failure
 import com.serj.recommend.android.services.model.Response.Success
-import com.serj.recommend.android.ui.components.interaction.InteractionPanel
+import com.serj.recommend.android.ui.components.interaction.InteractionPanelRecommendation
 import com.serj.recommend.android.ui.components.loadingIndicators.LargeLoadingIndicator
 import com.serj.recommend.android.ui.screens.common.recommendation.components.Description
 import com.serj.recommend.android.ui.screens.common.recommendation.components.Header
 import com.serj.recommend.android.ui.screens.common.recommendation.components.HeaderBackground
-import com.serj.recommend.android.ui.screens.common.recommendation.components.InfoPanel
 import com.serj.recommend.android.ui.screens.common.recommendation.components.Paragraphs
 import com.serj.recommend.android.ui.screens.common.recommendation.components.Quote
 import com.serj.recommend.android.ui.screens.common.recommendation.components.RecommendationTopBar
@@ -106,7 +101,6 @@ fun RecommendationScreenContent(
                         ) {
                             HeaderBackground(
                                 modifier = Modifier
-                                    .fillMaxWidth()
                                     .align(Alignment.TopCenter)
                                     .alpha(80 / currentOffset.toFloat()),
                                 color = recommendation.color?.toColor(),
@@ -124,7 +118,8 @@ fun RecommendationScreenContent(
                                     val userItem = getUserItemResponse.data
                                     if (userItem != null) {
                                         Header(
-                                            modifier = Modifier.padding(top = 50.dp),
+                                            modifier = Modifier
+                                                .padding(top = 50.dp),
                                             title = recommendation.title,
                                             creator = recommendation.creator,
                                             tags = recommendation.tags,
@@ -143,7 +138,6 @@ fun RecommendationScreenContent(
 
                                 item {
                                     Paragraphs(
-                                        modifier = Modifier,
                                         paragraphs = recommendation.paragraphs,
                                         paragraphsReferences = recommendation.paragraphsReferences,
                                         color = recommendation.color?.toColor() ?: Color.Black
@@ -152,60 +146,26 @@ fun RecommendationScreenContent(
 
                                 item {
                                     Quote(
-                                        modifier = Modifier
-                                            .itemsInterval()
-                                            .screenPaddingsInner(),
                                         quote = recommendation.quote,
                                         color = recommendation.color?.toColor()
                                     )
                                 }
 
                                 item {
-                                    InfoPanel(
-                                        modifier = Modifier
-                                            .itemsInterval()
-                                            .screenPaddingsInner(),
-                                        author = recommendation.uid ?: "",
-                                        date = recommendation.date.toLocaleString()
-                                    )
-                                }
-
-                                item {
-                                    Divider(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .itemsInterval()
-                                            .screenPaddingsInner(),
-                                        thickness = 1.dp,
-                                        color = Color.Gray
-                                    )
-                                }
-
-                                item {
-                                    InteractionPanel(
-                                        modifier = Modifier
-                                            .itemsInterval()
-                                            .screenPaddingsInner(),
+                                    InteractionPanelRecommendation(
+                                        modifier = Modifier,
+                                        color = recommendation.color?.toColor(),
                                         isLiked = false,
+                                        isReposted = false,
+                                        likedBy = recommendation.likedBy,
+                                        repostedBy = recommendation.repostedBy,
+                                        comments = arrayListOf(),
+                                        views = recommendation.views,
+                                        date = recommendation.date,
                                         recommendationId = recommendation.id,
                                         currentUserUid = "",
                                         onLikeClick = { _: Boolean, _: String, _: String -> Success(true) }
                                     )
-                                }
-
-                                if (recommendation.commentedBy.isNotEmpty()) {
-                                    item {
-                                        /*
-                                                CommentsList(
-                                                    modifier = Modifier
-                                                        .itemsInterval()
-                                                        .screenPaddingsInner()
-                                                        .clickable { showBottomSheet = true },
-                                                    comments = recommendation.comments
-                                                )
-
-                                                 */
-                                    }
                                 }
                             }
 

@@ -9,7 +9,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.serj.recommend.android.common.ext.screenPaddingsInner
 import com.serj.recommend.android.common.ext.toParagraphText
 import com.serj.recommend.android.ui.components.text.TextParagraphs
 
@@ -31,8 +30,12 @@ fun Description(
                 )
             )
             .background(Color.White)
-            .screenPaddingsInner()
-            .padding(top = 15.dp, bottom = 10.dp),
+            .padding(
+                start = 10.dp,
+                top = 15.dp,
+                end = 10.dp,
+                bottom = 7.5.dp
+            ),
         paragraphTexts = paragraphs
     )
 }

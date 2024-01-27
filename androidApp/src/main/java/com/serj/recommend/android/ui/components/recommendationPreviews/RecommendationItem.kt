@@ -45,7 +45,7 @@ import com.google.firebase.storage.StorageReference
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.items.UserItem
 import com.serj.recommend.android.services.model.Response
-import com.serj.recommend.android.ui.components.interaction.InteractionPanel
+import com.serj.recommend.android.ui.components.interaction.InteractionPanelPost
 import com.serj.recommend.android.ui.components.media.CustomGlideImage
 import com.serj.recommend.android.ui.components.media.CustomGlideImageShaded
 import java.util.Date
@@ -289,7 +289,7 @@ fun RecommendationItem(
                     lineHeight = 1.4.em
                 )
 
-                InteractionPanel(
+                InteractionPanelPost(
                     modifier = Modifier.padding(start = 5.dp, top = 5.dp),
                     isLiked = isLiked,
                     recommendationId = recommendationId,

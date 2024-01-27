@@ -35,7 +35,7 @@ import com.serj.recommend.android.ui.styles.primary
 
 @SuppressLint("UnusedTransitionTargetStateParameter")
 @Composable
-fun InteractionPanel(
+fun InteractionPanelPost(
     modifier: Modifier = Modifier,
     isLiked: Boolean,
     recommendationId: String?,
@@ -127,8 +127,8 @@ fun InteractionPanel(
             }
         ) {
             val transition = updateTransition(isReposted.value, label = "repostTransition")
-            val tint by transition.animateColor(label = "repostTint") { isLiked ->
-                if (isReposted.value) primary else Black
+            val tint by transition.animateColor(label = "repostTint") { isReposted ->
+                if (isReposted) primary else Black
             }
             val size by transition.animateDp(
                 transitionSpec = {
@@ -160,11 +160,11 @@ fun InteractionPanel(
 @Preview
 @Composable
 fun InteractionPanelPreview() {
-    InteractionPanel(
+    InteractionPanelPost(
         modifier = Modifier.background(White),
         isLiked = true,
         recommendationId = "",
         currentUserUid = "",
-        onLikeClick = { b: Boolean, s1: String, s2: String -> Response.Success(true) }
+        onLikeClick = { _: Boolean, _: String, _: String -> Response.Success(true) }
     )
 }

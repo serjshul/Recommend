@@ -1,6 +1,7 @@
 package com.serj.recommend.android.ui.screens.common.recommendation.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -22,27 +23,34 @@ fun Quote(
     quote: String,
     color: Color?
 ) {
-    Column(
+    Box(
         modifier = modifier
             .fillMaxWidth()
-            .background(color ?: background, RoundedCornerShape(20.dp))
+            .background(Color.White)
+            .padding(10.dp, 7.5.dp)
     ) {
-        Text(
+        Column(
             modifier = Modifier
-                .padding(top = 12.dp, bottom = 7.dp)
-                .align(Alignment.CenterHorizontally),
-            text = "Quote",
-            color = Color.White,
-            fontSize = 12.sp
-        )
+                .fillMaxWidth()
+                .background(color ?: background, RoundedCornerShape(20.dp))
+        ) {
+            Text(
+                modifier = Modifier
+                    .padding(top = 12.dp, bottom = 7.dp)
+                    .align(Alignment.CenterHorizontally),
+                text = "Favourite quote",
+                color = Color.White,
+                fontSize = 12.sp
+            )
 
-        Text(
-            modifier = Modifier.padding(start = 15.dp, end = 15.dp, bottom = 15.dp),
-            text = quote.replace("\\n", "\n"),
-            fontWeight = FontWeight.Bold,
-            color = Color.White,
-            fontSize = 17.sp
-        )
+            Text(
+                modifier = Modifier.padding(start = 15.dp, end = 15.dp, bottom = 15.dp),
+                text = quote.replace("\\n", "\n"),
+                fontWeight = FontWeight.Bold,
+                color = Color.White,
+                fontSize = 17.sp
+            )
+        }
     }
 }
 
