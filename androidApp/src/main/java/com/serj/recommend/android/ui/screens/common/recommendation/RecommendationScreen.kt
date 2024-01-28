@@ -24,6 +24,7 @@ import com.serj.recommend.android.common.ext.recommendationContentShape
 import com.serj.recommend.android.common.ext.screenPaddingsInner
 import com.serj.recommend.android.common.ext.screenPaddingsOuter
 import com.serj.recommend.android.common.ext.toColor
+import com.serj.recommend.android.common.getCreatedTime
 import com.serj.recommend.android.services.GetRecommendationResponse
 import com.serj.recommend.android.services.model.Response.Failure
 import com.serj.recommend.android.services.model.Response.Success
@@ -73,7 +74,7 @@ fun RecommendationScreenContent(
                     if (recommendation.title != null && recommendation.type != null &&
                         recommendation.creator != null && recommendation.tags != null &&
                         recommendation.year != null && recommendation.description != null &&
-                        recommendation.quote != null && recommendation.date != null) {
+                        recommendation.date != null) {
                         LazyColumn(
                             modifier = Modifier.padding(paddingValues)
                         ) {
@@ -116,14 +117,16 @@ fun RecommendationScreenContent(
                                 )
                             }
 
-                            item {
-                                Quote(
-                                    modifier = Modifier
-                                        .itemsInterval()
-                                        .screenPaddingsInner(),
-                                    quote = recommendation.quote,
-                                    color = recommendation.color?.toColor() ?: TexasHeatwave
-                                )
+                            if (recommendation.quote != null) {
+                                item {
+                                    Quote(
+                                        modifier = Modifier
+                                            .itemsInterval()
+                                            .screenPaddingsInner(),
+                                        quote = recommendation.quote,
+                                        color = recommendation.color?.toColor() ?: TexasHeatwave
+                                    )
+                                }
                             }
 
                             item {
@@ -132,7 +135,7 @@ fun RecommendationScreenContent(
                                         .itemsInterval()
                                         .screenPaddingsInner(),
                                     author = recommendation.uid ?: "",
-                                    date = recommendation.date.toLocaleString()
+                                    date = getCreatedTime(recommendation.date)
                                 )
                             }
 
