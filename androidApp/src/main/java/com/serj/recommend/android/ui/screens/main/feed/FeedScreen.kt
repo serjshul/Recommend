@@ -11,7 +11,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.TopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -19,14 +21,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.serj.recommend.android.R
+import com.serj.recommend.android.model.Comment
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.items.RecommendationItem
 import com.serj.recommend.android.services.model.Response
+import com.serj.recommend.android.ui.components.comments.CommentsBottomSheet
 import com.serj.recommend.android.ui.components.loadingIndicators.SmallLoadingIndicator
 import com.serj.recommend.android.ui.components.recommendationPreviews.RecommendationItem
 import com.serj.recommend.android.ui.styles.White
@@ -36,16 +42,20 @@ fun FeedScreen(
     openScreen: (String) -> Unit,
     viewModel: FeedViewModel = hiltViewModel()
 ) {
-    val currentUid = viewModel.currentUid
-    val currentRecommendations = viewModel.currentRecommendations
-    val currentRecommendationsAmount = viewModel.currentRecommendationsAmount.intValue
-
     FeedScreenContent(
-        currentUserUid = currentUid.value,
-        currentRecommendations = currentRecommendations,
-        recommendationsAmount = currentRecommendationsAmount,
+        currentUserUid = viewModel.currentUid.value,
+        currentRecommendations = viewModel.currentRecommendations,
+        recommendationsAmount = viewModel.currentRecommendationsAmount.intValue,
+        bottomSheetComments = viewModel.bottomSheetComments,
+        showCommentsBottomSheet = viewModel.showCommentsBottomSheet,
+        commentInput = viewModel.commentInput,
+        currentRecommendationId = viewModel.currentRecommendationId,
         openScreen = openScreen,
+        onCommentInputValueChange = viewModel::onCommentInputValueChange,
+        onCommentSheetDismissRequest = viewModel::onCommentSheetDismissRequest,
+        onUploadCommentClick = viewModel::onUploadCommentClick,
         onLikeClick = viewModel::onLikeClick,
+        onCommentClick = viewModel::onCommentClick,
         onRecommendationClick = viewModel::onRecommendationClick
     )
 }
@@ -57,10 +67,20 @@ fun FeedScreenContent(
     currentUserUid: String?,
     currentRecommendations: List<RecommendationItem>,
     recommendationsAmount: Int,
+    bottomSheetComments: List<Comment>,
+    showCommentsBottomSheet: Boolean,
+    commentInput: String,
+    currentRecommendationId: String,
     openScreen: (String) -> Unit,
+    onCommentInputValueChange: (String) -> Unit,
+    onCommentSheetDismissRequest: () -> Unit,
+    onUploadCommentClick: (String) -> Unit,
     onLikeClick: (Boolean, String, String) -> Response<Boolean>,
+    onCommentClick: (String, List<Comment>) -> Unit,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
 ) {
+    val commentSheetState = rememberModalBottomSheetState()
+
     Scaffold(
         modifier = modifier
             .fillMaxSize()
@@ -108,6 +128,7 @@ fun FeedScreenContent(
                     currentUserUid = currentUserUid,
                     openScreen = openScreen,
                     onLikeClick = onLikeClick,
+                    onCommentClick = onCommentClick,
                     onRecommendationClick = onRecommendationClick
                 )
                 currentRecommendationsAmount++
@@ -125,5 +146,44 @@ fun FeedScreenContent(
                 }
             }
         }
+
+        if (showCommentsBottomSheet) {
+            ModalBottomSheet(
+                modifier = Modifier,
+                onDismissRequest = { onCommentSheetDismissRequest() },
+                sheetState = commentSheetState,
+                containerColor = Color.White
+            ) {
+                CommentsBottomSheet(
+                    modifier = Modifier,
+                    comments = bottomSheetComments,
+                    commentInput = commentInput,
+                    currentRecommendationId = currentRecommendationId,
+                    onCommentInputValueChange = onCommentInputValueChange,
+                    onUploadCommentClick = onUploadCommentClick
+                )
+            }
+        }
     }
+}
+
+@Preview
+@Composable
+fun FeedScreenContentPreview() {
+    FeedScreenContent(
+        currentUserUid = "",
+        currentRecommendations = listOf(),
+        recommendationsAmount = 3,
+        bottomSheetComments = listOf(),
+        showCommentsBottomSheet = false,
+        commentInput = "",
+        currentRecommendationId = "",
+        openScreen = { },
+        onCommentInputValueChange = { },
+        onCommentSheetDismissRequest = { /*TODO*/ },
+        onUploadCommentClick = { },
+        onLikeClick = { _: Boolean, _: String, _: String -> Response.Success(true) },
+        onCommentClick = { _: String, _: List<Comment> -> },
+        onRecommendationClick = { _: (String) -> Unit, _: Recommendation -> }
+    )
 }

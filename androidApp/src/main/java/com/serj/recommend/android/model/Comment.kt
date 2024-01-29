@@ -12,7 +12,7 @@ data class Comment(
     val text: String? = null,
     val date: Date? = null,
 
-    var userItem: UserItem? = null,
-
     val likedBy: ArrayList<String>? = arrayListOf(),
+
+    var userItem: UserItem? = null
 )

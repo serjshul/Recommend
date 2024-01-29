@@ -23,9 +23,11 @@
         android:enableOnBackInvokedCallback="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:targetApi="tiramisu">
+        tools:targetApi="tiramisu"
+        android:dataExtractionRules="@xml/data_extraction_rules">
         <activity
             android:name=".RecommendActivity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

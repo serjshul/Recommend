@@ -25,6 +25,7 @@ import com.serj.recommend.android.common.ext.screenPaddingsInner
 import com.serj.recommend.android.common.ext.screenPaddingsOuter
 import com.serj.recommend.android.common.ext.toColor
 import com.serj.recommend.android.common.getCreatedTime
+import com.serj.recommend.android.model.Comment
 import com.serj.recommend.android.services.GetRecommendationResponse
 import com.serj.recommend.android.services.model.Response.Failure
 import com.serj.recommend.android.services.model.Response.Success
@@ -161,7 +162,8 @@ fun RecommendationScreenContent(
                                     comments = recommendation.comments,
                                     recommendationId = recommendation.id,
                                     currentUserUid = "",
-                                    onLikeClick = { b: Boolean, s1: String, s2: String -> Success(true) }
+                                    onLikeClick = { b: Boolean, s1: String, s2: String -> Success(true) },
+                                    onCommentClick = { _: String, _: List<Comment> -> }
                                 )
                             }
 

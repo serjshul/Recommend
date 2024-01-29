@@ -25,25 +25,30 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.google.firebase.storage.StorageReference
 import com.serj.recommend.android.R
 import com.serj.recommend.android.ui.components.media.CustomGlideImage
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun CommentInput(
     modifier: Modifier = Modifier,
     photoReference: StorageReference?,
-    onSendCommentClick: () -> Unit
+    commentInput: String,
+    currentRecommendationId: String,
+    onCommentInputValueChange: (String) -> Unit,
+    onUploadCommentClick: (String) -> Unit
 ) {
-    var comment by remember { mutableStateOf("") }
     val enableToSendComment = remember { mutableStateOf(false) }
 
     Row(
@@ -79,12 +84,22 @@ fun CommentInput(
             modifier = Modifier
                 .weight(6f)
                 .align(Alignment.CenterVertically),
-            value = comment,
+            value = commentInput,
             onValueChange = {
-                comment = it
+                onCommentInputValueChange(it)
                 enableToSendComment.value = it != ""
             },
-            placeholder = { Text(text = "Add a comment...") },
+            textStyle = TextStyle(
+                fontSize = 14.sp
+            ),
+            placeholder = {
+                Text(
+                    text = "Add a comment...",
+                    style = TextStyle(
+                        fontSize = 14.sp
+                    )
+                )
+            },
             colors = TextFieldDefaults.colors(
                 unfocusedContainerColor = Color.White,
                 focusedContainerColor = Color.White,
@@ -105,7 +120,7 @@ fun CommentInput(
             checked = enableToSendComment.value,
             onCheckedChange = {
                 enableToSendComment.value = !enableToSendComment.value
-                comment = ""
+                onUploadCommentClick(commentInput)
             }
         ) {
             val transition = updateTransition(enableToSendComment.value, label = "SendIconTransition")
@@ -145,7 +160,10 @@ fun CommentInputPreview() {
     ) {
         CommentInput(
             photoReference = null,
-            onSendCommentClick = { }
+            commentInput = "",
+            currentRecommendationId = "",
+            onCommentInputValueChange = { },
+            onUploadCommentClick = { }
         )
     }
 }

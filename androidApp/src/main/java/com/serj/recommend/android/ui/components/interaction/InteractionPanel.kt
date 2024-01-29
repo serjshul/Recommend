@@ -11,23 +11,20 @@ import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconToggleButton
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,13 +32,12 @@ import androidx.compose.ui.unit.dp
 import com.serj.recommend.android.R
 import com.serj.recommend.android.model.Comment
 import com.serj.recommend.android.services.model.Response
-import com.serj.recommend.android.ui.components.comments.CommentsBottomSheet
 import com.serj.recommend.android.ui.styles.Black
 import com.serj.recommend.android.ui.styles.KiriumeRed
 import com.serj.recommend.android.ui.styles.Red
 import com.serj.recommend.android.ui.styles.White
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @SuppressLint("UnusedTransitionTargetStateParameter")
 @Composable
 fun InteractionPanel(
@@ -51,14 +47,12 @@ fun InteractionPanel(
     comments: List<Comment>,
     recommendationId: String?,
     currentUserUid: String?,
-    onLikeClick: (Boolean, String, String) -> Response<Boolean>
+    onLikeClick: (Boolean, String, String) -> Response<Boolean>,
+    onCommentClick: (String, List<Comment>) -> Unit
 ) {
     val isCurrentlyLiked = remember { mutableStateOf(isLiked) }
     val isCurrentlyReposted = remember { mutableStateOf(false) }
-
     val isCommentCurrentlyClicked = remember { mutableStateOf(false) }
-    val commentSheetState = rememberModalBottomSheetState()
-    var showCommentsBottomSheet by remember { isCommentClicked }
 
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -110,7 +104,9 @@ fun InteractionPanel(
             checked = isCommentCurrentlyClicked.value,
             onCheckedChange = {
                 isCommentCurrentlyClicked.value = !isCommentCurrentlyClicked.value
-                showCommentsBottomSheet = true
+                if (recommendationId != null) {
+                    onCommentClick(recommendationId, comments)
+                }
             }
         ) {
             val transition = updateTransition(isCommentCurrentlyClicked.value, label = "CommentTransition")
@@ -170,18 +166,6 @@ fun InteractionPanel(
             )
         }
     }
-
-    if (showCommentsBottomSheet) {
-        ModalBottomSheet(
-            onDismissRequest = { showCommentsBottomSheet = false },
-            sheetState = commentSheetState,
-            containerColor = Color.White
-        ) {
-            CommentsBottomSheet(
-                comments = comments
-            )
-        }
-    }
 }
 
 @Preview
@@ -196,6 +180,7 @@ fun InteractionPanelPreview() {
         comments = arrayListOf(),
         recommendationId = "",
         currentUserUid = "",
-        onLikeClick = { _: Boolean, _: String, _: String -> Response.Success(true) }
+        onLikeClick = { _: Boolean, _: String, _: String -> Response.Success(true) },
+        onCommentClick = { _: String, _: List<Comment> -> }
     )
 }

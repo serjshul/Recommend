@@ -31,6 +31,7 @@ import com.serj.recommend.android.services.GetStorageReferenceFromUrlResponse
 import com.serj.recommend.android.services.GetUserItemResponse
 import com.serj.recommend.android.services.LikeOrUnlikeRecommendationResponse
 import com.serj.recommend.android.services.StorageService
+import com.serj.recommend.android.services.UploadCommentResponse
 import com.serj.recommend.android.services.model.Response.Failure
 import com.serj.recommend.android.services.model.Response.Success
 import com.serj.recommend.android.ui.components.media.BackgroundTypes
@@ -339,6 +340,36 @@ class StorageServiceImpl @Inject constructor(
             }
             followingRecommendationsIds.sortByDescending { it.second }
             Success(followingRecommendationsIds.map { it.first })
+        } catch (e: Exception) {
+            Failure(e)
+        }
+    }
+
+    override fun uploadComment(
+        recommendationId: String,
+        userId: String,
+        text: String
+    ): UploadCommentResponse {
+        return try {
+            val comment = hashMapOf(
+                "userId" to userId,
+                "repliedCommentId" to null,
+                "text" to text,
+                "date" to FieldValue.serverTimestamp(),
+                "likedBy" to arrayListOf<String>()
+            )
+            firestore
+                .collection(RECOMMENDATIONS_COLLECTION)
+                .document(recommendationId)
+                .collection(COMMENTS_COLLECTION)
+                .add(comment)
+                .addOnCompleteListener { task ->
+                if (task.isSuccessful)
+                    Log.d(TAG, "Recommendation DocumentSnapshot successfully updated!")
+                else
+                    Log.w(TAG, "Error updating recommendation document: $task")
+            }
+            Success(true)
         } catch (e: Exception) {
             Failure(e)
         }

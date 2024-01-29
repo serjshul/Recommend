@@ -1,11 +1,14 @@
 package com.serj.recommend.android.ui.screens.main.feed
 
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import com.serj.recommend.android.R
 import com.serj.recommend.android.RecommendRoutes
 import com.serj.recommend.android.common.Constants.RECOMMENDATION_ID
+import com.serj.recommend.android.model.Comment
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.items.RecommendationItem
 import com.serj.recommend.android.services.AccountService
@@ -23,6 +26,14 @@ class FeedViewModel @Inject constructor(
     private val storageService: StorageService,
     private val accountService: AccountService
 ) : RecommendViewModel(logService) {
+
+    var currentRecommendationId by mutableStateOf("")
+        private set
+    var commentInput by mutableStateOf("")
+        private set
+    var showCommentsBottomSheet by mutableStateOf(false)
+        private set
+    val bottomSheetComments = mutableStateListOf<Comment>()
 
     val currentUid = mutableStateOf<String?>(null)
     val currentRecommendations = mutableStateListOf<RecommendationItem>()
@@ -56,8 +67,38 @@ class FeedViewModel @Inject constructor(
         }
     }
 
+    fun onUploadCommentClick(text: String) {
+        launchCatching {
+            accountService.currentUser.collect { user ->
+                user.uid?.let {
+                    storageService.uploadComment(
+                        recommendationId = currentRecommendationId,
+                        userId = user.uid,
+                        text = commentInput
+                    )
+                    commentInput = ""
+                }
+            }
+        }
+    }
+
     fun onLikeClick(isLiked: Boolean, uid: String, recommendationId: String) =
         storageService.likeOrUnlikeRecommendation(isLiked, uid, recommendationId)
+
+    fun onCommentClick(recommendationId: String, comments: List<Comment>) {
+        currentRecommendationId = recommendationId
+        bottomSheetComments.addAll(comments)
+        showCommentsBottomSheet = true
+    }
+
+    fun onCommentInputValueChange(input: String) {
+        commentInput = input
+    }
+
+    fun onCommentSheetDismissRequest() {
+        showCommentsBottomSheet = false
+        bottomSheetComments.clear()
+    }
 
     fun onRecommendationClick(openScreen: (String) -> Unit, recommendation: Recommendation) {
         openScreen("${RecommendRoutes.RecommendationScreen.name}?$RECOMMENDATION_ID={${recommendation.id}}")
