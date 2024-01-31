@@ -19,12 +19,10 @@
 
     <application
         android:name=".RecommendHiltApp"
-        android:allowBackup="false"
         android:enableOnBackInvokedCallback="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:targetApi="tiramisu"
-        android:dataExtractionRules="@xml/data_extraction_rules">
+        tools:targetApi="tiramisu">
         <activity
             android:name=".RecommendActivity"
             android:windowSoftInputMode="adjustResize"

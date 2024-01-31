@@ -62,7 +62,7 @@ fun CommentItem(
 
     Row(
         modifier = modifier
-            .padding(10.dp)
+            .padding(10.dp, 5.dp)
             .fillMaxWidth(),
         verticalAlignment = Alignment.Top
     ) {

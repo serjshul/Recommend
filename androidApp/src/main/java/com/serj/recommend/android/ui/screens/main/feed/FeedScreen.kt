@@ -79,7 +79,11 @@ fun FeedScreenContent(
     onCommentClick: (String, List<Comment>) -> Unit,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
 ) {
-    val commentSheetState = rememberModalBottomSheetState()
+    var isLoading by remember { mutableStateOf(true) }
+    var currentRecommendationsAmount = 0
+    val commentSheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
+    )
 
     Scaffold(
         modifier = modifier
@@ -103,9 +107,6 @@ fun FeedScreenContent(
             }
         }
     ) { paddingValues ->
-        var isLoading by remember { mutableStateOf(true) }
-        var currentRecommendationsAmount = 0
-
         LazyColumn(
             modifier = Modifier
                 .padding(paddingValues)
@@ -149,20 +150,20 @@ fun FeedScreenContent(
 
         if (showCommentsBottomSheet) {
             ModalBottomSheet(
-                modifier = Modifier,
                 onDismissRequest = { onCommentSheetDismissRequest() },
                 sheetState = commentSheetState,
+                content = {
+                    CommentsBottomSheet(
+                        modifier = Modifier,
+                        comments = bottomSheetComments,
+                        commentInput = commentInput,
+                        currentRecommendationId = currentRecommendationId,
+                        onCommentInputValueChange = onCommentInputValueChange,
+                        onUploadCommentClick = onUploadCommentClick
+                    )
+                },
                 containerColor = Color.White
-            ) {
-                CommentsBottomSheet(
-                    modifier = Modifier,
-                    comments = bottomSheetComments,
-                    commentInput = commentInput,
-                    currentRecommendationId = currentRecommendationId,
-                    onCommentInputValueChange = onCommentInputValueChange,
-                    onUploadCommentClick = onUploadCommentClick
-                )
-            }
+            )
         }
     }
 }

@@ -2,11 +2,16 @@ package com.serj.recommend.android.ui.components.comments
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Divider
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,6 +26,7 @@ import com.serj.recommend.android.model.Comment
 import com.serj.recommend.android.services.model.Response
 import com.serj.recommend.android.ui.components.comments.items.CommentItem
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommentsBottomSheet(
     modifier: Modifier = Modifier,
@@ -30,66 +36,85 @@ fun CommentsBottomSheet(
     onCommentInputValueChange: (String) -> Unit,
     onUploadCommentClick: (String) -> Unit
 ) {
-    Column (
-        modifier = modifier
-            .background(Color.White)
-    ) {
-        Text(
-            modifier = Modifier
-                .padding(bottom = 10.dp)
-                .fillMaxWidth(),
-            text = "Comments",
-            textAlign = TextAlign.Center,
-            fontWeight = FontWeight.Bold,
-            color = Color.Black,
-            fontSize = 14.sp
-        )
-
-        Divider(
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        if (comments.isNotEmpty()) {
-            for (comment in comments) {
-                if (comment.userItem != null && comment.userItem!!.nickname != null &&
-                    comment.userItem!!.photoReference != null && comment.text != null && comment.date != null
+    Scaffold(
+        modifier = modifier.background(Color.White),
+        topBar = {
+            Surface(
+                shadowElevation = 4.dp
+            ) {
+                Box(
+                    modifier = Modifier
+                        .height(50.dp)
+                        .fillMaxWidth()
+                        .background(Color.White),
                 ) {
-                    CommentItem(
-                        nickname = comment.userItem!!.nickname!!,
-                        photoReference = comment.userItem!!.photoReference,
-                        text = comment.text,
-                        date = comment.date,
-                        isLiked = false,
-                        onLikeClick = { _: Boolean, _: String, _: String -> Response.Success(true) }
+                    Text(
+                        modifier = Modifier.align(Alignment.Center),
+                        text = "Comments",
+                        textAlign = TextAlign.Center,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black,
+                        fontSize = 14.sp
                     )
                 }
             }
-        } else {
-            Box(
-                modifier = Modifier
-                    .height(200.dp)
-                    .fillMaxWidth()
-            ) {
-                Text(
-                    modifier = Modifier.align(Alignment.Center),
-                    text = "There is no comments\nBe the first who comment the recommendation",
-                    textAlign = TextAlign.Center,
-                    color = Color.Gray,
-                    fontSize = 14.sp
-                )
+        },
+        bottomBar = {
+            CommentInput(
+                modifier = Modifier.background(Color.White),
+                photoReference = null,
+                commentInput = commentInput,
+                currentRecommendationId = currentRecommendationId,
+                onCommentInputValueChange = onCommentInputValueChange,
+                onUploadCommentClick = onUploadCommentClick
+            )
+        }
+    ) { paddingValues ->
+        LazyColumn(
+            modifier = Modifier
+                .padding(paddingValues)
+                .background(Color.White)
+        ) {
+            item {
+                Spacer(modifier = Modifier.size(10.dp))
+            }
+            if (comments.isNotEmpty()) {
+                items(comments) {
+                    if (it.userItem != null && it.userItem!!.nickname != null &&
+                        it.userItem!!.photoReference != null && it.text != null && it.date != null
+                    ) {
+                        CommentItem(
+                            nickname = it.userItem!!.nickname!!,
+                            photoReference = it.userItem!!.photoReference,
+                            text = it.text,
+                            date = it.date,
+                            isLiked = false,
+                            onLikeClick = { _: Boolean, _: String, _: String -> Response.Success(true) }
+                        )
+                    }
+                }
+            } else {
+                item {
+                    Box(
+                        modifier = Modifier
+                            .height(200.dp)
+                            .fillMaxWidth()
+                    ) {
+                        Text(
+                            modifier = Modifier.align(Alignment.Center),
+                            text = "There is no comments\nBe the first who comment the recommendation",
+                            textAlign = TextAlign.Center,
+                            color = Color.Gray,
+                            fontSize = 14.sp
+                        )
+                    }
+                }
             }
         }
-
-        CommentInput(
-            photoReference = null,
-            commentInput = commentInput,
-            currentRecommendationId = currentRecommendationId,
-            onCommentInputValueChange = onCommentInputValueChange,
-            onUploadCommentClick = onUploadCommentClick
-        )
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 fun CommentsBottomSheetPreview() {

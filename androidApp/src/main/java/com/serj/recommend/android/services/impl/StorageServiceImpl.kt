@@ -345,7 +345,7 @@ class StorageServiceImpl @Inject constructor(
         }
     }
 
-    override fun uploadComment(
+    suspend override fun uploadComment(
         recommendationId: String,
         userId: String,
         text: String
@@ -368,7 +368,8 @@ class StorageServiceImpl @Inject constructor(
                     Log.d(TAG, "Recommendation DocumentSnapshot successfully updated!")
                 else
                     Log.w(TAG, "Error updating recommendation document: $task")
-            }
+                }
+                .await()
             Success(true)
         } catch (e: Exception) {
             Failure(e)

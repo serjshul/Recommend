@@ -51,5 +51,5 @@ interface StorageService {
     fun likeOrUnlikeRecommendation(isLiked: Boolean, uid: String, recommendationId: String):
             LikeOrUnlikeRecommendationResponse
 
-    fun uploadComment(recommendationId: String, userId: String, text: String): UploadCommentResponse
+    suspend fun uploadComment(recommendationId: String, userId: String, text: String): UploadCommentResponse
 }

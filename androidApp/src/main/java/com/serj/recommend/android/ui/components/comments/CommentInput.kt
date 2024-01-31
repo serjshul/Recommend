@@ -53,19 +53,20 @@ fun CommentInput(
 
     Row(
         modifier = modifier
-            .fillMaxWidth()
+            .padding(10.dp, 5.dp)
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
             modifier = Modifier
-                .weight(1.2f)
-                .padding(top = 8.dp)
+                .size(40.dp)
         ) {
             if (photoReference != null) {
                 CustomGlideImage(
                     modifier = Modifier
                         .size(40.dp)
                         .clip(CircleShape)
-                        .align(Alignment.Center),
+                        .align(Alignment.CenterStart),
                     reference = photoReference
                 )
             } else {
@@ -73,7 +74,7 @@ fun CommentInput(
                     modifier = Modifier
                         .size(40.dp)
                         .clip(CircleShape)
-                        .align(Alignment.Center),
+                        .align(Alignment.CenterStart),
                     painter = painterResource(id = R.drawable.no_user_photo),
                     contentDescription = "No user photo"
                 )
@@ -82,7 +83,7 @@ fun CommentInput(
 
         TextField(
             modifier = Modifier
-                .weight(6f)
+                .weight(1f)
                 .align(Alignment.CenterVertically),
             value = commentInput,
             onValueChange = {
@@ -100,6 +101,7 @@ fun CommentInput(
                     )
                 )
             },
+            singleLine = true,
             colors = TextFieldDefaults.colors(
                 unfocusedContainerColor = Color.White,
                 focusedContainerColor = Color.White,
@@ -115,8 +117,7 @@ fun CommentInput(
 
         IconToggleButton(
             modifier = Modifier
-                .weight(1f)
-                .padding(top = 3.dp),
+                .size(40.dp),
             checked = enableToSendComment.value,
             onCheckedChange = {
                 enableToSendComment.value = !enableToSendComment.value

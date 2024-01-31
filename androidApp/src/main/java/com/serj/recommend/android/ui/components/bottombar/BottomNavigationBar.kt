@@ -1,4 +1,4 @@
-package com.serj.recommend.android.ui
+package com.serj.recommend.android.ui.components.bottombar
 
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Icon
@@ -11,11 +11,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.serj.recommend.android.ui.components.bottombar.BottomNavigation
+import androidx.navigation.compose.rememberNavController
 import com.serj.recommend.android.ui.styles.Black
 import com.serj.recommend.android.ui.styles.LightGray
 import com.serj.recommend.android.ui.styles.White
@@ -34,7 +35,7 @@ fun BottomNavigationBar(
     )
 
     NavigationBar(
-        modifier = modifier.height(60.dp),
+        modifier = modifier.height(50.dp),
         containerColor = White
     ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -69,4 +70,12 @@ fun BottomNavigationBar(
             )
         }
     }
+}
+
+@Preview
+@Composable
+fun BottomNavigationBarPreview() {
+    BottomNavigationBar(
+        navController = rememberNavController()
+    )
 }

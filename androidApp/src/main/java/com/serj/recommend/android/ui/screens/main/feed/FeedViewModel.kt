@@ -76,7 +76,14 @@ class FeedViewModel @Inject constructor(
                         userId = user.uid,
                         text = commentInput
                     )
+
                     commentInput = ""
+                    bottomSheetComments.clear()
+
+                    val getCommentResponse = storageService.getComments(currentRecommendationId)
+                    if (getCommentResponse is Response.Success && getCommentResponse.data != null) {
+                        bottomSheetComments.addAll(getCommentResponse.data)
+                    }
                 }
             }
         }
