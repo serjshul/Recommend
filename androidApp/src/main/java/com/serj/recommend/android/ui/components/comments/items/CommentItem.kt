@@ -9,6 +9,7 @@ import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -54,7 +55,9 @@ fun CommentItem(
     text: String,
     date: Date,
     isLiked: Boolean,
-    onLikeClick: (Boolean, String, String) -> Response<Boolean>
+    likedBy: List<String>,
+    onLikeClick: (Boolean, String, String) -> Response<Boolean>,
+    onCommentClick: () -> Unit
 ) {
     val createdTime = getCreatedTime(date)
 
@@ -63,7 +66,8 @@ fun CommentItem(
     Row(
         modifier = modifier
             .padding(10.dp, 5.dp)
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .clickable { onCommentClick() },
         verticalAlignment = Alignment.Top
     ) {
         Box(
@@ -112,46 +116,59 @@ fun CommentItem(
             }
         }
 
-        IconToggleButton(
-            modifier = Modifier
-                .padding(top = 5.dp)
-                .size(30.dp),
-            checked = isCurrentlyLiked.value,
-            onCheckedChange = {
-                // TODO: add onLikeClick function
-                isCurrentlyLiked.value = !isCurrentlyLiked.value
-            }
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            val transition = updateTransition(isCurrentlyLiked.value, label = "likeTransition")
-            val tint by transition.animateColor(label = "likeTint") { isLiked ->
-                if (isLiked) Red else Black
-            }
-            val size by transition.animateDp(
-                transitionSpec = {
-                    if (false isTransitioningTo true) {
-                        keyframes {
-                            durationMillis = 250
-                            17.dp at 0 with LinearOutSlowInEasing
-                            19.dp at 15 with FastOutLinearInEasing
-                            21.dp at 75
-                            19.dp at 150
+            IconToggleButton(
+                modifier = Modifier
+                    .padding(top = 5.dp)
+                    .size(30.dp),
+                checked = isCurrentlyLiked.value,
+                onCheckedChange = {
+                    // TODO: add onLikeClick function
+                    isCurrentlyLiked.value = !isCurrentlyLiked.value
+                }
+            ) {
+                val transition = updateTransition(isCurrentlyLiked.value, label = "likeTransition")
+                val tint by transition.animateColor(label = "likeTint") { isLiked ->
+                    if (isLiked) Red else Black
+                }
+                val size by transition.animateDp(
+                    transitionSpec = {
+                        if (false isTransitioningTo true) {
+                            keyframes {
+                                durationMillis = 250
+                                17.dp at 0 with LinearOutSlowInEasing
+                                19.dp at 15 with FastOutLinearInEasing
+                                21.dp at 75
+                                19.dp at 150
+                            }
+                        } else {
+                            spring(stiffness = Spring.StiffnessVeryLow)
                         }
-                    } else {
-                        spring(stiffness = Spring.StiffnessVeryLow)
-                    }
-                },
-                label = "likeSize"
-            ) { if (it) 17.dp else 17.dp }
+                    },
+                    label = "likeSize"
+                ) { if (it) 17.dp else 17.dp }
 
-            Icon(
-                ImageVector.vectorResource(
-                    id = if (isCurrentlyLiked.value) R.drawable.interaction_like_filled
-                    else R.drawable.interaction_like_bordered
-                ),
-                contentDescription = "like",
-                tint = tint,
-                modifier = Modifier.size(size)
-            )
+                Icon(
+                    ImageVector.vectorResource(
+                        id = if (isCurrentlyLiked.value) R.drawable.interaction_like_filled
+                        else R.drawable.interaction_like_bordered
+                    ),
+                    contentDescription = "like",
+                    tint = tint,
+                    modifier = Modifier.size(size)
+                )
+            }
+
+            if (likedBy.isNotEmpty()) {
+                Text(
+                    text = likedBy.size.toString(),
+                    color = Color.Gray,
+                    fontSize = 12.sp,
+                    lineHeight = 1.2.em
+                )
+            }
         }
     }
 }
@@ -167,6 +184,8 @@ fun CommentFullItemPreview() {
         text = "The saga about a back-stabbing media dynasty won best drama series, " +
                 "best actor, best actress and best supporting actor",
         date = Date(Date().time - 22 * 60 * 60 * 1000L),
-        onLikeClick = { _: Boolean, _: String, _: String -> Response.Success(true) }
+        likedBy = listOf("", "", "", "", "", "", "", "", "", "", "", "", "", "", ""),
+        onLikeClick = { _: Boolean, _: String, _: String -> Response.Success(true) },
+        onCommentClick = { }
     )
 }

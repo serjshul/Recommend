@@ -129,7 +129,7 @@ fun BannerScreenContent(
                                 currentUserUid = currentUid,
                                 openScreen = openScreen,
                                 onLikeClick = onLikeClick,
-                                onCommentClick = { _: String, _: List<Comment> -> },
+                                onCommentIconClick = { _: String, _: List<Comment> -> },
                                 onRecommendationClick = onRecommendationClick
                             )
 

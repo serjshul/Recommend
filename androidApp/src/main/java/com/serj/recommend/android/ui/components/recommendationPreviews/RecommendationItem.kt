@@ -71,7 +71,7 @@ fun RecommendationItem(
     currentUserUid: String?,
     openScreen: (String) -> Unit,
     onLikeClick: (Boolean, String, String) -> Response<Boolean>,
-    onCommentClick: (String, List<Comment>) -> Unit,
+    onCommentIconClick: (String, List<Comment>) -> Unit,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
 ) {
     val isCommentClicked = remember { mutableStateOf(false) }
@@ -316,7 +316,7 @@ fun RecommendationItem(
                     recommendationId = recommendationId,
                     currentUserUid = currentUserUid,
                     onLikeClick = onLikeClick,
-                    onCommentClick = onCommentClick
+                    onCommentClick = onCommentIconClick
                 )
             }
         }
@@ -377,7 +377,7 @@ fun PostWithBackgroundPreview() {
                 currentUserUid = "",
                 openScreen = { },
                 onLikeClick = { _: Boolean, _: String, _: String -> Response.Success(true) },
-                onCommentClick = { _: String, _: List<Comment> -> },
+                onCommentIconClick = { _: String, _: List<Comment> -> },
                 onRecommendationClick = { _: (String) -> Unit, _: Recommendation -> }
             )
         }

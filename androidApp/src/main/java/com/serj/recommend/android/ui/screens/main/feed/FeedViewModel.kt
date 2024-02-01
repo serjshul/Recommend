@@ -5,11 +5,14 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpOffset
 import com.serj.recommend.android.R
 import com.serj.recommend.android.RecommendRoutes
 import com.serj.recommend.android.common.Constants.RECOMMENDATION_ID
 import com.serj.recommend.android.model.Comment
 import com.serj.recommend.android.model.Recommendation
+import com.serj.recommend.android.model.User
 import com.serj.recommend.android.model.items.RecommendationItem
 import com.serj.recommend.android.services.AccountService
 import com.serj.recommend.android.services.LogService
@@ -35,14 +38,17 @@ class FeedViewModel @Inject constructor(
         private set
     val bottomSheetComments = mutableStateListOf<Comment>()
 
-    val currentUid = mutableStateOf<String?>(null)
+    val isDropdownMenuExpanded = mutableStateOf(false)
+    var offset by mutableStateOf(DpOffset.Zero)
+
+    val currentUser = mutableStateOf<User?>(null)
     val currentRecommendations = mutableStateListOf<RecommendationItem>()
     val currentRecommendationsAmount = mutableIntStateOf(0)
 
     init {
         launchCatching {
             accountService.currentUser.collect { user ->
-                currentUid.value = user.uid
+                currentUser.value = user
 
                 val currentLikedIds = user.likedIds
                 val followingRecommendationsIdsResponse = storageService
@@ -65,6 +71,10 @@ class FeedViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun onOffsetChangeValue(x: Dp, y: Dp) {
+        offset = DpOffset(x, y)
     }
 
     fun onUploadCommentClick(text: String) {
@@ -92,7 +102,7 @@ class FeedViewModel @Inject constructor(
     fun onLikeClick(isLiked: Boolean, uid: String, recommendationId: String) =
         storageService.likeOrUnlikeRecommendation(isLiked, uid, recommendationId)
 
-    fun onCommentClick(recommendationId: String, comments: List<Comment>) {
+    fun onCommentIconClick(recommendationId: String, comments: List<Comment>) {
         currentRecommendationId = recommendationId
         bottomSheetComments.addAll(comments)
         showCommentsBottomSheet = true
@@ -105,6 +115,14 @@ class FeedViewModel @Inject constructor(
     fun onCommentSheetDismissRequest() {
         showCommentsBottomSheet = false
         bottomSheetComments.clear()
+    }
+
+    fun onCommentClick() {
+        isDropdownMenuExpanded.value = true
+    }
+
+    fun onCommentDismissRequest() {
+        isDropdownMenuExpanded.value = false
     }
 
     fun onRecommendationClick(openScreen: (String) -> Unit, recommendation: Recommendation) {

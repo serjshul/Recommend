@@ -15,29 +15,45 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.firebase.storage.StorageReference
 import com.serj.recommend.android.model.Comment
 import com.serj.recommend.android.services.model.Response
 import com.serj.recommend.android.ui.components.comments.items.CommentItem
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun CommentsBottomSheet(
     modifier: Modifier = Modifier,
+    offset: DpOffset,
     comments: List<Comment>,
     commentInput: String,
+    currentUserPhotoReference: StorageReference?,
     currentRecommendationId: String,
+    isDropdownMenuExpanded: Boolean,
     onCommentInputValueChange: (String) -> Unit,
-    onUploadCommentClick: (String) -> Unit
+    onUploadCommentClick: (String) -> Unit,
+    onCommentClick: () -> Unit,
+    onCommentDismissRequest: () -> Unit,
+    onOffsetChangeValue: (Dp, Dp) -> Unit
 ) {
     Scaffold(
-        modifier = modifier.background(Color.White),
+        modifier = modifier
+            .pointerInteropFilter {
+                onOffsetChangeValue(it.x.dp, it.y.dp)
+                false
+            }
+            .background(Color.White),
         topBar = {
             Surface(
                 shadowElevation = 4.dp
@@ -62,7 +78,7 @@ fun CommentsBottomSheet(
         bottomBar = {
             CommentInput(
                 modifier = Modifier.background(Color.White),
-                photoReference = null,
+                currentUserPhotoReference = currentUserPhotoReference,
                 commentInput = commentInput,
                 currentRecommendationId = currentRecommendationId,
                 onCommentInputValueChange = onCommentInputValueChange,
@@ -89,6 +105,8 @@ fun CommentsBottomSheet(
                             text = it.text,
                             date = it.date,
                             isLiked = false,
+                            likedBy = it.likedBy,
+                            onCommentClick = onCommentClick,
                             onLikeClick = { _: Boolean, _: String, _: String -> Response.Success(true) }
                         )
                     }
@@ -111,6 +129,16 @@ fun CommentsBottomSheet(
                 }
             }
         }
+
+        Box(
+            contentAlignment = Alignment.TopStart
+        ) {
+            CommentDropdownMenu(
+                expanded = isDropdownMenuExpanded,
+                offset = offset,
+                onCommentDismissRequest = onCommentDismissRequest
+            )
+        }
     }
 }
 
@@ -122,9 +150,15 @@ fun CommentsBottomSheetPreview() {
 
     CommentsBottomSheet(
         comments = comments,
+        offset = DpOffset.Zero,
         commentInput = "",
+        currentUserPhotoReference = null,
         currentRecommendationId = "",
+        isDropdownMenuExpanded = false,
         onCommentInputValueChange = { },
-        onUploadCommentClick = { }
+        onUploadCommentClick = { },
+        onCommentClick = { },
+        onOffsetChangeValue = { _: Dp, _: Dp -> },
+        onCommentDismissRequest = { }
     )
 }

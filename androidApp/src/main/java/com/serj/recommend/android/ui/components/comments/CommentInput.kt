@@ -43,7 +43,7 @@ import com.serj.recommend.android.ui.components.media.CustomGlideImage
 @Composable
 fun CommentInput(
     modifier: Modifier = Modifier,
-    photoReference: StorageReference?,
+    currentUserPhotoReference: StorageReference?,
     commentInput: String,
     currentRecommendationId: String,
     onCommentInputValueChange: (String) -> Unit,
@@ -61,13 +61,13 @@ fun CommentInput(
             modifier = Modifier
                 .size(40.dp)
         ) {
-            if (photoReference != null) {
+            if (currentUserPhotoReference != null) {
                 CustomGlideImage(
                     modifier = Modifier
                         .size(40.dp)
                         .clip(CircleShape)
                         .align(Alignment.CenterStart),
-                    reference = photoReference
+                    reference = currentUserPhotoReference
                 )
             } else {
                 Image(
@@ -160,7 +160,7 @@ fun CommentInputPreview() {
             .background(Color.White)
     ) {
         CommentInput(
-            photoReference = null,
+            currentUserPhotoReference = null,
             commentInput = "",
             currentRecommendationId = "",
             onCommentInputValueChange = { },

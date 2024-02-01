@@ -126,7 +126,7 @@ fun CategoryScreenContent(
                             recommendationId = it.value.id,
                             currentUserUid = currentUid,
                             onLikeClick = onLikeClick,
-                            onCommentClick = { _: String, _: List<Comment> -> },
+                            onCommentIconClick = { _: String, _: List<Comment> -> },
                             openScreen = openScreen,
                             onRecommendationClick = onRecommendationClick
                         )
