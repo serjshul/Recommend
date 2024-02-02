@@ -20,6 +20,7 @@ import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.items.RecommendationItem
 import com.serj.recommend.android.model.items.RecommendationPreview
 import com.serj.recommend.android.model.items.UserItem
+import com.serj.recommend.android.services.DeleteCommentResponse
 import com.serj.recommend.android.services.GetBannerResponse
 import com.serj.recommend.android.services.GetCategoryResponse
 import com.serj.recommend.android.services.GetCommentsResponse
@@ -345,7 +346,7 @@ class StorageServiceImpl @Inject constructor(
         }
     }
 
-    suspend override fun uploadComment(
+    override fun uploadComment(
         recommendationId: String,
         userId: String,
         text: String
@@ -369,8 +370,36 @@ class StorageServiceImpl @Inject constructor(
                 else
                     Log.w(TAG, "Error updating recommendation document: $task")
                 }
-                .await()
             Success(true)
+        } catch (e: Exception) {
+            Failure(e)
+        }
+    }
+
+    override fun deleteComment(
+        recommendationId: String,
+        userId: String,
+        commentId: String,
+        commentOwnerId: String
+    ): DeleteCommentResponse {
+        return try {
+            if (userId == commentOwnerId) {
+                firestore
+                    .collection(RECOMMENDATIONS_COLLECTION)
+                    .document(recommendationId)
+                    .collection(COMMENTS_COLLECTION)
+                    .document(commentId)
+                    .delete()
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful)
+                            Log.d(TAG, "Recommendation DocumentSnapshot successfully updated!")
+                        else
+                            Log.w(TAG, "Error updating recommendation document: $task")
+                    }
+                Success(true)
+            } else {
+                Failure(Exception())
+            }
         } catch (e: Exception) {
             Failure(e)
         }

@@ -26,7 +26,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -39,15 +38,13 @@ import com.google.firebase.storage.StorageReference
 import com.serj.recommend.android.R
 import com.serj.recommend.android.ui.components.media.CustomGlideImage
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun CommentInput(
     modifier: Modifier = Modifier,
     currentUserPhotoReference: StorageReference?,
     commentInput: String,
-    currentRecommendationId: String,
     onCommentInputValueChange: (String) -> Unit,
-    onUploadCommentClick: (String) -> Unit
+    onUploadCommentClick: () -> Unit
 ) {
     val enableToSendComment = remember { mutableStateOf(false) }
 
@@ -121,7 +118,7 @@ fun CommentInput(
             checked = enableToSendComment.value,
             onCheckedChange = {
                 enableToSendComment.value = !enableToSendComment.value
-                onUploadCommentClick(commentInput)
+                onUploadCommentClick()
             }
         ) {
             val transition = updateTransition(enableToSendComment.value, label = "SendIconTransition")
@@ -162,7 +159,6 @@ fun CommentInputPreview() {
         CommentInput(
             currentUserPhotoReference = null,
             commentInput = "",
-            currentRecommendationId = "",
             onCommentInputValueChange = { },
             onUploadCommentClick = { }
         )

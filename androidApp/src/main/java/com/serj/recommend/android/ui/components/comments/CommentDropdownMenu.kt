@@ -12,28 +12,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.serj.recommend.android.R
+import com.serj.recommend.android.model.Comment
 
 @Composable
 fun CommentDropdownMenu(
     modifier: Modifier = Modifier,
+    comment: Comment,
     expanded: Boolean,
-    offset: DpOffset,
-    onCommentDismissRequest: () -> Unit,
+    onDeleteCommentClick: (Comment) -> Unit,
+    onCommentDismissRequest: (Comment) -> Unit,
 ) {
     DropdownMenu(
         modifier = modifier
             .width(120.dp)
             .background(Color.White),
         expanded = expanded,
-        onDismissRequest = { onCommentDismissRequest() },
-        offset = offset,
+        onDismissRequest = { onCommentDismissRequest(comment) }
     ) {
         DropdownMenuItem(
             text = { Text("Pin") },
-            onClick = { },
+            onClick = {  },
             leadingIcon = {
                 Icon(
                     ImageVector.vectorResource(id = R.drawable.dropdown_menu_pin),
@@ -47,7 +47,7 @@ fun CommentDropdownMenu(
         )
         DropdownMenuItem(
             text = { Text("Delete") },
-            onClick = { },
+            onClick = { onDeleteCommentClick(comment) },
             leadingIcon = {
                 Icon(
                     ImageVector.vectorResource(id = R.drawable.dropdown_menu_delete),

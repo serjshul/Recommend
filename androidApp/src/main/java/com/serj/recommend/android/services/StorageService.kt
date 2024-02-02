@@ -22,6 +22,7 @@ typealias GetFollowingRecommendationsIdsResponse = Response<List<String>>
 typealias GetStorageReferenceFromUrlResponse = Response<StorageReference>
 typealias LikeOrUnlikeRecommendationResponse = Response<Boolean>
 typealias UploadCommentResponse = Response<Boolean>
+typealias DeleteCommentResponse = Response<Boolean>
 
 interface StorageService {
 
@@ -51,5 +52,10 @@ interface StorageService {
     fun likeOrUnlikeRecommendation(isLiked: Boolean, uid: String, recommendationId: String):
             LikeOrUnlikeRecommendationResponse
 
-    suspend fun uploadComment(recommendationId: String, userId: String, text: String): UploadCommentResponse
+    fun uploadComment(recommendationId: String, userId: String, text: String):
+            UploadCommentResponse
+
+    fun deleteComment(recommendationId: String, userId: String, commentId: String,
+                      commentOwnerId: String):
+            DeleteCommentResponse
 }

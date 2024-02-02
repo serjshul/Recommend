@@ -1,6 +1,5 @@
 package com.serj.recommend.android.ui.screens.main.feed
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,8 +24,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.serj.recommend.android.R
@@ -47,24 +44,21 @@ fun FeedScreen(
 ) {
     FeedScreenContent(
         currentUser = viewModel.currentUser.value,
-        offset = viewModel.offset,
         currentRecommendations = viewModel.currentRecommendations,
         recommendationsAmount = viewModel.currentRecommendationsAmount.intValue,
         bottomSheetComments = viewModel.bottomSheetComments,
         showCommentsBottomSheet = viewModel.showCommentsBottomSheet,
         commentInput = viewModel.commentInput,
-        isDropdownMenuExpanded = viewModel.isDropdownMenuExpanded.value,
-        currentRecommendationId = viewModel.currentRecommendationId,
         openScreen = openScreen,
         onCommentInputValueChange = viewModel::onCommentInputValueChange,
         onCommentSheetDismissRequest = viewModel::onCommentSheetDismissRequest,
         onUploadCommentClick = viewModel::onUploadCommentClick,
+        onDeleteCommentClick = viewModel::onDeleteCommentClick,
         onLikeClick = viewModel::onLikeClick,
         onCommentIconClick = viewModel::onCommentIconClick,
         onCommentClick = viewModel::onCommentClick,
         onCommentDismissRequest = viewModel::onCommentDismissRequest,
-        onRecommendationClick = viewModel::onRecommendationClick,
-        onOffsetChangeValue = viewModel::onOffsetChangeValue
+        onRecommendationClick = viewModel::onRecommendationClick
     )
 }
 
@@ -72,25 +66,22 @@ fun FeedScreen(
 @Composable
 fun FeedScreenContent(
     modifier: Modifier = Modifier,
-    offset: DpOffset,
     currentUser: User?,
     currentRecommendations: List<RecommendationItem>,
     recommendationsAmount: Int,
-    bottomSheetComments: List<Comment>,
+    bottomSheetComments: Map<Comment, Boolean>,
     showCommentsBottomSheet: Boolean,
     commentInput: String,
-    isDropdownMenuExpanded: Boolean,
-    currentRecommendationId: String,
     openScreen: (String) -> Unit,
     onCommentInputValueChange: (String) -> Unit,
     onCommentSheetDismissRequest: () -> Unit,
-    onUploadCommentClick: (String) -> Unit,
+    onUploadCommentClick: () -> Unit,
+    onDeleteCommentClick: (Comment) -> Unit,
     onLikeClick: (Boolean, String, String) -> Response<Boolean>,
     onCommentIconClick: (String, List<Comment>) -> Unit,
-    onCommentClick: () -> Unit,
-    onCommentDismissRequest: () -> Unit,
+    onCommentClick: (Comment) -> Unit,
+    onCommentDismissRequest: (Comment) -> Unit,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit,
-    onOffsetChangeValue: (Dp, Dp) -> Unit
 ) {
     var isLoading by remember { mutableStateOf(true) }
     var currentRecommendationsAmount = 0
@@ -99,9 +90,6 @@ fun FeedScreenContent(
     )
 
     Scaffold(
-        modifier = modifier
-            .fillMaxSize()
-            .background(color = White),
         topBar = {
             TopAppBar(
                 backgroundColor = White
@@ -118,7 +106,9 @@ fun FeedScreenContent(
                     )
                 }
             }
-        }
+        },
+        containerColor = Color.White,
+        modifier = modifier.fillMaxSize(),
     ) { paddingValues ->
         LazyColumn(
             modifier = Modifier
@@ -167,23 +157,20 @@ fun FeedScreenContent(
             ModalBottomSheet(
                 onDismissRequest = { onCommentSheetDismissRequest() },
                 sheetState = commentSheetState,
+                containerColor = Color.White,
                 content = {
                     CommentsBottomSheet(
                         modifier = Modifier,
-                        offset = offset,
                         comments = bottomSheetComments,
                         commentInput = commentInput,
                         currentUserPhotoReference = currentUser!!.photoReference,
-                        currentRecommendationId = currentRecommendationId,
-                        isDropdownMenuExpanded = isDropdownMenuExpanded,
                         onCommentInputValueChange = onCommentInputValueChange,
                         onUploadCommentClick = onUploadCommentClick,
+                        onDeleteCommentClick = onDeleteCommentClick,
                         onCommentClick = onCommentClick,
-                        onOffsetChangeValue = onOffsetChangeValue,
                         onCommentDismissRequest = onCommentDismissRequest
                     )
-                },
-                containerColor = Color.White
+                }
             )
         }
     }
@@ -194,23 +181,20 @@ fun FeedScreenContent(
 fun FeedScreenContentPreview() {
     FeedScreenContent(
         currentUser = User(),
-        offset = DpOffset.Zero,
         currentRecommendations = listOf(),
         recommendationsAmount = 3,
-        bottomSheetComments = listOf(),
+        bottomSheetComments = mapOf(),
         showCommentsBottomSheet = false,
         commentInput = "",
-        isDropdownMenuExpanded = false,
-        currentRecommendationId = "",
         openScreen = { },
         onCommentInputValueChange = { },
         onCommentSheetDismissRequest = { /*TODO*/ },
         onUploadCommentClick = { },
+        onDeleteCommentClick = { },
         onLikeClick = { _: Boolean, _: String, _: String -> Response.Success(true) },
         onCommentIconClick = { _: String, _: List<Comment> -> },
-        onCommentClick = { },
+        onCommentClick = { _: Comment -> },
         onCommentDismissRequest = { },
         onRecommendationClick = { _: (String) -> Unit, _: Recommendation -> },
-        onOffsetChangeValue = { _: Dp, _: Dp -> }
     )
 }

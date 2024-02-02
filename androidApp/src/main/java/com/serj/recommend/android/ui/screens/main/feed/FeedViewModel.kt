@@ -3,10 +3,9 @@ package com.serj.recommend.android.ui.screens.main.feed
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.DpOffset
 import com.serj.recommend.android.R
 import com.serj.recommend.android.RecommendRoutes
 import com.serj.recommend.android.common.Constants.RECOMMENDATION_ID
@@ -14,6 +13,7 @@ import com.serj.recommend.android.model.Comment
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.User
 import com.serj.recommend.android.model.items.RecommendationItem
+import com.serj.recommend.android.model.items.UserItem
 import com.serj.recommend.android.services.AccountService
 import com.serj.recommend.android.services.LogService
 import com.serj.recommend.android.services.StorageService
@@ -21,6 +21,7 @@ import com.serj.recommend.android.services.model.Response
 import com.serj.recommend.android.ui.components.snackbar.SnackbarManager
 import com.serj.recommend.android.ui.screens.RecommendViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
@@ -30,20 +31,20 @@ class FeedViewModel @Inject constructor(
     private val accountService: AccountService
 ) : RecommendViewModel(logService) {
 
-    var currentRecommendationId by mutableStateOf("")
-        private set
-    var commentInput by mutableStateOf("")
-        private set
-    var showCommentsBottomSheet by mutableStateOf(false)
-        private set
-    val bottomSheetComments = mutableStateListOf<Comment>()
-
-    val isDropdownMenuExpanded = mutableStateOf(false)
-    var offset by mutableStateOf(DpOffset.Zero)
-
     val currentUser = mutableStateOf<User?>(null)
     val currentRecommendations = mutableStateListOf<RecommendationItem>()
     val currentRecommendationsAmount = mutableIntStateOf(0)
+
+
+    var currentRecommendationId by mutableStateOf("")
+        private set
+
+    var commentInput by mutableStateOf("")
+        private set
+
+    var showCommentsBottomSheet by mutableStateOf(false)
+        private set
+    val bottomSheetComments = mutableStateMapOf<Comment, Boolean>()
 
     init {
         launchCatching {
@@ -73,11 +74,7 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    fun onOffsetChangeValue(x: Dp, y: Dp) {
-        offset = DpOffset(x, y)
-    }
-
-    fun onUploadCommentClick(text: String) {
+    fun onUploadCommentClick() {
         launchCatching {
             accountService.currentUser.collect { user ->
                 user.uid?.let {
@@ -87,12 +84,40 @@ class FeedViewModel @Inject constructor(
                         text = commentInput
                     )
 
-                    commentInput = ""
-                    bottomSheetComments.clear()
+                    val comment = Comment(
+                        id = (user.uid + commentInput).hashCode().toString(),
+                        userId = user.uid,
+                        repliedCommentId = null,
+                        text = commentInput,
+                        date = Date(),
+                        likedBy = arrayListOf(),
+                        userItem = UserItem(
+                            uid = user.uid,
+                            nickname = user.nickname,
+                            photoReference = user.photoReference
+                        )
+                    )
 
-                    val getCommentResponse = storageService.getComments(currentRecommendationId)
-                    if (getCommentResponse is Response.Success && getCommentResponse.data != null) {
-                        bottomSheetComments.addAll(getCommentResponse.data)
+                    commentInput = ""
+                    bottomSheetComments[comment] = false
+                }
+            }
+        }
+    }
+
+    fun onDeleteCommentClick(comment: Comment) {
+        if (comment.id != null && comment.userId != null) {
+            launchCatching {
+                accountService.currentUser.collect { user ->
+                    user.uid?.let {
+                        storageService.deleteComment(
+                            recommendationId = currentRecommendationId,
+                            userId = user.uid,
+                            commentId = comment.id,
+                            commentOwnerId = comment.userId
+                        )
+                        commentInput = ""
+                        bottomSheetComments.remove(comment)
                     }
                 }
             }
@@ -104,7 +129,7 @@ class FeedViewModel @Inject constructor(
 
     fun onCommentIconClick(recommendationId: String, comments: List<Comment>) {
         currentRecommendationId = recommendationId
-        bottomSheetComments.addAll(comments)
+        bottomSheetComments.putAll(comments.associateWith { false })
         showCommentsBottomSheet = true
     }
 
@@ -117,12 +142,12 @@ class FeedViewModel @Inject constructor(
         bottomSheetComments.clear()
     }
 
-    fun onCommentClick() {
-        isDropdownMenuExpanded.value = true
+    fun onCommentClick(comment: Comment) {
+        bottomSheetComments[comment] = true
     }
 
-    fun onCommentDismissRequest() {
-        isDropdownMenuExpanded.value = false
+    fun onCommentDismissRequest(comment: Comment) {
+        bottomSheetComments[comment] = false
     }
 
     fun onRecommendationClick(openScreen: (String) -> Unit, recommendation: Recommendation) {

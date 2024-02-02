@@ -41,7 +41,9 @@ import androidx.compose.ui.unit.sp
 import com.google.firebase.storage.StorageReference
 import com.serj.recommend.android.R
 import com.serj.recommend.android.common.getCreatedTime
+import com.serj.recommend.android.model.Comment
 import com.serj.recommend.android.services.model.Response
+import com.serj.recommend.android.ui.components.comments.CommentDropdownMenu
 import com.serj.recommend.android.ui.components.media.CustomGlideImage
 import com.serj.recommend.android.ui.styles.Black
 import com.serj.recommend.android.ui.styles.Red
@@ -50,14 +52,18 @@ import java.util.Date
 @Composable
 fun CommentItem(
     modifier: Modifier = Modifier,
+    comment: Comment,
     nickname: String,
     photoReference: StorageReference?,
     text: String,
     date: Date,
     isLiked: Boolean,
     likedBy: List<String>,
+    isDropdownMenuExpanded: Boolean,
     onLikeClick: (Boolean, String, String) -> Response<Boolean>,
-    onCommentClick: () -> Unit
+    onCommentClick: (Comment) -> Unit,
+    onCommentDismissRequest: (Comment) -> Unit,
+    onDeleteCommentClick: (Comment) -> Unit,
 ) {
     val createdTime = getCreatedTime(date)
 
@@ -66,8 +72,7 @@ fun CommentItem(
     Row(
         modifier = modifier
             .padding(10.dp, 5.dp)
-            .fillMaxWidth()
-            .clickable { onCommentClick() },
+            .fillMaxWidth(),
         verticalAlignment = Alignment.Top
     ) {
         Box(
@@ -86,7 +91,9 @@ fun CommentItem(
             modifier = modifier.weight(1f)
         ) {
             Text(
-                modifier = modifier.padding(bottom = 3.dp),
+                modifier = modifier
+                    .padding(bottom = 3.dp)
+                    .clickable { onCommentClick(comment) },
                 text = buildAnnotatedString {
                     withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                         append(nickname)
@@ -114,15 +121,20 @@ fun CommentItem(
                     lineHeight = 1.2.em
                 )
             }
+
+            CommentDropdownMenu(
+                comment = comment,
+                expanded = isDropdownMenuExpanded,
+                onDeleteCommentClick = onDeleteCommentClick,
+                onCommentDismissRequest = onCommentDismissRequest
+            )
         }
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             IconToggleButton(
-                modifier = Modifier
-                    .padding(top = 5.dp)
-                    .size(30.dp),
+                modifier = Modifier.size(30.dp),
                 checked = isCurrentlyLiked.value,
                 onCheckedChange = {
                     // TODO: add onLikeClick function
@@ -165,7 +177,7 @@ fun CommentItem(
                 Text(
                     text = likedBy.size.toString(),
                     color = Color.Gray,
-                    fontSize = 12.sp,
+                    fontSize = 10.sp,
                     lineHeight = 1.2.em
                 )
             }
@@ -178,14 +190,17 @@ fun CommentItem(
 fun CommentFullItemPreview() {
     CommentItem(
         modifier = Modifier.background(Color.White),
+        comment = Comment(),
         nickname = "succession",
         photoReference = null,
         isLiked = false,
-        text = "The saga about a back-stabbing media dynasty won best drama series, " +
-                "best actor, best actress and best supporting actor",
+        text = "The saga about ",
         date = Date(Date().time - 22 * 60 * 60 * 1000L),
         likedBy = listOf("", "", "", "", "", "", "", "", "", "", "", "", "", "", ""),
+        isDropdownMenuExpanded = false,
         onLikeClick = { _: Boolean, _: String, _: String -> Response.Success(true) },
-        onCommentClick = { }
+        onCommentClick = { _: Comment -> },
+        onCommentDismissRequest = { },
+        onDeleteCommentClick = { }
     )
 }
