@@ -3,7 +3,7 @@ package com.serj.recommend.android.ui.components.media
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color.Companion.Gray
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -24,7 +24,7 @@ fun CustomGlideImage(
         GlideImage(
             modifier = modifier,
             model = reference,
-            loading = placeholder(ColorPainter(Gray)),
+            loading = placeholder(ColorPainter(Color.Gray)),
             failure = placeholder(R.drawable.glide_failure),
             transition = CrossFade,
             contentScale = ContentScale.Crop,

@@ -20,7 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -106,7 +106,7 @@ fun FeedScreenContent(
                 }
             }
         },
-        containerColor = Color.White,
+        containerColor = White,
         modifier = modifier.fillMaxSize(),
     ) { paddingValues ->
         LazyColumn(
@@ -156,7 +156,7 @@ fun FeedScreenContent(
             ModalBottomSheet(
                 onDismissRequest = { onCommentSheetDismissRequest() },
                 sheetState = commentSheetState,
-                containerColor = Color.White,
+                containerColor = White,
                 content = {
                     CommentsBottomSheet(
                         modifier = Modifier,

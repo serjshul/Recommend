@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Gray
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -18,7 +19,6 @@ import androidx.compose.ui.unit.sp
 import com.serj.recommend.android.model.Comment
 import com.serj.recommend.android.model.items.UserItem
 import com.serj.recommend.android.ui.components.comments.items.CommentShortItem
-import com.serj.recommend.android.ui.styles.Gray
 
 @Composable
 fun CommentsShortList(

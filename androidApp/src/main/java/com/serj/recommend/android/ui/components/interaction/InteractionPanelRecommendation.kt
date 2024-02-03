@@ -317,6 +317,6 @@ fun InteractionPanelRecommendationPreview() {
         date = Date(0),
         recommendationId = "recommendationId",
         currentUserUid = "userId",
-        onLikeClick = { b: Boolean, s1: String, s2: String -> Response.Success(true) }
+        onLikeClick = { _: Boolean, _: String, _: String -> Response.Success(true) }
     )
 }

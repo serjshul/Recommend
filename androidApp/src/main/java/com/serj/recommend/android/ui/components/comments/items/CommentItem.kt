@@ -28,6 +28,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Black
+import androidx.compose.ui.graphics.Color.Companion.Red
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.SpanStyle
@@ -45,8 +47,6 @@ import com.serj.recommend.android.model.Comment
 import com.serj.recommend.android.services.model.Response
 import com.serj.recommend.android.ui.components.comments.CommentDropdownMenu
 import com.serj.recommend.android.ui.components.media.CustomGlideImage
-import com.serj.recommend.android.ui.styles.Black
-import com.serj.recommend.android.ui.styles.Red
 import java.util.Date
 
 @Composable

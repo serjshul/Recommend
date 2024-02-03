@@ -92,7 +92,7 @@ fun RecommendationScreenContent(
                     if (recommendation.title != null && recommendation.type != null &&
                         recommendation.creator != null && recommendation.tags != null &&
                         recommendation.year != null && recommendation.description != null &&
-                        recommendation.quote != null && recommendation.date != null) {
+                        recommendation.date != null) {
 
                         Box(
                             modifier = Modifier
@@ -144,11 +144,13 @@ fun RecommendationScreenContent(
                                     )
                                 }
 
-                                item {
-                                    Quote(
-                                        quote = recommendation.quote,
-                                        color = recommendation.color?.toColor()
-                                    )
+                                if (recommendation.quote != null) {
+                                    item {
+                                        Quote(
+                                            quote = recommendation.quote,
+                                            color = recommendation.color?.toColor()
+                                        )
+                                    }
                                 }
 
                                 item {
@@ -262,7 +264,6 @@ fun RecommendationScreenContentPreview() {
             date = Date(0),
             color = "#ad0f0b",
             likedBy = arrayListOf(),
-            commentedBy = arrayListOf(),
             repostedBy = arrayListOf(),
             views = 0
         )
