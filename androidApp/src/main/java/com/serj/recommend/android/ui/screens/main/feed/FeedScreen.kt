@@ -116,7 +116,6 @@ fun FeedScreenContent(
             items(currentRecommendations) {
                 if (currentUser != null) {
                     RecommendationItem(
-                        modifier = Modifier.padding(bottom = 10.dp),
                         user = it.userItem,
                         date = it.date,
                         description = it.description,
@@ -124,6 +123,8 @@ fun FeedScreenContent(
                         backgroundVideoReference = it.backgroundVideoReference,
                         title = it.title,
                         creator = it.creator,
+                        type = it.type,
+                        tags = it.tags,
                         coverType = it.coverType,
                         coverReference = it.coverReference,
                         comments = it.comments,

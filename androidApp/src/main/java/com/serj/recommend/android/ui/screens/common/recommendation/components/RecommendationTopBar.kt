@@ -98,11 +98,9 @@ fun RecommendationTopBar(
             actions = {
                 IconButton(onClick = { /* do something */ }) {
                     Icon(
-                        ImageVector.vectorResource(
-                            id = R.drawable.icon_unsaved
-                        ),
+                        ImageVector.vectorResource(id = R.drawable.icon_unsaved),
                         tint = titleContentColor,
-                        contentDescription = "Localized description"
+                        contentDescription = "Save"
                     )
                 }
             }

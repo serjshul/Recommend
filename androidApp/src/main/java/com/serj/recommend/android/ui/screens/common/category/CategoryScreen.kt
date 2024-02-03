@@ -119,6 +119,8 @@ fun CategoryScreenContent(
                             backgroundVideoReference = it.value.backgroundVideoReference,
                             title = it.value.title,
                             creator = it.value.creator,
+                            type = it.value.type,
+                            tags = it.value.tags,
                             coverType = it.value.coverType,
                             coverReference = it.value.coverReference,
                             isLiked = it.value.isLiked,
