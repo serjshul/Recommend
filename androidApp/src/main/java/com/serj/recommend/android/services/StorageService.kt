@@ -3,6 +3,7 @@ package com.serj.recommend.android.services
 import com.google.firebase.storage.StorageReference
 import com.serj.recommend.android.model.Banner
 import com.serj.recommend.android.model.Category
+import com.serj.recommend.android.model.Comment
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.items.RecommendationItem
 import com.serj.recommend.android.model.items.RecommendationPreview
@@ -16,9 +17,12 @@ typealias GetCategoryResponse = Response<Category?>
 typealias GetRecommendationItemResponse = Response<RecommendationItem?>
 typealias GetRecommendationPreviewResponse = Response<RecommendationPreview?>
 typealias GetUserItemResponse = Response<UserItem?>
+typealias GetCommentsResponse = Response<List<Comment>>
 typealias GetFollowingRecommendationsIdsResponse = Response<List<String>>
 typealias GetStorageReferenceFromUrlResponse = Response<StorageReference>
 typealias LikeOrUnlikeRecommendationResponse = Response<Boolean>
+typealias UploadCommentResponse = Response<Boolean>
+typealias DeleteCommentResponse = Response<Boolean>
 
 interface StorageService {
 
@@ -38,11 +42,20 @@ interface StorageService {
             GetRecommendationPreviewResponse
     suspend fun getUserItemByUid(uid: String): GetUserItemResponse
 
-    fun likeOrUnlikeRecommendation(isLiked: Boolean, uid: String, recommendationId: String):
-            LikeOrUnlikeRecommendationResponse
+    suspend fun getComments(recommendationId: String): GetCommentsResponse
 
     suspend fun getFollowingRecommendationsIds(followingUids: List<String>):
             GetFollowingRecommendationsIdsResponse
 
     fun getStorageReferenceFromUrl(url: String): GetStorageReferenceFromUrlResponse
+
+    fun likeOrUnlikeRecommendation(isLiked: Boolean, uid: String, recommendationId: String):
+            LikeOrUnlikeRecommendationResponse
+
+    fun uploadComment(recommendationId: String, userId: String, text: String):
+            UploadCommentResponse
+
+    fun deleteComment(recommendationId: String, userId: String, commentId: String,
+                      commentOwnerId: String):
+            DeleteCommentResponse
 }

@@ -19,13 +19,13 @@
 
     <application
         android:name=".RecommendHiltApp"
-        android:allowBackup="false"
         android:enableOnBackInvokedCallback="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:targetApi="tiramisu">
         <activity
             android:name=".RecommendActivity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

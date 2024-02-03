@@ -7,6 +7,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.dataObjects
 import com.google.firebase.firestore.toObject
+import com.google.firebase.firestore.toObjects
 import com.google.firebase.storage.FirebaseStorage
 import com.serj.recommend.android.common.BannerNotFoundException
 import com.serj.recommend.android.common.CategoryNotFoundException
@@ -14,12 +15,15 @@ import com.serj.recommend.android.common.RecommendationNotFoundException
 import com.serj.recommend.android.common.UserNotFoundException
 import com.serj.recommend.android.model.Banner
 import com.serj.recommend.android.model.Category
+import com.serj.recommend.android.model.Comment
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.items.RecommendationItem
 import com.serj.recommend.android.model.items.RecommendationPreview
 import com.serj.recommend.android.model.items.UserItem
+import com.serj.recommend.android.services.DeleteCommentResponse
 import com.serj.recommend.android.services.GetBannerResponse
 import com.serj.recommend.android.services.GetCategoryResponse
+import com.serj.recommend.android.services.GetCommentsResponse
 import com.serj.recommend.android.services.GetFollowingRecommendationsIdsResponse
 import com.serj.recommend.android.services.GetRecommendationItemResponse
 import com.serj.recommend.android.services.GetRecommendationPreviewResponse
@@ -28,6 +32,7 @@ import com.serj.recommend.android.services.GetStorageReferenceFromUrlResponse
 import com.serj.recommend.android.services.GetUserItemResponse
 import com.serj.recommend.android.services.LikeOrUnlikeRecommendationResponse
 import com.serj.recommend.android.services.StorageService
+import com.serj.recommend.android.services.UploadCommentResponse
 import com.serj.recommend.android.services.model.Response.Failure
 import com.serj.recommend.android.services.model.Response.Success
 import com.serj.recommend.android.ui.components.media.BackgroundTypes
@@ -150,23 +155,29 @@ class StorageServiceImpl @Inject constructor(
                 .document(recommendationId)
                 .get()
                 .await()
-            val data = recommendationItemSnapshot.toObject<RecommendationItem>()
+            val recommendationData = recommendationItemSnapshot.toObject<RecommendationItem>()
 
-            if (data != null) {
-                val coverType = getCoverType(data.coversUrl)
-                if (data.uid != null) {
-                    when (val userItemResponse = getUserItemByUid(data.uid)) {
-                        is Success -> data.userItem = userItemResponse.data
+            if (recommendationData != null) {
+                val coverType = getCoverType(recommendationData.coversUrl)
+                if (recommendationData.uid != null) {
+                    when (val userItemResponse = getUserItemByUid(recommendationData.uid)) {
+                        is Success -> recommendationData.userItem = userItemResponse.data
                         else -> Failure(UserNotFoundException())
                     }
                 }
-                data.coverType = coverType
-                data.coverReference = data.coversUrl[coverType]
+                recommendationData.coverType = coverType
+                recommendationData.coverReference = recommendationData.coversUrl[coverType]
                     ?.let { storage.getReferenceFromUrl(it) }
-                data.backgroundImageReference = data.backgroundUrl[BackgroundTypes.image.name]
+                recommendationData.backgroundImageReference = recommendationData.backgroundUrl[BackgroundTypes.image.name]
                     ?.let { storage.getReferenceFromUrl(it) }
-                data.isLiked = currentUserLikedIds.contains(data.id)
-                Success(data)
+                recommendationData.isLiked = currentUserLikedIds.contains(recommendationData.id)
+
+                val commentsResponse = getComments(recommendationId)
+                if (commentsResponse is Success && commentsResponse.data != null) {
+                    recommendationData.comments.addAll(commentsResponse.data)
+                }
+
+                Success(recommendationData)
             } else {
                 Failure(RecommendationNotFoundException())
             }
@@ -221,6 +232,31 @@ class StorageServiceImpl @Inject constructor(
             } else {
                 Failure(UserNotFoundException())
             }
+        } catch (e: Exception) {
+            Failure(e)
+        }
+    }
+
+    override suspend fun getComments(
+        recommendationId: String
+    ): GetCommentsResponse {
+        return try {
+            val commentsSnapshot = firestore
+                .collection(RECOMMENDATIONS_COLLECTION)
+                .document(recommendationId)
+                .collection(COMMENTS_COLLECTION)
+                .get()
+                .await()
+            val commentsData = commentsSnapshot.toObjects<Comment>()
+
+            for (comment in commentsData) {
+                val userItemResponse = comment.userId?.let { getUserItemByUid(it) }
+                if (userItemResponse is Success && userItemResponse.data != null) {
+                    comment.userItem = userItemResponse.data
+                }
+            }
+
+            Success(commentsData)
         } catch (e: Exception) {
             Failure(e)
         }
@@ -310,6 +346,65 @@ class StorageServiceImpl @Inject constructor(
         }
     }
 
+    override fun uploadComment(
+        recommendationId: String,
+        userId: String,
+        text: String
+    ): UploadCommentResponse {
+        return try {
+            val comment = hashMapOf(
+                "userId" to userId,
+                "repliedCommentId" to null,
+                "text" to text,
+                "date" to FieldValue.serverTimestamp(),
+                "likedBy" to arrayListOf<String>()
+            )
+            firestore
+                .collection(RECOMMENDATIONS_COLLECTION)
+                .document(recommendationId)
+                .collection(COMMENTS_COLLECTION)
+                .add(comment)
+                .addOnCompleteListener { task ->
+                if (task.isSuccessful)
+                    Log.d(TAG, "Recommendation DocumentSnapshot successfully updated!")
+                else
+                    Log.w(TAG, "Error updating recommendation document: $task")
+                }
+            Success(true)
+        } catch (e: Exception) {
+            Failure(e)
+        }
+    }
+
+    override fun deleteComment(
+        recommendationId: String,
+        userId: String,
+        commentId: String,
+        commentOwnerId: String
+    ): DeleteCommentResponse {
+        return try {
+            if (userId == commentOwnerId) {
+                firestore
+                    .collection(RECOMMENDATIONS_COLLECTION)
+                    .document(recommendationId)
+                    .collection(COMMENTS_COLLECTION)
+                    .document(commentId)
+                    .delete()
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful)
+                            Log.d(TAG, "Recommendation DocumentSnapshot successfully updated!")
+                        else
+                            Log.w(TAG, "Error updating recommendation document: $task")
+                    }
+                Success(true)
+            } else {
+                Failure(Exception())
+            }
+        } catch (e: Exception) {
+            Failure(e)
+        }
+    }
+
     override fun getStorageReferenceFromUrl(
         url: String
     ): GetStorageReferenceFromUrlResponse {
@@ -344,6 +439,8 @@ class StorageServiceImpl @Inject constructor(
         private const val CATEGORIES_COLLECTION = "categories"
         private const val BANNERS_COLLECTION = "banners"
         private const val USERS_COLLECTION = "users"
+
+        private const val COMMENTS_COLLECTION = "comments"
 
         private const val USER_ID_FIELD = "uid"
         private const val DATE_FIELD = "date"

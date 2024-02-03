@@ -31,7 +31,7 @@ data class Recommendation(
     var backgroundVideoReference: StorageReference? = null,
 
     val likedBy: ArrayList<String> = arrayListOf(),
-    val commentedBy: ArrayList<String> = arrayListOf(),
     val repostedBy: ArrayList<String> = arrayListOf(),
+    val comments: ArrayList<Comment> = arrayListOf(),
     val views: Int = 0
 )

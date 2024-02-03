@@ -1,10 +1,12 @@
 package com.serj.recommend.android.ui.components.media
 
+import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color.Companion.Gray
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import com.bumptech.glide.integration.compose.CrossFade
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
@@ -18,13 +20,21 @@ fun CustomGlideImage(
     modifier: Modifier = Modifier,
     reference: StorageReference?
 ) {
-    GlideImage(
-        modifier = modifier,
-        model = reference,
-        loading = placeholder(ColorPainter(Gray)),
-        failure = placeholder(R.drawable.glide_failure),
-        transition = CrossFade,
-        contentScale = ContentScale.Crop,
-        contentDescription = "Glide image"
-    )
+    if (reference != null) {
+        GlideImage(
+            modifier = modifier,
+            model = reference,
+            loading = placeholder(ColorPainter(Gray)),
+            failure = placeholder(R.drawable.glide_failure),
+            transition = CrossFade,
+            contentScale = ContentScale.Crop,
+            contentDescription = "Glide image"
+        )
+    } else {
+        Image(
+            modifier = modifier,
+            painter = painterResource(id = R.drawable.no_user_photo),
+            contentDescription = "No user photo"
+        )
+    }
 }

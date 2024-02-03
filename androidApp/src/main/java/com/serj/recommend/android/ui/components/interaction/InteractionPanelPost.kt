@@ -11,12 +11,15 @@ import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,21 +33,26 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.serj.recommend.android.R
+import com.serj.recommend.android.model.Comment
 import com.serj.recommend.android.services.model.Response
 import com.serj.recommend.android.ui.styles.primary
 
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @SuppressLint("UnusedTransitionTargetStateParameter")
 @Composable
 fun InteractionPanelPost(
     modifier: Modifier = Modifier,
     isLiked: Boolean,
+    isCommentClicked: MutableState<Boolean>,
+    comments: List<Comment>,
     recommendationId: String?,
     currentUserUid: String?,
     onLikeClick: (Boolean, String, String) -> Response<Boolean>,
+    onCommentClick: (String, List<Comment>) -> Unit
 ) {
     val isCurrentlyLiked = remember { mutableStateOf(isLiked) }
-    val isCommented = remember { mutableStateOf(false) }
-    val isReposted = remember { mutableStateOf(false) }
+    val isCurrentlyReposted = remember { mutableStateOf(false) }
+    val isCommentCurrentlyClicked = remember { mutableStateOf(false) }
 
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -93,12 +101,15 @@ fun InteractionPanelPost(
         }
 
         IconToggleButton(
-            checked = isCommented.value,
+            checked = isCommentCurrentlyClicked.value,
             onCheckedChange = {
-                isCommented.value = !isCommented.value
+                isCommentCurrentlyClicked.value = !isCommentCurrentlyClicked.value
+                if (recommendationId != null) {
+                    onCommentClick(recommendationId, comments)
+                }
             }
         ) {
-            val transition = updateTransition(isCommented.value, label = "CommentTransition")
+            val transition = updateTransition(isCommentCurrentlyClicked.value, label = "CommentTransition")
             val size by transition.animateDp(
                 transitionSpec = {
                     keyframes {
@@ -121,12 +132,12 @@ fun InteractionPanelPost(
         }
 
         IconToggleButton(
-            checked = isReposted.value,
+            checked = isCurrentlyReposted.value,
             onCheckedChange = {
-                isReposted.value = !isReposted.value
+                isCurrentlyReposted.value = !isCurrentlyReposted.value
             }
         ) {
-            val transition = updateTransition(isReposted.value, label = "repostTransition")
+            val transition = updateTransition(isCurrentlyReposted.value, label = "repostTransition")
             val tint by transition.animateColor(label = "repostTint") { isReposted ->
                 if (isReposted) primary else Black
             }
@@ -160,11 +171,16 @@ fun InteractionPanelPost(
 @Preview
 @Composable
 fun InteractionPanelPreview() {
+    val isCommentClicked = remember { mutableStateOf(false) }
+
     InteractionPanelPost(
         modifier = Modifier.background(White),
         isLiked = true,
+        isCommentClicked = isCommentClicked,
+        comments = arrayListOf(),
         recommendationId = "",
         currentUserUid = "",
-        onLikeClick = { _: Boolean, _: String, _: String -> Response.Success(true) }
+        onLikeClick = { _: Boolean, _: String, _: String -> Response.Success(true) },
+        onCommentClick = { _: String, _: List<Comment> -> }
     )
 }
