@@ -46,7 +46,7 @@ import com.serj.recommend.android.common.getCreatedTime
 import com.serj.recommend.android.model.Comment
 import com.serj.recommend.android.services.model.Response
 import com.serj.recommend.android.ui.components.comments.CommentDropdownMenu
-import com.serj.recommend.android.ui.components.media.CustomGlideImage
+import com.serj.recommend.android.ui.components.media.GlideUserImage
 import java.util.Date
 
 @Composable
@@ -79,7 +79,7 @@ fun CommentItem(
             modifier = Modifier
                 .size(50.dp)
         ) {
-            CustomGlideImage(
+            GlideUserImage(
                 modifier = Modifier
                     .size(40.dp)
                     .clip(CircleShape),

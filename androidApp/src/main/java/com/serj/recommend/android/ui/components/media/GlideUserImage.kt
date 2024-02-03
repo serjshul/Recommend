@@ -1,12 +1,12 @@
 package com.serj.recommend.android.ui.components.media
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import com.bumptech.glide.integration.compose.CrossFade
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
@@ -16,7 +16,7 @@ import com.serj.recommend.android.R
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun CustomGlideImage(
+fun GlideUserImage(
     modifier: Modifier = Modifier,
     reference: StorageReference?
 ) {
@@ -31,8 +31,10 @@ fun CustomGlideImage(
             contentDescription = "Glide image"
         )
     } else {
-        Box(
-            modifier = modifier.background(Color.LightGray)
+        Image(
+            modifier = modifier,
+            painter = painterResource(id = R.drawable.no_user_photo),
+            contentDescription = "No user photo"
         )
     }
 }

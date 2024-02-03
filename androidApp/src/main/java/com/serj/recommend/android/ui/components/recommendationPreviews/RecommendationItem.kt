@@ -47,10 +47,11 @@ import com.serj.recommend.android.model.Comment
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.items.UserItem
 import com.serj.recommend.android.services.model.Response
-import com.serj.recommend.android.ui.components.interaction.InteractionPanelPost
 import com.serj.recommend.android.ui.components.comments.CommentsShortList
+import com.serj.recommend.android.ui.components.interaction.InteractionPanelPost
 import com.serj.recommend.android.ui.components.media.CustomGlideImage
 import com.serj.recommend.android.ui.components.media.CustomGlideImageShaded
+import com.serj.recommend.android.ui.components.media.GlideUserImage
 import java.util.Date
 
 @Composable
@@ -107,7 +108,7 @@ fun RecommendationItem(
                     .padding(start = 15.dp, top = 15.dp, end = 15.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                CustomGlideImage(
+                GlideUserImage(
                     modifier = Modifier
                         .size(40.dp)
                         .clip(CircleShape),
