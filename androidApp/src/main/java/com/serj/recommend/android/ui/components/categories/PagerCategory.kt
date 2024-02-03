@@ -58,7 +58,7 @@ fun PagerCategory(
             HorizontalPager(
                 modifier = Modifier.fillMaxWidth(),
                 state = pagerState,
-                contentPadding = PaddingValues(start = 20.dp, end = 20.dp)
+                contentPadding = PaddingValues(start = 15.dp, end = 15.dp)
             ) { page ->
                 HorizontalItemTransparent(
                     recommendationId = items[page % items.size].id,

@@ -1,5 +1,6 @@
 package com.serj.recommend.android.ui.components.recommendationPreviews.transparent
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,6 +23,7 @@ import com.google.firebase.storage.StorageReference
 import com.serj.recommend.android.common.ext.recommendationCoverShape
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.ui.components.media.CustomGlideImage
+import com.serj.recommend.android.ui.styles.primary
 
 @Composable
 fun HorizontalItemTransparent(
@@ -37,17 +39,17 @@ fun HorizontalItemTransparent(
     if (title != null && creator != null) {
         Column(
             modifier = if (isOnPager) modifier
-                .height(240.dp)
+                .padding(5.dp, 0.dp)
                 .fillMaxWidth()
-                .padding(start = 5.dp, end = 5.dp)
             else modifier
-                .height(270.dp)
-                .width(330.dp),
+                .height(328.dp)
+                .width(380.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             CustomGlideImage(
                 modifier = Modifier
-                    .height(200.dp)
+                    .padding(bottom = 2.dp)
+                    .height(240.dp)
                     .fillMaxWidth()
                     .recommendationCoverShape()
                     .clickable {
@@ -59,6 +61,20 @@ fun HorizontalItemTransparent(
                         }
                     },
                 reference = coverReference
+            )
+
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 2.dp),
+                text = "Film   /   Animation & Drama & Mystery",
+                color = primary,
+                maxLines = 1,
+                fontSize = 12.sp,
+                lineHeight = 1.2.em,
+                fontWeight = FontWeight.Bold,
+                overflow = TextOverflow.Ellipsis,
+                textAlign = if (isOnPager) TextAlign.Center else TextAlign.Start
             )
 
             Text(
@@ -86,7 +102,7 @@ fun HorizontalItemTransparent(
                 modifier = Modifier.fillMaxWidth(),
                 text = creator,
                 color = Color.Black,
-                fontSize = 12.sp,
+                fontSize = 14.sp,
                 lineHeight = 1.2.em,
                 maxLines = if (isOnPager) 1 else 2,
                 overflow = TextOverflow.Ellipsis,
@@ -100,11 +116,11 @@ fun HorizontalItemTransparent(
 @Composable
 fun HorizontalItemTransparentPreview() {
     HorizontalItemTransparent(
+        modifier = Modifier
+            .background(Color.White),
         recommendationId = "",
-        title = "Title Title Title Title Title Title Title Title Title Title Title Title " +
-                "Title Title Title Title Title Title",
-        creator = "Creator Creator Creator Creator Creator Creator Creator Creator Creator " +
-                "Creator Creator Creator Creator",
+        title = "Loving Vincent",
+        creator = "DK Welchman, Hugh Welchman",
         coverReference = null,
         openScreen = { },
         isOnPager = false,
