@@ -13,7 +13,7 @@ data class RecommendationItem(
     val title: String? = null,
     val creator: String? = null,
     val type: String? = null,
-    val tags: List<String>? = null,
+    val tags: List<String> = listOf(),
     val description: String? = null,
     val date: Date? = null,
 
