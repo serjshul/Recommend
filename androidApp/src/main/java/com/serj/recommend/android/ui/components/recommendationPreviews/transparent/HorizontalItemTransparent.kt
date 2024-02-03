@@ -31,6 +31,8 @@ fun HorizontalItemTransparent(
     recommendationId: String?,
     title: String?,
     creator: String?,
+    type: String?,
+    tags: List<String>,
     coverReference: StorageReference?,
     isOnPager: Boolean = false,
     openScreen: (String) -> Unit,
@@ -67,7 +69,7 @@ fun HorizontalItemTransparent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 2.dp),
-                text = "Film   /   Animation & Drama & Mystery",
+                text = "$type   /   ${tags.joinToString(separator = " & ")}",
                 color = primary,
                 maxLines = 1,
                 fontSize = 12.sp,
@@ -121,6 +123,8 @@ fun HorizontalItemTransparentPreview() {
         recommendationId = "",
         title = "Loving Vincent",
         creator = "DK Welchman, Hugh Welchman",
+        type = "Film",
+        tags = listOf("Animation", "Drama", "Mystery"),
         coverReference = null,
         openScreen = { },
         isOnPager = false,

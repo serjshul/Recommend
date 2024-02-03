@@ -31,6 +31,8 @@ fun VerticalItemTransparent(
     recommendationId: String?,
     title: String?,
     creator: String?,
+    type: String?,
+    tags: List<String>,
     coverReference: StorageReference?,
     openScreen: (String) -> Unit,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
@@ -62,7 +64,7 @@ fun VerticalItemTransparent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 2.dp),
-                text = "Book   /   Literary fiction & Romance novel",
+                text = "$type   /   ${tags.joinToString(separator = " & ")}",
                 color = primary,
                 maxLines = 1,
                 fontSize = 12.sp,
@@ -109,6 +111,8 @@ fun VerticalItemTransparentPreview() {
         recommendationId = "",
         title = "Norwegian Wood",
         creator = "Murakami Haruki",
+        type = "Book",
+        tags = listOf("Literary fiction", "Romance novel"),
         coverReference = null,
         openScreen = { },
         onRecommendationClick = { _: (String) -> Unit, _: Recommendation -> }

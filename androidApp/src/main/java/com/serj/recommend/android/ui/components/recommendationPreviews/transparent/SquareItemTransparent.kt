@@ -31,6 +31,8 @@ fun SquareItemTransparent(
     recommendationId: String?,
     title: String?,
     creator: String?,
+    type: String?,
+    tags: List<String>,
     coverReference: StorageReference?,
     openScreen: (String) -> Unit,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
@@ -61,7 +63,7 @@ fun SquareItemTransparent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 2.dp),
-                text = "Music   /   Deep House & Progressive House & UK Bass",
+                text = "$type   /   ${tags.joinToString(separator = " & ")}",
                 color = primary,
                 maxLines = 1,
                 fontSize = 12.sp,
@@ -110,6 +112,8 @@ fun SquareItemTransparentPreview() {
         recommendationId = "",
         title = "Kyle (i found you)",
         creator = "Fred again..",
+        type = "Music",
+        tags = listOf("Deep House", "Progressive House", "UK Bass"),
         coverReference = null,
         openScreen = { },
         onRecommendationClick = { _: (String) -> Unit, _: Recommendation -> }
