@@ -1,7 +1,6 @@
 package com.serj.recommend.android.ui.screens.main.newRecommendation
 
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -25,8 +24,20 @@ class NewRecommendationViewModel @Inject constructor(
         private set
     var creator by mutableStateOf("")
         private set
-    var year by mutableIntStateOf(0)
+    var year by mutableStateOf("")
         private set
     var tags = mutableStateListOf<String>()
+
+    fun onTitleValueChange(input: String) {
+        title = input
+    }
+
+    fun onCreatorValueChange(input: String) {
+        creator = input
+    }
+
+    fun onYearValueChange(input: String) {
+        year = input
+    }
 
 }

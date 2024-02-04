@@ -1,6 +1,7 @@
 package com.serj.recommend.android.ui.screens.main.newRecommendation.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -8,42 +9,56 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun OneLineInput(
+fun NewRecommendationInput(
     modifier: Modifier = Modifier,
+    text: String,
     placeholder: String,
-    text: String
+    textColor: Color = Color.White,
+    fontSize: TextUnit = 14.sp,
+    fontWeight: FontWeight? = null,
+    lineHeight: TextUnit = TextUnit.Unspecified,
+    maxLines: Int = 1,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    onValueChange: (String) -> Unit
 ) {
     TextField(
         value = text,
-        onValueChange = {  },
+        onValueChange = { onValueChange(it) },
         placeholder = {
             Text(
                 text = placeholder,
                 style = TextStyle(
-                    fontSize = 14.sp,
+                    fontSize = fontSize,
                     textAlign = TextAlign.Center
                 ),
                 modifier = Modifier.fillMaxWidth()
             )
         },
         textStyle = TextStyle(
-            fontSize = 14.sp,
-            textAlign = TextAlign.Center
+            fontSize = fontSize,
+            textAlign = TextAlign.Center,
+            fontWeight = fontWeight,
+            lineHeight = lineHeight
         ),
+        maxLines = maxLines,
+        singleLine = maxLines == 1,
+        keyboardOptions = keyboardOptions,
         colors = TextFieldDefaults.colors(
             focusedContainerColor = Color.Transparent,
             unfocusedContainerColor = Color.Transparent,
             disabledContainerColor = Color.Transparent,
             errorContainerColor = Color.Transparent,
-            focusedTextColor = Color.White,
-            unfocusedTextColor = Color.White,
-            disabledTextColor = Color.White,
-            errorTextColor = Color.White,
+            focusedTextColor = textColor,
+            unfocusedTextColor = textColor,
+            disabledTextColor = textColor,
+            errorTextColor = textColor,
             focusedPlaceholderColor = Color.Gray,
             unfocusedPlaceholderColor = Color.Gray,
             disabledPlaceholderColor = Color.Gray,
@@ -59,8 +74,9 @@ fun OneLineInput(
 @Preview
 @Composable
 fun OneLineInputPreview() {
-    OneLineInput(
+    NewRecommendationInput(
+        text = "The White Lotus",
         placeholder = "Title",
-        text = "The White Lotus"
+        onValueChange = { }
     )
 }
