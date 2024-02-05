@@ -2,7 +2,6 @@ package com.serj.recommend.android.ui.screens.main.newRecommendation
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Scaffold
@@ -13,8 +12,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.serj.recommend.android.ui.screens.common.recommendation.components.Description
+import com.serj.recommend.android.model.User
 import com.serj.recommend.android.ui.screens.common.recommendation.components.HeaderBackground
+import com.serj.recommend.android.ui.screens.main.newRecommendation.components.NewRecommendationDescription
 import com.serj.recommend.android.ui.screens.main.newRecommendation.components.NewRecommendationHeader
 import com.serj.recommend.android.ui.screens.main.newRecommendation.components.NewRecommendationTopBar
 
@@ -23,28 +23,36 @@ fun NewRecommendationScreen(
     viewModel: NewRecommendationViewModel = hiltViewModel()
 ) {
     NewRecommendationScreenContent(
+        currentUser = viewModel.currentUser,
         title = viewModel.title,
         type = viewModel.type,
         creator = viewModel.creator,
         tags = viewModel.tags,
         year = viewModel.year,
+        description = viewModel.description,
         onTitleValueChange = viewModel::onTitleValueChange,
         onCreatorValueChange = viewModel::onCreatorValueChange,
-        onYearValueChange = viewModel::onYearValueChange
+        onTagsValueChange = viewModel::onTagsValueChange,
+        onYearValueChange = viewModel::onYearValueChange,
+        onDescriptionValueChange = viewModel::onDescriptionValueChange
     )
 }
 
 @Composable
 fun NewRecommendationScreenContent(
     modifier: Modifier = Modifier,
+    currentUser: User?,
     title: String,
     type: String,
     creator: String,
-    tags: List<String>,
+    tags: String,
     year: String,
+    description: String,
     onTitleValueChange: (String) -> Unit,
     onCreatorValueChange: (String) -> Unit,
-    onYearValueChange: (String) -> Unit
+    onTagsValueChange: (String) -> Unit,
+    onYearValueChange: (String) -> Unit,
+    onDescriptionValueChange: (String) -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -72,25 +80,28 @@ fun NewRecommendationScreenContent(
                     .align(Alignment.TopCenter)
             ) {
                 item {
-                    NewRecommendationHeader(
-                        modifier = Modifier
-                            .padding(top = 50.dp),
-                        title = title,
-                        creator = creator,
-                        tags = tags,
-                        year = year,
-                        photoReference = null,
-                        nickname = "nickname",
-                        onTitleValueChange = onTitleValueChange,
-                        onCreatorValueChange = onCreatorValueChange,
-                        onYearValueChange = onYearValueChange
-                    )
+                    if (currentUser != null) {
+                        NewRecommendationHeader(
+                            modifier = Modifier
+                                .padding(top = 40.dp),
+                            title = title,
+                            creator = creator,
+                            tags = tags,
+                            year = year,
+                            photoReference = currentUser.photoReference,
+                            nickname = currentUser.nickname,
+                            onTitleValueChange = onTitleValueChange,
+                            onCreatorValueChange = onCreatorValueChange,
+                            onTagsValueChange = onTagsValueChange,
+                            onYearValueChange = onYearValueChange
+                        )
+                    }
                 }
 
                 item {
-                    Description(
-                        modifier = Modifier.height(100.dp),
-                        description = "recommendation.description"
+                    NewRecommendationDescription(
+                        description = description,
+                        onDescriptionValueChange = onDescriptionValueChange
                     )
                 }
             }
@@ -120,13 +131,20 @@ fun NewRecommendationScreenContent(
 @Composable
 fun NewRecommendationScreenContentPreview() {
     NewRecommendationScreenContent(
+        currentUser = User(
+            photoReference = null,
+            nickname = "nickname"
+        ),
         title = "The White Lotus",
         type = "Series",
         creator = "Mike White",
-        tags = listOf("Comedy", "Drama"),
+        tags = "Comedy, Drama",
         year = "2021",
+        description = "description description ",
         onTitleValueChange = { },
         onCreatorValueChange = { },
-        onYearValueChange = { }
+        onTagsValueChange = { },
+        onYearValueChange = { },
+        onDescriptionValueChange = { }
     )
 }

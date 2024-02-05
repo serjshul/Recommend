@@ -13,8 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
@@ -27,12 +25,13 @@ fun NewRecommendationHeader(
     modifier: Modifier = Modifier,
     title: String,
     creator: String,
-    tags: List<String>,
+    tags: String,
     year: String,
     photoReference: StorageReference?,
     nickname: String?,
     onTitleValueChange: (String) -> Unit,
     onCreatorValueChange: (String) -> Unit,
+    onTagsValueChange: (String) -> Unit,
     onYearValueChange: (String) -> Unit
 ) {
     Column(
@@ -69,6 +68,7 @@ fun NewRecommendationHeader(
             tags = tags,
             year = year,
             onCreatorValueChange = onCreatorValueChange,
+            onTagsValueChange = onTagsValueChange,
             onYearValueChange = onYearValueChange
         )
     }
@@ -78,9 +78,10 @@ fun NewRecommendationHeader(
 fun NewRecommendationHeaderInfo(
     modifier: Modifier = Modifier,
     creator: String,
-    tags: List<String>,
+    tags: String,
     year: String,
     onCreatorValueChange: (String) -> Unit,
+    onTagsValueChange: (String) -> Unit,
     onYearValueChange: (String) -> Unit
 ) {
     Row(
@@ -107,16 +108,15 @@ fun NewRecommendationHeaderInfo(
             fontSize = 23.sp
         )
 
-        Text(
+        NewRecommendationInput(
+            text = tags,
+            placeholder = "Tags",
+            fontSize = 14.sp,
+            lineHeight = 1.2.em,
+            maxLines = 4,
             modifier = Modifier
                 .weight(1f),
-            text = tags.joinToString(),
-            overflow = TextOverflow.Ellipsis,
-            textAlign = TextAlign.Center,
-            color = Color.White,
-            lineHeight = 1.2.em,
-            fontSize = 14.sp,
-            maxLines = 4
+            onValueChange = onTagsValueChange,
         )
 
         Text(
@@ -131,6 +131,7 @@ fun NewRecommendationHeaderInfo(
             text = year,
             placeholder = "Year",
             fontSize = 14.sp,
+            maxLines = 1,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             modifier = Modifier
                 .weight(1f),
@@ -145,12 +146,13 @@ fun NewRecommendationHeaderPreview() {
     NewRecommendationHeader(
         title = "Title",
         creator = "Creator",
-        tags = listOf("tag", "tag", "tag", "tag", "tag", "tag", "tag", "tag", "tag", "tag", "tag", "tag"),
+        tags = "Tag, Tag, Tag, Tag, Tag",
         year = "2023",
         photoReference = null,
         nickname = "nickname",
         onTitleValueChange = { },
         onCreatorValueChange = { },
+        onTagsValueChange = { },
         onYearValueChange = { }
     )
 }

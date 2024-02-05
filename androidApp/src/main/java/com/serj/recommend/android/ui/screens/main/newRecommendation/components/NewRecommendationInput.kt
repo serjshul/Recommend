@@ -24,7 +24,8 @@ fun NewRecommendationInput(
     fontSize: TextUnit = 14.sp,
     fontWeight: FontWeight? = null,
     lineHeight: TextUnit = TextUnit.Unspecified,
-    maxLines: Int = 1,
+    textAlign: TextAlign = TextAlign.Center,
+    maxLines: Int = Int.MAX_VALUE,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     onValueChange: (String) -> Unit
 ) {
@@ -36,14 +37,14 @@ fun NewRecommendationInput(
                 text = placeholder,
                 style = TextStyle(
                     fontSize = fontSize,
-                    textAlign = TextAlign.Center
+                    textAlign = textAlign
                 ),
                 modifier = Modifier.fillMaxWidth()
             )
         },
         textStyle = TextStyle(
             fontSize = fontSize,
-            textAlign = TextAlign.Center,
+            textAlign = textAlign,
             fontWeight = fontWeight,
             lineHeight = lineHeight
         ),
@@ -77,6 +78,7 @@ fun OneLineInputPreview() {
     NewRecommendationInput(
         text = "The White Lotus",
         placeholder = "Title",
+        maxLines = 1,
         onValueChange = { }
     )
 }

@@ -1,9 +1,9 @@
 package com.serj.recommend.android.ui.screens.main.newRecommendation
 
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import com.serj.recommend.android.model.User
 import com.serj.recommend.android.services.AccountService
 import com.serj.recommend.android.services.LogService
 import com.serj.recommend.android.services.StorageService
@@ -18,15 +18,31 @@ class NewRecommendationViewModel @Inject constructor(
     private val accountService: AccountService
 ) : RecommendViewModel(logService) {
 
-    var title by mutableStateOf("")
+    var currentUser by mutableStateOf<User?>(null)
         private set
+
     var type by mutableStateOf("")
+        private set
+
+    var title by mutableStateOf("")
         private set
     var creator by mutableStateOf("")
         private set
+    var tags by mutableStateOf("")
+        private set
     var year by mutableStateOf("")
         private set
-    var tags = mutableStateListOf<String>()
+
+    var description by mutableStateOf("")
+        private set
+
+    init {
+        launchCatching {
+            accountService.currentUser.collect { user ->
+                currentUser = user
+            }
+        }
+    }
 
     fun onTitleValueChange(input: String) {
         title = input
@@ -36,8 +52,16 @@ class NewRecommendationViewModel @Inject constructor(
         creator = input
     }
 
+    fun onTagsValueChange(input: String) {
+        tags = input
+    }
+
     fun onYearValueChange(input: String) {
         year = input
+    }
+
+    fun onDescriptionValueChange(input: String) {
+        description = input
     }
 
 }
