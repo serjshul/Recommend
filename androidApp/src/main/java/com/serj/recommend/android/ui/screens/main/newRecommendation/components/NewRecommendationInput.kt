@@ -20,7 +20,9 @@ fun NewRecommendationInput(
     modifier: Modifier = Modifier,
     text: String,
     placeholder: String,
+    enabled: Boolean,
     textColor: Color = Color.White,
+    placeholderTextColor: Color = Color.White,
     fontSize: TextUnit = 14.sp,
     fontWeight: FontWeight? = null,
     lineHeight: TextUnit = TextUnit.Unspecified,
@@ -32,6 +34,7 @@ fun NewRecommendationInput(
     TextField(
         value = text,
         onValueChange = { onValueChange(it) },
+        enabled = enabled,
         placeholder = {
             Text(
                 text = placeholder,
@@ -60,10 +63,10 @@ fun NewRecommendationInput(
             unfocusedTextColor = textColor,
             disabledTextColor = textColor,
             errorTextColor = textColor,
-            focusedPlaceholderColor = Color.Gray,
-            unfocusedPlaceholderColor = Color.Gray,
-            disabledPlaceholderColor = Color.Gray,
-            errorCursorColor = Color.Gray,
+            focusedPlaceholderColor = placeholderTextColor,
+            unfocusedPlaceholderColor = placeholderTextColor,
+            disabledPlaceholderColor = placeholderTextColor,
+            errorCursorColor = placeholderTextColor,
             unfocusedIndicatorColor = Color.Transparent,
             focusedIndicatorColor = Color.Transparent,
             disabledIndicatorColor = Color.Transparent
@@ -77,6 +80,7 @@ fun NewRecommendationInput(
 fun OneLineInputPreview() {
     NewRecommendationInput(
         text = "The White Lotus",
+        enabled = true,
         placeholder = "Title",
         maxLines = 1,
         onValueChange = { }

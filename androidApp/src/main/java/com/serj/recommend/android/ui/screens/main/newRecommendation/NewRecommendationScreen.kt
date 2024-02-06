@@ -14,8 +14,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.serj.recommend.android.model.User
 import com.serj.recommend.android.ui.screens.common.recommendation.components.HeaderBackground
+import com.serj.recommend.android.ui.screens.main.newRecommendation.components.NewRecommendationAddParagraph
 import com.serj.recommend.android.ui.screens.main.newRecommendation.components.NewRecommendationDescription
 import com.serj.recommend.android.ui.screens.main.newRecommendation.components.NewRecommendationHeader
+import com.serj.recommend.android.ui.screens.main.newRecommendation.components.NewRecommendationQuote
 import com.serj.recommend.android.ui.screens.main.newRecommendation.components.NewRecommendationTopBar
 
 @Composable
@@ -30,11 +32,16 @@ fun NewRecommendationScreen(
         tags = viewModel.tags,
         year = viewModel.year,
         description = viewModel.description,
+        quote = viewModel.quote,
+        isQuoteEnabled = viewModel.isQuoteEnabled,
         onTitleValueChange = viewModel::onTitleValueChange,
         onCreatorValueChange = viewModel::onCreatorValueChange,
         onTagsValueChange = viewModel::onTagsValueChange,
         onYearValueChange = viewModel::onYearValueChange,
-        onDescriptionValueChange = viewModel::onDescriptionValueChange
+        onDescriptionValueChange = viewModel::onDescriptionValueChange,
+        onQuoteValueChange = viewModel::onQuoteValueChange,
+        enableQuote = viewModel::enableQuote,
+        disableQuote = viewModel::disableQuote
     )
 }
 
@@ -48,39 +55,44 @@ fun NewRecommendationScreenContent(
     tags: String,
     year: String,
     description: String,
+    quote: String,
+    isQuoteEnabled: Boolean,
     onTitleValueChange: (String) -> Unit,
     onCreatorValueChange: (String) -> Unit,
     onTagsValueChange: (String) -> Unit,
     onYearValueChange: (String) -> Unit,
-    onDescriptionValueChange: (String) -> Unit
+    onDescriptionValueChange: (String) -> Unit,
+    onQuoteValueChange: (String) -> Unit,
+    enableQuote: () -> Unit,
+    disableQuote: () -> Unit
 ) {
-    Scaffold(
-        topBar = {
-            NewRecommendationTopBar(isValid = false)
-        },
-        containerColor = Color.White,
-        modifier = modifier
-    ) {
-        Box(
-            modifier = Modifier
-                .padding(it)
-                .fillMaxSize()
+    if (currentUser != null) {
+        Scaffold(
+            topBar = {
+                NewRecommendationTopBar(isValid = false)
+            },
+            containerColor = Color.White,
+            modifier = modifier
         ) {
-            HeaderBackground(
+            Box(
                 modifier = Modifier
-                    .align(Alignment.TopCenter),
-                color = Color.Gray,
-                backgroundImageReference = null,
-                backgroundVideoReference = null
-            )
-
-            LazyColumn(
-                modifier = Modifier
+                    .padding(it)
                     .fillMaxSize()
-                    .align(Alignment.TopCenter)
             ) {
-                item {
-                    if (currentUser != null) {
+                HeaderBackground(
+                    modifier = Modifier
+                        .align(Alignment.TopCenter),
+                    color = Color.Gray,
+                    backgroundImageReference = null,
+                    backgroundVideoReference = null
+                )
+
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .align(Alignment.TopCenter)
+                ) {
+                    item {
                         NewRecommendationHeader(
                             modifier = Modifier
                                 .padding(top = 40.dp),
@@ -96,13 +108,27 @@ fun NewRecommendationScreenContent(
                             onYearValueChange = onYearValueChange
                         )
                     }
-                }
 
-                item {
-                    NewRecommendationDescription(
-                        description = description,
-                        onDescriptionValueChange = onDescriptionValueChange
-                    )
+                    item {
+                        NewRecommendationDescription(
+                            description = description,
+                            onDescriptionValueChange = onDescriptionValueChange
+                        )
+                    }
+
+                    item {
+                        NewRecommendationAddParagraph()
+                    }
+
+                    item {
+                        NewRecommendationQuote(
+                            quote = quote,
+                            enabled = isQuoteEnabled,
+                            onQuoteValueChange = onQuoteValueChange,
+                            enableQuote = enableQuote,
+                            disableQuote = disableQuote
+                        )
+                    }
                 }
             }
         }
@@ -135,16 +161,21 @@ fun NewRecommendationScreenContentPreview() {
             photoReference = null,
             nickname = "nickname"
         ),
-        title = "The White Lotus",
-        type = "Series",
-        creator = "Mike White",
-        tags = "Comedy, Drama",
-        year = "2021",
-        description = "description description ",
+        title = "",
+        type = "",
+        creator = "",
+        tags = "",
+        year = "",
+        description = "",
+        quote = "",
+        isQuoteEnabled = false,
         onTitleValueChange = { },
         onCreatorValueChange = { },
         onTagsValueChange = { },
         onYearValueChange = { },
-        onDescriptionValueChange = { }
+        onDescriptionValueChange = { },
+        onQuoteValueChange = { },
+        enableQuote = { },
+        disableQuote = { }
     )
 }

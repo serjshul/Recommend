@@ -36,6 +36,12 @@ class NewRecommendationViewModel @Inject constructor(
     var description by mutableStateOf("")
         private set
 
+    var quote by mutableStateOf("")
+        private set
+
+    var isQuoteEnabled by mutableStateOf(false)
+        private set
+
     init {
         launchCatching {
             accountService.currentUser.collect { user ->
@@ -62,6 +68,20 @@ class NewRecommendationViewModel @Inject constructor(
 
     fun onDescriptionValueChange(input: String) {
         description = input
+    }
+
+
+
+    fun onQuoteValueChange(input: String) {
+        quote = input
+    }
+
+    fun enableQuote() {
+        isQuoteEnabled = true
+    }
+
+    fun disableQuote() {
+        isQuoteEnabled = false
     }
 
 }

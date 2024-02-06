@@ -47,6 +47,7 @@ fun NewRecommendationHeader(
         NewRecommendationInput(
             text = title,
             placeholder = "Title",
+            enabled = true,
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             maxLines = 4,
@@ -92,6 +93,7 @@ fun NewRecommendationHeaderInfo(
         NewRecommendationInput(
             text = creator,
             placeholder = "Creator",
+            enabled = true,
             fontSize = 14.sp,
             lineHeight = 1.2.em,
             maxLines = 4,
@@ -111,6 +113,7 @@ fun NewRecommendationHeaderInfo(
         NewRecommendationInput(
             text = tags,
             placeholder = "Tags",
+            enabled = true,
             fontSize = 14.sp,
             lineHeight = 1.2.em,
             maxLines = 4,
@@ -130,6 +133,7 @@ fun NewRecommendationHeaderInfo(
         NewRecommendationInput(
             text = year,
             placeholder = "Year",
+            enabled = true,
             fontSize = 14.sp,
             maxLines = 1,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),

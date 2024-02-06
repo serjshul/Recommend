@@ -23,7 +23,9 @@ fun NewRecommendationDescription(
     NewRecommendationInput(
         text = description,
         placeholder = "Description...",
+        enabled = true,
         textColor = Color.Black,
+        placeholderTextColor = Color.Gray,
         fontSize = 14.sp,
         lineHeight = 1.2.em,
         textAlign = TextAlign.Start,

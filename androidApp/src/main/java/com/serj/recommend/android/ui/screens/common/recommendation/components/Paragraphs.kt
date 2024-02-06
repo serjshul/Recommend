@@ -58,7 +58,7 @@ fun Paragraph(
     imageReference: StorageReference?,
     videoReference: StorageReference?,
     text: String,
-    color: Color
+    color: Color = Color.Black
 ) {
     val paragraphTexts = text.toParagraphText()
 
