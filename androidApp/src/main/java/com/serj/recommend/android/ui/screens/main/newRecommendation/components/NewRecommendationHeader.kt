@@ -52,7 +52,6 @@ fun NewRecommendationHeader(
     onAddBackgroundImage: (Uri) -> Unit,
     onRemoveBackgroundImage: () -> Unit
 ) {
-    //val context = LocalContext.current
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->

@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.serj.recommend.android.model.User
+import com.serj.recommend.android.ui.screens.main.newRecommendation.components.NewRecommendationCover
 import com.serj.recommend.android.ui.screens.main.newRecommendation.components.NewRecommendationDescription
 import com.serj.recommend.android.ui.screens.main.newRecommendation.components.NewRecommendationHeader
 import com.serj.recommend.android.ui.screens.main.newRecommendation.components.NewRecommendationHeaderBackground
@@ -38,7 +39,9 @@ fun NewRecommendationScreen(
         isParagraphsEnabled = viewModel.isParagraphsEnabled,
         quote = viewModel.quote,
         isQuoteEnabled = viewModel.isQuoteEnabled,
+        coverType = viewModel.coverType,
         backgroundImageUri = viewModel.backgroundImageUri.value,
+        coverImageUri = viewModel.coverImageUri.value,
         onRecommendButtonCheck = viewModel::onRecommendButtonCheck,
         onTitleValueChange = viewModel::onTitleValueChange,
         onTypeValueChange = viewModel::onTypeValueChange,
@@ -54,8 +57,11 @@ fun NewRecommendationScreen(
         onQuoteValueChange = viewModel::onQuoteValueChange,
         enableQuote = viewModel::enableQuote,
         disableQuote = viewModel::disableQuote,
+        onCoverTypeValueChange = viewModel::onCoverTypeValueChange,
         onAddBackgroundImage = viewModel::onAddBackgroundImage,
-        onRemoveBackgroundImage = viewModel::onRemoveBackgroundImage
+        onRemoveBackgroundImage = viewModel::onRemoveBackgroundImage,
+        onAddCoverImage = viewModel::onAddCoverImage,
+        onRemoveCoverImage = viewModel::onRemoveCoverImage
     )
 }
 
@@ -74,7 +80,9 @@ fun NewRecommendationScreenContent(
     isParagraphsEnabled: List<Boolean>,
     quote: String,
     isQuoteEnabled: Boolean,
+    coverType: String,
     backgroundImageUri: Uri?,
+    coverImageUri: Uri?,
     onRecommendButtonCheck: (Context) -> Unit,
     onTitleValueChange: (String) -> Unit,
     onTypeValueChange: (String) -> Unit,
@@ -90,8 +98,11 @@ fun NewRecommendationScreenContent(
     onQuoteValueChange: (String) -> Unit,
     enableQuote: () -> Unit,
     disableQuote: () -> Unit,
+    onCoverTypeValueChange: (String) -> Unit,
     onAddBackgroundImage: (Uri) -> Unit,
-    onRemoveBackgroundImage: () -> Unit
+    onRemoveBackgroundImage: () -> Unit,
+    onAddCoverImage: (Uri) -> Unit,
+    onRemoveCoverImage: () -> Unit
 ) {
     if (currentUser != null) {
         Scaffold(
@@ -172,6 +183,16 @@ fun NewRecommendationScreenContent(
                             disableQuote = disableQuote
                         )
                     }
+
+                    item {
+                        NewRecommendationCover(
+                            coverType = coverType,
+                            coverImageUri = coverImageUri,
+                            onCoverTypeChange = onCoverTypeValueChange,
+                            onAddCoverImage = onAddCoverImage,
+                            onRemoveCoverImage = onRemoveCoverImage
+                        )
+                    }
                 }
             }
         }
@@ -197,7 +218,9 @@ fun NewRecommendationScreenContentPreview() {
         isParagraphsEnabled = listOf(),
         quote = "",
         isQuoteEnabled = false,
+        coverType = "",
         backgroundImageUri = null,
+        coverImageUri = null,
         onRecommendButtonCheck = { },
         onTitleValueChange = { },
         onTypeValueChange = { },
@@ -213,7 +236,10 @@ fun NewRecommendationScreenContentPreview() {
         onQuoteValueChange = { },
         enableQuote = { },
         disableQuote = { },
+        onCoverTypeValueChange = { },
         onAddBackgroundImage = { },
-        onRemoveBackgroundImage = { }
+        onRemoveBackgroundImage = { },
+        onAddCoverImage = { },
+        onRemoveCoverImage = { }
     )
 }

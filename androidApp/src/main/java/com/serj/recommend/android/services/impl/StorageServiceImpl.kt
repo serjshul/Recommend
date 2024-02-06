@@ -474,6 +474,49 @@ class StorageServiceImpl @Inject constructor(
         }
     }
 
+    override suspend fun uploadCoverImage(
+        recommendationId: String,
+        uri: Uri,
+        coverType: String,
+        context: Context
+    ) {
+        val coversUrl = hashMapOf<String, String>()
+
+        val storageRef = storage.reference
+        val backgroundImageRef = storageRef.child(
+            "recommendations/${recommendationId}/cover_$coverType.jpg"
+        )
+        val byteArray = context.contentResolver
+            .openInputStream(uri)
+            ?.use { it.readBytes() }
+        byteArray?.let {
+            backgroundImageRef
+                .putBytes(byteArray)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Log.d(TAG, "Well done")
+                        coversUrl[coverType] = task.result.storage.toString()
+                    } else
+                        Log.w(TAG, "Error in uploadImage")
+                }
+                .await()
+        }
+
+        if (coversUrl.isNotEmpty()) {
+            firestore
+                .collection(RECOMMENDATIONS_COLLECTION)
+                .document(recommendationId)
+                .update("coversUrl", coversUrl)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful)
+                        Log.d(TAG, "Recommendation successfully updated!")
+                    else
+                        Log.w(TAG, "Error updating recommendation document: $task")
+                }
+                .await()
+        }
+    }
+
     override fun getStorageReferenceFromUrl(
         url: String
     ): GetStorageReferenceFromUrlResponse {

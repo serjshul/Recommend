@@ -44,6 +44,8 @@ class NewRecommendationViewModel @Inject constructor(
         private set
     var quote by mutableStateOf("")
         private set
+    var coverType by mutableStateOf("")
+        private set
     var isQuoteEnabled by mutableStateOf(false)
         private set
     val paragraphs = mutableStateListOf(
@@ -53,9 +55,10 @@ class NewRecommendationViewModel @Inject constructor(
         )
     )
     val isParagraphsEnabled = mutableStateListOf(false)
-    val currentParagraphIndex = mutableIntStateOf(0)
+    private val currentParagraphIndex = mutableIntStateOf(0)
 
     var backgroundImageUri = mutableStateOf<Uri?>(null)
+    var coverImageUri = mutableStateOf<Uri?>(null)
 
     init {
         launchCatching {
@@ -140,6 +143,11 @@ class NewRecommendationViewModel @Inject constructor(
         isQuoteEnabled = false
     }
 
+    fun onCoverTypeValueChange(input: String) {
+        coverType = input
+        checkNewRecommendationValid()
+    }
+
     fun onRecommendButtonCheck(context: Context) {
         val currentParagraphs = arrayListOf<HashMap<String, String>>()
         for (i in paragraphs.indices) {
@@ -160,7 +168,7 @@ class NewRecommendationViewModel @Inject constructor(
             tags = tags.split(", "),
             year = year.toInt(),
             description = description,
-            quote = quote,
+            quote = if (quote != "") quote else null,
             paragraphs = currentParagraphs,
             color = "#100110",
             coverType = "horizontal",
@@ -179,6 +187,14 @@ class NewRecommendationViewModel @Inject constructor(
                         context = context
                     )
                 }
+                coverImageUri.value?.let {
+                    storageService.uploadCoverImage(
+                        recommendationId = recommendationIdResponse.data,
+                        uri = it,
+                        coverType = coverType,
+                        context = context
+                    )
+                }
             }
         }
     }
@@ -191,6 +207,16 @@ class NewRecommendationViewModel @Inject constructor(
         backgroundImageUri.value = null
     }
 
+    fun onAddCoverImage(uri: Uri) {
+        coverImageUri.value = uri
+        checkNewRecommendationValid()
+    }
+
+    fun onRemoveCoverImage() {
+        coverImageUri.value = null
+        checkNewRecommendationValid()
+    }
+
     private fun checkNewRecommendationValid() {
         var isParagraphsValid = true
 
@@ -200,7 +226,8 @@ class NewRecommendationViewModel @Inject constructor(
             }
         }
 
-        isNewRecommendationValid = type != "" && title != "" && creator != "" && tags != "" &&
-                year != "" && description != "" && isParagraphsValid
+        isNewRecommendationValid = type != "" && title != "" && creator != "" &&
+                tags != "" && year != "" && description != "" && coverType != "" &&
+                coverImageUri.value != null && isParagraphsValid
     }
 }

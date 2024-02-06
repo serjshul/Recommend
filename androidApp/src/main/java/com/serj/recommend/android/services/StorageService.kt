@@ -66,4 +66,8 @@ interface StorageService {
             DeleteCommentResponse
 
     suspend fun uploadBackgroundImage(recommendationId: String, uri: Uri, context: Context)
+
+    suspend fun uploadCoverImage(
+        recommendationId: String, uri: Uri, coverType: String, context: Context
+    )
 }
