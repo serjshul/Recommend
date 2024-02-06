@@ -1,5 +1,7 @@
 package com.serj.recommend.android.services
 
+import android.content.Context
+import android.net.Uri
 import com.google.firebase.storage.StorageReference
 import com.serj.recommend.android.model.Banner
 import com.serj.recommend.android.model.Category
@@ -23,6 +25,7 @@ typealias GetStorageReferenceFromUrlResponse = Response<StorageReference>
 typealias LikeOrUnlikeRecommendationResponse = Response<Boolean>
 typealias UploadCommentResponse = Response<Boolean>
 typealias DeleteCommentResponse = Response<Boolean>
+typealias UploadRecommendationResponse = Response<Boolean>
 
 interface StorageService {
 
@@ -52,10 +55,15 @@ interface StorageService {
     fun likeOrUnlikeRecommendation(isLiked: Boolean, uid: String, recommendationId: String):
             LikeOrUnlikeRecommendationResponse
 
+    fun uploadRecommendation(recommendation: Recommendation):
+            UploadRecommendationResponse
+
     fun uploadComment(recommendationId: String, userId: String, text: String):
             UploadCommentResponse
 
     fun deleteComment(recommendationId: String, userId: String, commentId: String,
                       commentOwnerId: String):
             DeleteCommentResponse
+
+    fun uploadImage(uri: Uri, context: Context)
 }

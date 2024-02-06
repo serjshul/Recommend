@@ -20,7 +20,8 @@ import com.serj.recommend.android.ui.styles.primary
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewRecommendationTopBar(
-    isValid: Boolean
+    isValid: Boolean,
+    onRecommendButtonCheck: () -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
@@ -40,7 +41,7 @@ fun NewRecommendationTopBar(
         },
         actions = {
             Button(
-                onClick = {  },
+                onClick = { onRecommendButtonCheck() },
                 enabled = isValid,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = primary,
@@ -63,6 +64,7 @@ fun NewRecommendationTopBar(
 @Composable
 fun NewRecommendationTopBarPreview() {
     NewRecommendationTopBar(
-        isValid = false
+        isValid = false,
+        onRecommendButtonCheck = { }
     )
 }

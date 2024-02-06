@@ -1,11 +1,14 @@
 package com.serj.recommend.android.ui.screens.main.newRecommendation
 
+import android.content.Context
+import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.User
 import com.serj.recommend.android.services.AccountService
 import com.serj.recommend.android.services.LogService
@@ -132,6 +135,42 @@ class NewRecommendationViewModel @Inject constructor(
     fun disableQuote() {
         quote = ""
         isQuoteEnabled = false
+    }
+
+    fun onRecommendButtonCheck() {
+        val currentParagraphs = arrayListOf<HashMap<String, String>>()
+        for (i in paragraphs.indices) {
+            if (isParagraphsEnabled[i]) {
+                currentParagraphs.add(
+                    hashMapOf(
+                        "title" to paragraphs[i]["title"]!!,
+                        "text" to paragraphs[i]["text"]!!
+                    )
+                )
+            }
+        }
+
+        val recommendation = Recommendation(
+            uid = currentUser?.uid,
+            title = title,
+            type = type,
+            creator = creator,
+            tags = tags.split(", "),
+            year = year.toInt(),
+            description = description,
+            quote = quote,
+            paragraphs = currentParagraphs,
+            color = "#100110",
+            coverType = "horizontal",
+        )
+
+        storageService.uploadRecommendation(
+            recommendation = recommendation
+        )
+    }
+
+    fun onUploadImage(uri: Uri, context: Context) {
+        storageService.uploadImage(uri, context)
     }
 
     private fun checkNewRecommendationValid() {

@@ -1,6 +1,8 @@
 package com.serj.recommend.android.services.impl
 
 import android.content.ContentValues.TAG
+import android.content.Context
+import android.net.Uri
 import android.util.Log
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -33,6 +35,7 @@ import com.serj.recommend.android.services.GetUserItemResponse
 import com.serj.recommend.android.services.LikeOrUnlikeRecommendationResponse
 import com.serj.recommend.android.services.StorageService
 import com.serj.recommend.android.services.UploadCommentResponse
+import com.serj.recommend.android.services.UploadRecommendationResponse
 import com.serj.recommend.android.services.model.Response.Failure
 import com.serj.recommend.android.services.model.Response.Success
 import com.serj.recommend.android.ui.components.media.BackgroundTypes
@@ -402,6 +405,52 @@ class StorageServiceImpl @Inject constructor(
             }
         } catch (e: Exception) {
             Failure(e)
+        }
+    }
+
+    override fun uploadRecommendation(
+        recommendation: Recommendation
+    ): UploadRecommendationResponse {
+        return try {
+            firestore
+                .collection(RECOMMENDATIONS_COLLECTION)
+                .add(recommendation)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful)
+                        Log.d(TAG, "Recommendation successfully uploaded!")
+                    else
+                        Log.w(TAG, "Error uploading recommendation document: $task")
+                }
+
+            Success(true)
+        } catch (e: Exception) {
+            Failure(e)
+        }
+    }
+
+    override fun uploadImage(
+        uri: Uri,
+        context: Context
+    ) {
+        // Create a storage reference from our app
+        val storageRef = storage.reference
+        val mountainsRef = storageRef.child("test.jpg")
+        val mountainImagesRef = storageRef.child("images/test.jpg")
+
+        val byteArray = context.contentResolver
+            .openInputStream(uri)
+            ?.use { it.readBytes() }
+
+        byteArray?.let {
+            val uploadTask = mountainsRef.putBytes(byteArray)
+            uploadTask.addOnFailureListener {
+                // Handle unsuccessful uploads
+                Log.v(TAG, "Error in uploadImage")
+            }.addOnSuccessListener { taskSnapshot ->
+                // taskSnapshot.metadata contains file metadata such as size, content-type, etc.
+                // ...
+                Log.v(TAG, "Well done")
+            }
         }
     }
 
