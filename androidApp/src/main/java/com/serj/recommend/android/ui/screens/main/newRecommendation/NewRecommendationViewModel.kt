@@ -13,6 +13,7 @@ import com.serj.recommend.android.model.User
 import com.serj.recommend.android.services.AccountService
 import com.serj.recommend.android.services.LogService
 import com.serj.recommend.android.services.StorageService
+import com.serj.recommend.android.services.model.Response
 import com.serj.recommend.android.ui.screens.RecommendViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -53,6 +54,8 @@ class NewRecommendationViewModel @Inject constructor(
     )
     val isParagraphsEnabled = mutableStateListOf(false)
     val currentParagraphIndex = mutableIntStateOf(0)
+
+    var backgroundImageUri = mutableStateOf<Uri?>(null)
 
     init {
         launchCatching {
@@ -137,7 +140,7 @@ class NewRecommendationViewModel @Inject constructor(
         isQuoteEnabled = false
     }
 
-    fun onRecommendButtonCheck() {
+    fun onRecommendButtonCheck(context: Context) {
         val currentParagraphs = arrayListOf<HashMap<String, String>>()
         for (i in paragraphs.indices) {
             if (isParagraphsEnabled[i]) {
@@ -149,7 +152,6 @@ class NewRecommendationViewModel @Inject constructor(
                 )
             }
         }
-
         val recommendation = Recommendation(
             uid = currentUser?.uid,
             title = title,
@@ -164,13 +166,29 @@ class NewRecommendationViewModel @Inject constructor(
             coverType = "horizontal",
         )
 
-        storageService.uploadRecommendation(
-            recommendation = recommendation
-        )
+        launchCatching {
+            val recommendationIdResponse = storageService.uploadRecommendation(
+                recommendation = recommendation
+            )
+            if (recommendationIdResponse is Response.Success &&
+                recommendationIdResponse.data != null) {
+                backgroundImageUri.value?.let {
+                    storageService.uploadBackgroundImage(
+                        recommendationId = recommendationIdResponse.data,
+                        uri = it,
+                        context = context
+                    )
+                }
+            }
+        }
     }
 
-    fun onUploadImage(uri: Uri, context: Context) {
-        storageService.uploadImage(uri, context)
+    fun onAddBackgroundImage(uri: Uri) {
+        backgroundImageUri.value = uri
+    }
+
+    fun onRemoveBackgroundImage() {
+        backgroundImageUri.value = null
     }
 
     private fun checkNewRecommendationValid() {

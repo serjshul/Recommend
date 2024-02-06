@@ -1,5 +1,6 @@
 package com.serj.recommend.android.ui.screens.main.newRecommendation.components
 
+import android.content.Context
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -11,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -21,9 +23,10 @@ import com.serj.recommend.android.ui.styles.primary
 @Composable
 fun NewRecommendationTopBar(
     isValid: Boolean,
-    onRecommendButtonCheck: () -> Unit,
+    onRecommendButtonCheck: (Context) -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
+    val context = LocalContext.current
 
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
@@ -41,7 +44,7 @@ fun NewRecommendationTopBar(
         },
         actions = {
             Button(
-                onClick = { onRecommendButtonCheck() },
+                onClick = { onRecommendButtonCheck(context) },
                 enabled = isValid,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = primary,

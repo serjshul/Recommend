@@ -408,49 +408,69 @@ class StorageServiceImpl @Inject constructor(
         }
     }
 
-    override fun uploadRecommendation(
+    override suspend fun uploadRecommendation(
         recommendation: Recommendation
     ): UploadRecommendationResponse {
         return try {
+            var result = ""
+
             firestore
                 .collection(RECOMMENDATIONS_COLLECTION)
                 .add(recommendation)
                 .addOnCompleteListener { task ->
+                    result = task.result.id
                     if (task.isSuccessful)
                         Log.d(TAG, "Recommendation successfully uploaded!")
                     else
                         Log.w(TAG, "Error uploading recommendation document: $task")
                 }
+                .await()
 
-            Success(true)
+            Success(result)
         } catch (e: Exception) {
             Failure(e)
         }
     }
 
-    override fun uploadImage(
+    override suspend fun uploadBackgroundImage(
+        recommendationId: String,
         uri: Uri,
         context: Context
     ) {
-        // Create a storage reference from our app
-        val storageRef = storage.reference
-        val mountainsRef = storageRef.child("test.jpg")
-        val mountainImagesRef = storageRef.child("images/test.jpg")
+        val backgroundUrl = hashMapOf<String, String>()
 
+        val storageRef = storage.reference
+        val backgroundImageRef = storageRef.child(
+            "recommendations/${recommendationId}/background.jpg"
+        )
         val byteArray = context.contentResolver
             .openInputStream(uri)
             ?.use { it.readBytes() }
-
         byteArray?.let {
-            val uploadTask = mountainsRef.putBytes(byteArray)
-            uploadTask.addOnFailureListener {
-                // Handle unsuccessful uploads
-                Log.v(TAG, "Error in uploadImage")
-            }.addOnSuccessListener { taskSnapshot ->
-                // taskSnapshot.metadata contains file metadata such as size, content-type, etc.
-                // ...
-                Log.v(TAG, "Well done")
-            }
+            backgroundImageRef
+                .putBytes(byteArray)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Log.d(TAG, "Well done")
+                        backgroundUrl["image"] = task.result.storage.toString()
+                    } else
+                        Log.w(TAG, "Error in uploadImage")
+                }
+                .await()
+        }
+
+        if (backgroundUrl.isNotEmpty()) {
+            firestore
+                .collection(RECOMMENDATIONS_COLLECTION)
+                .document(recommendationId)
+                .update("backgroundUrl", backgroundUrl)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful)
+                        Log.d(TAG, "Recommendation successfully updated!")
+                    else
+                        Log.w(TAG, "Error updating recommendation document: $task")
+                }
+                .await()
         }
     }
 

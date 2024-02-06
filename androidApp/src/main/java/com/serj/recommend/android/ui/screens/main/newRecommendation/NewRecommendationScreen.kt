@@ -1,36 +1,22 @@
 package com.serj.recommend.android.ui.screens.main.newRecommendation
 
-import android.content.ContentValues.TAG
 import android.content.Context
 import android.net.Uri
-import android.util.Log
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideImage
 import com.serj.recommend.android.model.User
-import com.serj.recommend.android.ui.screens.common.recommendation.components.HeaderBackground
 import com.serj.recommend.android.ui.screens.main.newRecommendation.components.NewRecommendationDescription
 import com.serj.recommend.android.ui.screens.main.newRecommendation.components.NewRecommendationHeader
+import com.serj.recommend.android.ui.screens.main.newRecommendation.components.NewRecommendationHeaderBackground
 import com.serj.recommend.android.ui.screens.main.newRecommendation.components.NewRecommendationParagraph
 import com.serj.recommend.android.ui.screens.main.newRecommendation.components.NewRecommendationQuote
 import com.serj.recommend.android.ui.screens.main.newRecommendation.components.NewRecommendationTopBar
@@ -52,6 +38,7 @@ fun NewRecommendationScreen(
         isParagraphsEnabled = viewModel.isParagraphsEnabled,
         quote = viewModel.quote,
         isQuoteEnabled = viewModel.isQuoteEnabled,
+        backgroundImageUri = viewModel.backgroundImageUri.value,
         onRecommendButtonCheck = viewModel::onRecommendButtonCheck,
         onTitleValueChange = viewModel::onTitleValueChange,
         onTypeValueChange = viewModel::onTypeValueChange,
@@ -67,11 +54,11 @@ fun NewRecommendationScreen(
         onQuoteValueChange = viewModel::onQuoteValueChange,
         enableQuote = viewModel::enableQuote,
         disableQuote = viewModel::disableQuote,
-        onUploadImage = viewModel::onUploadImage
+        onAddBackgroundImage = viewModel::onAddBackgroundImage,
+        onRemoveBackgroundImage = viewModel::onRemoveBackgroundImage
     )
 }
 
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun NewRecommendationScreenContent(
     modifier: Modifier = Modifier,
@@ -87,7 +74,8 @@ fun NewRecommendationScreenContent(
     isParagraphsEnabled: List<Boolean>,
     quote: String,
     isQuoteEnabled: Boolean,
-    onRecommendButtonCheck: () -> Unit,
+    backgroundImageUri: Uri?,
+    onRecommendButtonCheck: (Context) -> Unit,
     onTitleValueChange: (String) -> Unit,
     onTypeValueChange: (String) -> Unit,
     onCreatorValueChange: (String) -> Unit,
@@ -102,20 +90,9 @@ fun NewRecommendationScreenContent(
     onQuoteValueChange: (String) -> Unit,
     enableQuote: () -> Unit,
     disableQuote: () -> Unit,
-    onUploadImage: (Uri, Context) -> Unit
+    onAddBackgroundImage: (Uri) -> Unit,
+    onRemoveBackgroundImage: () -> Unit
 ) {
-    var imageUri by remember { mutableStateOf<Uri?>(null) }
-
-    val context = LocalContext.current
-
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
-        imageUri = uri
-        Log.v(TAG, uri.toString())
-        onUploadImage(imageUri!!, context)
-    }
-
     if (currentUser != null) {
         Scaffold(
             topBar = {
@@ -132,12 +109,10 @@ fun NewRecommendationScreenContent(
                     .padding(it)
                     .fillMaxSize()
             ) {
-                HeaderBackground(
+                NewRecommendationHeaderBackground(
                     modifier = Modifier
                         .align(Alignment.TopCenter),
-                    color = Color.Gray,
-                    backgroundImageReference = null,
-                    backgroundVideoReference = null
+                    backgroundImageUri = backgroundImageUri
                 )
 
                 LazyColumn(
@@ -152,13 +127,16 @@ fun NewRecommendationScreenContent(
                             creator = creator,
                             tags = tags,
                             year = year,
+                            backgroundImageUri = backgroundImageUri,
                             photoReference = currentUser.photoReference,
                             nickname = currentUser.nickname,
                             onTitleValueChange = onTitleValueChange,
                             onTypeValueChange = onTypeValueChange,
                             onCreatorValueChange = onCreatorValueChange,
                             onTagsValueChange = onTagsValueChange,
-                            onYearValueChange = onYearValueChange
+                            onYearValueChange = onYearValueChange,
+                            onAddBackgroundImage = onAddBackgroundImage,
+                            onRemoveBackgroundImage = onRemoveBackgroundImage
                         )
                     }
 
@@ -194,21 +172,6 @@ fun NewRecommendationScreenContent(
                             disableQuote = disableQuote
                         )
                     }
-
-                    item {
-                        Column {
-                            Button(
-                                onClick = { launcher.launch("image/*") }
-                            ) {
-                                Text(text = "select image")
-                            }
-
-                            GlideImage(
-                                model = imageUri,
-                                contentDescription = "test"
-                            )
-                        }
-                    }
                 }
             }
         }
@@ -234,6 +197,7 @@ fun NewRecommendationScreenContentPreview() {
         isParagraphsEnabled = listOf(),
         quote = "",
         isQuoteEnabled = false,
+        backgroundImageUri = null,
         onRecommendButtonCheck = { },
         onTitleValueChange = { },
         onTypeValueChange = { },
@@ -249,6 +213,7 @@ fun NewRecommendationScreenContentPreview() {
         onQuoteValueChange = { },
         enableQuote = { },
         disableQuote = { },
-        onUploadImage = { _: Uri, _: Context -> }
+        onAddBackgroundImage = { },
+        onRemoveBackgroundImage = { }
     )
 }
