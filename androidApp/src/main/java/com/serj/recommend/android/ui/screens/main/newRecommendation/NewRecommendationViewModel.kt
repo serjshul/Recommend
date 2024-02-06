@@ -21,12 +21,13 @@ class NewRecommendationViewModel @Inject constructor(
     private val accountService: AccountService
 ) : RecommendViewModel(logService) {
 
+    var isNewRecommendationValid by mutableStateOf(false)
+        private set
     var currentUser by mutableStateOf<User?>(null)
         private set
 
     var type by mutableStateOf("")
         private set
-
     var title by mutableStateOf("")
         private set
     var creator by mutableStateOf("")
@@ -35,16 +36,12 @@ class NewRecommendationViewModel @Inject constructor(
         private set
     var year by mutableStateOf("")
         private set
-
     var description by mutableStateOf("")
         private set
-
     var quote by mutableStateOf("")
         private set
-
     var isQuoteEnabled by mutableStateOf(false)
         private set
-
     val paragraphs = mutableStateListOf(
         mutableStateMapOf(
             "title" to "",
@@ -62,35 +59,34 @@ class NewRecommendationViewModel @Inject constructor(
         }
     }
 
-    /*
-    fun isNewRecommendationValid(): Boolean {
-        return (type != "" && title != "" && creator != "" && tags != null &&)
-    }
-
-     */
-
     fun onTitleValueChange(input: String) {
         title = input
+        checkNewRecommendationValid()
     }
 
     fun onTypeValueChange(input: String) {
         type = input
+        checkNewRecommendationValid()
     }
 
     fun onCreatorValueChange(input: String) {
         creator = input
+        checkNewRecommendationValid()
     }
 
     fun onTagsValueChange(input: String) {
         tags = input
+        checkNewRecommendationValid()
     }
 
     fun onYearValueChange(input: String) {
         year = input
+        checkNewRecommendationValid()
     }
 
     fun onDescriptionValueChange(input: String) {
         description = input
+        checkNewRecommendationValid()
     }
 
     fun enableParagraph(index: Int) {
@@ -102,23 +98,27 @@ class NewRecommendationViewModel @Inject constructor(
             )
         )
         isParagraphsEnabled.add(false)
+        checkNewRecommendationValid()
     }
 
     fun disableParagraph(index: Int) {
         isParagraphsEnabled.removeAt(index)
         paragraphs.removeAt(index)
+        checkNewRecommendationValid()
     }
 
-    fun changeCurrentParagraph(index: Int) {
+    fun changeCurrentParagraphIndex(index: Int) {
         currentParagraphIndex.intValue = index
     }
 
     fun onParagraphTitleValueChange(input: String) {
         paragraphs[currentParagraphIndex.intValue]["title"] = input
+        checkNewRecommendationValid()
     }
 
     fun onParagraphTextValueChange(input: String) {
         paragraphs[currentParagraphIndex.intValue]["text"] = input
+        checkNewRecommendationValid()
     }
 
     fun onQuoteValueChange(input: String) {
@@ -134,4 +134,16 @@ class NewRecommendationViewModel @Inject constructor(
         isQuoteEnabled = false
     }
 
+    private fun checkNewRecommendationValid() {
+        var isParagraphsValid = true
+
+        for (i in paragraphs.indices) {
+            if (isParagraphsEnabled[i] && (paragraphs[i]["title"] == "" || paragraphs[i]["text"] == "")) {
+                isParagraphsValid = false
+            }
+        }
+
+        isNewRecommendationValid = type != "" && title != "" && creator != "" && tags != "" &&
+                year != "" && description != "" && isParagraphsValid
+    }
 }

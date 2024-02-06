@@ -41,6 +41,7 @@ fun NewRecommendationTopBar(
         actions = {
             Button(
                 onClick = {  },
+                enabled = isValid,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = primary,
                     contentColor = Color.White

@@ -25,6 +25,7 @@ fun NewRecommendationScreen(
 ) {
     NewRecommendationScreenContent(
         currentUser = viewModel.currentUser,
+        isNewRecommendationValid = viewModel.isNewRecommendationValid,
         title = viewModel.title,
         type = viewModel.type,
         creator = viewModel.creator,
@@ -43,7 +44,7 @@ fun NewRecommendationScreen(
         onDescriptionValueChange = viewModel::onDescriptionValueChange,
         enableParagraph = viewModel::enableParagraph,
         disableParagraph = viewModel::disableParagraph,
-        changeCurrentParagraph = viewModel::changeCurrentParagraph,
+        changeCurrentParagraph = viewModel::changeCurrentParagraphIndex,
         onParagraphTitleValueChange = viewModel::onParagraphTitleValueChange,
         onParagraphTextValueChange = viewModel::onParagraphTextValueChange,
         onQuoteValueChange = viewModel::onQuoteValueChange,
@@ -56,6 +57,7 @@ fun NewRecommendationScreen(
 fun NewRecommendationScreenContent(
     modifier: Modifier = Modifier,
     currentUser: User?,
+    isNewRecommendationValid: Boolean,
     title: String,
     type: String,
     creator: String,
@@ -84,7 +86,7 @@ fun NewRecommendationScreenContent(
     if (currentUser != null) {
         Scaffold(
             topBar = {
-                NewRecommendationTopBar(isValid = false)
+                NewRecommendationTopBar(isValid = isNewRecommendationValid)
             },
             containerColor = Color.White,
             modifier = modifier
@@ -188,6 +190,7 @@ fun NewRecommendationScreenContentPreview() {
             photoReference = null,
             nickname = "nickname"
         ),
+        isNewRecommendationValid = false,
         title = "",
         type = "",
         creator = "",
@@ -211,6 +214,6 @@ fun NewRecommendationScreenContentPreview() {
         onParagraphTextValueChange = { },
         onQuoteValueChange = { },
         enableQuote = { },
-        disableQuote = { },
+        disableQuote = { }
     )
 }
