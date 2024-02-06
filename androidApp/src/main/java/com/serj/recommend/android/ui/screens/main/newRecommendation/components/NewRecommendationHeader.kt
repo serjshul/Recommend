@@ -24,18 +24,20 @@ import com.serj.recommend.android.ui.screens.common.recommendation.components.Us
 fun NewRecommendationHeader(
     modifier: Modifier = Modifier,
     title: String,
+    type: String,
     creator: String,
     tags: String,
     year: String,
     photoReference: StorageReference?,
     nickname: String?,
     onTitleValueChange: (String) -> Unit,
+    onTypeValueChange: (String) -> Unit,
     onCreatorValueChange: (String) -> Unit,
     onTagsValueChange: (String) -> Unit,
     onYearValueChange: (String) -> Unit
 ) {
     Column(
-        modifier = modifier
+        modifier = modifier.padding(top = 40.dp)
     ) {
         if (nickname != null) {
             UserInfo(
@@ -55,10 +57,21 @@ fun NewRecommendationHeader(
                 .padding(
                     start = 15.dp,
                     end = 15.dp,
-                    top = if (nickname != null) 190.dp else 246.dp
+                    top = if (nickname != null) 130.dp else 186.dp
                 )
                 .align(Alignment.CenterHorizontally),
             onValueChange = onTitleValueChange
+        )
+
+        NewRecommendationInput(
+            text = type,
+            placeholder = "Type",
+            enabled = true,
+            fontSize = 14.sp,
+            lineHeight = 1.2.em,
+            maxLines = 4,
+            modifier = Modifier,
+            onValueChange = onTypeValueChange,
         )
 
         NewRecommendationHeaderInfo(
@@ -149,12 +162,14 @@ fun NewRecommendationHeaderInfo(
 fun NewRecommendationHeaderPreview() {
     NewRecommendationHeader(
         title = "Title",
+        type = "Type",
         creator = "Creator",
         tags = "Tag, Tag, Tag, Tag, Tag",
         year = "2023",
         photoReference = null,
         nickname = "nickname",
         onTitleValueChange = { },
+        onTypeValueChange = { },
         onCreatorValueChange = { },
         onTagsValueChange = { },
         onYearValueChange = { }

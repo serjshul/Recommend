@@ -10,13 +10,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.serj.recommend.android.model.User
 import com.serj.recommend.android.ui.screens.common.recommendation.components.HeaderBackground
-import com.serj.recommend.android.ui.screens.main.newRecommendation.components.NewRecommendationAddParagraph
 import com.serj.recommend.android.ui.screens.main.newRecommendation.components.NewRecommendationDescription
 import com.serj.recommend.android.ui.screens.main.newRecommendation.components.NewRecommendationHeader
+import com.serj.recommend.android.ui.screens.main.newRecommendation.components.NewRecommendationParagraph
 import com.serj.recommend.android.ui.screens.main.newRecommendation.components.NewRecommendationQuote
 import com.serj.recommend.android.ui.screens.main.newRecommendation.components.NewRecommendationTopBar
 
@@ -32,13 +31,21 @@ fun NewRecommendationScreen(
         tags = viewModel.tags,
         year = viewModel.year,
         description = viewModel.description,
+        paragraphs = viewModel.paragraphs,
+        isParagraphsEnabled = viewModel.isParagraphsEnabled,
         quote = viewModel.quote,
         isQuoteEnabled = viewModel.isQuoteEnabled,
         onTitleValueChange = viewModel::onTitleValueChange,
+        onTypeValueChange = viewModel::onTypeValueChange,
         onCreatorValueChange = viewModel::onCreatorValueChange,
         onTagsValueChange = viewModel::onTagsValueChange,
         onYearValueChange = viewModel::onYearValueChange,
         onDescriptionValueChange = viewModel::onDescriptionValueChange,
+        enableParagraph = viewModel::enableParagraph,
+        disableParagraph = viewModel::disableParagraph,
+        changeCurrentParagraph = viewModel::changeCurrentParagraph,
+        onParagraphTitleValueChange = viewModel::onParagraphTitleValueChange,
+        onParagraphTextValueChange = viewModel::onParagraphTextValueChange,
         onQuoteValueChange = viewModel::onQuoteValueChange,
         enableQuote = viewModel::enableQuote,
         disableQuote = viewModel::disableQuote
@@ -55,13 +62,21 @@ fun NewRecommendationScreenContent(
     tags: String,
     year: String,
     description: String,
+    paragraphs: List<Map<String, String>>,
+    isParagraphsEnabled: List<Boolean>,
     quote: String,
     isQuoteEnabled: Boolean,
     onTitleValueChange: (String) -> Unit,
+    onTypeValueChange: (String) -> Unit,
     onCreatorValueChange: (String) -> Unit,
     onTagsValueChange: (String) -> Unit,
     onYearValueChange: (String) -> Unit,
     onDescriptionValueChange: (String) -> Unit,
+    enableParagraph: (Int) -> Unit,
+    disableParagraph: (Int) -> Unit,
+    changeCurrentParagraph: (Int) -> Unit,
+    onParagraphTitleValueChange: (String) -> Unit,
+    onParagraphTextValueChange: (String) -> Unit,
     onQuoteValueChange: (String) -> Unit,
     enableQuote: () -> Unit,
     disableQuote: () -> Unit
@@ -94,15 +109,15 @@ fun NewRecommendationScreenContent(
                 ) {
                     item {
                         NewRecommendationHeader(
-                            modifier = Modifier
-                                .padding(top = 40.dp),
                             title = title,
+                            type = type,
                             creator = creator,
                             tags = tags,
                             year = year,
                             photoReference = currentUser.photoReference,
                             nickname = currentUser.nickname,
                             onTitleValueChange = onTitleValueChange,
+                            onTypeValueChange = onTypeValueChange,
                             onCreatorValueChange = onCreatorValueChange,
                             onTagsValueChange = onTagsValueChange,
                             onYearValueChange = onYearValueChange
@@ -116,8 +131,20 @@ fun NewRecommendationScreenContent(
                         )
                     }
 
-                    item {
-                        NewRecommendationAddParagraph()
+                    items(paragraphs.size) {index ->
+                        NewRecommendationParagraph(
+                            index = index,
+                            enabled = isParagraphsEnabled[index],
+                            title = paragraphs[index]["title"]!!,
+                            //imageReference = null,
+                            //videoReference = null,
+                            text = paragraphs[index]["text"]!!,
+                            enableParagraph = enableParagraph,
+                            disableParagraph = disableParagraph,
+                            changeCurrentParagraph = changeCurrentParagraph,
+                            onTitleValueChange = onParagraphTitleValueChange,
+                            onTextValueChange = onParagraphTextValueChange
+                        )
                     }
 
                     item {
@@ -167,15 +194,23 @@ fun NewRecommendationScreenContentPreview() {
         tags = "",
         year = "",
         description = "",
+        paragraphs = listOf(),
+        isParagraphsEnabled = listOf(),
         quote = "",
         isQuoteEnabled = false,
         onTitleValueChange = { },
+        onTypeValueChange = { },
         onCreatorValueChange = { },
         onTagsValueChange = { },
         onYearValueChange = { },
         onDescriptionValueChange = { },
+        enableParagraph = { },
+        disableParagraph = { },
+        changeCurrentParagraph = { },
+        onParagraphTitleValueChange = { },
+        onParagraphTextValueChange = { },
         onQuoteValueChange = { },
         enableQuote = { },
-        disableQuote = { }
+        disableQuote = { },
     )
 }

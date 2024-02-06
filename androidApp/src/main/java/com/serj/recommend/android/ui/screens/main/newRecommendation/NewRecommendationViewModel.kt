@@ -1,6 +1,9 @@
 package com.serj.recommend.android.ui.screens.main.newRecommendation
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.serj.recommend.android.model.User
@@ -42,6 +45,15 @@ class NewRecommendationViewModel @Inject constructor(
     var isQuoteEnabled by mutableStateOf(false)
         private set
 
+    val paragraphs = mutableStateListOf(
+        mutableStateMapOf(
+            "title" to "",
+            "text" to ""
+        )
+    )
+    val isParagraphsEnabled = mutableStateListOf(false)
+    val currentParagraphIndex = mutableIntStateOf(0)
+
     init {
         launchCatching {
             accountService.currentUser.collect { user ->
@@ -50,8 +62,19 @@ class NewRecommendationViewModel @Inject constructor(
         }
     }
 
+    /*
+    fun isNewRecommendationValid(): Boolean {
+        return (type != "" && title != "" && creator != "" && tags != null &&)
+    }
+
+     */
+
     fun onTitleValueChange(input: String) {
         title = input
+    }
+
+    fun onTypeValueChange(input: String) {
+        type = input
     }
 
     fun onCreatorValueChange(input: String) {
@@ -70,7 +93,33 @@ class NewRecommendationViewModel @Inject constructor(
         description = input
     }
 
+    fun enableParagraph(index: Int) {
+        isParagraphsEnabled[index] = true
+        paragraphs.add(
+            mutableStateMapOf(
+                "title" to "",
+                "text" to ""
+            )
+        )
+        isParagraphsEnabled.add(false)
+    }
 
+    fun disableParagraph(index: Int) {
+        isParagraphsEnabled.removeAt(index)
+        paragraphs.removeAt(index)
+    }
+
+    fun changeCurrentParagraph(index: Int) {
+        currentParagraphIndex.intValue = index
+    }
+
+    fun onParagraphTitleValueChange(input: String) {
+        paragraphs[currentParagraphIndex.intValue]["title"] = input
+    }
+
+    fun onParagraphTextValueChange(input: String) {
+        paragraphs[currentParagraphIndex.intValue]["text"] = input
+    }
 
     fun onQuoteValueChange(input: String) {
         quote = input
@@ -81,6 +130,7 @@ class NewRecommendationViewModel @Inject constructor(
     }
 
     fun disableQuote() {
+        quote = ""
         isQuoteEnabled = false
     }
 
