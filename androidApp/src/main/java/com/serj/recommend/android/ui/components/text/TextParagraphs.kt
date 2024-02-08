@@ -29,7 +29,7 @@ fun TextParagraphs(
                 text = paragraphTexts[i],
                 color = Color.Black,
                 fontSize = 14.sp,
-                lineHeight = 1.35.em
+                lineHeight = 1.4.em
             )
         }
     }

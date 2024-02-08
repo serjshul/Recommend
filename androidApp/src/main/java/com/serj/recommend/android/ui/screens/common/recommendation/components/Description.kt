@@ -33,10 +33,10 @@ fun Description(
             )
             .background(Color.White)
             .padding(
-                start = 10.dp,
+                start = 15.dp,
                 top = 15.dp,
-                end = 10.dp,
-                bottom = 7.5.dp
+                end = 15.dp,
+                bottom = 12.5.dp
             ),
         paragraphTexts = paragraphs
     )

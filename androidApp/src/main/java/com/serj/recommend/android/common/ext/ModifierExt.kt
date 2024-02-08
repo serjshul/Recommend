@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 
 fun Modifier.textInterval(): Modifier {
     return this
-        .padding(bottom = 6.dp)
+        .padding(bottom = 20.dp)
 }
 
 fun Modifier.textShape(): Modifier {

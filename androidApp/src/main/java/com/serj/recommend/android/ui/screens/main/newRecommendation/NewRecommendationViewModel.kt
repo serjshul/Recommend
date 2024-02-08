@@ -171,7 +171,7 @@ class NewRecommendationViewModel @Inject constructor(
             quote = if (quote != "") quote else null,
             paragraphs = currentParagraphs,
             color = "#100110",
-            coverType = "horizontal",
+            coverType = coverType,
         )
 
         launchCatching {
@@ -196,6 +196,29 @@ class NewRecommendationViewModel @Inject constructor(
                     )
                 }
             }
+
+            isNewRecommendationValid = false
+            type = ""
+            title = ""
+            creator = ""
+            tags = ""
+            year = ""
+            description = ""
+            quote = ""
+            coverType = ""
+            isQuoteEnabled = false
+            paragraphs.clear()
+            paragraphs.add(
+                mutableStateMapOf(
+                    "title" to "",
+                    "text" to ""
+                )
+            )
+            isParagraphsEnabled.clear()
+            isParagraphsEnabled.add(false)
+            currentParagraphIndex.intValue = 0
+            backgroundImageUri.value = null
+            coverImageUri.value = null
         }
     }
 
