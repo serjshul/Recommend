@@ -51,7 +51,7 @@ fun HorizontalItemTransparent(
             CustomGlideImage(
                 modifier = Modifier
                     .padding(bottom = 2.dp)
-                    .height(if (isOnPager) 230.dp else 170.dp)
+                    .height(if (isOnPager) 210.dp else 170.dp)
                     .fillMaxWidth()
                     .recommendationCoverShape()
                     .clickable {

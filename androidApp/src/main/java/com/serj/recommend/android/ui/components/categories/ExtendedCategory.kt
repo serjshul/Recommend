@@ -89,7 +89,7 @@ fun ExtendedCategory(
             Text(
                 modifier = Modifier
                     .screenPaddingsInner()
-                    .padding(top = 10.dp, bottom = 10.dp)
+                    .padding(start = 4.dp, top = 10.dp, bottom = 10.dp)
                     .align(Alignment.TopStart)
                     .clickable { onCategoryClick(openScreen, category.id) },
                 text = category.title,

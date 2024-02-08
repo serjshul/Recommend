@@ -25,7 +25,7 @@ fun Modifier.textShape(): Modifier {
 
 fun Modifier.itemsInterval(): Modifier {
     return this
-        .padding(bottom = 20.dp)
+        .padding(bottom = 15.dp)
 }
 
 fun Modifier.recommendationHeaderShape(): Modifier {
@@ -100,7 +100,7 @@ fun Modifier.extendedCategoryBackgroundShape(): Modifier {
 
 fun Modifier.categoryItemsInterval(): Modifier {
     return this
-        .padding(end = 8.dp)
+        .padding(end = 10.dp)
 }
 
 
