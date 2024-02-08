@@ -40,13 +40,13 @@ fun SquareItemTransparent(
     if (title != null && creator != null) {
         Column(
             modifier = modifier
-                .height(300.dp)
-                .width(200.dp)
+                .height(265.dp)
+                .width(170.dp)
         ) {
             CustomGlideImage(
                 modifier = Modifier
                     .padding(bottom = 2.dp)
-                    .size(200.dp)
+                    .size(170.dp)
                     .recommendationCoverShape()
                     .clickable {
                         if (recommendationId != null) {

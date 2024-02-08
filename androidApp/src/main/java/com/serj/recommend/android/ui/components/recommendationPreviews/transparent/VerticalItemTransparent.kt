@@ -40,13 +40,13 @@ fun VerticalItemTransparent(
     if (title != null && creator != null) {
         Column(
             modifier = modifier
-                .height(397.dp)
-                .width(200.dp)
+                .height(375.dp)
+                .width(170.dp)
         ) {
             CustomGlideImage(
                 modifier = Modifier
                     .padding(bottom = 4.dp)
-                    .height(300.dp)
+                    .height(280.dp)
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(5.dp))
                     .clickable {
