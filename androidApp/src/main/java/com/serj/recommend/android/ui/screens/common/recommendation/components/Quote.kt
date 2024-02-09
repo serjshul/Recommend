@@ -27,7 +27,7 @@ fun Quote(
         modifier = modifier
             .fillMaxWidth()
             .background(Color.White)
-            .padding(10.dp, 7.5.dp)
+            .padding(15.dp, 12.5.dp)
     ) {
         Column(
             modifier = Modifier

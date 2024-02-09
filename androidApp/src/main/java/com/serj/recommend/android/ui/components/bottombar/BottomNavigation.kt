@@ -22,10 +22,10 @@ sealed class BottomNavigation(
             R.drawable.bottom_navigation_feed
         )
 
-    data object Rec :
+    data object New :
         BottomNavigation(
-            RecommendRoutes.RecScreen.name,
-            R.string.rec_screen,
+            RecommendRoutes.NewRecommendationScreen.name,
+            R.string.new_screen,
             R.drawable.bottom_navigation_add
         )
 

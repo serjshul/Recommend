@@ -54,7 +54,7 @@ fun OrdinaryCategory(
             Text(
                 modifier = Modifier
                     .screenPaddingsInner()
-                    .padding(bottom = 10.dp)
+                    .padding(start = 4.dp, bottom = 10.dp)
                     .clickable { onCategoryClick(openScreen, category.id) },
                 text = category.title,
                 color = Color.Black,

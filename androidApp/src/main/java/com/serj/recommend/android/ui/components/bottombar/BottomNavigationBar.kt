@@ -20,7 +20,6 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.serj.recommend.android.ui.components.bottombar.BottomNavigation
 
 @Composable
 fun BottomNavigationBar(
@@ -30,7 +29,7 @@ fun BottomNavigationBar(
     val screens = listOf(
         BottomNavigation.Home,
         BottomNavigation.Feed,
-        BottomNavigation.Rec,
+        BottomNavigation.New,
         BottomNavigation.Search,
         BottomNavigation.Profile
     )

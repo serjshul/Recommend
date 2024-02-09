@@ -32,13 +32,13 @@ fun Paragraphs(
         modifier = modifier
             .fillMaxWidth()
             .background(White)
-            .padding(10.dp, 7.5.dp)
+            .padding(15.dp, 12.5.dp)
     ) {
         for (i in paragraphs.indices) {
             Paragraph(
                 modifier =
                     if (i != paragraphs.size - 1)
-                        Modifier.padding(bottom = 15.dp)
+                        Modifier.padding(bottom = 25.dp)
                     else
                         Modifier,
                 title = paragraphs[i]["title"] ?: "",
@@ -58,7 +58,7 @@ fun Paragraph(
     imageReference: StorageReference?,
     videoReference: StorageReference?,
     text: String,
-    color: Color
+    color: Color = Color.Black
 ) {
     val paragraphTexts = text.toParagraphText()
 

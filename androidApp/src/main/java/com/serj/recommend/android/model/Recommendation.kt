@@ -19,7 +19,7 @@ data class Recommendation(
     val paragraphs: ArrayList<HashMap<String, String>> = arrayListOf(),
     val paragraphsReferences: HashMap<String, StorageReference?> = hashMapOf(),
 
-    val date: Date? = null,
+    val date: Date? = Date(),
     val color: String? = null,
 
     val coversUrl: HashMap<String, String> = hashMapOf(),

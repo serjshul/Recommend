@@ -11,7 +11,7 @@
     <string name="try_again">Try again</string>
     <string name="ok">OK</string>
 
-    <string name="rec_screen">Rec</string>
+    <string name="new_screen">New</string>
 
     <!-- LoginScreen -->
     <string name="sign_in">Sign in</string>

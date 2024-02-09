@@ -1,6 +1,8 @@
 package com.serj.recommend.android.services.impl
 
 import android.content.ContentValues.TAG
+import android.content.Context
+import android.net.Uri
 import android.util.Log
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -33,6 +35,7 @@ import com.serj.recommend.android.services.GetUserItemResponse
 import com.serj.recommend.android.services.LikeOrUnlikeRecommendationResponse
 import com.serj.recommend.android.services.StorageService
 import com.serj.recommend.android.services.UploadCommentResponse
+import com.serj.recommend.android.services.UploadRecommendationResponse
 import com.serj.recommend.android.services.model.Response.Failure
 import com.serj.recommend.android.services.model.Response.Success
 import com.serj.recommend.android.ui.components.media.BackgroundTypes
@@ -402,6 +405,115 @@ class StorageServiceImpl @Inject constructor(
             }
         } catch (e: Exception) {
             Failure(e)
+        }
+    }
+
+    override suspend fun uploadRecommendation(
+        recommendation: Recommendation
+    ): UploadRecommendationResponse {
+        return try {
+            var result = ""
+
+            firestore
+                .collection(RECOMMENDATIONS_COLLECTION)
+                .add(recommendation)
+                .addOnCompleteListener { task ->
+                    result = task.result.id
+                    if (task.isSuccessful)
+                        Log.d(TAG, "Recommendation successfully uploaded!")
+                    else
+                        Log.w(TAG, "Error uploading recommendation document: $task")
+                }
+                .await()
+
+            Success(result)
+        } catch (e: Exception) {
+            Failure(e)
+        }
+    }
+
+    override suspend fun uploadBackgroundImage(
+        recommendationId: String,
+        uri: Uri,
+        context: Context
+    ) {
+        val backgroundUrl = hashMapOf<String, String>()
+
+        val storageRef = storage.reference
+        val backgroundImageRef = storageRef.child(
+            "recommendations/${recommendationId}/background.jpg"
+        )
+        val byteArray = context.contentResolver
+            .openInputStream(uri)
+            ?.use { it.readBytes() }
+        byteArray?.let {
+            backgroundImageRef
+                .putBytes(byteArray)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Log.d(TAG, "Well done")
+                        backgroundUrl["image"] = task.result.storage.toString()
+                    } else
+                        Log.w(TAG, "Error in uploadImage")
+                }
+                .await()
+        }
+
+        if (backgroundUrl.isNotEmpty()) {
+            firestore
+                .collection(RECOMMENDATIONS_COLLECTION)
+                .document(recommendationId)
+                .update("backgroundUrl", backgroundUrl)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful)
+                        Log.d(TAG, "Recommendation successfully updated!")
+                    else
+                        Log.w(TAG, "Error updating recommendation document: $task")
+                }
+                .await()
+        }
+    }
+
+    override suspend fun uploadCoverImage(
+        recommendationId: String,
+        uri: Uri,
+        coverType: String,
+        context: Context
+    ) {
+        val coversUrl = hashMapOf<String, String>()
+
+        val storageRef = storage.reference
+        val backgroundImageRef = storageRef.child(
+            "recommendations/${recommendationId}/cover_$coverType.jpg"
+        )
+        val byteArray = context.contentResolver
+            .openInputStream(uri)
+            ?.use { it.readBytes() }
+        byteArray?.let {
+            backgroundImageRef
+                .putBytes(byteArray)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Log.d(TAG, "Well done")
+                        coversUrl[coverType] = task.result.storage.toString()
+                    } else
+                        Log.w(TAG, "Error in uploadImage")
+                }
+                .await()
+        }
+
+        if (coversUrl.isNotEmpty()) {
+            firestore
+                .collection(RECOMMENDATIONS_COLLECTION)
+                .document(recommendationId)
+                .update("coversUrl", coversUrl)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful)
+                        Log.d(TAG, "Recommendation successfully updated!")
+                    else
+                        Log.w(TAG, "Error updating recommendation document: $task")
+                }
+                .await()
         }
     }
 
