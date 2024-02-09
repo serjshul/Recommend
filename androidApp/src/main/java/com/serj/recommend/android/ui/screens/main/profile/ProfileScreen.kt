@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.serj.recommend.android.R
 import com.serj.recommend.android.model.items.UserItem
@@ -20,7 +21,6 @@ import com.serj.recommend.android.ui.components.media.CustomGlideImage
 fun ProfileScreen(
     user: UserItem?
 ) {
-
     Column {
         ProfileInfo(
             user = user,
@@ -32,6 +32,7 @@ fun ProfileScreen(
     }
 }
 
+// TODO: Top part of profile we make like RecommendationScreen
 @Composable
 fun ProfileInfo(
     user: UserItem?,
@@ -75,4 +76,10 @@ fun BottomPart(modifier: Modifier = Modifier) {
 
     // if posts picked      -> collect actual posts
     // if favourites picked -> collect actual favs
+}
+
+@Preview
+@Composable
+fun ProfileScreen() {
+
 }
