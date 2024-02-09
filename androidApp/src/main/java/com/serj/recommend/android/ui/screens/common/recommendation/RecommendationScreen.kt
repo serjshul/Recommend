@@ -163,9 +163,11 @@ fun RecommendationScreenContent(
                                         repostedBy = recommendation.repostedBy,
                                         comments = arrayListOf(),
                                         views = recommendation.views,
+                                        coverage = recommendation.coverage,
                                         date = recommendation.date,
                                         recommendationId = recommendation.id,
-                                        currentUserUid = "",
+                                        authorUserId = recommendation.uid,
+                                        currentUserid = "",
                                         onLikeClick = { _: Boolean, _: String, _: String -> Success(true) }
                                     )
                                 }

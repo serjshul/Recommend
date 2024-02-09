@@ -38,10 +38,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.serj.recommend.android.R
+import com.serj.recommend.android.common.getMonthAndDay
+import com.serj.recommend.android.common.getYear
 import com.serj.recommend.android.model.Comment
 import com.serj.recommend.android.services.model.Response
-import com.serj.recommend.android.ui.styles.filling
 import com.serj.recommend.android.ui.styles.primary
+import com.serj.recommend.android.ui.styles.secondary
 import java.util.Date
 
 @Composable
@@ -54,17 +56,19 @@ fun InteractionPanelRecommendation(
     repostedBy: ArrayList<String>,
     comments: ArrayList<Comment>,
     views: Int,
+    coverage: Int,
     date: Date,
     recommendationId: String?,
-    currentUserUid: String?,
+    authorUserId: String?,
+    currentUserid: String?,
     onLikeClick: (Boolean, String, String) -> Response<Boolean>,
 ) {
-    val day = "Apr 9"
-    val year = 2023
-
     val isCurrentlyLiked = remember { mutableStateOf(isLiked) }
     val isCommented = remember { mutableStateOf(false) }
     val isCurrentlyReposted = remember { mutableStateOf(isReposted) }
+
+    val day = getMonthAndDay(date)
+    val year = getYear(date)
 
     Column(
         modifier = modifier
@@ -79,24 +83,22 @@ fun InteractionPanelRecommendation(
         ) {
             Row(
                 modifier = Modifier
-                    .weight(1f)
-                    .clip(RoundedCornerShape(20.dp))
-                    .background(color ?: primary),
+                    .weight(1f),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
                 IconToggleButton(
                     checked = isCurrentlyLiked.value,
                     onCheckedChange = {
-                        if (currentUserUid != null && recommendationId != null) {
-                            onLikeClick(isCurrentlyLiked.value, currentUserUid, recommendationId)
+                        if (currentUserid != null && recommendationId != null) {
+                            onLikeClick(isCurrentlyLiked.value, currentUserid, recommendationId)
                         }
                         isCurrentlyLiked.value = !isCurrentlyLiked.value
                     }
                 ) {
                     val transition = updateTransition(isCurrentlyLiked.value, label = "likeTransition")
                     val tint by transition.animateColor(label = "likeTint") { isLiked ->
-                        if (isLiked) Color.White else Color.White
+                        if (isLiked) Color.Red else Color.Black
                     }
                     val size by transition.animateDp(
                         transitionSpec = {
@@ -129,7 +131,7 @@ fun InteractionPanelRecommendation(
                 Text(
                     modifier = Modifier.padding(end = 9.dp),
                     text = likedBy.size.toString(),
-                    color = Color.White,
+                    color = Color.Black,
                     textAlign = TextAlign.Center,
                     fontSize = 14.sp
                 )
@@ -137,14 +139,14 @@ fun InteractionPanelRecommendation(
 
             Spacer(modifier = Modifier.size(10.dp))
 
-            Box(
+            Row(
                 modifier = Modifier
-                    .weight(1f)
-                    .clip(RoundedCornerShape(20.dp))
-                    .background(color ?: primary)
+                    .weight(1f),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
             ) {
                 IconToggleButton(
-                    modifier = Modifier.align(Alignment.Center),
+                    modifier = Modifier,
                     checked = isCommented.value,
                     onCheckedChange = {
                         isCommented.value = !isCommented.value
@@ -167,19 +169,25 @@ fun InteractionPanelRecommendation(
                     Icon(
                         ImageVector.vectorResource(id = R.drawable.interaction_comment),
                         contentDescription = "Comment",
-                        tint = Color.White,
+                        tint = Color.Black,
                         modifier = Modifier.size(size)
                     )
                 }
+
+                Text(
+                    modifier = Modifier.padding(end = 9.dp),
+                    text = comments.size.toString(),
+                    color = Color.Black,
+                    textAlign = TextAlign.Center,
+                    fontSize = 14.sp
+                )
             }
 
             Spacer(modifier = Modifier.size(10.dp))
 
             Row(
                 modifier = Modifier
-                    .weight(1f)
-                    .clip(RoundedCornerShape(20.dp))
-                    .background(color ?: primary),
+                    .weight(1f),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
@@ -191,7 +199,7 @@ fun InteractionPanelRecommendation(
                 ) {
                     val transition = updateTransition(isCurrentlyReposted.value, label = "repostTransition")
                     val tint by transition.animateColor(label = "repostTint") { isReposted ->
-                        if (isReposted) filling else Color.White
+                        if (isReposted) secondary else Color.Black
                     }
                     val size by transition.animateDp(
                         transitionSpec = {
@@ -221,7 +229,7 @@ fun InteractionPanelRecommendation(
                 Text(
                     modifier = Modifier.padding(end = 9.dp),
                     text = repostedBy.size.toString(),
-                    color = Color.White,
+                    color = Color.Black,
                     textAlign = TextAlign.Center,
                     fontSize = 14.sp
                 )
@@ -272,6 +280,38 @@ fun InteractionPanelRecommendation(
 
             Spacer(modifier = Modifier.size(10.dp))
 
+            if (authorUserId == currentUserid) {
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .padding(10.dp, 20.dp)
+                            .align(Alignment.Center)
+                    ) {
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = coverage.toString(),
+                            color = Color.Black,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center,
+                            fontSize = 17.sp
+                        )
+
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = "coverage",
+                            color = Color.Black,
+                            textAlign = TextAlign.Center,
+                            fontSize = 14.sp
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.size(10.dp))
+            }
+
             Box(
                 modifier = Modifier
                     .weight(1f)
@@ -292,7 +332,7 @@ fun InteractionPanelRecommendation(
 
                     Text(
                         modifier = Modifier.fillMaxWidth(),
-                        text = year.toString(),
+                        text = year,
                         color = Color.Black,
                         textAlign = TextAlign.Center,
                         fontSize = 14.sp
@@ -314,9 +354,11 @@ fun InteractionPanelRecommendationPreview() {
         repostedBy = arrayListOf("", "", "", ""),
         comments = arrayListOf(),
         views = 348,
-        date = Date(0),
+        coverage = 6542,
+        date = Date(),
         recommendationId = "recommendationId",
-        currentUserUid = "userId",
+        authorUserId = "2131241",
+        currentUserid = "2131241",
         onLikeClick = { _: Boolean, _: String, _: String -> Response.Success(true) }
     )
 }

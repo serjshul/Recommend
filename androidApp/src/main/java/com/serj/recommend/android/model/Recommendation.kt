@@ -15,11 +15,9 @@ data class Recommendation(
     val year: Int? = null,
 
     val description: String? = null,
-    val quote: String? = null,
     val paragraphs: ArrayList<HashMap<String, String>> = arrayListOf(),
     val paragraphsReferences: HashMap<String, StorageReference?> = hashMapOf(),
-
-    val date: Date? = Date(),
+    val quote: String? = null,
     val color: String? = null,
 
     val coversUrl: HashMap<String, String> = hashMapOf(),
@@ -30,8 +28,11 @@ data class Recommendation(
     var backgroundImageReference: StorageReference? = null,
     var backgroundVideoReference: StorageReference? = null,
 
+    val date: Date? = Date(),
+
     val likedBy: ArrayList<String> = arrayListOf(),
     val repostedBy: ArrayList<String> = arrayListOf(),
     val comments: ArrayList<Comment> = arrayListOf(),
-    val views: Int = 0
+    val views: Int = 0,
+    val coverage: Int = 0
 )

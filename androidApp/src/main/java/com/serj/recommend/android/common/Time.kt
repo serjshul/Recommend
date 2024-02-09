@@ -3,6 +3,11 @@ package com.serj.recommend.android.common
 import java.util.Calendar
 import java.util.Date
 
+private val months = listOf(
+    "January", "February", "March", "April", "May", "June", "July", "August",
+    "September", "October", "November", "December"
+)
+
 fun getCreatedTime(date: Date): String {
     val itemCalendar = Calendar.getInstance()
     itemCalendar.time = date
@@ -55,4 +60,21 @@ fun getCreatedTime(date: Date): String {
         val difference = currentYear - itemYear
         "${difference}y"
     }
+}
+
+fun getMonthAndDay(date: Date): String {
+    val calendar = Calendar.getInstance()
+    calendar.time = date
+
+    val month = calendar.get(Calendar.MONTH)
+    val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+    return "${months[month]} $day"
+}
+
+fun getYear(date: Date): String {
+    val calendar = Calendar.getInstance()
+    calendar.time = date
+
+    return calendar.get(Calendar.YEAR).toString()
 }
