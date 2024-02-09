@@ -24,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.serj.recommend.android.common.ext.toColor
+import com.serj.recommend.android.model.Comment
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.items.UserItem
 import com.serj.recommend.android.services.GetRecommendationResponse
@@ -46,13 +47,11 @@ fun RecommendationScreen(
     popUpScreen: () -> Unit,
     viewModel: RecommendationViewModel = hiltViewModel()
 ) {
-    val recommendationResponse by viewModel.getRecommendationResponse
-    val getUserItemResponse by viewModel.getUserItemResponse
-
     RecommendationScreenContent(
         modifier = modifier,
-        getRecommendationResponse = recommendationResponse,
-        getUserItemResponse = getUserItemResponse,
+        getRecommendationResponse = viewModel.getRecommendationResponse.value,
+        getUserItemResponse = viewModel.getUserItemResponse.value,
+        topLikedComment = viewModel.topLikedComment.value,
         popUpScreen = popUpScreen
     )
 }
@@ -63,6 +62,7 @@ fun RecommendationScreenContent(
     modifier: Modifier = Modifier,
     getRecommendationResponse: GetRecommendationResponse?,
     getUserItemResponse: GetUserItemResponse?,
+    topLikedComment: Comment?,
     popUpScreen: () -> Unit
 ) {
     when (getRecommendationResponse) {
@@ -161,7 +161,8 @@ fun RecommendationScreenContent(
                                         isReposted = false,
                                         likedBy = recommendation.likedBy,
                                         repostedBy = recommendation.repostedBy,
-                                        comments = arrayListOf(),
+                                        comment = topLikedComment,
+                                        commentsAmount = recommendation.comments.size,
                                         views = recommendation.views,
                                         coverage = recommendation.coverage,
                                         date = recommendation.date,
@@ -281,6 +282,7 @@ fun RecommendationScreenContentPreview() {
         modifier = Modifier,
         getRecommendationResponse = getRecommendationResponse,
         getUserItemResponse = getUserItemResponse,
+        topLikedComment = null,
         popUpScreen = { }
     )
 }

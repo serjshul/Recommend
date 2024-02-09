@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -41,7 +40,9 @@ import com.serj.recommend.android.R
 import com.serj.recommend.android.common.getMonthAndDay
 import com.serj.recommend.android.common.getYear
 import com.serj.recommend.android.model.Comment
+import com.serj.recommend.android.model.items.UserItem
 import com.serj.recommend.android.services.model.Response
+import com.serj.recommend.android.ui.components.comments.items.CommentRecommendationItem
 import com.serj.recommend.android.ui.styles.primary
 import com.serj.recommend.android.ui.styles.secondary
 import java.util.Date
@@ -54,7 +55,8 @@ fun InteractionPanelRecommendation(
     isReposted: Boolean,
     likedBy: ArrayList<String>,
     repostedBy: ArrayList<String>,
-    comments: ArrayList<Comment>,
+    comment: Comment?,
+    commentsAmount: Int,
     views: Int,
     coverage: Int,
     date: Date,
@@ -176,7 +178,7 @@ fun InteractionPanelRecommendation(
 
                 Text(
                     modifier = Modifier.padding(end = 9.dp),
-                    text = comments.size.toString(),
+                    text = commentsAmount.toString(),
                     color = Color.Black,
                     textAlign = TextAlign.Center,
                     fontSize = 14.sp
@@ -236,14 +238,36 @@ fun InteractionPanelRecommendation(
             }
         }
 
-        Box(
-            modifier = Modifier
-                .padding(bottom = 10.dp)
-                .fillMaxWidth()
-                .height(100.dp)
-                .clip(RoundedCornerShape(20.dp))
-                .background(color ?: primary)
-        )
+        if (comment != null) {
+            Column(
+                modifier = Modifier
+                    .padding(bottom = 10.dp)
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(20.dp))
+                    .background(color ?: primary)
+            ) {
+                Text(
+                    modifier = Modifier
+                        .padding(top = 15.dp, bottom = 7.dp)
+                        .align(Alignment.CenterHorizontally),
+                    text = "Top liked",
+                    color = Color.White,
+                    fontSize = 14.sp
+                )
+
+                if (comment.userItem?.nickname != null && comment.text != null && comment.date != null) {
+                    CommentRecommendationItem(
+                        modifier = Modifier.padding(start = 5.dp, end = 5.dp, bottom = 10.dp),
+                        comment = comment,
+                        nickname = comment.userItem?.nickname!!,
+                        photoReference = comment.userItem?.photoReference,
+                        text = comment.text,
+                        date = comment.date,
+                        onCommentClick = { _: Comment -> }
+                    )
+                }
+            }
+        }
 
         Row(
             modifier = Modifier
@@ -352,7 +376,12 @@ fun InteractionPanelRecommendationPreview() {
         isReposted = false,
         likedBy = arrayListOf("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""),
         repostedBy = arrayListOf("", "", "", ""),
-        comments = arrayListOf(),
+        comment = Comment(
+            text = "A note to adults in the audience: “13 Reasons Why” is not Netflix’s next “Stranger Things”.",
+            userItem = UserItem(nickname = "serjshul"),
+            date = Date()
+        ),
+        commentsAmount = 9,
         views = 348,
         coverage = 6542,
         date = Date(),

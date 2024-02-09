@@ -85,6 +85,10 @@ class StorageServiceImpl @Inject constructor(
                             .getOrDefault(BackgroundTypes.image.name, null)
                             ?.let { storage.getReferenceFromUrl(it) }
                 }
+                val commentsResponse = getComments(recommendationId)
+                if (commentsResponse is Success && commentsResponse.data != null) {
+                    data.comments.addAll(commentsResponse.data)
+                }
                 Success(data)
             } else {
                 Failure(RecommendationNotFoundException())

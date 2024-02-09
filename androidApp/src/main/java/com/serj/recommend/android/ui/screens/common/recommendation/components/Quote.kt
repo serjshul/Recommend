@@ -40,7 +40,7 @@ fun Quote(
                     .align(Alignment.CenterHorizontally),
                 text = "Favourite quote",
                 color = Color.White,
-                fontSize = 12.sp
+                fontSize = 14.sp
             )
 
             Text(
