@@ -77,7 +77,7 @@ class AccountServiceImpl @Inject constructor(
                 .await()
         }
 
-    override suspend fun getUser(uid: String): User? {
+    private suspend fun getUser(uid: String): User? {
         var currentUser: User? = null
 
         firestore
