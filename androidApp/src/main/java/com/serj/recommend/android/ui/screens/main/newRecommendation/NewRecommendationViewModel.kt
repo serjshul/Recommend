@@ -175,9 +175,13 @@ class NewRecommendationViewModel @Inject constructor(
         )
 
         launchCatching {
-            val recommendationIdResponse = storageService.uploadRecommendation(
-                recommendation = recommendation
-            )
+            val recommendationIdResponse = currentUser?.uid?.let {
+                storageService.uploadRecommendation(
+                    recommendation = recommendation,
+                    currentUserId = it,
+                    isReposted = false
+                )
+            }
             if (recommendationIdResponse is Response.Success &&
                 recommendationIdResponse.data != null) {
                 backgroundImageUri.value?.let {

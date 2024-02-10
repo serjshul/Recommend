@@ -59,6 +59,7 @@ fun RecommendationScreen(
         showCommentsBottomSheet = viewModel.showCommentsBottomSheet,
         onLikeClick = viewModel::onLikeClick,
         onCommentIconClick = viewModel::onCommentIconClick,
+        onRepostClick = viewModel::onRepostClick,
         onCommentClick = viewModel::onCommentClick,
         onCommentDismissRequest = viewModel::onCommentDismissRequest,
         onCommentInputValueChange = viewModel::onCommentInputValueChange,
@@ -82,6 +83,7 @@ fun RecommendationScreenContent(
     showCommentsBottomSheet: Boolean,
     onLikeClick: (Boolean, String, String) -> Response<Boolean>,
     onCommentIconClick: (List<Comment>) -> Unit,
+    onRepostClick: (String, String, Boolean) -> Unit,
     onCommentClick: (Comment) -> Unit,
     onCommentDismissRequest: (Comment) -> Unit,
     onCommentInputValueChange: (String) -> Unit,
@@ -181,14 +183,16 @@ fun RecommendationScreenContent(
                                     if (currentUser != null) {
                                         InteractionPanelRecommendation(
                                             modifier = Modifier,
-                                            color = recommendation.color?.toColor(),
-                                            isLiked = recommendation.likedBy.contains(currentUser.uid),
-                                            isReposted = false,
+                                            color = recommendation.color
+                                                ?.toColor(),
+                                            isLiked = recommendation.likedBy
+                                                .contains(currentUser.uid),
+                                            isReposted = recommendation.repostedBy
+                                                .contains(currentUser.uid),
                                             likedBy = recommendation.likedBy,
                                             comments = recommendation.comments,
                                             repostedBy = recommendation.repostedBy,
                                             topLikedComment = topLikedComment,
-                                            commentsAmount = recommendation.comments.size,
                                             views = recommendation.views,
                                             coverage = recommendation.coverage,
                                             date = recommendation.date,
@@ -196,7 +200,8 @@ fun RecommendationScreenContent(
                                             authorUserId = recommendation.uid,
                                             currentUserid = currentUser.uid,
                                             onLikeClick = onLikeClick,
-                                            onCommentClick = onCommentIconClick
+                                            onCommentClick = onCommentIconClick,
+                                            onRepostClick = onRepostClick
                                         )
                                     }
                                 }
@@ -320,6 +325,7 @@ fun RecommendationScreenContentPreview() {
         showCommentsBottomSheet = false,
         onLikeClick = { _: Boolean, _: String, _: String -> Success(true) },
         onCommentIconClick = { },
+        onRepostClick = { _: String, _: String, _: Boolean -> },
         onCommentClick = { },
         onCommentDismissRequest = { },
         onCommentInputValueChange = { },

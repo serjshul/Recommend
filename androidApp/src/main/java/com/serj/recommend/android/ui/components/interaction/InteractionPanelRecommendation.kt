@@ -23,8 +23,10 @@ import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -44,7 +46,6 @@ import com.serj.recommend.android.model.items.UserItem
 import com.serj.recommend.android.services.model.Response
 import com.serj.recommend.android.ui.components.comments.items.CommentRecommendationItem
 import com.serj.recommend.android.ui.styles.primary
-import com.serj.recommend.android.ui.styles.secondary
 import java.util.Date
 
 @Composable
@@ -57,7 +58,6 @@ fun InteractionPanelRecommendation(
     comments: List<Comment>,
     repostedBy: ArrayList<String>,
     topLikedComment: Comment?,
-    commentsAmount: Int,
     views: Int,
     coverage: Int,
     date: Date,
@@ -65,12 +65,17 @@ fun InteractionPanelRecommendation(
     authorUserId: String?,
     currentUserid: String?,
     onLikeClick: (Boolean, String, String) -> Response<Boolean>,
-    onCommentClick: (List<Comment>) -> Unit
+    onCommentClick: (List<Comment>) -> Unit,
+    onRepostClick: (String, String, Boolean) -> Unit
 ) {
     val isCurrentlyLiked = remember { mutableStateOf(isLiked) }
     val isCommentCurrentlyClicked = remember { mutableStateOf(false) }
     val isCommented = remember { mutableStateOf(false) }
     val isCurrentlyReposted = remember { mutableStateOf(isReposted) }
+
+    var likesAmount by remember { mutableIntStateOf(likedBy.size) }
+    val commentsAmount by remember { mutableIntStateOf(comments.size) }
+    var repostsAmount by remember { mutableIntStateOf(repostedBy.size) }
 
     val day = getMonthAndDay(date)
     val year = getYear(date)
@@ -97,8 +102,9 @@ fun InteractionPanelRecommendation(
                     onCheckedChange = {
                         if (currentUserid != null && recommendationId != null) {
                             onLikeClick(isCurrentlyLiked.value, currentUserid, recommendationId)
+                            isCurrentlyLiked.value = !isCurrentlyLiked.value
+                            if (isCurrentlyLiked.value) likesAmount++ else likesAmount--
                         }
-                        isCurrentlyLiked.value = !isCurrentlyLiked.value
                     }
                 ) {
                     val transition = updateTransition(isCurrentlyLiked.value, label = "likeTransition")
@@ -135,7 +141,7 @@ fun InteractionPanelRecommendation(
 
                 Text(
                     modifier = Modifier.padding(end = 9.dp),
-                    text = likedBy.size.toString(),
+                    text = likesAmount.toString(),
                     color = Color.Black,
                     textAlign = TextAlign.Center,
                     fontSize = 14.sp
@@ -200,12 +206,19 @@ fun InteractionPanelRecommendation(
                 IconToggleButton(
                     checked = isCurrentlyReposted.value,
                     onCheckedChange = {
-                        isCurrentlyReposted.value = !isCurrentlyReposted.value
+                        if (recommendationId != null && currentUserid != null) {
+                            onRepostClick(recommendationId, currentUserid, isCurrentlyReposted.value)
+                            isCurrentlyReposted.value = !isCurrentlyReposted.value
+                            if (isCurrentlyReposted.value) repostsAmount++ else repostsAmount--
+                        }
                     }
                 ) {
                     val transition = updateTransition(isCurrentlyReposted.value, label = "repostTransition")
                     val tint by transition.animateColor(label = "repostTint") { isReposted ->
-                        if (isReposted) secondary else Color.Black
+                        if (isReposted)
+                            color ?: primary
+                        else
+                            Color.Black
                     }
                     val size by transition.animateDp(
                         transitionSpec = {
@@ -234,7 +247,7 @@ fun InteractionPanelRecommendation(
 
                 Text(
                     modifier = Modifier.padding(end = 9.dp),
-                    text = repostedBy.size.toString(),
+                    text = repostsAmount.toString(),
                     color = Color.Black,
                     textAlign = TextAlign.Center,
                     fontSize = 14.sp
@@ -254,7 +267,7 @@ fun InteractionPanelRecommendation(
                     modifier = Modifier
                         .padding(top = 15.dp, bottom = 7.dp)
                         .align(Alignment.CenterHorizontally),
-                    text = "Top liked",
+                    text = "Top liked comment",
                     color = Color.White,
                     fontSize = 14.sp
                 )
@@ -386,7 +399,6 @@ fun InteractionPanelRecommendationPreview() {
             userItem = UserItem(nickname = "serjshul"),
             date = Date()
         ),
-        commentsAmount = 9,
         views = 348,
         coverage = 6542,
         date = Date(),
@@ -394,6 +406,7 @@ fun InteractionPanelRecommendationPreview() {
         authorUserId = "2131241",
         currentUserid = "2131241",
         onLikeClick = { _: Boolean, _: String, _: String -> Response.Success(true) },
-        onCommentClick = { }
+        onCommentClick = { },
+        onRepostClick = { _: String, _: String, _: Boolean -> },
     )
 }

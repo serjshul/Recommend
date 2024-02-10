@@ -326,16 +326,22 @@ class StorageServiceImpl @Inject constructor(
     }
 
     override fun repostOrUnrepostRecommendation(
-        isReposted: Boolean,
-        uid: String,
-        recommendationId: String
+        recommendationId: String,
+        userId: String,
+        isReposted: Boolean
     ): RepostOrUnrepostRecommendationResponse {
         return try {
             if (!isReposted) {
+                val userContent = hashMapOf(
+                    "isReposted" to true,
+                    "dateOfCreation" to Date()
+                )
                 firestore
                     .collection(USERS_COLLECTION)
-                    .document(uid)
-                    .update(LIKED_IDS_FIELD, FieldValue.arrayUnion(recommendationId))
+                    .document(userId)
+                    .collection(USER_CONTENT_COLLECTION)
+                    .document(recommendationId)
+                    .set(userContent)
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful)
                             Log.d(TAG, "User DocumentSnapshot successfully updated!")
@@ -345,7 +351,7 @@ class StorageServiceImpl @Inject constructor(
                 firestore
                     .collection(RECOMMENDATIONS_COLLECTION)
                     .document(recommendationId)
-                    .update(LIKED_BY_FIELD, FieldValue.arrayUnion(uid))
+                    .update(REPOSTED_BY_FIELD, FieldValue.arrayUnion(userId))
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful)
                             Log.d(TAG, "Recommendation DocumentSnapshot successfully updated!")
@@ -355,8 +361,10 @@ class StorageServiceImpl @Inject constructor(
             } else {
                 firestore
                     .collection(USERS_COLLECTION)
-                    .document(uid)
-                    .update(LIKED_IDS_FIELD, FieldValue.arrayRemove(recommendationId))
+                    .document(userId)
+                    .collection(USER_CONTENT_COLLECTION)
+                    .document(recommendationId)
+                    .delete()
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful)
                             Log.d(TAG, "User DocumentSnapshot successfully updated!")
@@ -366,7 +374,7 @@ class StorageServiceImpl @Inject constructor(
                 firestore
                     .collection(RECOMMENDATIONS_COLLECTION)
                     .document(recommendationId)
-                    .update(LIKED_BY_FIELD, FieldValue.arrayRemove(uid))
+                    .update(REPOSTED_BY_FIELD, FieldValue.arrayRemove(userId))
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful)
                             Log.d(TAG, "Recommendation DocumentSnapshot successfully updated!")
@@ -469,24 +477,52 @@ class StorageServiceImpl @Inject constructor(
     }
 
     override suspend fun uploadRecommendation(
-        recommendation: Recommendation
+        recommendation: Recommendation,
+        currentUserId: String,
+        isReposted: Boolean
     ): UploadRecommendationResponse {
         return try {
-            var result = ""
+            var uploadedRecommendationId = ""
+
+            val userContent = hashMapOf(
+                "isReposted" to isReposted,
+                "dateOfCreation" to recommendation.date
+            )
 
             firestore
                 .collection(RECOMMENDATIONS_COLLECTION)
                 .add(recommendation)
                 .addOnCompleteListener { task ->
-                    result = task.result.id
+                    uploadedRecommendationId = task.result.id
                     if (task.isSuccessful)
-                        Log.d(TAG, "Recommendation successfully uploaded!")
+                        Log.d(TAG, "Recommendation (id = ${uploadedRecommendationId}) successfully uploaded!")
                     else
-                        Log.w(TAG, "Error uploading recommendation document: $task")
+                        Log.w(TAG, "Error uploading recommendation (id = ${uploadedRecommendationId}) document: $task")
                 }
                 .await()
+            if (uploadedRecommendationId != "") {
+                firestore
+                    .collection(USERS_COLLECTION)
+                    .document(currentUserId)
+                    .collection(USER_CONTENT_COLLECTION)
+                    .document(uploadedRecommendationId)
+                    .set(userContent)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful)
+                            Log.d(
+                                TAG,
+                                "UserContent (uid = ${currentUserId}) successfully uploaded!"
+                            )
+                        else
+                            Log.w(
+                                TAG,
+                                "Error uploading userContent (uid = ${currentUserId}) document: $task"
+                            )
+                    }
+                    .await()
+            }
 
-            Success(result)
+            Success(uploadedRecommendationId)
         } catch (e: Exception) {
             Failure(e)
         }
@@ -611,6 +647,7 @@ class StorageServiceImpl @Inject constructor(
         private const val CATEGORIES_COLLECTION = "categories"
         private const val BANNERS_COLLECTION = "banners"
         private const val USERS_COLLECTION = "users"
+        private const val USER_CONTENT_COLLECTION = "userContent"
 
         private const val COMMENTS_COLLECTION = "comments"
 
@@ -618,5 +655,6 @@ class StorageServiceImpl @Inject constructor(
         private const val DATE_FIELD = "date"
         private const val LIKED_IDS_FIELD = "likedIds"
         private const val LIKED_BY_FIELD = "likedBy"
+        private const val REPOSTED_BY_FIELD = "repostedBy"
     }
 }

@@ -82,6 +82,12 @@ class RecommendationViewModel @Inject constructor(
         showCommentsBottomSheet = true
     }
 
+    fun onRepostClick(
+        recommendationId: String,
+        userId: String,
+        isReposted: Boolean
+    ) = storageService.repostOrUnrepostRecommendation(recommendationId, userId, isReposted)
+
     fun onCommentInputValueChange(input: String) {
         commentInput = input
     }
