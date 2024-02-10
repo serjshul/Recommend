@@ -2,7 +2,6 @@ package com.serj.recommend.android.ui.screens.main
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
@@ -14,15 +13,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.serj.recommend.android.RecommendAppState
 import com.serj.recommend.android.RecommendRoutes
-import com.serj.recommend.android.ui.components.bottombar.BottomNavigationBar
+import com.serj.recommend.android.ui.BottomNavigationBar
 import com.serj.recommend.android.ui.screens.main.feed.FeedScreen
 import com.serj.recommend.android.ui.screens.main.home.HomeScreen
-import com.serj.recommend.android.ui.screens.main.newRecommendation.NewRecommendationScreen
-import com.serj.recommend.android.ui.screens.main.profile.ProfileScreen
+import com.serj.recommend.android.ui.screens.main.rec.RecScreen
 import com.serj.recommend.android.ui.screens.main.search.SearchScreen
 import com.serj.recommend.android.ui.styles.RecommendTheme
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MainScreen(
     appState: RecommendAppState,
@@ -45,9 +42,9 @@ fun MainScreen(
                 }
             ) { paddingValues ->
                 NavHost(
-                    modifier = Modifier.padding(paddingValues),
                     navController = navController,
-                    startDestination = RecommendRoutes.HomeScreen.name
+                    startDestination = RecommendRoutes.HomeScreen.name,
+                    modifier = Modifier.padding(paddingValues)
                 ) {
                     mainScreenGraph(appState = appState)
                 }
@@ -56,27 +53,30 @@ fun MainScreen(
     }
 }
 
-@ExperimentalMaterialApi
 fun NavGraphBuilder.mainScreenGraph(
     appState: RecommendAppState
 ) {
     composable(RecommendRoutes.HomeScreen.name) {
         HomeScreen(
-            openScreen = { route -> appState.navigate(route) }
+            openScreen = {
+                route -> appState.navigate(route)
+            }
         )
     }
     composable(RecommendRoutes.FeedScreen.name) {
         FeedScreen(
-            openScreen = { route -> appState.navigate(route) }
+            openScreen = {
+                route -> appState.navigate(route)
+            }
         )
     }
-    composable(RecommendRoutes.NewRecommendationScreen.name) {
-        NewRecommendationScreen()
+    composable(RecommendRoutes.RecScreen.name) {
+        RecScreen()
     }
     composable(RecommendRoutes.SearchScreen.name) {
         SearchScreen()
     }
     composable(RecommendRoutes.ProfileScreen.name) {
-        ProfileScreen()
+//        ProfileScreen()
     }
 }
