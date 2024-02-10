@@ -5,14 +5,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.IconButton
@@ -29,24 +26,27 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.google.firebase.storage.StorageReference
+import com.serj.recommend.android.common.getCreatedTime
+import com.serj.recommend.android.model.Comment
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.items.UserItem
+import com.serj.recommend.android.services.model.Response
+import com.serj.recommend.android.ui.components.comments.CommentsShortList
+import com.serj.recommend.android.ui.components.interaction.InteractionPanelPost
 import com.serj.recommend.android.ui.components.media.CustomGlideImage
 import com.serj.recommend.android.ui.components.media.CustomGlideImageShaded
-import com.serj.recommend.android.ui.components.social.InteractionPanel
-import com.serj.recommend.android.ui.styles.Black
-import com.serj.recommend.android.ui.styles.LightGray
-import com.serj.recommend.android.ui.styles.White
+import com.serj.recommend.android.ui.components.media.GlideUserImage
+import com.serj.recommend.android.ui.styles.primary
 import java.util.Date
 
 @Composable
@@ -61,40 +61,48 @@ fun RecommendationItem(
     backgroundVideoReference: StorageReference?,
     title: String?,
     creator: String?,
+    type: String?,
+    tags: List<String>,
+    isLiked: Boolean,
+    comments: List<Comment>,
     recommendationId: String?,
+    currentUserUid: String?,
     openScreen: (String) -> Unit,
+    onLikeClick: (Boolean, String, String) -> Response<Boolean>,
+    onCommentIconClick: (String, List<Comment>) -> Unit,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
 ) {
-    var expanded by remember { mutableStateOf(false) }
-    var backgroundSize by remember { mutableStateOf(IntSize.Zero) }
-    var coverSize by remember { mutableStateOf(IntSize.Zero) }
+    val isCommentClicked = remember { mutableStateOf(false) }
+    var isDropDownExpanded by remember { mutableStateOf(false) }
 
     if (user?.nickname != null && date != null && description != null &&
         title != null && creator != null) {
+        val createdTime = getCreatedTime(date)
+
         Box(
             modifier = modifier
+                .padding(0.dp, 5.dp)
                 .fillMaxWidth()
-                .background(White)
         ) {
             if (backgroundVideoReference != null) {
                 // TODO: add video glide item
             } else if (backgroundImageReference != null) {
                 CustomGlideImageShaded(
                     modifier = Modifier
+                        .padding(top = 55.dp)
                         .fillMaxWidth()
-                        .height(200.dp)
-                        .onGloballyPositioned { backgroundSize = it.size },
+                        .height(200.dp),
                     reference = backgroundImageReference
                 )
             }
 
             Row(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 15.dp, top = 15.dp, end = 15.dp),
+                    .padding(10.dp, 0.dp)
+                    .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                CustomGlideImage(
+                GlideUserImage(
                     modifier = Modifier
                         .size(40.dp)
                         .clip(CircleShape),
@@ -110,8 +118,7 @@ fun RecommendationItem(
                             .weight(8f)
                             .padding(start = 15.dp),
                         text = user.nickname,
-                        color = if (backgroundSize.height == 0) Black
-                        else White,
+                        color = Black,
                         maxLines = 1,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
@@ -120,9 +127,8 @@ fun RecommendationItem(
 
                     Text(
                         modifier = Modifier.weight(1f),
-                        text = "16h",
-                        color = if (backgroundSize.height == 0) Black
-                        else White,
+                        text = createdTime,
+                        color = Black,
                         fontSize = 14.sp
                     )
 
@@ -131,19 +137,18 @@ fun RecommendationItem(
                             .weight(1f)
                     ) {
                         IconButton(
-                            onClick = { expanded = true }
+                            onClick = { isDropDownExpanded = true }
                         ) {
                             Icon(
                                 Icons.Default.MoreVert,
                                 contentDescription = "Show the menu",
-                                tint = if (backgroundSize.height == 0) Black
-                                else White
+                                tint = Black
                             )
                         }
 
                         DropdownMenu(
-                            expanded = expanded,
-                            onDismissRequest = { expanded = false }
+                            expanded = isDropDownExpanded,
+                            onDismissRequest = { isDropDownExpanded = false }
                         ) {
                             Text(
                                 modifier = Modifier
@@ -160,11 +165,17 @@ fun RecommendationItem(
             Box(
                 modifier = Modifier
                     .padding(
-                        start = 15.dp,
-                        top = if (backgroundSize.height == 0) 75.dp
-                        else with(LocalDensity.current) { backgroundSize.height.toDp() -
-                                coverSize.height.toDp() / 3 },
-                        end = 15.dp
+                        start = 10.dp,
+                        end = 10.dp,
+                        top =
+                            if (backgroundImageReference != null || backgroundVideoReference != null)
+                                when (coverType) {
+                                    ItemsShapes.horizontal.name -> 220.dp
+                                    ItemsShapes.square.name -> 220.dp
+                                    else -> 170.dp
+                                }
+                            else
+                                55.dp
                     )
             ) {
                 Row {
@@ -181,12 +192,10 @@ fun RecommendationItem(
                                                 Recommendation(id = recommendationId)
                                             )
                                         }
-                                    }
-                                    .onGloballyPositioned { coverSize = it.size },
+                                    },
                                 reference = coverReference
                             )
                         }
-
                         ItemsShapes.vertical.name -> {
                             CustomGlideImage(
                                 modifier = Modifier
@@ -200,12 +209,10 @@ fun RecommendationItem(
                                                 Recommendation(id = recommendationId)
                                             )
                                         }
-                                    }
-                                    .onGloballyPositioned { coverSize = it.size },
+                                    },
                                 reference = coverReference
                             )
                         }
-
                         else -> {
                             CustomGlideImage(
                                 modifier = Modifier
@@ -219,8 +226,7 @@ fun RecommendationItem(
                                                 Recommendation(id = recommendationId)
                                             )
                                         }
-                                    }
-                                    .onGloballyPositioned { coverSize = it.size },
+                                    },
                                 reference = coverReference
                             )
                         }
@@ -228,10 +234,23 @@ fun RecommendationItem(
 
                     Column(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 10.dp, )
+                            .padding(start = 10.dp)
                             .align(Alignment.Bottom)
                     ) {
+                        Text(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 2.dp),
+                            text = "$type   /   ${tags.joinToString(separator = " & ")}",
+                            color = primary,
+                            maxLines = 1,
+                            fontSize = 12.sp,
+                            lineHeight = 1.2.em,
+                            fontWeight = FontWeight.Bold,
+                            overflow = TextOverflow.Ellipsis,
+                            textAlign = TextAlign.Start
+                        )
+
                         Text(
                             modifier = Modifier
                                 .clickable {
@@ -244,9 +263,9 @@ fun RecommendationItem(
                                 },
                             text = title,
                             color = Black,
-                            maxLines = 2,
-                            fontSize = 16.sp,
-                            lineHeight = 1.1.em,
+                            maxLines = 1,
+                            fontSize = 14.sp,
+                            lineHeight = 1.2.em,
                             fontWeight = FontWeight.Bold,
                             overflow = TextOverflow.Ellipsis
                         )
@@ -254,9 +273,9 @@ fun RecommendationItem(
                         Text(
                             text = creator,
                             color = Black,
-                            maxLines = 2,
+                            maxLines = 1,
                             fontSize = 14.sp,
-                            lineHeight = 1.1.em,
+                            lineHeight = 1.2.em,
                             overflow = TextOverflow.Ellipsis
                         )
                     }
@@ -267,26 +286,49 @@ fun RecommendationItem(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(
-                        start = 15.dp,
-                        top = if (backgroundSize.height == 0)
-                            with(LocalDensity.current) { 75.dp + coverSize.height.toDp() + 10.dp }
-                        else with(LocalDensity.current) { backgroundSize.height.toDp() +
-                                (coverSize.height.toDp() / 3) * 2 + 10.dp },
-                        end = 15.dp,
-                        bottom = 15.dp
+                        top =
+                            if (backgroundImageReference != null || backgroundVideoReference != null)
+                                when (coverType) {
+                                    ItemsShapes.horizontal.name -> 330.dp
+                                    ItemsShapes.square.name -> 330.dp
+                                    else -> 330.dp
+                                }
+                            else
+                                when (coverType) {
+                                    ItemsShapes.horizontal.name -> 165.dp
+                                    ItemsShapes.square.name -> 165.dp
+                                    else -> 215.dp
+                                }
                     )
             ) {
-
                 Text(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .padding(start = 10.dp, end = 10.dp, bottom = 5.dp)
+                        .fillMaxWidth(),
                     text = description,
                     color = Black,
                     fontSize = 14.sp,
                     lineHeight = 1.4.em
                 )
 
-                InteractionPanel(
-                    modifier = Modifier.padding(top = 10.dp)
+                if (comments.isNotEmpty()) {
+                    CommentsShortList(
+                        modifier = Modifier
+                            .padding(10.dp, 0.dp)
+                            .fillMaxWidth()
+                            .clickable { isCommentClicked.value = true },
+                        comments = comments
+                    )
+                }
+
+                InteractionPanelPost(
+                    isLiked = isLiked,
+                    isCommentClicked = isCommentClicked,
+                    comments = comments,
+                    recommendationId = recommendationId,
+                    currentUserUid = currentUserUid,
+                    onLikeClick = onLikeClick,
+                    onCommentClick = onCommentIconClick
                 )
             }
         }
@@ -296,36 +338,49 @@ fun RecommendationItem(
 @Preview
 @Composable
 fun PostWithBackgroundPreview() {
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(LightGray)
-    ) {
-        item {
-            Spacer(modifier = Modifier.size(10.dp))
-        }
+    val comments = listOf(
+        Comment(
+            text = "preview  preview preview preview preview preview preview",
+            userItem = UserItem(nickname = "preview")
+        ),
+        Comment(
+            text = "preview  preview preview preview preview preview preview",
+            userItem = UserItem(nickname = "preview")
+        ),
+        Comment(
+            text = "preview  preview preview preview preview preview preview",
+            userItem = UserItem(nickname = "preview")
+        ),
+        Comment(
+            text = "preview  preview preview preview preview preview preview",
+            userItem = UserItem(nickname = "preview")
+        )
+    )
 
-        items(5) {
-            RecommendationItem(
-                modifier = Modifier
-                    .padding(start = 5.dp, end = 5.dp, bottom = 10.dp),
-                user = UserItem(
-                    nickname = "serjshul"
-                ),
-                date = Date(0),
-                description = "text text text text text text text text text text text text text text text " +
-                        "text text text text text text text text text text text text text text text " +
-                        "text text text text text text text text text text text text text text",
-                coverReference = null,
-                backgroundImageReference = null,
-                backgroundVideoReference = null,
-                title = "title",
-                creator = "creator",
-                coverType = ItemsShapes.horizontal.name,
-                recommendationId = "",
-                openScreen = { },
-                onRecommendationClick = { _: (String) -> Unit, _: Recommendation -> }
-            )
-        }
-    }
+    RecommendationItem(
+        modifier = Modifier.background(Color.White),
+        user = UserItem(
+            nickname = "serjshul"
+        ),
+        date = Date(0),
+        description = "text text text text text text text text text text text text text text text " +
+                "text text text text text text text text text text text text text text text " +
+                "text text text text text text text text text text text text text text",
+        coverReference = null,
+        backgroundImageReference = null,
+        backgroundVideoReference = null,
+        title = "title title title title title title title title",
+        creator = "creator creator creator creator creator",
+        type = "type",
+        tags = listOf("tag", "tag", "tag", "tag"),
+        coverType = ItemsShapes.vertical.name,
+        comments = comments,
+        isLiked = true,
+        recommendationId = "",
+        currentUserUid = "",
+        openScreen = { },
+        onLikeClick = { _: Boolean, _: String, _: String -> Response.Success(true) },
+        onCommentIconClick = { _: String, _: List<Comment> -> },
+        onRecommendationClick = { _: (String) -> Unit, _: Recommendation -> }
+    )
 }

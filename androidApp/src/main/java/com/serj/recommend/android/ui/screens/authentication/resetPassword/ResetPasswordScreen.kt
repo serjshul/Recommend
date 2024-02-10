@@ -29,7 +29,7 @@ import com.serj.recommend.android.ui.components.splash.AppLogo
 @Composable
 fun ResetPasswordScreen(
     modifier: Modifier = Modifier,
-    openScreen: (String) -> Unit,
+    openAndPopUp: (String, String) -> Unit,
     viewModel: ResetPasswordViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState
@@ -38,7 +38,7 @@ fun ResetPasswordScreen(
         modifier = modifier,
         uiState = uiState,
         onEmailChange = viewModel::onEmailChange,
-        onResetPasswordClick = { viewModel.onResetPasswordClick(openScreen) }
+        onResetPasswordClick = { viewModel.onResetPasswordClick(openAndPopUp) }
     )
 }
 

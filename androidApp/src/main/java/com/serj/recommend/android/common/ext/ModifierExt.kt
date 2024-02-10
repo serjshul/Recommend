@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 
 fun Modifier.textInterval(): Modifier {
     return this
-        .padding(bottom = 11.dp)
+        .padding(bottom = 20.dp)
 }
 
 fun Modifier.textShape(): Modifier {
@@ -25,13 +25,13 @@ fun Modifier.textShape(): Modifier {
 
 fun Modifier.itemsInterval(): Modifier {
     return this
-        .padding(bottom = 20.dp)
+        .padding(bottom = 15.dp)
 }
 
 fun Modifier.recommendationHeaderShape(): Modifier {
     return this
         .fillMaxWidth()
-        .height(300.dp)
+        .height(450.dp)
 }
 
 fun Modifier.recommendationContentShape(): Modifier {
@@ -45,7 +45,6 @@ fun Modifier.recommendationParagraphShape(): Modifier {
     return this
         .fillMaxWidth()
         .wrapContentHeight()
-        .padding(bottom = 20.dp)
 }
 
 fun Modifier.recommendationMediaShape(): Modifier {
@@ -72,12 +71,12 @@ fun Modifier.topBarShape(): Modifier {
 
 fun Modifier.screenPaddingsInner(): Modifier {
     return this
-        .padding(start = 15.dp, end = 15.dp)
+        .padding(start = 10.dp, end = 10.dp)
 }
 
 fun Modifier.screenPaddingsOuter(): Modifier {
     return this
-        .padding(top = 15.dp, bottom = 15.dp)
+        .padding(top = 10.dp, bottom = 10.dp)
 }
 
 fun Modifier.bannerHeaderShape(): Modifier {
@@ -101,7 +100,7 @@ fun Modifier.extendedCategoryBackgroundShape(): Modifier {
 
 fun Modifier.categoryItemsInterval(): Modifier {
     return this
-        .padding(end = 8.dp)
+        .padding(end = 10.dp)
 }
 
 

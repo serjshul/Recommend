@@ -14,7 +14,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.serj.recommend.android.model.Banner
@@ -27,7 +27,6 @@ import com.serj.recommend.android.ui.components.categories.PagerCategory
 import com.serj.recommend.android.ui.components.loadingIndicators.LargeLoadingIndicator
 import com.serj.recommend.android.ui.components.loadingIndicators.SmallLoadingIndicator
 import com.serj.recommend.android.ui.screens.main.home.components.Banner
-import com.serj.recommend.android.ui.styles.White
 
 @Composable
 fun HomeScreen(
@@ -69,7 +68,7 @@ fun HomeScreenContent(
                 modifier = modifier
                     .fillMaxSize()
                     .padding(paddingValues)
-                    .background(color = Color.White)
+                    .background(color = White)
             ) {
                 item {
                     Banner(

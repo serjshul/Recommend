@@ -1,12 +1,17 @@
 package com.serj.recommend.android.ui.screens.common.recommendation.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.serj.recommend.android.common.ext.toParagraphText
 import com.serj.recommend.android.ui.components.text.TextParagraphs
-import com.serj.recommend.android.ui.styles.White
 
 @Composable
 fun Description(
@@ -16,7 +21,23 @@ fun Description(
     val paragraphs = description.toParagraphText()
 
     TextParagraphs(
-        modifier = modifier,
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(
+                RoundedCornerShape(
+                    topStart = 20.dp,
+                    topEnd = 20.dp,
+                    bottomStart = 0.dp,
+                    bottomEnd = 0.dp
+                )
+            )
+            .background(Color.White)
+            .padding(
+                start = 15.dp,
+                top = 15.dp,
+                end = 15.dp,
+                bottom = 12.5.dp
+            ),
         paragraphTexts = paragraphs
     )
 }
@@ -25,10 +46,11 @@ fun Description(
 @Composable
 fun DescriptionPreview() {
     Description(
-        modifier = Modifier.background(White),
-        description = "In a world divided by factions based on virtues, Tris learns she's " +
-                "Divergent and won't fit in. When she discovers a plot to destroy Divergents, " +
-                "Tris and the mysterious Four must find out what makes Divergents dangerous " +
-                "before it's too late."
+        description = "description description description description description description " +
+                "description description description description description description " +
+                "description description description description description description\n" +
+                "description description description description description description " +
+                "description description description description description description " +
+                "description description description description description description "
     )
 }

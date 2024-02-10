@@ -16,21 +16,22 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.serj.recommend.android.common.ext.bannerContentShape
 import com.serj.recommend.android.common.ext.screenPaddingsInner
+import com.serj.recommend.android.model.Comment
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.items.RecommendationItem
-import com.serj.recommend.android.services.BannerResponse
+import com.serj.recommend.android.services.GetBannerResponse
+import com.serj.recommend.android.services.model.Response
 import com.serj.recommend.android.services.model.Response.Failure
 import com.serj.recommend.android.services.model.Response.Success
 import com.serj.recommend.android.ui.components.loadingIndicators.LargeLoadingIndicator
 import com.serj.recommend.android.ui.components.loadingIndicators.SmallLoadingIndicator
-import com.serj.recommend.android.ui.components.recommendationPreviews.RecommendationItem
 import com.serj.recommend.android.ui.screens.common.banner.components.Description
 import com.serj.recommend.android.ui.screens.common.banner.components.Header
-import com.serj.recommend.android.ui.styles.White
 
 @Composable
 fun BannerScreen(
@@ -39,17 +40,20 @@ fun BannerScreen(
     popUpScreen: () -> Unit,
     viewModel: BannerViewModel = hiltViewModel()
 ) {
-    val bannerResponse = viewModel.bannerResponse
+    val bannerResponse = viewModel.getBannerResponse
     val currentRecommendations = viewModel.currentRecommendations
     val currentRecommendationsAmount = viewModel.currentRecommendationsAmount
+    val currentUid = viewModel.currentUid
 
     BannerScreenContent(
         modifier = modifier,
-        bannerResponse = bannerResponse.value,
+        getBannerResponse = bannerResponse.value,
+        currentUid = currentUid.value,
         currentRecommendations = currentRecommendations,
         recommendationsAmount = currentRecommendationsAmount.intValue,
         openScreen = openScreen,
         popUpScreen = popUpScreen,
+        onLikeClick = viewModel::onLikeClick,
         onRecommendationClick = viewModel::onRecommendationClick
     )
 }
@@ -57,19 +61,21 @@ fun BannerScreen(
 @Composable
 fun BannerScreenContent(
     modifier: Modifier = Modifier,
-    bannerResponse: BannerResponse?,
+    getBannerResponse: GetBannerResponse?,
+    currentUid: String?,
     currentRecommendations: List<MutableState<RecommendationItem>>,
     recommendationsAmount: Int,
     openScreen: (String) -> Unit,
     popUpScreen: () -> Unit,
+    onLikeClick: (Boolean, String, String) -> Response<Boolean>,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
 ) {
     Scaffold(
         modifier = modifier
     ) { paddingValues ->
-        when (bannerResponse) {
+        when (getBannerResponse) {
             is Success -> {
-                val banner = bannerResponse.data
+                val banner = getBannerResponse.data
                 if (banner != null) {
                     var isLoading by rememberSaveable { mutableStateOf(true) }
                     var currentRecommendationsAmount = 0
@@ -106,7 +112,7 @@ fun BannerScreenContent(
                         }
 
                         items(currentRecommendations) {
-                            RecommendationItem(
+                            com.serj.recommend.android.ui.components.recommendationPreviews.RecommendationItem(
                                 modifier = Modifier.padding(bottom = 10.dp),
                                 user = it.value.userItem,
                                 date = it.value.date,
@@ -115,10 +121,17 @@ fun BannerScreenContent(
                                 backgroundVideoReference = it.value.backgroundVideoReference,
                                 title = it.value.title,
                                 creator = it.value.creator,
+                                type = it.value.type,
+                                tags = it.value.tags,
                                 coverType = it.value.coverType,
                                 coverReference = it.value.coverReference,
+                                isLiked = it.value.isLiked,
+                                comments = it.value.comments,
                                 recommendationId = it.value.id,
+                                currentUserUid = currentUid,
                                 openScreen = openScreen,
+                                onLikeClick = onLikeClick,
+                                onCommentIconClick = { _: String, _: List<Comment> -> },
                                 onRecommendationClick = onRecommendationClick
                             )
 
@@ -140,7 +153,7 @@ fun BannerScreenContent(
                 }
             }
             is Failure -> {
-                print(bannerResponse.e)
+                print(getBannerResponse.e)
             }
             else -> {
                 LargeLoadingIndicator(

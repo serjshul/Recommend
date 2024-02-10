@@ -10,6 +10,8 @@ data class RecommendationPreview(
 
     val title: String? = null,
     val creator: String? = null,
+    val type: String? = null,
+    val tags: List<String> = listOf(),
 
     val coversUrl: HashMap<String, String> = hashMapOf(),
     var coverReference: StorageReference? = null,

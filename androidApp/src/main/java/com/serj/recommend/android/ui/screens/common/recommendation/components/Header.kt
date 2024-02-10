@@ -1,25 +1,15 @@
 package com.serj.recommend.android.ui.screens.common.recommendation.components
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -28,126 +18,50 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.google.firebase.storage.StorageReference
-import com.serj.recommend.android.R
-import com.serj.recommend.android.common.ext.mediaHeaderShape
-import com.serj.recommend.android.common.ext.recommendationHeaderShape
-import com.serj.recommend.android.common.ext.topBarShape
-import com.serj.recommend.android.ui.components.media.CustomGlideImageShaded
 
 @Composable
 fun Header(
     modifier: Modifier = Modifier,
     title: String,
-    type: String,
     creator: String,
     tags: List<String>,
     year: Int,
-    backgroundImageReference: StorageReference?,
-    backgroundVideoReference: StorageReference?,
-    popUpScreen: () -> Unit
+    photoReference: StorageReference?,
+    nickname: String?
 ) {
-    Box(
-        modifier = modifier.recommendationHeaderShape()
-    ) {
-        when {
-            backgroundVideoReference != null -> {
-                // TODO: add video player
-            }
-            backgroundImageReference != null -> {
-                CustomGlideImageShaded(
-                    modifier = Modifier.mediaHeaderShape(),
-                    reference = backgroundImageReference
-                )
-            }
-            else -> {
-                Image(
-                    modifier = Modifier.mediaHeaderShape(),
-                    painter = painterResource(id = R.drawable.gradient),
-                    contentDescription = "header background",
-                    contentScale = ContentScale.Crop
-                )
-            }
-        }
-
-        Column(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            HeaderTopBar(
-                modifier = Modifier.topBarShape(),
-                type = type,
-                popUpScreen = popUpScreen
-            )
-
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(35.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Bottom
-            ) {
-                Text(
-                    modifier = Modifier.padding(bottom = 10.dp),
-                    text = title,
-                    color = Color.White,
-                    fontSize = 24.sp,
-                    maxLines = 4,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-
-                HeaderInfo(
-                    modifier = Modifier.fillMaxWidth(),
-                    creator = creator,
-                    tags = tags,
-                    year = year
-                )
-            }
-        }
-    }
-}
-
-@Composable
-fun HeaderTopBar(
-    modifier: Modifier = Modifier,
-    type: String,
-    popUpScreen: () -> Unit
-) {
-    // TODO: save like / unlike by user
-    var isSaved by rememberSaveable { mutableStateOf(false) }
-
-    Box(
+    Column(
         modifier = modifier
     ) {
-        Image(
-            modifier = Modifier
-                .padding(20.dp)
-                .align(Alignment.TopStart)
-                .clickable { popUpScreen() },
-            painter = painterResource(id = R.drawable.icon_arrow_back_white),
-            contentDescription = "button_back",
-            contentScale = ContentScale.Crop
-        )
+        if (nickname != null) {
+            UserInfo(
+                photoReference = photoReference,
+                nickname = nickname
+            )
+        }
 
         Text(
             modifier = Modifier
-                .align(Alignment.Center),
-            text = type,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center,
+                .padding(
+                    start = 15.dp,
+                    end = 15.dp,
+                    top = if (nickname != null) 190.dp else 246.dp
+                )
+                .align(Alignment.CenterHorizontally),
+            text = title,
             color = Color.White,
-            fontSize = 14.sp
+            fontSize = 24.sp,
+            maxLines = 4,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center
         )
 
-        Image(
+        HeaderInfo(
             modifier = Modifier
-                .padding(20.dp)
-                .align(Alignment.TopEnd)
-                .clickable { isSaved = !isSaved },
-            painter = if (isSaved) painterResource(id = R.drawable.icon_saved)
-            else painterResource(id = R.drawable.icon_unsaved),
-            contentDescription = if (isSaved) "button_saved"
-            else "button_unsaved",
-            contentScale = ContentScale.Crop
+                .padding(15.dp, 20.dp)
+                .fillMaxWidth(),
+            creator = creator,
+            tags = tags,
+            year = year
         )
     }
 }
@@ -220,15 +134,13 @@ fun HeaderInfo(
 
 @Preview
 @Composable
-fun HeaderPreview() {
+fun RecommendationHeaderPreview() {
     Header(
         title = "Title",
-        type = "Type",
         creator = "Creator",
-        tags = arrayListOf("Tags"),
+        tags = listOf("tag", "tag", "tag", "tag", "tag", "tag", "tag", "tag", "tag", "tag", "tag", "tag"),
         year = 2023,
-        backgroundImageReference = null,
-        backgroundVideoReference = null,
-        popUpScreen = { }
+        photoReference = null,
+        nickname = "nickname"
     )
 }

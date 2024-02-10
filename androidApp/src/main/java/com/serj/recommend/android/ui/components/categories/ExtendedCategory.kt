@@ -42,7 +42,6 @@ import com.serj.recommend.android.ui.components.recommendationPreviews.transpare
 import com.serj.recommend.android.ui.components.snackbar.SnackbarManager
 import com.serj.recommend.android.ui.screens.main.home.HomeViewModel.Companion.AMOUNT_THRESHOLD
 import com.serj.recommend.android.ui.screens.main.home.components.ShowAllButton
-import com.serj.recommend.android.ui.styles.White
 
 @Composable
 fun ExtendedCategory(
@@ -90,7 +89,7 @@ fun ExtendedCategory(
             Text(
                 modifier = Modifier
                     .screenPaddingsInner()
-                    .padding(top = 10.dp, bottom = 10.dp)
+                    .padding(start = 4.dp, top = 10.dp, bottom = 10.dp)
                     .align(Alignment.TopStart)
                     .clickable { onCategoryClick(openScreen, category.id) },
                 text = category.title,
@@ -117,6 +116,8 @@ fun ExtendedCategory(
                                 modifier = Modifier.categoryItemsInterval(),
                                 title = it.title,
                                 creator = it.creator,
+                                type = it.type,
+                                tags = it.tags,
                                 coverReference = it.coverReference,
                                 recommendationId = it.id,
                                 openScreen = openScreen,
@@ -128,6 +129,8 @@ fun ExtendedCategory(
                                 modifier = Modifier.categoryItemsInterval(),
                                 title = it.title,
                                 creator = it.creator,
+                                type = it.type,
+                                tags = it.tags,
                                 coverReference = it.coverReference,
                                 recommendationId = it.id,
                                 openScreen = openScreen,
@@ -139,6 +142,8 @@ fun ExtendedCategory(
                                 modifier = Modifier.categoryItemsInterval(),
                                 title = it.title,
                                 creator = it.creator,
+                                type = it.type,
+                                tags = it.tags,
                                 coverReference = it.coverReference,
                                 recommendationId = it.id,
                                 openScreen = openScreen,
@@ -160,7 +165,7 @@ fun ExtendedCategory(
                                 modifier = Modifier
                                     .width(130.dp)
                                     .fillParentMaxHeight(),
-                                backgroundColor = White
+                                backgroundColor = Color.White
                             )
                         }
                     }

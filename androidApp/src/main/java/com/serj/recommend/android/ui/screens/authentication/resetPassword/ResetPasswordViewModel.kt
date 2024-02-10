@@ -26,7 +26,7 @@ class ResetPasswordViewModel @Inject constructor(
         uiState.value = uiState.value.copy(email = newValue)
     }
 
-    fun onResetPasswordClick(openScreen: (String) -> Unit) {
+    fun onResetPasswordClick(openAndPopUp: (String, String) -> Unit) {
         if (!email.isValidEmail()) {
             SnackbarManager.showMessage(R.string.email_error)
             return
@@ -34,7 +34,7 @@ class ResetPasswordViewModel @Inject constructor(
         launchCatching {
             accountService.sendPasswordResetEmail(email)
             SnackbarManager.showMessage(R.string.recovery_email_sent)
-            openScreen(RecommendRoutes.SignInScreen.name)
+            openAndPopUp(RecommendRoutes.SignInScreen.name, RecommendRoutes.ResetPasswordScreen.name)
         }
     }
 }

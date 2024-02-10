@@ -1,7 +1,10 @@
 package com.serj.recommend.android.services.impl
 
-import android.content.ContentValues
+import android.content.ContentValues.TAG
+import android.content.Context
+import android.net.Uri
 import android.util.Log
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.dataObjects
@@ -14,19 +17,25 @@ import com.serj.recommend.android.common.RecommendationNotFoundException
 import com.serj.recommend.android.common.UserNotFoundException
 import com.serj.recommend.android.model.Banner
 import com.serj.recommend.android.model.Category
+import com.serj.recommend.android.model.Comment
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.items.RecommendationItem
 import com.serj.recommend.android.model.items.RecommendationPreview
 import com.serj.recommend.android.model.items.UserItem
-import com.serj.recommend.android.services.BannerResponse
-import com.serj.recommend.android.services.CategoryResponse
-import com.serj.recommend.android.services.FollowingRecommendationsIdsResponse
-import com.serj.recommend.android.services.RecommendationItemResponse
-import com.serj.recommend.android.services.RecommendationPreviewResponse
-import com.serj.recommend.android.services.RecommendationResponse
-import com.serj.recommend.android.services.StorageReferenceFromUrlResponse
+import com.serj.recommend.android.services.DeleteCommentResponse
+import com.serj.recommend.android.services.GetBannerResponse
+import com.serj.recommend.android.services.GetCategoryResponse
+import com.serj.recommend.android.services.GetCommentsResponse
+import com.serj.recommend.android.services.GetFollowingRecommendationsIdsResponse
+import com.serj.recommend.android.services.GetRecommendationItemResponse
+import com.serj.recommend.android.services.GetRecommendationPreviewResponse
+import com.serj.recommend.android.services.GetRecommendationResponse
+import com.serj.recommend.android.services.GetStorageReferenceFromUrlResponse
+import com.serj.recommend.android.services.GetUserItemResponse
+import com.serj.recommend.android.services.LikeOrUnlikeRecommendationResponse
 import com.serj.recommend.android.services.StorageService
-import com.serj.recommend.android.services.UserItemResponse
+import com.serj.recommend.android.services.UploadCommentResponse
+import com.serj.recommend.android.services.UploadRecommendationResponse
 import com.serj.recommend.android.services.model.Response.Failure
 import com.serj.recommend.android.services.model.Response.Success
 import com.serj.recommend.android.ui.components.media.BackgroundTypes
@@ -56,7 +65,7 @@ class StorageServiceImpl @Inject constructor(
 
     override suspend fun getRecommendationById(
         recommendationId: String
-    ): RecommendationResponse {
+    ): GetRecommendationResponse {
         return try {
             val recommendationSnapshot = firestore
                 .collection(RECOMMENDATIONS_COLLECTION)
@@ -87,7 +96,7 @@ class StorageServiceImpl @Inject constructor(
 
     override suspend fun getBannerById(
         bannerId: String
-    ): BannerResponse {
+    ): GetBannerResponse {
         return try {
             val bannerSnapshot = firestore
                 .collection(BANNERS_COLLECTION)
@@ -115,7 +124,7 @@ class StorageServiceImpl @Inject constructor(
 
     override suspend fun getCategoryById(
         categoryId: String
-    ): CategoryResponse {
+    ): GetCategoryResponse {
         return try {
             val categorySnapshot = firestore
                 .collection(CATEGORIES_COLLECTION)
@@ -140,30 +149,38 @@ class StorageServiceImpl @Inject constructor(
     }
 
     override suspend fun getRecommendationItemById(
-        recommendationId: String
-    ): RecommendationItemResponse {
+        recommendationId: String,
+        currentUserLikedIds: ArrayList<String>
+    ): GetRecommendationItemResponse {
         return try {
             val recommendationItemSnapshot = firestore
                 .collection(RECOMMENDATIONS_COLLECTION)
                 .document(recommendationId)
                 .get()
                 .await()
-            val data = recommendationItemSnapshot.toObject<RecommendationItem>()
+            val recommendationData = recommendationItemSnapshot.toObject<RecommendationItem>()
 
-            if (data != null) {
-                val coverType = getCoverType(data.coversUrl)
-                if (data.uid != null) {
-                    when (val userItemResponse = getUserItemByUid(data.uid)) {
-                        is Success -> data.userItem = userItemResponse.data
+            if (recommendationData != null) {
+                val coverType = getCoverType(recommendationData.coversUrl)
+                if (recommendationData.uid != null) {
+                    when (val userItemResponse = getUserItemByUid(recommendationData.uid)) {
+                        is Success -> recommendationData.userItem = userItemResponse.data
                         else -> Failure(UserNotFoundException())
                     }
                 }
-                data.coverType = coverType
-                data.coverReference = data.coversUrl[coverType]
+                recommendationData.coverType = coverType
+                recommendationData.coverReference = recommendationData.coversUrl[coverType]
                     ?.let { storage.getReferenceFromUrl(it) }
-                data.backgroundImageReference = data.backgroundUrl[BackgroundTypes.image.name]
+                recommendationData.backgroundImageReference = recommendationData.backgroundUrl[BackgroundTypes.image.name]
                     ?.let { storage.getReferenceFromUrl(it) }
-                Success(data)
+                recommendationData.isLiked = currentUserLikedIds.contains(recommendationData.id)
+
+                val commentsResponse = getComments(recommendationId)
+                if (commentsResponse is Success && commentsResponse.data != null) {
+                    recommendationData.comments.addAll(commentsResponse.data)
+                }
+
+                Success(recommendationData)
             } else {
                 Failure(RecommendationNotFoundException())
             }
@@ -175,7 +192,7 @@ class StorageServiceImpl @Inject constructor(
     override suspend fun getRecommendationPreviewById(
         recommendationId: String,
         coverType: String
-    ): RecommendationPreviewResponse {
+    ): GetRecommendationPreviewResponse {
         return try {
             val recommendationPreviewSnapshot = firestore
                 .collection(RECOMMENDATIONS_COLLECTION)
@@ -188,7 +205,6 @@ class StorageServiceImpl @Inject constructor(
                 val availableCoverTypes = getAvailableCoverTypes(data.coversUrl)
                 val currentCoverType = if (availableCoverTypes.contains(coverType)) coverType
                 else getCoverType(data.coversUrl)
-                Log.v(ContentValues.TAG, data.coversUrl.toString())
                 data.coverType = currentCoverType
                 data.coverReference = data.coversUrl[currentCoverType]
                     ?.let { storage.getReferenceFromUrl(it) }
@@ -203,7 +219,7 @@ class StorageServiceImpl @Inject constructor(
 
     override suspend fun getUserItemByUid(
         uid: String
-    ): UserItemResponse {
+    ): GetUserItemResponse {
         return try {
             val recommendationPreviewSnapshot = firestore
                 .collection(USERS_COLLECTION)
@@ -224,12 +240,91 @@ class StorageServiceImpl @Inject constructor(
         }
     }
 
+    override suspend fun getComments(
+        recommendationId: String
+    ): GetCommentsResponse {
+        return try {
+            val commentsSnapshot = firestore
+                .collection(RECOMMENDATIONS_COLLECTION)
+                .document(recommendationId)
+                .collection(COMMENTS_COLLECTION)
+                .get()
+                .await()
+            val commentsData = commentsSnapshot.toObjects<Comment>()
+
+            for (comment in commentsData) {
+                val userItemResponse = comment.userId?.let { getUserItemByUid(it) }
+                if (userItemResponse is Success && userItemResponse.data != null) {
+                    comment.userItem = userItemResponse.data
+                }
+            }
+
+            Success(commentsData)
+        } catch (e: Exception) {
+            Failure(e)
+        }
+    }
+
+    override fun likeOrUnlikeRecommendation(
+        isLiked: Boolean,
+        uid: String,
+        recommendationId: String
+    ): LikeOrUnlikeRecommendationResponse {
+        return try {
+            if (!isLiked) {
+                firestore
+                    .collection(USERS_COLLECTION)
+                    .document(uid)
+                    .update(LIKED_IDS_FIELD, FieldValue.arrayUnion(recommendationId))
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful)
+                            Log.d(TAG, "User DocumentSnapshot successfully updated!")
+                        else
+                            Log.w(TAG, "Error updating user document: $task")
+                    }
+                firestore
+                    .collection(RECOMMENDATIONS_COLLECTION)
+                    .document(recommendationId)
+                    .update(LIKED_BY_FIELD, FieldValue.arrayUnion(uid))
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful)
+                            Log.d(TAG, "Recommendation DocumentSnapshot successfully updated!")
+                        else
+                            Log.w(TAG, "Error updating recommendation document: $task")
+                    }
+            } else {
+                firestore
+                    .collection(USERS_COLLECTION)
+                    .document(uid)
+                    .update(LIKED_IDS_FIELD, FieldValue.arrayRemove(recommendationId))
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful)
+                            Log.d(TAG, "User DocumentSnapshot successfully updated!")
+                        else
+                            Log.w(TAG, "Error updating user document: $task")
+                    }
+                firestore
+                    .collection(RECOMMENDATIONS_COLLECTION)
+                    .document(recommendationId)
+                    .update(LIKED_BY_FIELD, FieldValue.arrayRemove(uid))
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful)
+                            Log.d(TAG, "Recommendation DocumentSnapshot successfully updated!")
+                        else
+                            Log.w(TAG, "Error updating recommendation document: $task")
+                    }
+            }
+            Success(true)
+        } catch (e: Exception) {
+            Failure(e)
+        }
+    }
+
     override suspend fun getFollowingRecommendationsIds(
         followingUids: List<String>
-    ): FollowingRecommendationsIdsResponse {
+    ): GetFollowingRecommendationsIdsResponse {
         return try {
             val followingRecommendationsIds = mutableListOf<Pair<String, Date>>()
-
             for (followingUid in followingUids) {
                 val recommendationSnapshot = firestore
                     .collection(RECOMMENDATIONS_COLLECTION)
@@ -238,16 +333,15 @@ class StorageServiceImpl @Inject constructor(
                     .limit(10)
                     .get()
                     .await()
-                val data = recommendationSnapshot.toObjects<RecommendationItem>()
-                for (item in data) {
-                    if (item.id != null && item.date != null) {
-                        followingRecommendationsIds.add(
-                            Pair(item.id, item.date)
+                for (item in recommendationSnapshot) {
+                    followingRecommendationsIds.add(
+                        Pair(
+                            item.id,
+                            item.getTimestamp(DATE_FIELD)!!.toDate()
                         )
-                    }
+                    )
                 }
             }
-
             followingRecommendationsIds.sortByDescending { it.second }
             Success(followingRecommendationsIds.map { it.first })
         } catch (e: Exception) {
@@ -255,9 +349,177 @@ class StorageServiceImpl @Inject constructor(
         }
     }
 
+    override fun uploadComment(
+        recommendationId: String,
+        userId: String,
+        text: String
+    ): UploadCommentResponse {
+        return try {
+            val comment = hashMapOf(
+                "userId" to userId,
+                "repliedCommentId" to null,
+                "text" to text,
+                "date" to FieldValue.serverTimestamp(),
+                "likedBy" to arrayListOf<String>()
+            )
+            firestore
+                .collection(RECOMMENDATIONS_COLLECTION)
+                .document(recommendationId)
+                .collection(COMMENTS_COLLECTION)
+                .add(comment)
+                .addOnCompleteListener { task ->
+                if (task.isSuccessful)
+                    Log.d(TAG, "Recommendation DocumentSnapshot successfully updated!")
+                else
+                    Log.w(TAG, "Error updating recommendation document: $task")
+                }
+            Success(true)
+        } catch (e: Exception) {
+            Failure(e)
+        }
+    }
+
+    override fun deleteComment(
+        recommendationId: String,
+        userId: String,
+        commentId: String,
+        commentOwnerId: String
+    ): DeleteCommentResponse {
+        return try {
+            if (userId == commentOwnerId) {
+                firestore
+                    .collection(RECOMMENDATIONS_COLLECTION)
+                    .document(recommendationId)
+                    .collection(COMMENTS_COLLECTION)
+                    .document(commentId)
+                    .delete()
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful)
+                            Log.d(TAG, "Recommendation DocumentSnapshot successfully updated!")
+                        else
+                            Log.w(TAG, "Error updating recommendation document: $task")
+                    }
+                Success(true)
+            } else {
+                Failure(Exception())
+            }
+        } catch (e: Exception) {
+            Failure(e)
+        }
+    }
+
+    override suspend fun uploadRecommendation(
+        recommendation: Recommendation
+    ): UploadRecommendationResponse {
+        return try {
+            var result = ""
+
+            firestore
+                .collection(RECOMMENDATIONS_COLLECTION)
+                .add(recommendation)
+                .addOnCompleteListener { task ->
+                    result = task.result.id
+                    if (task.isSuccessful)
+                        Log.d(TAG, "Recommendation successfully uploaded!")
+                    else
+                        Log.w(TAG, "Error uploading recommendation document: $task")
+                }
+                .await()
+
+            Success(result)
+        } catch (e: Exception) {
+            Failure(e)
+        }
+    }
+
+    override suspend fun uploadBackgroundImage(
+        recommendationId: String,
+        uri: Uri,
+        context: Context
+    ) {
+        val backgroundUrl = hashMapOf<String, String>()
+
+        val storageRef = storage.reference
+        val backgroundImageRef = storageRef.child(
+            "recommendations/${recommendationId}/background.jpg"
+        )
+        val byteArray = context.contentResolver
+            .openInputStream(uri)
+            ?.use { it.readBytes() }
+        byteArray?.let {
+            backgroundImageRef
+                .putBytes(byteArray)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Log.d(TAG, "Well done")
+                        backgroundUrl["image"] = task.result.storage.toString()
+                    } else
+                        Log.w(TAG, "Error in uploadImage")
+                }
+                .await()
+        }
+
+        if (backgroundUrl.isNotEmpty()) {
+            firestore
+                .collection(RECOMMENDATIONS_COLLECTION)
+                .document(recommendationId)
+                .update("backgroundUrl", backgroundUrl)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful)
+                        Log.d(TAG, "Recommendation successfully updated!")
+                    else
+                        Log.w(TAG, "Error updating recommendation document: $task")
+                }
+                .await()
+        }
+    }
+
+    override suspend fun uploadCoverImage(
+        recommendationId: String,
+        uri: Uri,
+        coverType: String,
+        context: Context
+    ) {
+        val coversUrl = hashMapOf<String, String>()
+
+        val storageRef = storage.reference
+        val backgroundImageRef = storageRef.child(
+            "recommendations/${recommendationId}/cover_$coverType.jpg"
+        )
+        val byteArray = context.contentResolver
+            .openInputStream(uri)
+            ?.use { it.readBytes() }
+        byteArray?.let {
+            backgroundImageRef
+                .putBytes(byteArray)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Log.d(TAG, "Well done")
+                        coversUrl[coverType] = task.result.storage.toString()
+                    } else
+                        Log.w(TAG, "Error in uploadImage")
+                }
+                .await()
+        }
+
+        if (coversUrl.isNotEmpty()) {
+            firestore
+                .collection(RECOMMENDATIONS_COLLECTION)
+                .document(recommendationId)
+                .update("coversUrl", coversUrl)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful)
+                        Log.d(TAG, "Recommendation successfully updated!")
+                    else
+                        Log.w(TAG, "Error updating recommendation document: $task")
+                }
+                .await()
+        }
+    }
+
     override fun getStorageReferenceFromUrl(
         url: String
-    ): StorageReferenceFromUrlResponse {
+    ): GetStorageReferenceFromUrlResponse {
         return try {
             val storageReference = storage.getReferenceFromUrl(url)
             Success(storageReference)
@@ -290,7 +552,11 @@ class StorageServiceImpl @Inject constructor(
         private const val BANNERS_COLLECTION = "banners"
         private const val USERS_COLLECTION = "users"
 
+        private const val COMMENTS_COLLECTION = "comments"
+
         private const val USER_ID_FIELD = "uid"
         private const val DATE_FIELD = "date"
+        private const val LIKED_IDS_FIELD = "likedIds"
+        private const val LIKED_BY_FIELD = "likedBy"
     }
 }

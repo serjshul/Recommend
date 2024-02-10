@@ -13,10 +13,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.serj.recommend.android.RecommendAppState
 import com.serj.recommend.android.RecommendRoutes
-import com.serj.recommend.android.ui.BottomNavigationBar
+import com.serj.recommend.android.ui.components.bottombar.BottomNavigationBar
 import com.serj.recommend.android.ui.screens.main.feed.FeedScreen
 import com.serj.recommend.android.ui.screens.main.home.HomeScreen
 import com.serj.recommend.android.ui.screens.main.rec.RecScreen
+import com.serj.recommend.android.ui.screens.main.newRecommendation.NewRecommendationScreen
+import com.serj.recommend.android.ui.screens.main.profile.ProfileScreen
 import com.serj.recommend.android.ui.screens.main.search.SearchScreen
 import com.serj.recommend.android.ui.styles.RecommendTheme
 
@@ -70,8 +72,8 @@ fun NavGraphBuilder.mainScreenGraph(
             }
         )
     }
-    composable(RecommendRoutes.RecScreen.name) {
-        RecScreen()
+    composable(RecommendRoutes.NewRecommendationScreen.name) {
+        NewRecommendationScreen()
     }
     composable(RecommendRoutes.SearchScreen.name) {
         SearchScreen()

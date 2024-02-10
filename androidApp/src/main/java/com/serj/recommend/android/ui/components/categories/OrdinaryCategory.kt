@@ -17,6 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,7 +35,6 @@ import com.serj.recommend.android.ui.components.recommendationPreviews.transpare
 import com.serj.recommend.android.ui.components.snackbar.SnackbarManager
 import com.serj.recommend.android.ui.screens.main.home.HomeViewModel
 import com.serj.recommend.android.ui.screens.main.home.components.ShowAllButton
-import com.serj.recommend.android.ui.styles.White
 
 @Composable
 fun OrdinaryCategory(
@@ -54,7 +54,7 @@ fun OrdinaryCategory(
             Text(
                 modifier = Modifier
                     .screenPaddingsInner()
-                    .padding(bottom = 10.dp)
+                    .padding(start = 4.dp, bottom = 10.dp)
                     .clickable { onCategoryClick(openScreen, category.id) },
                 text = category.title,
                 color = Color.Black,
@@ -77,6 +77,8 @@ fun OrdinaryCategory(
                                 modifier = Modifier.categoryItemsInterval(),
                                 title = it.title,
                                 creator = it.creator,
+                                type = it.type,
+                                tags = it.tags,
                                 coverReference = it.coverReference,
                                 recommendationId = it.id,
                                 openScreen = openScreen,
@@ -89,6 +91,8 @@ fun OrdinaryCategory(
                                 modifier = Modifier.categoryItemsInterval(),
                                 title = it.title,
                                 creator = it.creator,
+                                type = it.type,
+                                tags = it.tags,
                                 coverReference = it.coverReference,
                                 recommendationId = it.id,
                                 openScreen = openScreen,
@@ -101,6 +105,8 @@ fun OrdinaryCategory(
                                 modifier = Modifier.categoryItemsInterval(),
                                 title = it.title,
                                 creator = it.creator,
+                                type = it.type,
+                                tags = it.tags,
                                 coverReference = it.coverReference,
                                 recommendationId = it.id,
                                 openScreen = openScreen,

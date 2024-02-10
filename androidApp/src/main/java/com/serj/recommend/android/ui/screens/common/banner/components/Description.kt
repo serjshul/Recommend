@@ -18,6 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntSize
@@ -27,8 +28,7 @@ import com.serj.recommend.android.common.ext.toColor
 import com.serj.recommend.android.common.ext.toParagraphText
 import com.serj.recommend.android.ui.components.loadingIndicators.SmallLoadingIndicator
 import com.serj.recommend.android.ui.components.text.TextParagraphs
-import com.serj.recommend.android.ui.styles.KiriumeRed
-import com.serj.recommend.android.ui.styles.White
+import com.serj.recommend.android.ui.styles.primary
 
 @Composable
 fun Description(
@@ -68,7 +68,7 @@ fun Description(
                         .padding(top = 2.dp)
                         .clickable { isOpened = true },
                     text = "Read all",
-                    color = color?.toColor() ?: KiriumeRed,
+                    color = color?.toColor() ?: primary,
                     fontWeight = FontWeight.Bold,
                     fontSize = 14.sp
                 )
@@ -78,7 +78,7 @@ fun Description(
                         .padding(top = 10.dp)
                         .clickable { isOpened = false },
                     text = "Close",
-                    color = color?.toColor() ?: KiriumeRed,
+                    color = color?.toColor() ?: primary,
                     fontWeight = FontWeight.Bold,
                     fontSize = 14.sp
                 )
@@ -106,7 +106,7 @@ fun TextHider(
             .fillMaxSize()
             .background(
                 Brush.verticalGradient(
-                    colors = listOf(Color.Transparent, Color.White),
+                    colors = listOf(Color.Transparent, White),
                     startY = textSize.height.toFloat() / 7,
                     endY = textSize.height.toFloat()
                 )

@@ -31,7 +31,7 @@ import com.serj.recommend.android.ui.components.splash.AppLogo
 @Composable
 fun SignUpScreen(
     modifier: Modifier = Modifier,
-    openScreen: (String) -> Unit,
+    openAndPopUp: (String, String) -> Unit,
     viewModel: SignUpViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState
@@ -42,7 +42,7 @@ fun SignUpScreen(
         onEmailChange = viewModel::onEmailChange,
         onPasswordChange = viewModel::onPasswordChange,
         onRepeatPasswordChange = viewModel::onRepeatPasswordChange,
-        onSignUpClick = { viewModel.onSignUpClick(openScreen) }
+        onSignUpClick = { viewModel.onSignUpClick(openAndPopUp) }
     )
 }
 

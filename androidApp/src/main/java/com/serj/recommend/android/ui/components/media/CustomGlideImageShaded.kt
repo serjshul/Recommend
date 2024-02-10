@@ -2,6 +2,7 @@ package com.serj.recommend.android.ui.components.media
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color.Companion.Gray
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.graphics.painter.ColorPainter
@@ -12,7 +13,6 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
 import com.google.firebase.storage.StorageReference
 import com.serj.recommend.android.R
-import com.serj.recommend.android.ui.styles.Gray
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable

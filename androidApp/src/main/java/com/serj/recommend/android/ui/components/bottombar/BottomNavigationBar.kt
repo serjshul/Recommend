@@ -1,4 +1,4 @@
-package com.serj.recommend.android.ui
+package com.serj.recommend.android.ui.components.bottombar
 
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Icon
@@ -8,17 +8,18 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color.Companion.Black
+import androidx.compose.ui.graphics.Color.Companion.LightGray
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.serj.recommend.android.ui.components.bottombar.BottomNavigation
-import com.serj.recommend.android.ui.styles.Black
-import com.serj.recommend.android.ui.styles.LightGray
-import com.serj.recommend.android.ui.styles.White
+import androidx.navigation.compose.rememberNavController
 
 @Composable
 fun BottomNavigationBar(
@@ -28,13 +29,13 @@ fun BottomNavigationBar(
     val screens = listOf(
         BottomNavigation.Home,
         BottomNavigation.Feed,
-        BottomNavigation.Rec,
+        BottomNavigation.New,
         BottomNavigation.Search,
         BottomNavigation.Profile
     )
 
     NavigationBar(
-        modifier = modifier.height(60.dp),
+        modifier = modifier.height(50.dp),
         containerColor = White
     ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -69,4 +70,12 @@ fun BottomNavigationBar(
             )
         }
     }
+}
+
+@Preview
+@Composable
+fun BottomNavigationBarPreview() {
+    BottomNavigationBar(
+        navController = rememberNavController()
+    )
 }

@@ -5,16 +5,17 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color.Companion.Gray
 
 private val lightColorScheme = lightColorScheme(
-    primary = TexasHeatwave,
-    secondary = KiriumeRed,
+    primary = secondary,
+    secondary = primary,
     tertiary = Gray
 )
 
 private val darkColorScheme = darkColorScheme(
-    primary = TexasHeatwave,
-    secondary = KiriumeRed,
+    primary = secondary,
+    secondary = primary,
     tertiary = Gray
 )
 

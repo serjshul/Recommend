@@ -20,6 +20,6 @@ data class Category(
     var backgroundImageReference: StorageReference? = null,
     var backgroundVideoReference: StorageReference? = null,
 
-    val recommendationIds: ArrayList<String> = arrayListOf(),
+    val recommendationsIds: ArrayList<String> = arrayListOf(),
     val content: ArrayList<RecommendationPreview> = arrayListOf()
 )

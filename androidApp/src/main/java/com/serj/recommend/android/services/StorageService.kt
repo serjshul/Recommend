@@ -1,8 +1,11 @@
 package com.serj.recommend.android.services
 
+import android.content.Context
+import android.net.Uri
 import com.google.firebase.storage.StorageReference
 import com.serj.recommend.android.model.Banner
 import com.serj.recommend.android.model.Category
+import com.serj.recommend.android.model.Comment
 import com.serj.recommend.android.model.Recommendation
 import com.serj.recommend.android.model.items.RecommendationItem
 import com.serj.recommend.android.model.items.RecommendationPreview
@@ -10,14 +13,19 @@ import com.serj.recommend.android.model.items.UserItem
 import com.serj.recommend.android.services.model.Response
 import kotlinx.coroutines.flow.Flow
 
-typealias RecommendationResponse = Response<Recommendation?>
-typealias BannerResponse = Response<Banner?>
-typealias CategoryResponse = Response<Category?>
-typealias RecommendationItemResponse = Response<RecommendationItem?>
-typealias RecommendationPreviewResponse = Response<RecommendationPreview?>
-typealias UserItemResponse = Response<UserItem?>
-typealias FollowingRecommendationsIdsResponse = Response<List<String>>
-typealias StorageReferenceFromUrlResponse = Response<StorageReference>
+typealias GetRecommendationResponse = Response<Recommendation?>
+typealias GetBannerResponse = Response<Banner?>
+typealias GetCategoryResponse = Response<Category?>
+typealias GetRecommendationItemResponse = Response<RecommendationItem?>
+typealias GetRecommendationPreviewResponse = Response<RecommendationPreview?>
+typealias GetUserItemResponse = Response<UserItem?>
+typealias GetCommentsResponse = Response<List<Comment>>
+typealias GetFollowingRecommendationsIdsResponse = Response<List<String>>
+typealias GetStorageReferenceFromUrlResponse = Response<StorageReference>
+typealias LikeOrUnlikeRecommendationResponse = Response<Boolean>
+typealias UploadCommentResponse = Response<Boolean>
+typealias DeleteCommentResponse = Response<Boolean>
+typealias UploadRecommendationResponse = Response<String>
 
 interface StorageService {
 
@@ -25,18 +33,41 @@ interface StorageService {
     val categories: Flow<List<Category>>
 
     suspend fun getRecommendationById(recommendationId: String):
-            RecommendationResponse
-    suspend fun getBannerById(bannerId: String): BannerResponse
-    suspend fun getCategoryById(categoryId: String): CategoryResponse
+            GetRecommendationResponse
+    suspend fun getBannerById(bannerId: String): GetBannerResponse
+    suspend fun getCategoryById(categoryId: String): GetCategoryResponse
 
-    suspend fun getRecommendationItemById(recommendationId: String):
-            RecommendationItemResponse
+    suspend fun getRecommendationItemById(
+        recommendationId: String, currentUserLikedIds: ArrayList<String>
+    ): GetRecommendationItemResponse
+
     suspend fun getRecommendationPreviewById(recommendationId: String, coverType: String):
-            RecommendationPreviewResponse
-    suspend fun getUserItemByUid(uid: String): UserItemResponse
+            GetRecommendationPreviewResponse
+    suspend fun getUserItemByUid(uid: String): GetUserItemResponse
+
+    suspend fun getComments(recommendationId: String): GetCommentsResponse
 
     suspend fun getFollowingRecommendationsIds(followingUids: List<String>):
-            FollowingRecommendationsIdsResponse
+            GetFollowingRecommendationsIdsResponse
 
-    fun getStorageReferenceFromUrl(url: String): StorageReferenceFromUrlResponse
+    fun getStorageReferenceFromUrl(url: String): GetStorageReferenceFromUrlResponse
+
+    fun likeOrUnlikeRecommendation(isLiked: Boolean, uid: String, recommendationId: String):
+            LikeOrUnlikeRecommendationResponse
+
+    suspend fun uploadRecommendation(recommendation: Recommendation):
+            UploadRecommendationResponse
+
+    fun uploadComment(recommendationId: String, userId: String, text: String):
+            UploadCommentResponse
+
+    fun deleteComment(recommendationId: String, userId: String, commentId: String,
+                      commentOwnerId: String):
+            DeleteCommentResponse
+
+    suspend fun uploadBackgroundImage(recommendationId: String, uri: Uri, context: Context)
+
+    suspend fun uploadCoverImage(
+        recommendationId: String, uri: Uri, coverType: String, context: Context
+    )
 }

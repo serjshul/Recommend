@@ -38,7 +38,7 @@ class AccountServiceImpl @Inject constructor(
             }
         }
 
-    override val currentUserId: String
+    override val currentUid: String
         get() = auth.currentUser?.uid.orEmpty()
 
     override val hasUser: Boolean
@@ -77,7 +77,7 @@ class AccountServiceImpl @Inject constructor(
                 .await()
         }
 
-    override suspend fun getUser(uid: String): User? {
+    private suspend fun getUser(uid: String): User? {
         var currentUser: User? = null
 
         firestore

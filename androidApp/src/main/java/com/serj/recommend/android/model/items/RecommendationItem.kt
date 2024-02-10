@@ -2,6 +2,7 @@ package com.serj.recommend.android.model.items
 
 import com.google.firebase.firestore.DocumentId
 import com.google.firebase.storage.StorageReference
+import com.serj.recommend.android.model.Comment
 import com.serj.recommend.android.ui.components.recommendationPreviews.ItemsShapes
 import java.util.Date
 
@@ -11,6 +12,8 @@ data class RecommendationItem(
 
     val title: String? = null,
     val creator: String? = null,
+    val type: String? = null,
+    val tags: List<String> = listOf(),
     val description: String? = null,
     val date: Date? = null,
 
@@ -24,6 +27,7 @@ data class RecommendationItem(
 
     var userItem: UserItem? = null,
 
-    val isLiked: Boolean = false,
-    val isReposted: Boolean = false,
+    var isLiked: Boolean = false,
+    var isReposted: Boolean = false,
+    val comments: ArrayList<Comment> = arrayListOf(),
 )

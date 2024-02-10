@@ -73,7 +73,7 @@ class HomeViewModel @Inject constructor(
                         }
                     }
                     val shuffledRecommendationIds = category
-                        .recommendationIds.shuffled()
+                        .recommendationsIds.shuffled()
                     for (i in shuffledRecommendationIds.indices) {
                         if (i < AMOUNT_THRESHOLD) {
                             val recommendationPreviewResponse = storageService
