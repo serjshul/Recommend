@@ -19,6 +19,8 @@ data class User(
 
     val recommendationsIds: ArrayList<String> = arrayListOf(),
 
+    val content: HashMap<String, Boolean> = hashMapOf(),
+
     val likedIds: ArrayList<String> = arrayListOf(),
     val savedIds: ArrayList<String> = arrayListOf()
 )

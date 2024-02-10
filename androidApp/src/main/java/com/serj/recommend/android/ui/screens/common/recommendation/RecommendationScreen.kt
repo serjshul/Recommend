@@ -13,9 +13,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -26,11 +24,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.serj.recommend.android.common.ext.toColor
 import com.serj.recommend.android.model.Comment
 import com.serj.recommend.android.model.Recommendation
+import com.serj.recommend.android.model.User
 import com.serj.recommend.android.model.items.UserItem
 import com.serj.recommend.android.services.GetRecommendationResponse
 import com.serj.recommend.android.services.GetUserItemResponse
+import com.serj.recommend.android.services.model.Response
 import com.serj.recommend.android.services.model.Response.Failure
 import com.serj.recommend.android.services.model.Response.Success
+import com.serj.recommend.android.ui.components.comments.CommentsBottomSheet
 import com.serj.recommend.android.ui.components.interaction.InteractionPanelRecommendation
 import com.serj.recommend.android.ui.components.loadingIndicators.LargeLoadingIndicator
 import com.serj.recommend.android.ui.screens.common.recommendation.components.Description
@@ -51,7 +52,19 @@ fun RecommendationScreen(
         modifier = modifier,
         getRecommendationResponse = viewModel.getRecommendationResponse.value,
         getUserItemResponse = viewModel.getUserItemResponse.value,
+        currentUser = viewModel.currentUser.value,
         topLikedComment = viewModel.topLikedComment.value,
+        commentInput = viewModel.commentInput,
+        bottomSheetComments = viewModel.bottomSheetComments,
+        showCommentsBottomSheet = viewModel.showCommentsBottomSheet,
+        onLikeClick = viewModel::onLikeClick,
+        onCommentIconClick = viewModel::onCommentIconClick,
+        onCommentClick = viewModel::onCommentClick,
+        onCommentDismissRequest = viewModel::onCommentDismissRequest,
+        onCommentInputValueChange = viewModel::onCommentInputValueChange,
+        onCommentSheetDismissRequest = viewModel::onCommentSheetDismissRequest,
+        onUploadCommentClick = viewModel::onUploadCommentClick,
+        onDeleteCommentClick = viewModel::onDeleteCommentClick,
         popUpScreen = popUpScreen
     )
 }
@@ -62,16 +75,24 @@ fun RecommendationScreenContent(
     modifier: Modifier = Modifier,
     getRecommendationResponse: GetRecommendationResponse?,
     getUserItemResponse: GetUserItemResponse?,
+    currentUser: User?,
     topLikedComment: Comment?,
+    commentInput: String,
+    bottomSheetComments: Map<Comment, Boolean>,
+    showCommentsBottomSheet: Boolean,
+    onLikeClick: (Boolean, String, String) -> Response<Boolean>,
+    onCommentIconClick: (List<Comment>) -> Unit,
+    onCommentClick: (Comment) -> Unit,
+    onCommentDismissRequest: (Comment) -> Unit,
+    onCommentInputValueChange: (String) -> Unit,
+    onCommentSheetDismissRequest: () -> Unit,
+    onUploadCommentClick: () -> Unit,
+    onDeleteCommentClick: (Comment) -> Unit,
     popUpScreen: () -> Unit
 ) {
     when (getRecommendationResponse) {
         is Success -> {
             val recommendation = getRecommendationResponse.data
-            val sheetState = rememberModalBottomSheetState()
-            var showBottomSheet by remember {
-                mutableStateOf(false)
-            }
 
             val lazyListState: LazyListState = rememberLazyListState()
             val currentOffset by remember {
@@ -84,6 +105,9 @@ fun RecommendationScreenContent(
                     lazyListState.firstVisibleItemIndex > 0
                 }
             }
+            val commentSheetState = rememberModalBottomSheetState(
+                skipPartiallyExpanded = true
+            )
 
             Scaffold(
                 modifier = modifier
@@ -154,23 +178,27 @@ fun RecommendationScreenContent(
                                 }
 
                                 item {
-                                    InteractionPanelRecommendation(
-                                        modifier = Modifier,
-                                        color = recommendation.color?.toColor(),
-                                        isLiked = false,
-                                        isReposted = false,
-                                        likedBy = recommendation.likedBy,
-                                        repostedBy = recommendation.repostedBy,
-                                        comment = topLikedComment,
-                                        commentsAmount = recommendation.comments.size,
-                                        views = recommendation.views,
-                                        coverage = recommendation.coverage,
-                                        date = recommendation.date,
-                                        recommendationId = recommendation.id,
-                                        authorUserId = recommendation.uid,
-                                        currentUserid = "",
-                                        onLikeClick = { _: Boolean, _: String, _: String -> Success(true) }
-                                    )
+                                    if (currentUser != null) {
+                                        InteractionPanelRecommendation(
+                                            modifier = Modifier,
+                                            color = recommendation.color?.toColor(),
+                                            isLiked = recommendation.likedBy.contains(currentUser.uid),
+                                            isReposted = false,
+                                            likedBy = recommendation.likedBy,
+                                            comments = recommendation.comments,
+                                            repostedBy = recommendation.repostedBy,
+                                            topLikedComment = topLikedComment,
+                                            commentsAmount = recommendation.comments.size,
+                                            views = recommendation.views,
+                                            coverage = recommendation.coverage,
+                                            date = recommendation.date,
+                                            recommendationId = recommendation.id,
+                                            authorUserId = recommendation.uid,
+                                            currentUserid = currentUser.uid,
+                                            onLikeClick = onLikeClick,
+                                            onCommentClick = onCommentIconClick
+                                        )
+                                    }
                                 }
                             }
 
@@ -183,25 +211,28 @@ fun RecommendationScreenContent(
                                 popUpScreen = popUpScreen
                             )
                         }
-
-                        if (showBottomSheet) {
-                            ModalBottomSheet(
-                                onDismissRequest = { showBottomSheet = false },
-                                sheetState = sheetState,
-                                containerColor = Color.White
-                            ) {
-                                /*
-                                        CommentsBottomSheet(
-                                            modifier = Modifier
-                                                .screenPaddingsInner()
-                                                .screenPaddingsOuter(),
-                                            comments = recommendation.comments
-                                        )
-
-                                         */
-                            }
-                        }
                     }
+                }
+
+                if (showCommentsBottomSheet) {
+                    ModalBottomSheet(
+                        onDismissRequest = { onCommentSheetDismissRequest() },
+                        sheetState = commentSheetState,
+                        containerColor = Color.White,
+                        content = {
+                            CommentsBottomSheet(
+                                modifier = Modifier,
+                                comments = bottomSheetComments,
+                                commentInput = commentInput,
+                                currentUserPhotoReference = currentUser!!.photoReference,
+                                onCommentInputValueChange = onCommentInputValueChange,
+                                onUploadCommentClick = onUploadCommentClick,
+                                onDeleteCommentClick = onDeleteCommentClick,
+                                onCommentClick = onCommentClick,
+                                onCommentDismissRequest = onCommentDismissRequest
+                            )
+                        }
+                    )
                 }
             }
         }
@@ -282,7 +313,19 @@ fun RecommendationScreenContentPreview() {
         modifier = Modifier,
         getRecommendationResponse = getRecommendationResponse,
         getUserItemResponse = getUserItemResponse,
+        currentUser = null,
         topLikedComment = null,
+        commentInput = "",
+        bottomSheetComments = mapOf(),
+        showCommentsBottomSheet = false,
+        onLikeClick = { _: Boolean, _: String, _: String -> Success(true) },
+        onCommentIconClick = { },
+        onCommentClick = { },
+        onCommentDismissRequest = { },
+        onCommentInputValueChange = { },
+        onCommentSheetDismissRequest = { },
+        onUploadCommentClick = { },
+        onDeleteCommentClick = { },
         popUpScreen = { }
     )
 }

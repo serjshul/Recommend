@@ -54,8 +54,9 @@ fun InteractionPanelRecommendation(
     isLiked: Boolean,
     isReposted: Boolean,
     likedBy: ArrayList<String>,
+    comments: List<Comment>,
     repostedBy: ArrayList<String>,
-    comment: Comment?,
+    topLikedComment: Comment?,
     commentsAmount: Int,
     views: Int,
     coverage: Int,
@@ -64,8 +65,10 @@ fun InteractionPanelRecommendation(
     authorUserId: String?,
     currentUserid: String?,
     onLikeClick: (Boolean, String, String) -> Response<Boolean>,
+    onCommentClick: (List<Comment>) -> Unit
 ) {
     val isCurrentlyLiked = remember { mutableStateOf(isLiked) }
+    val isCommentCurrentlyClicked = remember { mutableStateOf(false) }
     val isCommented = remember { mutableStateOf(false) }
     val isCurrentlyReposted = remember { mutableStateOf(isReposted) }
 
@@ -151,7 +154,8 @@ fun InteractionPanelRecommendation(
                     modifier = Modifier,
                     checked = isCommented.value,
                     onCheckedChange = {
-                        isCommented.value = !isCommented.value
+                        isCommentCurrentlyClicked.value = !isCommentCurrentlyClicked.value
+                        onCommentClick(comments)
                     }
                 ) {
                     val transition = updateTransition(isCommented.value, label = "CommentTransition")
@@ -238,7 +242,7 @@ fun InteractionPanelRecommendation(
             }
         }
 
-        if (comment != null) {
+        if (topLikedComment != null) {
             Column(
                 modifier = Modifier
                     .padding(bottom = 10.dp)
@@ -255,14 +259,14 @@ fun InteractionPanelRecommendation(
                     fontSize = 14.sp
                 )
 
-                if (comment.userItem?.nickname != null && comment.text != null && comment.date != null) {
+                if (topLikedComment.userItem?.nickname != null && topLikedComment.text != null && topLikedComment.date != null) {
                     CommentRecommendationItem(
                         modifier = Modifier.padding(start = 5.dp, end = 5.dp, bottom = 10.dp),
-                        comment = comment,
-                        nickname = comment.userItem?.nickname!!,
-                        photoReference = comment.userItem?.photoReference,
-                        text = comment.text,
-                        date = comment.date,
+                        comment = topLikedComment,
+                        nickname = topLikedComment.userItem?.nickname!!,
+                        photoReference = topLikedComment.userItem?.photoReference,
+                        text = topLikedComment.text,
+                        date = topLikedComment.date,
                         onCommentClick = { _: Comment -> }
                     )
                 }
@@ -375,8 +379,9 @@ fun InteractionPanelRecommendationPreview() {
         isLiked = false,
         isReposted = false,
         likedBy = arrayListOf("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""),
+        comments = listOf(),
         repostedBy = arrayListOf("", "", "", ""),
-        comment = Comment(
+        topLikedComment = Comment(
             text = "A note to adults in the audience: “13 Reasons Why” is not Netflix’s next “Stranger Things”.",
             userItem = UserItem(nickname = "serjshul"),
             date = Date()
@@ -388,6 +393,7 @@ fun InteractionPanelRecommendationPreview() {
         recommendationId = "recommendationId",
         authorUserId = "2131241",
         currentUserid = "2131241",
-        onLikeClick = { _: Boolean, _: String, _: String -> Response.Success(true) }
+        onLikeClick = { _: Boolean, _: String, _: String -> Response.Success(true) },
+        onCommentClick = { }
     )
 }

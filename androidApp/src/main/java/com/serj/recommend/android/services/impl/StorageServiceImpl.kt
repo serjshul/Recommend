@@ -33,6 +33,7 @@ import com.serj.recommend.android.services.GetRecommendationResponse
 import com.serj.recommend.android.services.GetStorageReferenceFromUrlResponse
 import com.serj.recommend.android.services.GetUserItemResponse
 import com.serj.recommend.android.services.LikeOrUnlikeRecommendationResponse
+import com.serj.recommend.android.services.RepostOrUnrepostRecommendationResponse
 import com.serj.recommend.android.services.StorageService
 import com.serj.recommend.android.services.UploadCommentResponse
 import com.serj.recommend.android.services.UploadRecommendationResponse
@@ -276,6 +277,61 @@ class StorageServiceImpl @Inject constructor(
     ): LikeOrUnlikeRecommendationResponse {
         return try {
             if (!isLiked) {
+                firestore
+                    .collection(USERS_COLLECTION)
+                    .document(uid)
+                    .update(LIKED_IDS_FIELD, FieldValue.arrayUnion(recommendationId))
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful)
+                            Log.d(TAG, "User DocumentSnapshot successfully updated!")
+                        else
+                            Log.w(TAG, "Error updating user document: $task")
+                    }
+                firestore
+                    .collection(RECOMMENDATIONS_COLLECTION)
+                    .document(recommendationId)
+                    .update(LIKED_BY_FIELD, FieldValue.arrayUnion(uid))
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful)
+                            Log.d(TAG, "Recommendation DocumentSnapshot successfully updated!")
+                        else
+                            Log.w(TAG, "Error updating recommendation document: $task")
+                    }
+            } else {
+                firestore
+                    .collection(USERS_COLLECTION)
+                    .document(uid)
+                    .update(LIKED_IDS_FIELD, FieldValue.arrayRemove(recommendationId))
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful)
+                            Log.d(TAG, "User DocumentSnapshot successfully updated!")
+                        else
+                            Log.w(TAG, "Error updating user document: $task")
+                    }
+                firestore
+                    .collection(RECOMMENDATIONS_COLLECTION)
+                    .document(recommendationId)
+                    .update(LIKED_BY_FIELD, FieldValue.arrayRemove(uid))
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful)
+                            Log.d(TAG, "Recommendation DocumentSnapshot successfully updated!")
+                        else
+                            Log.w(TAG, "Error updating recommendation document: $task")
+                    }
+            }
+            Success(true)
+        } catch (e: Exception) {
+            Failure(e)
+        }
+    }
+
+    override fun repostOrUnrepostRecommendation(
+        isReposted: Boolean,
+        uid: String,
+        recommendationId: String
+    ): RepostOrUnrepostRecommendationResponse {
+        return try {
+            if (!isReposted) {
                 firestore
                     .collection(USERS_COLLECTION)
                     .document(uid)
