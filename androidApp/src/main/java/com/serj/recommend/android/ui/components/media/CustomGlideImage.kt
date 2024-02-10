@@ -17,10 +17,10 @@ import com.serj.recommend.android.R
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun CustomGlideImage(
-    modifier: Modifier = Modifier,
-    reference: StorageReference?
+    reference: StorageReference?,
+    modifier: Modifier = Modifier
 ) {
-    if (reference != null) {
+  if (reference != null) {
         GlideImage(
             modifier = modifier,
             model = reference,
