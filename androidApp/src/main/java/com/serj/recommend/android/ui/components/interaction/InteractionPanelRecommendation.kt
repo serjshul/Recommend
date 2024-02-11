@@ -41,7 +41,7 @@ import androidx.compose.ui.unit.sp
 import com.serj.recommend.android.R
 import com.serj.recommend.android.common.getMonthAndDay
 import com.serj.recommend.android.common.getYear
-import com.serj.recommend.android.model.Comment
+import com.serj.recommend.android.model.collections.Comment
 import com.serj.recommend.android.model.items.UserItem
 import com.serj.recommend.android.services.model.Response
 import com.serj.recommend.android.ui.components.comments.items.CommentRecommendationItem

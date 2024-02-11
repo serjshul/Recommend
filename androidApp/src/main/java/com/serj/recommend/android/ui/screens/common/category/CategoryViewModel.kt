@@ -9,8 +9,8 @@ import com.serj.recommend.android.RecommendRoutes
 import com.serj.recommend.android.common.Constants.CATEGORY_ID
 import com.serj.recommend.android.common.Constants.RECOMMENDATION_ID
 import com.serj.recommend.android.common.ext.idFromParameter
-import com.serj.recommend.android.model.Category
-import com.serj.recommend.android.model.Recommendation
+import com.serj.recommend.android.model.collections.Category
+import com.serj.recommend.android.model.collections.Recommendation
 import com.serj.recommend.android.model.items.RecommendationItem
 import com.serj.recommend.android.services.AccountService
 import com.serj.recommend.android.services.GetCategoryResponse

@@ -22,9 +22,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.serj.recommend.android.common.ext.toColor
-import com.serj.recommend.android.model.Comment
-import com.serj.recommend.android.model.Recommendation
-import com.serj.recommend.android.model.User
+import com.serj.recommend.android.model.collections.Comment
+import com.serj.recommend.android.model.collections.Recommendation
+import com.serj.recommend.android.model.collections.User
 import com.serj.recommend.android.model.items.UserItem
 import com.serj.recommend.android.services.GetRecommendationResponse
 import com.serj.recommend.android.services.GetUserItemResponse

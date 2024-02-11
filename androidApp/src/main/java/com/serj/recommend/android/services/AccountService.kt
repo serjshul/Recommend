@@ -1,6 +1,6 @@
 package com.serj.recommend.android.services
 
-import com.serj.recommend.android.model.User
+import com.serj.recommend.android.model.collections.User
 import kotlinx.coroutines.flow.Flow
 
 

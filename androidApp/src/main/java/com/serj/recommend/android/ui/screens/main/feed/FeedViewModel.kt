@@ -9,9 +9,9 @@ import androidx.compose.runtime.setValue
 import com.serj.recommend.android.R
 import com.serj.recommend.android.RecommendRoutes
 import com.serj.recommend.android.common.Constants.RECOMMENDATION_ID
-import com.serj.recommend.android.model.Comment
-import com.serj.recommend.android.model.Recommendation
-import com.serj.recommend.android.model.User
+import com.serj.recommend.android.model.collections.Comment
+import com.serj.recommend.android.model.collections.Recommendation
+import com.serj.recommend.android.model.collections.User
 import com.serj.recommend.android.model.items.RecommendationItem
 import com.serj.recommend.android.model.items.UserItem
 import com.serj.recommend.android.services.AccountService

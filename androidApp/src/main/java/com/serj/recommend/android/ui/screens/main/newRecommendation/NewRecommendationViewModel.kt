@@ -8,8 +8,8 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.serj.recommend.android.model.Recommendation
-import com.serj.recommend.android.model.User
+import com.serj.recommend.android.model.collections.Recommendation
+import com.serj.recommend.android.model.collections.User
 import com.serj.recommend.android.services.AccountService
 import com.serj.recommend.android.services.LogService
 import com.serj.recommend.android.services.StorageService

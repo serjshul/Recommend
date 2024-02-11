@@ -3,10 +3,10 @@ package com.serj.recommend.android.services
 import android.content.Context
 import android.net.Uri
 import com.google.firebase.storage.StorageReference
-import com.serj.recommend.android.model.Banner
-import com.serj.recommend.android.model.Category
-import com.serj.recommend.android.model.Comment
-import com.serj.recommend.android.model.Recommendation
+import com.serj.recommend.android.model.collections.Banner
+import com.serj.recommend.android.model.collections.Category
+import com.serj.recommend.android.model.collections.Comment
+import com.serj.recommend.android.model.collections.Recommendation
 import com.serj.recommend.android.model.items.RecommendationItem
 import com.serj.recommend.android.model.items.RecommendationPreview
 import com.serj.recommend.android.model.items.UserItem

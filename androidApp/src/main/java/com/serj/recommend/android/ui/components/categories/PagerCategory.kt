@@ -16,8 +16,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.serj.recommend.android.common.ext.screenPaddingsInner
-import com.serj.recommend.android.model.Category
-import com.serj.recommend.android.model.Recommendation
+import com.serj.recommend.android.model.collections.Category
+import com.serj.recommend.android.model.collections.Recommendation
 import com.serj.recommend.android.ui.components.recommendationPreviews.transparent.HorizontalItemTransparent
 
 @OptIn(ExperimentalFoundationApi::class)

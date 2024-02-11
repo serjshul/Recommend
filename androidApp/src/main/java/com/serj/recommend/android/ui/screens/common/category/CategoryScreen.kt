@@ -31,8 +31,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.serj.recommend.android.R
-import com.serj.recommend.android.model.Comment
-import com.serj.recommend.android.model.Recommendation
+import com.serj.recommend.android.model.collections.Comment
+import com.serj.recommend.android.model.collections.Recommendation
 import com.serj.recommend.android.model.items.RecommendationItem
 import com.serj.recommend.android.services.GetCategoryResponse
 import com.serj.recommend.android.services.model.Response

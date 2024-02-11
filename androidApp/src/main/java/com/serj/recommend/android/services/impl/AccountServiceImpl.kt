@@ -8,7 +8,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.toObject
 import com.google.firebase.storage.FirebaseStorage
 import com.serj.recommend.android.R
-import com.serj.recommend.android.model.User
+import com.serj.recommend.android.model.collections.User
 import com.serj.recommend.android.services.AccountService
 import com.serj.recommend.android.services.model.trace
 import com.serj.recommend.android.ui.components.snackbar.SnackbarManager

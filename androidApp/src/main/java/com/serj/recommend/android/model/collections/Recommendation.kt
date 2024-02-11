@@ -1,4 +1,4 @@
-package com.serj.recommend.android.model
+package com.serj.recommend.android.model.collections
 
 import com.google.firebase.firestore.DocumentId
 import com.google.firebase.storage.StorageReference

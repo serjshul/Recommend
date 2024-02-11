@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.google.firebase.storage.StorageReference
 import com.serj.recommend.android.common.ext.recommendationCoverShape
-import com.serj.recommend.android.model.Recommendation
+import com.serj.recommend.android.model.collections.Recommendation
 import com.serj.recommend.android.ui.components.media.CustomGlideImage
 import com.serj.recommend.android.ui.styles.primary
 
