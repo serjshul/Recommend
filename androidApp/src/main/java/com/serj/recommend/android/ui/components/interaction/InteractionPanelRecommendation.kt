@@ -116,15 +116,14 @@ fun InteractionPanelRecommendation(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 5.dp, end = 5.dp, bottom = 15.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
+                .padding(bottom = 15.dp)
         ) {
             Row(
-                modifier = Modifier
-                    .weight(1f),
+                modifier =
+                    if (isOwnerView) Modifier.weight(1f)
+                    else Modifier.width(90.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
+                horizontalArrangement = if (isOwnerView) Arrangement.Center else Arrangement.Start
             ) {
                 IconToggleButton(
                     checked = isCurrentlyLiked.value,
@@ -180,10 +179,11 @@ fun InteractionPanelRecommendation(
             }
 
             Row(
-                modifier = Modifier
-                    .weight(1f),
+                modifier =
+                    if (isOwnerView) Modifier.weight(1f)
+                    else Modifier.width(115.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
+                horizontalArrangement = if (isOwnerView) Arrangement.Center else Arrangement.Start
             ) {
                 IconToggleButton(
                     modifier = Modifier,
@@ -230,10 +230,11 @@ fun InteractionPanelRecommendation(
             }
 
             Row(
-                modifier = Modifier
-                    .weight(1f),
+                modifier =
+                    if (isOwnerView) Modifier.weight(1f)
+                    else Modifier.width(110.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
+                horizontalArrangement = if (isOwnerView) Arrangement.Center else Arrangement.Start
             ) {
                 IconToggleButton(
                     checked = isCurrentlyReposted.value,
@@ -294,7 +295,9 @@ fun InteractionPanelRecommendation(
                         .weight(2f)
                 ) {
                     OutlinedButton(
-                        modifier = Modifier.align(Alignment.Center),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.Center),
                         colors = ButtonDefaults.outlinedButtonColors(
                             contentColor = color ?: primary,
                         ),
@@ -331,6 +334,30 @@ fun InteractionPanelRecommendationPreview() {
         ),
         recommendationId = "recommendationId",
         authorUserId = "2131240",
+        currentUserid = "2131241",
+        onLikeClick = { _: Boolean -> Response.Success(true) },
+        onCommentClick = { },
+        onRepostClick = { _: String, _: String, _: Boolean -> },
+    )
+}
+
+@Preview
+@Composable
+fun InteractionPanelRecommendationOwnerPreview() {
+    InteractionPanelRecommendation(
+        color = null,
+        isLiked = false,
+        isReposted = false,
+        likedBy = arrayListOf("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""),
+        comments = listOf(),
+        repostedBy = arrayListOf("", "", "", ""),
+        topLikedComment = Comment(
+            text = "A note to adults in the audience: “13 Reasons Why” is not Netflix’s next “Stranger Things”.",
+            userItem = UserItem(nickname = "serjshul"),
+            date = Date()
+        ),
+        recommendationId = "recommendationId",
+        authorUserId = "2131241",
         currentUserid = "2131241",
         onLikeClick = { _: Boolean -> Response.Success(true) },
         onCommentClick = { },

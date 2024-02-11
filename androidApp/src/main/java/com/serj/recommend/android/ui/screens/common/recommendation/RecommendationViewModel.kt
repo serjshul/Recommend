@@ -61,7 +61,7 @@ class RecommendationViewModel @Inject constructor(
                     getUserItemResponse.value = recommendationData?.uid?.let {
                         storageService.getUserItemByUid(it)
                     }
-                    if (recommendationData != null) {
+                    if (recommendationData != null && recommendationData.comments.isNotEmpty()) {
                         topLikedComment.value = recommendationData.comments.maxBy { it.likedBy.size }
                     }
                 }
