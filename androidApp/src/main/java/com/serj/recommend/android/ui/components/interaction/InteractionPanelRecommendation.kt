@@ -62,7 +62,7 @@ fun InteractionPanelRecommendation(
     recommendationId: String?,
     authorUserId: String?,
     currentUserid: String?,
-    onLikeClick: (Boolean, String, String) -> Response<Boolean>,
+    onLikeClick: (Boolean) -> Response<Boolean>?,
     onCommentClick: (List<Comment>) -> Unit,
     onRepostClick: (String, String, Boolean) -> Unit
 ) {
@@ -130,7 +130,7 @@ fun InteractionPanelRecommendation(
                     checked = isCurrentlyLiked.value,
                     onCheckedChange = {
                         if (currentUserid != null && recommendationId != null) {
-                            onLikeClick(isCurrentlyLiked.value, currentUserid, recommendationId)
+                            onLikeClick(isCurrentlyLiked.value)
                             isCurrentlyLiked.value = !isCurrentlyLiked.value
                             if (isCurrentlyLiked.value) likesAmount++ else likesAmount--
                         }
@@ -332,7 +332,7 @@ fun InteractionPanelRecommendationPreview() {
         recommendationId = "recommendationId",
         authorUserId = "2131240",
         currentUserid = "2131241",
-        onLikeClick = { _: Boolean, _: String, _: String -> Response.Success(true) },
+        onLikeClick = { _: Boolean -> Response.Success(true) },
         onCommentClick = { },
         onRepostClick = { _: String, _: String, _: Boolean -> },
     )

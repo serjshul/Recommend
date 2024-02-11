@@ -17,6 +17,7 @@ import com.serj.recommend.android.services.GetUserItemResponse
 import com.serj.recommend.android.services.LogService
 import com.serj.recommend.android.services.StorageService
 import com.serj.recommend.android.services.model.Response
+import com.serj.recommend.android.ui.components.interaction.InteractionSource
 import com.serj.recommend.android.ui.screens.RecommendViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.Date
@@ -74,8 +75,27 @@ class RecommendationViewModel @Inject constructor(
         }
     }
 
-    fun onLikeClick(isLiked: Boolean, uid: String, recommendationId: String) =
-        storageService.likeOrUnlikeRecommendation(isLiked, uid, recommendationId)
+    fun onLikeClick(isLiked: Boolean): Response<Boolean>? {
+        var result: Response<Boolean>? = null
+
+        launchCatching {
+            result =
+                if (!isLiked)
+                    storageService.likeRecommendation(
+                        userId = currentUser.value!!.uid!!,
+                        recommendationId = currentRecommendationId!!,
+                        date = Date(),
+                        source = InteractionSource.recommendation.name
+                    )
+                else
+                    storageService.unlikeRecommendation(
+                        userId = currentUser.value!!.uid!!,
+                        recommendationId = currentRecommendationId!!
+                    )
+        }
+
+        return result
+    }
 
     fun onCommentIconClick(comments: List<Comment>) {
         bottomSheetComments.putAll(comments.associateWith { false })

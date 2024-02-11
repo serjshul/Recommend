@@ -12,6 +12,7 @@ import com.serj.recommend.android.model.items.RecommendationPreview
 import com.serj.recommend.android.model.items.UserItem
 import com.serj.recommend.android.services.model.Response
 import kotlinx.coroutines.flow.Flow
+import java.util.Date
 
 typealias GetRecommendationResponse = Response<Recommendation?>
 typealias GetBannerResponse = Response<Banner?>
@@ -22,6 +23,8 @@ typealias GetUserItemResponse = Response<UserItem?>
 typealias GetCommentsResponse = Response<List<Comment>>
 typealias GetFollowingRecommendationsIdsResponse = Response<List<String>>
 typealias GetStorageReferenceFromUrlResponse = Response<StorageReference>
+typealias LikeRecommendationResponse = Response<Boolean>
+typealias UnlikeRecommendationResponse = Response<Boolean>
 typealias LikeOrUnlikeRecommendationResponse = Response<Boolean>
 typealias RepostOrUnrepostRecommendationResponse = Response<Boolean>
 typealias UploadCommentResponse = Response<Boolean>
@@ -53,8 +56,24 @@ interface StorageService {
 
     fun getStorageReferenceFromUrl(url: String): GetStorageReferenceFromUrlResponse
 
-    fun likeOrUnlikeRecommendation(isLiked: Boolean, uid: String, recommendationId: String):
-            LikeOrUnlikeRecommendationResponse
+    suspend fun likeRecommendation(
+        userId: String,
+        recommendationId: String,
+        date: Date,
+        source: String
+    ): LikeRecommendationResponse
+
+    suspend fun unlikeRecommendation(
+        userId: String,
+        recommendationId: String
+    ): UnlikeRecommendationResponse
+
+    fun likeOrUnlikeRecommendation(
+        isLiked: Boolean,
+        userId: String,
+        recommendationId: String,
+        source: String
+    ): LikeOrUnlikeRecommendationResponse
 
     fun repostOrUnrepostRecommendation(
         recommendationId: String,

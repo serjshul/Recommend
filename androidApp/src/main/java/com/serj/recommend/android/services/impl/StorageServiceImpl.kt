@@ -33,8 +33,10 @@ import com.serj.recommend.android.services.GetRecommendationResponse
 import com.serj.recommend.android.services.GetStorageReferenceFromUrlResponse
 import com.serj.recommend.android.services.GetUserItemResponse
 import com.serj.recommend.android.services.LikeOrUnlikeRecommendationResponse
+import com.serj.recommend.android.services.LikeRecommendationResponse
 import com.serj.recommend.android.services.RepostOrUnrepostRecommendationResponse
 import com.serj.recommend.android.services.StorageService
+import com.serj.recommend.android.services.UnlikeRecommendationResponse
 import com.serj.recommend.android.services.UploadCommentResponse
 import com.serj.recommend.android.services.UploadRecommendationResponse
 import com.serj.recommend.android.services.model.Response.Failure
@@ -270,17 +272,100 @@ class StorageServiceImpl @Inject constructor(
         }
     }
 
+    override suspend fun likeRecommendation(
+        userId: String,
+        recommendationId: String,
+        date: Date,
+        source: String
+    ): LikeRecommendationResponse {
+        return try {
+            var firstTransactionResult = false
+            var secondTransactionResult = false
+
+            val document = hashMapOf(
+                "date" to date,
+                "source" to source
+            )
+
+            firestore
+                .collection(USERS_COLLECTION)
+                .document(userId)
+                .collection(USER_LIKES_SUBCOLLECTION)
+                .document(recommendationId)
+                .set(document)
+                .addOnCompleteListener { firstTransactionResult = it.isSuccessful }
+                .await()
+            firestore
+                .collection(RECOMMENDATIONS_COLLECTION)
+                .document(recommendationId)
+                .collection(RECOMMENDATION_LIKES_SUBCOLLECTION)
+                .document(userId)
+                .set(document)
+                .addOnCompleteListener { secondTransactionResult = it.isSuccessful }
+                .await()
+
+            if (firstTransactionResult && secondTransactionResult)
+                Success(true)
+            else
+                Failure(Exception())
+        } catch (e: Exception) {
+            Failure(e)
+        }
+    }
+
+    override suspend fun unlikeRecommendation(
+        userId: String,
+        recommendationId: String
+    ): UnlikeRecommendationResponse {
+        return try {
+            var firstTransactionResult = false
+            var secondTransactionResult = false
+
+            firestore
+                .collection(USERS_COLLECTION)
+                .document(userId)
+                .collection(USER_LIKES_SUBCOLLECTION)
+                .document(recommendationId)
+                .delete()
+                .addOnCompleteListener { firstTransactionResult = it.isSuccessful }
+                .await()
+            firestore
+                .collection(RECOMMENDATIONS_COLLECTION)
+                .document(recommendationId)
+                .collection(RECOMMENDATION_LIKES_SUBCOLLECTION)
+                .document(userId)
+                .delete()
+                .addOnCompleteListener { secondTransactionResult = it.isSuccessful }
+                .await()
+
+            if (firstTransactionResult && secondTransactionResult)
+                Success(true)
+            else
+                Failure(Exception())
+        } catch (e: Exception) {
+            Failure(e)
+        }
+    }
+
     override fun likeOrUnlikeRecommendation(
         isLiked: Boolean,
-        uid: String,
-        recommendationId: String
+        userId: String,
+        recommendationId: String,
+        source: String
     ): LikeOrUnlikeRecommendationResponse {
         return try {
             if (!isLiked) {
+                val document = hashMapOf(
+                    "recommendationId" to recommendationId,
+                    "date" to Date(),
+                    "source" to source
+                )
                 firestore
                     .collection(USERS_COLLECTION)
-                    .document(uid)
-                    .update(LIKED_IDS_FIELD, FieldValue.arrayUnion(recommendationId))
+                    .document(userId)
+                    .collection(USER_LIKES_SUBCOLLECTION)
+                    .document(recommendationId)
+                    .set(document)
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful)
                             Log.d(TAG, "User DocumentSnapshot successfully updated!")
@@ -290,7 +375,7 @@ class StorageServiceImpl @Inject constructor(
                 firestore
                     .collection(RECOMMENDATIONS_COLLECTION)
                     .document(recommendationId)
-                    .update(LIKED_BY_FIELD, FieldValue.arrayUnion(uid))
+                    .update(LIKED_BY_FIELD, FieldValue.arrayUnion(userId))
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful)
                             Log.d(TAG, "Recommendation DocumentSnapshot successfully updated!")
@@ -300,8 +385,10 @@ class StorageServiceImpl @Inject constructor(
             } else {
                 firestore
                     .collection(USERS_COLLECTION)
-                    .document(uid)
-                    .update(LIKED_IDS_FIELD, FieldValue.arrayRemove(recommendationId))
+                    .document(userId)
+                    .collection(USER_LIKES_SUBCOLLECTION)
+                    .document(recommendationId)
+                    .delete()
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful)
                             Log.d(TAG, "User DocumentSnapshot successfully updated!")
@@ -311,7 +398,7 @@ class StorageServiceImpl @Inject constructor(
                 firestore
                     .collection(RECOMMENDATIONS_COLLECTION)
                     .document(recommendationId)
-                    .update(LIKED_BY_FIELD, FieldValue.arrayRemove(uid))
+                    .update(LIKED_BY_FIELD, FieldValue.arrayRemove(userId))
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful)
                             Log.d(TAG, "Recommendation DocumentSnapshot successfully updated!")
@@ -339,7 +426,7 @@ class StorageServiceImpl @Inject constructor(
                 firestore
                     .collection(USERS_COLLECTION)
                     .document(userId)
-                    .collection(USER_CONTENT_COLLECTION)
+                    .collection(USER_CONTENT_SUBCOLLECTION)
                     .document(recommendationId)
                     .set(userContent)
                     .addOnCompleteListener { task ->
@@ -362,7 +449,7 @@ class StorageServiceImpl @Inject constructor(
                 firestore
                     .collection(USERS_COLLECTION)
                     .document(userId)
-                    .collection(USER_CONTENT_COLLECTION)
+                    .collection(USER_CONTENT_SUBCOLLECTION)
                     .document(recommendationId)
                     .delete()
                     .addOnCompleteListener { task ->
@@ -504,7 +591,7 @@ class StorageServiceImpl @Inject constructor(
                 firestore
                     .collection(USERS_COLLECTION)
                     .document(currentUserId)
-                    .collection(USER_CONTENT_COLLECTION)
+                    .collection(USER_CONTENT_SUBCOLLECTION)
                     .document(uploadedRecommendationId)
                     .set(userContent)
                     .addOnCompleteListener { task ->
@@ -647,13 +734,14 @@ class StorageServiceImpl @Inject constructor(
         private const val CATEGORIES_COLLECTION = "categories"
         private const val BANNERS_COLLECTION = "banners"
         private const val USERS_COLLECTION = "users"
-        private const val USER_CONTENT_COLLECTION = "userContent"
+        private const val USER_CONTENT_SUBCOLLECTION = "content"
+        private const val USER_LIKES_SUBCOLLECTION = "likes"
+        private const val RECOMMENDATION_LIKES_SUBCOLLECTION = "likes"
 
         private const val COMMENTS_COLLECTION = "comments"
 
         private const val USER_ID_FIELD = "uid"
         private const val DATE_FIELD = "date"
-        private const val LIKED_IDS_FIELD = "likedIds"
         private const val LIKED_BY_FIELD = "likedBy"
         private const val REPOSTED_BY_FIELD = "repostedBy"
     }

@@ -18,6 +18,7 @@ import com.serj.recommend.android.services.AccountService
 import com.serj.recommend.android.services.LogService
 import com.serj.recommend.android.services.StorageService
 import com.serj.recommend.android.services.model.Response
+import com.serj.recommend.android.ui.components.interaction.InteractionSource
 import com.serj.recommend.android.ui.components.snackbar.SnackbarManager
 import com.serj.recommend.android.ui.screens.RecommendViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -125,7 +126,12 @@ class FeedViewModel @Inject constructor(
     }
 
     fun onLikeClick(isLiked: Boolean, uid: String, recommendationId: String) =
-        storageService.likeOrUnlikeRecommendation(isLiked, uid, recommendationId)
+        storageService.likeOrUnlikeRecommendation(
+            isLiked = isLiked,
+            userId = uid,
+            recommendationId = recommendationId,
+            source = InteractionSource.feed.name
+        )
 
     fun onCommentIconClick(recommendationId: String, comments: List<Comment>) {
         currentRecommendationId = recommendationId
