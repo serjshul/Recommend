@@ -9,7 +9,7 @@ import androidx.compose.runtime.setValue
 import com.serj.recommend.android.R
 import com.serj.recommend.android.RecommendRoutes
 import com.serj.recommend.android.common.Constants.RECOMMENDATION_ID
-import com.serj.recommend.android.model.collections.Comment
+import com.serj.recommend.android.model.subcollections.RecommendationComment
 import com.serj.recommend.android.model.collections.Recommendation
 import com.serj.recommend.android.model.collections.User
 import com.serj.recommend.android.model.items.RecommendationItem
@@ -44,7 +44,7 @@ class FeedViewModel @Inject constructor(
 
     var showCommentsBottomSheet by mutableStateOf(false)
         private set
-    val bottomSheetComments = mutableStateMapOf<Comment, Boolean>()
+    val bottomSheetComments = mutableStateMapOf<RecommendationComment, Boolean>()
 
     init {
         launchCatching {
@@ -84,8 +84,8 @@ class FeedViewModel @Inject constructor(
                         text = commentInput
                     )
 
-                    val comment = Comment(
-                        id = (user.uid + commentInput).hashCode().toString(),
+                    val comment = RecommendationComment(
+                        commentId = (user.uid + commentInput).hashCode().toString(),
                         userId = user.uid,
                         repliedCommentId = null,
                         text = commentInput,
@@ -105,15 +105,15 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    fun onDeleteCommentClick(comment: Comment) {
-        if (comment.id != null && comment.userId != null) {
+    fun onDeleteCommentClick(comment: RecommendationComment) {
+        if (comment.commentId != null && comment.userId != null) {
             launchCatching {
                 accountService.currentUser.collect { user ->
                     user.uid?.let {
                         storageService.deleteComment(
                             recommendationId = currentRecommendationId,
                             userId = user.uid,
-                            commentId = comment.id,
+                            commentId = comment.commentId,
                             commentOwnerId = comment.userId
                         )
                         commentInput = ""
@@ -135,7 +135,7 @@ class FeedViewModel @Inject constructor(
 
          */
 
-    fun onCommentIconClick(recommendationId: String, comments: List<Comment>) {
+    fun onCommentIconClick(recommendationId: String, comments: List<RecommendationComment>) {
         currentRecommendationId = recommendationId
         bottomSheetComments.putAll(comments.associateWith { false })
         showCommentsBottomSheet = true
@@ -150,11 +150,11 @@ class FeedViewModel @Inject constructor(
         bottomSheetComments.clear()
     }
 
-    fun onCommentClick(comment: Comment) {
+    fun onCommentClick(comment: RecommendationComment) {
         bottomSheetComments[comment] = true
     }
 
-    fun onCommentDismissRequest(comment: Comment) {
+    fun onCommentDismissRequest(comment: RecommendationComment) {
         bottomSheetComments[comment] = false
     }
 

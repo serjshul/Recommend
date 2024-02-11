@@ -5,11 +5,11 @@ import android.net.Uri
 import com.google.firebase.storage.StorageReference
 import com.serj.recommend.android.model.collections.Banner
 import com.serj.recommend.android.model.collections.Category
-import com.serj.recommend.android.model.collections.Comment
 import com.serj.recommend.android.model.collections.Recommendation
 import com.serj.recommend.android.model.items.RecommendationItem
 import com.serj.recommend.android.model.items.RecommendationPreview
 import com.serj.recommend.android.model.items.UserItem
+import com.serj.recommend.android.model.subcollections.RecommendationComment
 import com.serj.recommend.android.services.model.Response
 import kotlinx.coroutines.flow.Flow
 import java.util.Date
@@ -20,7 +20,7 @@ typealias GetCategoryResponse = Response<Category?>
 typealias GetRecommendationItemResponse = Response<RecommendationItem?>
 typealias GetRecommendationPreviewResponse = Response<RecommendationPreview?>
 typealias GetUserItemResponse = Response<UserItem?>
-typealias GetCommentsResponse = Response<List<Comment>>
+typealias GetRecommendationCommentsResponse = Response<List<RecommendationComment>>
 typealias GetFollowingRecommendationsIdsResponse = Response<List<String>>
 typealias GetStorageReferenceFromUrlResponse = Response<StorageReference>
 typealias LikeRecommendationResponse = Response<Boolean>
@@ -49,7 +49,7 @@ interface StorageService {
             GetRecommendationPreviewResponse
     suspend fun getUserItemByUid(uid: String): GetUserItemResponse
 
-    suspend fun getComments(recommendationId: String): GetCommentsResponse
+    suspend fun getRecommendationComments(recommendationId: String): GetRecommendationCommentsResponse
 
     suspend fun getFollowingRecommendationsIds(followingUids: List<String>):
             GetFollowingRecommendationsIdsResponse

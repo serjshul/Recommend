@@ -14,15 +14,15 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.serj.recommend.android.R
-import com.serj.recommend.android.model.collections.Comment
+import com.serj.recommend.android.model.subcollections.RecommendationComment
 
 @Composable
 fun CommentDropdownMenu(
     modifier: Modifier = Modifier,
-    comment: Comment,
+    comment: RecommendationComment,
     expanded: Boolean,
-    onDeleteCommentClick: (Comment) -> Unit,
-    onCommentDismissRequest: (Comment) -> Unit,
+    onDeleteCommentClick: (RecommendationComment) -> Unit,
+    onCommentDismissRequest: (RecommendationComment) -> Unit,
 ) {
     DropdownMenu(
         modifier = modifier

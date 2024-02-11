@@ -7,10 +7,10 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import com.serj.recommend.android.common.Constants.RECOMMENDATION_ID
 import com.serj.recommend.android.common.ext.idFromParameter
-import com.serj.recommend.android.model.collections.Comment
 import com.serj.recommend.android.model.collections.Recommendation
 import com.serj.recommend.android.model.collections.User
 import com.serj.recommend.android.model.items.UserItem
+import com.serj.recommend.android.model.subcollections.RecommendationComment
 import com.serj.recommend.android.services.AccountService
 import com.serj.recommend.android.services.GetRecommendationResponse
 import com.serj.recommend.android.services.GetUserItemResponse
@@ -36,7 +36,7 @@ class RecommendationViewModel @Inject constructor(
     val getRecommendationResponse = mutableStateOf<GetRecommendationResponse?>(null)
     val getUserItemResponse = mutableStateOf<GetUserItemResponse?>(null)
     private var currentRecommendationId by mutableStateOf<String?>(null)
-    val topLikedComment = mutableStateOf<Comment?>(null)
+    val topLikedComment = mutableStateOf<RecommendationComment?>(null)
 
     var isLiked by mutableStateOf(false)
         private set
@@ -49,7 +49,7 @@ class RecommendationViewModel @Inject constructor(
         private set
     var showCommentsBottomSheet by mutableStateOf(false)
         private set
-    val bottomSheetComments = mutableStateMapOf<Comment, Boolean>()
+    val bottomSheetComments = mutableStateMapOf<RecommendationComment, Boolean>()
 
     init {
         launchCatching {
@@ -74,8 +74,10 @@ class RecommendationViewModel @Inject constructor(
                         storageService.getUserItemByUid(it)
                     }
                     if (recommendationData != null && recommendationData.comments.isNotEmpty()) {
-
                         topLikedComment.value = recommendationData.comments.maxBy { it.likedBy.size }
+                        bottomSheetComments.putAll(
+                            recommendationData.comments.associateWith { false }
+                        )
                     }
                 }
             }
@@ -105,10 +107,10 @@ class RecommendationViewModel @Inject constructor(
     }
 
     fun onCommentClick() {
-        //bottomSheetComments.putAll(comments.associateWith { false })
-        showCommentsBottomSheet = true
-
-        isCommented = !isCommented
+        launchCatching {
+            showCommentsBottomSheet = true
+            isCommented = !isCommented
+        }
     }
 
     fun onRepostClick() {
@@ -142,11 +144,11 @@ class RecommendationViewModel @Inject constructor(
         bottomSheetComments.clear()
     }
 
-    fun onCommentItemClick(comment: Comment) {
+    fun onCommentItemClick(comment: RecommendationComment) {
         bottomSheetComments[comment] = true
     }
 
-    fun onCommentDismissRequest(comment: Comment) {
+    fun onCommentDismissRequest(comment: RecommendationComment) {
         bottomSheetComments[comment] = false
     }
 
@@ -162,8 +164,8 @@ class RecommendationViewModel @Inject constructor(
                         )
                     }
 
-                    val comment = Comment(
-                        id = (user.uid + commentInput).hashCode().toString(),
+                    val comment = RecommendationComment(
+                        commentId = (user.uid + commentInput).hashCode().toString(),
                         userId = user.uid,
                         repliedCommentId = null,
                         text = commentInput,
@@ -183,8 +185,8 @@ class RecommendationViewModel @Inject constructor(
         }
     }
 
-    fun onDeleteCommentClick(comment: Comment) {
-        if (comment.id != null && comment.userId != null) {
+    fun onDeleteCommentClick(comment: RecommendationComment) {
+        if (comment.commentId != null && comment.userId != null) {
             launchCatching {
                 accountService.currentUser.collect { user ->
                     user.uid?.let {
@@ -192,7 +194,7 @@ class RecommendationViewModel @Inject constructor(
                             storageService.deleteComment(
                                 recommendationId = it1,
                                 userId = user.uid,
-                                commentId = comment.id,
+                                commentId = comment.commentId,
                                 commentOwnerId = comment.userId
                             )
                         }

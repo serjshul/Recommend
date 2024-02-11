@@ -17,16 +17,16 @@ import com.serj.recommend.android.common.RecommendationNotFoundException
 import com.serj.recommend.android.common.UserNotFoundException
 import com.serj.recommend.android.model.collections.Banner
 import com.serj.recommend.android.model.collections.Category
-import com.serj.recommend.android.model.collections.Comment
 import com.serj.recommend.android.model.collections.Recommendation
 import com.serj.recommend.android.model.items.RecommendationItem
 import com.serj.recommend.android.model.items.RecommendationPreview
 import com.serj.recommend.android.model.items.UserItem
+import com.serj.recommend.android.model.subcollections.RecommendationComment
 import com.serj.recommend.android.services.DeleteCommentResponse
 import com.serj.recommend.android.services.GetBannerResponse
 import com.serj.recommend.android.services.GetCategoryResponse
-import com.serj.recommend.android.services.GetCommentsResponse
 import com.serj.recommend.android.services.GetFollowingRecommendationsIdsResponse
+import com.serj.recommend.android.services.GetRecommendationCommentsResponse
 import com.serj.recommend.android.services.GetRecommendationItemResponse
 import com.serj.recommend.android.services.GetRecommendationPreviewResponse
 import com.serj.recommend.android.services.GetRecommendationResponse
@@ -88,7 +88,7 @@ class StorageServiceImpl @Inject constructor(
                             .getOrDefault(BackgroundTypes.image.name, null)
                             ?.let { storage.getReferenceFromUrl(it) }
                 }
-                val commentsResponse = getComments(recommendationId)
+                val commentsResponse = getRecommendationComments(recommendationId)
                 if (commentsResponse is Success && commentsResponse.data != null) {
                     data.comments.addAll(commentsResponse.data)
                 }
@@ -182,7 +182,7 @@ class StorageServiceImpl @Inject constructor(
                     ?.let { storage.getReferenceFromUrl(it) }
                 recommendationData.isLiked = currentUserLikedIds.contains(recommendationData.id)
 
-                val commentsResponse = getComments(recommendationId)
+                val commentsResponse = getRecommendationComments(recommendationId)
                 if (commentsResponse is Success && commentsResponse.data != null) {
                     recommendationData.comments.addAll(commentsResponse.data)
                 }
@@ -247,9 +247,9 @@ class StorageServiceImpl @Inject constructor(
         }
     }
 
-    override suspend fun getComments(
+    override suspend fun getRecommendationComments(
         recommendationId: String
-    ): GetCommentsResponse {
+    ): GetRecommendationCommentsResponse {
         return try {
             val commentsSnapshot = firestore
                 .collection(RECOMMENDATIONS_COLLECTION)
@@ -257,7 +257,7 @@ class StorageServiceImpl @Inject constructor(
                 .collection(COMMENTS_COLLECTION)
                 .get()
                 .await()
-            val commentsData = commentsSnapshot.toObjects<Comment>()
+            val commentsData = commentsSnapshot.toObjects<RecommendationComment>()
 
             for (comment in commentsData) {
                 val userItemResponse = comment.userId?.let { getUserItemByUid(it) }

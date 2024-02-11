@@ -43,7 +43,7 @@ import androidx.compose.ui.unit.sp
 import com.google.firebase.storage.StorageReference
 import com.serj.recommend.android.R
 import com.serj.recommend.android.common.getCreatedTime
-import com.serj.recommend.android.model.collections.Comment
+import com.serj.recommend.android.model.subcollections.RecommendationComment
 import com.serj.recommend.android.services.model.Response
 import com.serj.recommend.android.ui.components.comments.CommentDropdownMenu
 import com.serj.recommend.android.ui.components.media.GlideUserImage
@@ -52,7 +52,7 @@ import java.util.Date
 @Composable
 fun CommentItem(
     modifier: Modifier = Modifier,
-    comment: Comment,
+    comment: RecommendationComment,
     nickname: String,
     photoReference: StorageReference?,
     text: String,
@@ -61,9 +61,9 @@ fun CommentItem(
     likedBy: List<String>,
     isDropdownMenuExpanded: Boolean,
     onLikeClick: (Boolean, String, String) -> Response<Boolean>,
-    onCommentClick: (Comment) -> Unit,
-    onCommentDismissRequest: (Comment) -> Unit,
-    onDeleteCommentClick: (Comment) -> Unit,
+    onCommentClick: (RecommendationComment) -> Unit,
+    onCommentDismissRequest: (RecommendationComment) -> Unit,
+    onDeleteCommentClick: (RecommendationComment) -> Unit,
 ) {
     val createdTime = getCreatedTime(date)
 
@@ -190,7 +190,7 @@ fun CommentItem(
 fun CommentFullItemPreview() {
     CommentItem(
         modifier = Modifier.background(Color.White),
-        comment = Comment(),
+        comment = RecommendationComment(),
         nickname = "succession",
         photoReference = null,
         isLiked = false,
@@ -199,7 +199,7 @@ fun CommentFullItemPreview() {
         likedBy = listOf("", "", "", "", "", "", "", "", "", "", "", "", "", "", ""),
         isDropdownMenuExpanded = false,
         onLikeClick = { _: Boolean, _: String, _: String -> Response.Success(true) },
-        onCommentClick = { _: Comment -> },
+        onCommentClick = { _: RecommendationComment -> },
         onCommentDismissRequest = { },
         onDeleteCommentClick = { }
     )

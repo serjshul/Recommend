@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.serj.recommend.android.R
-import com.serj.recommend.android.model.collections.Comment
+import com.serj.recommend.android.model.subcollections.RecommendationComment
 import com.serj.recommend.android.model.collections.Recommendation
 import com.serj.recommend.android.model.items.RecommendationItem
 import com.serj.recommend.android.services.GetCategoryResponse
@@ -128,7 +128,7 @@ fun CategoryScreenContent(
                             recommendationId = it.value.id,
                             currentUserUid = currentUid,
                             onLikeClick = onLikeClick,
-                            onCommentIconClick = { _: String, _: List<Comment> -> },
+                            onCommentIconClick = { _: String, _: List<RecommendationComment> -> },
                             openScreen = openScreen,
                             onRecommendationClick = onRecommendationClick
                         )

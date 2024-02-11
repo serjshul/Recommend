@@ -38,7 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.serj.recommend.android.R
-import com.serj.recommend.android.model.collections.Comment
+import com.serj.recommend.android.model.subcollections.RecommendationComment
 import com.serj.recommend.android.model.items.UserItem
 import com.serj.recommend.android.ui.components.comments.items.CommentRecommendationItem
 import com.serj.recommend.android.ui.styles.primary
@@ -51,7 +51,7 @@ fun InteractionPanelRecommendation(
     isLiked: Boolean,
     isCommented: Boolean,
     isReposted: Boolean,
-    topLikedComment: Comment?,
+    topLikedComment: RecommendationComment?,
     authorUserId: String?,
     currentUserid: String?,
     onLikeClick: () -> Unit,
@@ -91,7 +91,7 @@ fun InteractionPanelRecommendation(
                         photoReference = topLikedComment.userItem?.photoReference,
                         text = topLikedComment.text,
                         date = topLikedComment.date,
-                        onCommentClick = { _: Comment -> }
+                        onCommentClick = { _: RecommendationComment -> }
                     )
                 }
             }
@@ -291,7 +291,7 @@ fun InteractionPanelRecommendationPreview() {
         isLiked = false,
         isCommented = false,
         isReposted = false,
-        topLikedComment = Comment(
+        topLikedComment = RecommendationComment(
             text = "A note to adults in the audience: “13 Reasons Why” is not Netflix’s next “Stranger Things”.",
             userItem = UserItem(nickname = "serjshul"),
             date = Date()
@@ -312,7 +312,7 @@ fun InteractionPanelRecommendationOwnerPreview() {
         isLiked = false,
         isCommented = false,
         isReposted = false,
-        topLikedComment = Comment(
+        topLikedComment = RecommendationComment(
             text = "A note to adults in the audience: “13 Reasons Why” is not Netflix’s next “Stranger Things”.",
             userItem = UserItem(nickname = "serjshul"),
             date = Date()
