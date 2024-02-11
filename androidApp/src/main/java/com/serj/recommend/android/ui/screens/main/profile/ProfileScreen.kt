@@ -56,7 +56,6 @@ private enum class TabPage {
 }
 
 // TODO: Перенести все строки в коде в values/strings.xml
-// TODO: CReate ProfileViewModel
 @Composable
 fun ProfileScreen(
     viewModel: ProfileViewModel = hiltViewModel()
@@ -134,6 +133,7 @@ fun BottomPart(
     Scaffold(
         topBar = {
             ProfileTabBar(
+                viewModel = viewModel,
                 backgroundColor = backgroundColor,
                 tabPage = tabPage,
                 onTabSelected = { tabPage = it }
@@ -162,6 +162,7 @@ fun BottomPart(
 
 @Composable
 private fun ProfileTabBar(
+    viewModel: ProfileViewModel,
     backgroundColor: Color,
     tabPage: TabPage,
     onTabSelected: (tabPage: TabPage) -> Unit
@@ -197,11 +198,13 @@ private fun ProfileTabBar(
                 title = TabPage.Likes.name,
                 onClick = { onTabSelected(TabPage.Likes) }
             )
-            HomeTab(
+            if (viewModel.profileUser != viewModel.currentUser) {
+                HomeTab(
 //                icon = Icons.Default.AccountBox,
-                title = TabPage.Favourites.name,
-                onClick = { onTabSelected(TabPage.Favourites) }
-            )
+                    title = TabPage.Favourites.name,
+                    onClick = { onTabSelected(TabPage.Favourites) }
+                )
+            }
         }
     }
 }
