@@ -20,6 +20,9 @@ class ProfileViewModel @Inject constructor(
     var currentUser by mutableStateOf<User?>(null)
         private set
 
+    var profileUser by mutableStateOf<User?>(null)
+        private set
+
     init {
         launchCatching {
             accountService.currentUser.collect { user ->
