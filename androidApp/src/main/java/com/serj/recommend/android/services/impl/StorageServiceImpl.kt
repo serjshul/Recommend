@@ -32,11 +32,11 @@ import com.serj.recommend.android.services.GetRecommendationPreviewResponse
 import com.serj.recommend.android.services.GetRecommendationResponse
 import com.serj.recommend.android.services.GetStorageReferenceFromUrlResponse
 import com.serj.recommend.android.services.GetUserItemResponse
-import com.serj.recommend.android.services.LikeOrUnlikeRecommendationResponse
 import com.serj.recommend.android.services.LikeRecommendationResponse
-import com.serj.recommend.android.services.RepostOrUnrepostRecommendationResponse
+import com.serj.recommend.android.services.RemoveLikeRecommendationResponse
+import com.serj.recommend.android.services.RemoveRepostRecommendationResponse
+import com.serj.recommend.android.services.RepostRecommendationResponse
 import com.serj.recommend.android.services.StorageService
-import com.serj.recommend.android.services.UnlikeRecommendationResponse
 import com.serj.recommend.android.services.UploadCommentResponse
 import com.serj.recommend.android.services.UploadRecommendationResponse
 import com.serj.recommend.android.services.model.Response.Failure
@@ -313,10 +313,10 @@ class StorageServiceImpl @Inject constructor(
         }
     }
 
-    override suspend fun unlikeRecommendation(
+    override suspend fun removeLikeRecommendation(
         userId: String,
         recommendationId: String
-    ): UnlikeRecommendationResponse {
+    ): RemoveLikeRecommendationResponse {
         return try {
             var firstTransactionResult = false
             var secondTransactionResult = false
@@ -347,129 +347,81 @@ class StorageServiceImpl @Inject constructor(
         }
     }
 
-    override fun likeOrUnlikeRecommendation(
-        isLiked: Boolean,
+    override suspend fun repostRecommendation(
         userId: String,
         recommendationId: String,
+        date: Date,
         source: String
-    ): LikeOrUnlikeRecommendationResponse {
+    ): RepostRecommendationResponse {
         return try {
-            if (!isLiked) {
-                val document = hashMapOf(
-                    "recommendationId" to recommendationId,
-                    "date" to Date(),
-                    "source" to source
-                )
-                firestore
-                    .collection(USERS_COLLECTION)
-                    .document(userId)
-                    .collection(USER_LIKES_SUBCOLLECTION)
-                    .document(recommendationId)
-                    .set(document)
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful)
-                            Log.d(TAG, "User DocumentSnapshot successfully updated!")
-                        else
-                            Log.w(TAG, "Error updating user document: $task")
-                    }
-                firestore
-                    .collection(RECOMMENDATIONS_COLLECTION)
-                    .document(recommendationId)
-                    .update(LIKED_BY_FIELD, FieldValue.arrayUnion(userId))
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful)
-                            Log.d(TAG, "Recommendation DocumentSnapshot successfully updated!")
-                        else
-                            Log.w(TAG, "Error updating recommendation document: $task")
-                    }
-            } else {
-                firestore
-                    .collection(USERS_COLLECTION)
-                    .document(userId)
-                    .collection(USER_LIKES_SUBCOLLECTION)
-                    .document(recommendationId)
-                    .delete()
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful)
-                            Log.d(TAG, "User DocumentSnapshot successfully updated!")
-                        else
-                            Log.w(TAG, "Error updating user document: $task")
-                    }
-                firestore
-                    .collection(RECOMMENDATIONS_COLLECTION)
-                    .document(recommendationId)
-                    .update(LIKED_BY_FIELD, FieldValue.arrayRemove(userId))
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful)
-                            Log.d(TAG, "Recommendation DocumentSnapshot successfully updated!")
-                        else
-                            Log.w(TAG, "Error updating recommendation document: $task")
-                    }
-            }
-            Success(true)
+            var firstTransactionResult = false
+            var secondTransactionResult = false
+
+            val documentForUser = hashMapOf(
+                "isReposted" to true,
+                "date" to date,
+                "source" to source
+            )
+            val documentForRecommendation = hashMapOf(
+                "date" to date,
+                "source" to source
+            )
+
+            firestore
+                .collection(USERS_COLLECTION)
+                .document(userId)
+                .collection(USER_CONTENT_SUBCOLLECTION)
+                .document(recommendationId)
+                .set(documentForUser)
+                .addOnCompleteListener { firstTransactionResult = it.isSuccessful }
+                .await()
+            firestore
+                .collection(RECOMMENDATIONS_COLLECTION)
+                .document(recommendationId)
+                .collection(RECOMMENDATION_REPOSTS_SUBCOLLECTION)
+                .document(userId)
+                .set(documentForRecommendation)
+                .addOnCompleteListener { secondTransactionResult = it.isSuccessful }
+                .await()
+
+            if (firstTransactionResult && secondTransactionResult)
+                Success(true)
+            else
+                Failure(Exception())
         } catch (e: Exception) {
             Failure(e)
         }
     }
 
-    override fun repostOrUnrepostRecommendation(
-        recommendationId: String,
+    override suspend fun removeRepostRecommendation(
         userId: String,
-        isReposted: Boolean
-    ): RepostOrUnrepostRecommendationResponse {
+        recommendationId: String
+    ): RemoveRepostRecommendationResponse {
         return try {
-            if (!isReposted) {
-                val userContent = hashMapOf(
-                    "isReposted" to true,
-                    "dateOfCreation" to Date()
-                )
-                firestore
-                    .collection(USERS_COLLECTION)
-                    .document(userId)
-                    .collection(USER_CONTENT_SUBCOLLECTION)
-                    .document(recommendationId)
-                    .set(userContent)
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful)
-                            Log.d(TAG, "User DocumentSnapshot successfully updated!")
-                        else
-                            Log.w(TAG, "Error updating user document: $task")
-                    }
-                firestore
-                    .collection(RECOMMENDATIONS_COLLECTION)
-                    .document(recommendationId)
-                    .update(REPOSTED_BY_FIELD, FieldValue.arrayUnion(userId))
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful)
-                            Log.d(TAG, "Recommendation DocumentSnapshot successfully updated!")
-                        else
-                            Log.w(TAG, "Error updating recommendation document: $task")
-                    }
-            } else {
-                firestore
-                    .collection(USERS_COLLECTION)
-                    .document(userId)
-                    .collection(USER_CONTENT_SUBCOLLECTION)
-                    .document(recommendationId)
-                    .delete()
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful)
-                            Log.d(TAG, "User DocumentSnapshot successfully updated!")
-                        else
-                            Log.w(TAG, "Error updating user document: $task")
-                    }
-                firestore
-                    .collection(RECOMMENDATIONS_COLLECTION)
-                    .document(recommendationId)
-                    .update(REPOSTED_BY_FIELD, FieldValue.arrayRemove(userId))
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful)
-                            Log.d(TAG, "Recommendation DocumentSnapshot successfully updated!")
-                        else
-                            Log.w(TAG, "Error updating recommendation document: $task")
-                    }
-            }
-            Success(true)
+            var firstTransactionResult = false
+            var secondTransactionResult = false
+
+            firestore
+                .collection(USERS_COLLECTION)
+                .document(userId)
+                .collection(USER_CONTENT_SUBCOLLECTION)
+                .document(recommendationId)
+                .delete()
+                .addOnCompleteListener { firstTransactionResult = it.isSuccessful }
+                .await()
+            firestore
+                .collection(RECOMMENDATIONS_COLLECTION)
+                .document(recommendationId)
+                .collection(RECOMMENDATION_REPOSTS_SUBCOLLECTION)
+                .document(userId)
+                .delete()
+                .addOnCompleteListener { secondTransactionResult = it.isSuccessful }
+                .await()
+
+            if (firstTransactionResult && secondTransactionResult)
+                Success(true)
+            else
+                Failure(Exception())
         } catch (e: Exception) {
             Failure(e)
         }
@@ -730,15 +682,17 @@ class StorageServiceImpl @Inject constructor(
     ): List<String> = coversUrl.keys.toList()
 
     companion object {
+        private const val USERS_COLLECTION = "users"
         private const val RECOMMENDATIONS_COLLECTION = "recommendations"
         private const val CATEGORIES_COLLECTION = "categories"
         private const val BANNERS_COLLECTION = "banners"
-        private const val USERS_COLLECTION = "users"
+        private const val COMMENTS_COLLECTION = "comments"
+
         private const val USER_CONTENT_SUBCOLLECTION = "content"
         private const val USER_LIKES_SUBCOLLECTION = "likes"
-        private const val RECOMMENDATION_LIKES_SUBCOLLECTION = "likes"
 
-        private const val COMMENTS_COLLECTION = "comments"
+        private const val RECOMMENDATION_LIKES_SUBCOLLECTION = "likes"
+        private const val RECOMMENDATION_REPOSTS_SUBCOLLECTION = "reposts"
 
         private const val USER_ID_FIELD = "uid"
         private const val DATE_FIELD = "date"

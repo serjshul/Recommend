@@ -26,10 +26,6 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -44,7 +40,6 @@ import androidx.compose.ui.unit.sp
 import com.serj.recommend.android.R
 import com.serj.recommend.android.model.collections.Comment
 import com.serj.recommend.android.model.items.UserItem
-import com.serj.recommend.android.services.model.Response
 import com.serj.recommend.android.ui.components.comments.items.CommentRecommendationItem
 import com.serj.recommend.android.ui.styles.primary
 import java.util.Date
@@ -54,27 +49,16 @@ fun InteractionPanelRecommendation(
     modifier: Modifier = Modifier,
     color: Color?,
     isLiked: Boolean,
+    isCommented: Boolean,
     isReposted: Boolean,
-    likedBy: ArrayList<String>,
-    comments: List<Comment>,
-    repostedBy: ArrayList<String>,
     topLikedComment: Comment?,
-    recommendationId: String?,
     authorUserId: String?,
     currentUserid: String?,
-    onLikeClick: (Boolean) -> Response<Boolean>?,
-    onCommentClick: (List<Comment>) -> Unit,
-    onRepostClick: (String, String, Boolean) -> Unit
+    onLikeClick: () -> Unit,
+    onCommentClick: () -> Unit,
+    onRepostClick: () -> Unit,
 ) {
     val isOwnerView = authorUserId == currentUserid
-
-    val isCurrentlyLiked = remember { mutableStateOf(isLiked) }
-    val isCommentCurrentlyClicked = remember { mutableStateOf(false) }
-    val isCommented = remember { mutableStateOf(false) }
-    val isCurrentlyReposted = remember { mutableStateOf(isReposted) }
-
-    var likesAmount by remember { mutableIntStateOf(likedBy.size) }
-    var repostsAmount by remember { mutableIntStateOf(repostedBy.size) }
 
     Column(
         modifier = modifier
@@ -126,16 +110,10 @@ fun InteractionPanelRecommendation(
                 horizontalArrangement = if (isOwnerView) Arrangement.Center else Arrangement.Start
             ) {
                 IconToggleButton(
-                    checked = isCurrentlyLiked.value,
-                    onCheckedChange = {
-                        if (currentUserid != null && recommendationId != null) {
-                            onLikeClick(isCurrentlyLiked.value)
-                            isCurrentlyLiked.value = !isCurrentlyLiked.value
-                            if (isCurrentlyLiked.value) likesAmount++ else likesAmount--
-                        }
-                    }
+                    checked = isLiked,
+                    onCheckedChange = { onLikeClick() }
                 ) {
-                    val transition = updateTransition(isCurrentlyLiked.value, label = "likeTransition")
+                    val transition = updateTransition(isLiked, label = "likeTransition")
                     val tint by transition.animateColor(label = "likeTint") { isLiked ->
                         if (isLiked) Color.Red else Color.Black
                     }
@@ -158,7 +136,7 @@ fun InteractionPanelRecommendation(
 
                     Icon(
                         ImageVector.vectorResource(
-                            id = if (isCurrentlyLiked.value) R.drawable.interaction_like_filled
+                            id = if (isLiked) R.drawable.interaction_like_filled
                             else R.drawable.interaction_like_bordered
                         ),
                         contentDescription = "like",
@@ -170,8 +148,8 @@ fun InteractionPanelRecommendation(
                 if (!isOwnerView) {
                     Text(
                         modifier = Modifier.width(32.dp),
-                        text = if (isCurrentlyLiked.value) "Liked" else "Like",
-                        color = if (isCurrentlyLiked.value) Color.Red else Color.Black,
+                        text = if (isLiked) "Liked" else "Like",
+                        color = if (isLiked) Color.Red else Color.Black,
                         textAlign = TextAlign.Start,
                         fontSize = 12.sp
                     )
@@ -187,16 +165,10 @@ fun InteractionPanelRecommendation(
             ) {
                 IconToggleButton(
                     modifier = Modifier,
-                    checked = isCommented.value,
-                    onCheckedChange = {
-                        isCommentCurrentlyClicked.value = !isCommentCurrentlyClicked.value
-                        onCommentClick(comments)
-                    }
+                    checked = isCommented,
+                    onCheckedChange = { onCommentClick() }
                 ) {
-                    val transition = updateTransition(
-                        isCommentCurrentlyClicked.value,
-                        label = "CommentTransition"
-                    )
+                    val transition = updateTransition(isCommented, label = "CommentTransition")
                     val size by transition.animateDp(
                         transitionSpec = {
                             keyframes {
@@ -237,16 +209,10 @@ fun InteractionPanelRecommendation(
                 horizontalArrangement = if (isOwnerView) Arrangement.Center else Arrangement.Start
             ) {
                 IconToggleButton(
-                    checked = isCurrentlyReposted.value,
-                    onCheckedChange = {
-                        if (recommendationId != null && currentUserid != null) {
-                            onRepostClick(recommendationId, currentUserid, isCurrentlyReposted.value)
-                            isCurrentlyReposted.value = !isCurrentlyReposted.value
-                            if (isCurrentlyReposted.value) repostsAmount++ else repostsAmount--
-                        }
-                    }
+                    checked = isReposted,
+                    onCheckedChange = { onRepostClick() }
                 ) {
-                    val transition = updateTransition(isCurrentlyReposted.value, label = "repostTransition")
+                    val transition = updateTransition(isReposted, label = "repostTransition")
                     val tint by transition.animateColor(label = "repostTint") { isReposted ->
                         if (isReposted)
                             color ?: primary
@@ -281,8 +247,8 @@ fun InteractionPanelRecommendation(
                 if (!isOwnerView) {
                     Text(
                         modifier = Modifier.width(57.dp),
-                        text = if (isCurrentlyReposted.value) "Reposted" else "Repost",
-                        color = if (isCurrentlyReposted.value) color ?: primary else Color.Black,
+                        text = if (isReposted) "Reposted" else "Repost",
+                        color = if (isReposted) color ?: primary else Color.Black,
                         textAlign = TextAlign.Start,
                         fontSize = 12.sp
                     )
@@ -323,21 +289,18 @@ fun InteractionPanelRecommendationPreview() {
     InteractionPanelRecommendation(
         color = null,
         isLiked = false,
+        isCommented = false,
         isReposted = false,
-        likedBy = arrayListOf("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""),
-        comments = listOf(),
-        repostedBy = arrayListOf("", "", "", ""),
         topLikedComment = Comment(
             text = "A note to adults in the audience: “13 Reasons Why” is not Netflix’s next “Stranger Things”.",
             userItem = UserItem(nickname = "serjshul"),
             date = Date()
         ),
-        recommendationId = "recommendationId",
         authorUserId = "2131240",
         currentUserid = "2131241",
-        onLikeClick = { _: Boolean -> Response.Success(true) },
+        onLikeClick = { },
         onCommentClick = { },
-        onRepostClick = { _: String, _: String, _: Boolean -> },
+        onRepostClick = { }
     )
 }
 
@@ -347,20 +310,17 @@ fun InteractionPanelRecommendationOwnerPreview() {
     InteractionPanelRecommendation(
         color = null,
         isLiked = false,
+        isCommented = false,
         isReposted = false,
-        likedBy = arrayListOf("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""),
-        comments = listOf(),
-        repostedBy = arrayListOf("", "", "", ""),
         topLikedComment = Comment(
             text = "A note to adults in the audience: “13 Reasons Why” is not Netflix’s next “Stranger Things”.",
             userItem = UserItem(nickname = "serjshul"),
             date = Date()
         ),
-        recommendationId = "recommendationId",
         authorUserId = "2131241",
         currentUserid = "2131241",
-        onLikeClick = { _: Boolean -> Response.Success(true) },
+        onLikeClick = { },
         onCommentClick = { },
-        onRepostClick = { _: String, _: String, _: Boolean -> },
+        onRepostClick = { }
     )
 }

@@ -28,7 +28,6 @@ import com.serj.recommend.android.model.collections.User
 import com.serj.recommend.android.model.items.UserItem
 import com.serj.recommend.android.services.GetRecommendationResponse
 import com.serj.recommend.android.services.GetUserItemResponse
-import com.serj.recommend.android.services.model.Response
 import com.serj.recommend.android.services.model.Response.Failure
 import com.serj.recommend.android.services.model.Response.Success
 import com.serj.recommend.android.ui.components.comments.CommentsBottomSheet
@@ -54,13 +53,16 @@ fun RecommendationScreen(
         getUserItemResponse = viewModel.getUserItemResponse.value,
         currentUser = viewModel.currentUser.value,
         topLikedComment = viewModel.topLikedComment.value,
+        isLiked = viewModel.isLiked,
+        isCommented = viewModel.isCommented,
+        isReposted = viewModel.isReposted,
         commentInput = viewModel.commentInput,
         bottomSheetComments = viewModel.bottomSheetComments,
         showCommentsBottomSheet = viewModel.showCommentsBottomSheet,
         onLikeClick = viewModel::onLikeClick,
-        onCommentIconClick = viewModel::onCommentIconClick,
-        onRepostClick = viewModel::onRepostClick,
         onCommentClick = viewModel::onCommentClick,
+        onRepostClick = viewModel::onRepostClick,
+        onCommentItemClick = viewModel::onCommentItemClick,
         onCommentDismissRequest = viewModel::onCommentDismissRequest,
         onCommentInputValueChange = viewModel::onCommentInputValueChange,
         onCommentSheetDismissRequest = viewModel::onCommentSheetDismissRequest,
@@ -78,13 +80,16 @@ fun RecommendationScreenContent(
     getUserItemResponse: GetUserItemResponse?,
     currentUser: User?,
     topLikedComment: Comment?,
+    isLiked: Boolean,
+    isCommented: Boolean,
+    isReposted: Boolean,
     commentInput: String,
     bottomSheetComments: Map<Comment, Boolean>,
     showCommentsBottomSheet: Boolean,
-    onLikeClick: (Boolean) -> Response<Boolean>?,
-    onCommentIconClick: (List<Comment>) -> Unit,
-    onRepostClick: (String, String, Boolean) -> Unit,
-    onCommentClick: (Comment) -> Unit,
+    onLikeClick: () -> Unit,
+    onCommentClick: () -> Unit,
+    onRepostClick: () -> Unit,
+    onCommentItemClick: (Comment) -> Unit,
     onCommentDismissRequest: (Comment) -> Unit,
     onCommentInputValueChange: (String) -> Unit,
     onCommentSheetDismissRequest: () -> Unit,
@@ -185,19 +190,14 @@ fun RecommendationScreenContent(
                                             modifier = Modifier,
                                             color = recommendation.color
                                                 ?.toColor(),
-                                            isLiked = recommendation.likedBy
-                                                .contains(currentUser.uid),
-                                            isReposted = recommendation.repostedBy
-                                                .contains(currentUser.uid),
-                                            likedBy = recommendation.likedBy,
-                                            comments = recommendation.comments,
-                                            repostedBy = recommendation.repostedBy,
+                                            isLiked = isLiked,
+                                            isCommented = isCommented,
+                                            isReposted = isReposted,
                                             topLikedComment = topLikedComment,
-                                            recommendationId = recommendation.id,
                                             authorUserId = recommendation.uid,
                                             currentUserid = currentUser.uid,
                                             onLikeClick = onLikeClick,
-                                            onCommentClick = onCommentIconClick,
+                                            onCommentClick = onCommentClick,
                                             onRepostClick = onRepostClick
                                         )
                                     }
@@ -207,6 +207,7 @@ fun RecommendationScreenContent(
                             RecommendationTopBar(
                                 modifier = Modifier
                                     .align(Alignment.TopCenter),
+                                title = recommendation.title,
                                 type = recommendation.type,
                                 color = recommendation.color?.toColor(),
                                 isBackgroundHidden = isBackgroundHidden,
@@ -230,7 +231,7 @@ fun RecommendationScreenContent(
                                 onCommentInputValueChange = onCommentInputValueChange,
                                 onUploadCommentClick = onUploadCommentClick,
                                 onDeleteCommentClick = onDeleteCommentClick,
-                                onCommentClick = onCommentClick,
+                                onCommentClick = onCommentItemClick,
                                 onCommentDismissRequest = onCommentDismissRequest
                             )
                         }
@@ -317,13 +318,16 @@ fun RecommendationScreenContentPreview() {
         getUserItemResponse = getUserItemResponse,
         currentUser = null,
         topLikedComment = null,
+        isLiked = false,
+        isCommented = false,
+        isReposted = false,
         commentInput = "",
         bottomSheetComments = mapOf(),
         showCommentsBottomSheet = false,
-        onLikeClick = { _: Boolean -> Success(true) },
-        onCommentIconClick = { },
-        onRepostClick = { _: String, _: String, _: Boolean -> },
+        onLikeClick = { },
         onCommentClick = { },
+        onRepostClick = { },
+        onCommentItemClick = { },
         onCommentDismissRequest = { },
         onCommentInputValueChange = { },
         onCommentSheetDismissRequest = { },

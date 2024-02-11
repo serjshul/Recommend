@@ -36,8 +36,14 @@ class RecommendationViewModel @Inject constructor(
     val getRecommendationResponse = mutableStateOf<GetRecommendationResponse?>(null)
     val getUserItemResponse = mutableStateOf<GetUserItemResponse?>(null)
     private var currentRecommendationId by mutableStateOf<String?>(null)
-
     val topLikedComment = mutableStateOf<Comment?>(null)
+
+    var isLiked by mutableStateOf(false)
+        private set
+    var isCommented by mutableStateOf(false)
+        private set
+    var isReposted by mutableStateOf(false)
+        private set
 
     var commentInput by mutableStateOf("")
         private set
@@ -46,6 +52,12 @@ class RecommendationViewModel @Inject constructor(
     val bottomSheetComments = mutableStateMapOf<Comment, Boolean>()
 
     init {
+        launchCatching {
+            accountService.currentUser.collect { user ->
+                currentUser.value = user
+            }
+        }
+
         val recommendationId = savedStateHandle.get<String>(RECOMMENDATION_ID)
         if (recommendationId != null) {
             launchCatching {
@@ -62,24 +74,17 @@ class RecommendationViewModel @Inject constructor(
                         storageService.getUserItemByUid(it)
                     }
                     if (recommendationData != null && recommendationData.comments.isNotEmpty()) {
+
                         topLikedComment.value = recommendationData.comments.maxBy { it.likedBy.size }
                     }
                 }
             }
         }
-
-        launchCatching {
-            accountService.currentUser.collect { user ->
-                currentUser.value = user
-            }
-        }
     }
 
-    fun onLikeClick(isLiked: Boolean): Response<Boolean>? {
-        var result: Response<Boolean>? = null
-
+    fun onLikeClick() {
         launchCatching {
-            result =
+            val result =
                 if (!isLiked)
                     storageService.likeRecommendation(
                         userId = currentUser.value!!.uid!!,
@@ -88,25 +93,45 @@ class RecommendationViewModel @Inject constructor(
                         source = InteractionSource.recommendation.name
                     )
                 else
-                    storageService.unlikeRecommendation(
+                    storageService.removeLikeRecommendation(
                         userId = currentUser.value!!.uid!!,
                         recommendationId = currentRecommendationId!!
                     )
+
+            if (result is Response.Success) {
+                isLiked = !isLiked
+            }
         }
-
-        return result
     }
 
-    fun onCommentIconClick(comments: List<Comment>) {
-        bottomSheetComments.putAll(comments.associateWith { false })
+    fun onCommentClick() {
+        //bottomSheetComments.putAll(comments.associateWith { false })
         showCommentsBottomSheet = true
+
+        isCommented = !isCommented
     }
 
-    fun onRepostClick(
-        recommendationId: String,
-        userId: String,
-        isReposted: Boolean
-    ) = storageService.repostOrUnrepostRecommendation(recommendationId, userId, isReposted)
+    fun onRepostClick() {
+        launchCatching {
+            val result =
+                if (!isReposted)
+                    storageService.repostRecommendation(
+                        userId = currentUser.value!!.uid!!,
+                        recommendationId = currentRecommendationId!!,
+                        date = Date(),
+                        source = InteractionSource.recommendation.name
+                    )
+                else
+                    storageService.removeRepostRecommendation(
+                        userId = currentUser.value!!.uid!!,
+                        recommendationId = currentRecommendationId!!
+                    )
+
+            if (result is Response.Success) {
+                isReposted = !isReposted
+            }
+        }
+    }
 
     fun onCommentInputValueChange(input: String) {
         commentInput = input
@@ -117,7 +142,7 @@ class RecommendationViewModel @Inject constructor(
         bottomSheetComments.clear()
     }
 
-    fun onCommentClick(comment: Comment) {
+    fun onCommentItemClick(comment: Comment) {
         bottomSheetComments[comment] = true
     }
 

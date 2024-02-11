@@ -17,7 +17,6 @@ import com.serj.recommend.android.services.GetCategoryResponse
 import com.serj.recommend.android.services.LogService
 import com.serj.recommend.android.services.StorageService
 import com.serj.recommend.android.services.model.Response
-import com.serj.recommend.android.ui.components.interaction.InteractionSource
 import com.serj.recommend.android.ui.screens.RecommendViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -69,13 +68,16 @@ class CategoryViewModel @Inject constructor(
         }
     }
 
-    fun onLikeClick(isLiked: Boolean, uid: String, recommendationId: String) =
+    fun onLikeClick(isLiked: Boolean, uid: String, recommendationId: String) = Response.Success(true)
+        /*
         storageService.likeOrUnlikeRecommendation(
             isLiked = isLiked,
             userId = uid,
             recommendationId = recommendationId,
             source = InteractionSource.category.name
         )
+
+         */
 
     fun onRecommendationClick(openScreen: (String) -> Unit, recommendation: Recommendation) {
         openScreen("${RecommendRoutes.RecommendationScreen.name}?$RECOMMENDATION_ID={${recommendation.id}}")

@@ -24,9 +24,9 @@ typealias GetCommentsResponse = Response<List<Comment>>
 typealias GetFollowingRecommendationsIdsResponse = Response<List<String>>
 typealias GetStorageReferenceFromUrlResponse = Response<StorageReference>
 typealias LikeRecommendationResponse = Response<Boolean>
-typealias UnlikeRecommendationResponse = Response<Boolean>
-typealias LikeOrUnlikeRecommendationResponse = Response<Boolean>
-typealias RepostOrUnrepostRecommendationResponse = Response<Boolean>
+typealias RemoveLikeRecommendationResponse = Response<Boolean>
+typealias RepostRecommendationResponse = Response<Boolean>
+typealias RemoveRepostRecommendationResponse = Response<Boolean>
 typealias UploadCommentResponse = Response<Boolean>
 typealias DeleteCommentResponse = Response<Boolean>
 typealias UploadRecommendationResponse = Response<String>
@@ -63,23 +63,22 @@ interface StorageService {
         source: String
     ): LikeRecommendationResponse
 
-    suspend fun unlikeRecommendation(
+    suspend fun removeLikeRecommendation(
         userId: String,
         recommendationId: String
-    ): UnlikeRecommendationResponse
+    ): RemoveLikeRecommendationResponse
 
-    fun likeOrUnlikeRecommendation(
-        isLiked: Boolean,
+    suspend fun repostRecommendation(
         userId: String,
         recommendationId: String,
+        date: Date,
         source: String
-    ): LikeOrUnlikeRecommendationResponse
+    ): RepostRecommendationResponse
 
-    fun repostOrUnrepostRecommendation(
-        recommendationId: String,
+    suspend fun removeRepostRecommendation(
         userId: String,
-        isReposted: Boolean
-    ): RepostOrUnrepostRecommendationResponse
+        recommendationId: String
+    ): RemoveRepostRecommendationResponse
 
     suspend fun uploadRecommendation(
         recommendation: Recommendation,

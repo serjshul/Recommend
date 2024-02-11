@@ -6,5 +6,5 @@ import java.util.Date
 data class Content (
     @DocumentId val recommendationId: String? = null,
     val isReposted: Boolean? = null,
-    val dateOfCreation: Date? = null
+    val date: Date? = null
 )
