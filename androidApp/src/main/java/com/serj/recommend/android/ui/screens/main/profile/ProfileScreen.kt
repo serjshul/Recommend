@@ -30,6 +30,7 @@ import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -39,7 +40,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,7 +49,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.serj.recommend.android.model.User
 import com.serj.recommend.android.ui.components.media.CustomGlideImage
 
 private enum class TabPage {
@@ -64,10 +63,11 @@ fun ProfileScreen(
 ) {
     Column {
         ProfileInfo(
-            user = viewModel.currentUser,
+            viewModel = viewModel,
             modifier = Modifier.weight(.3f)
         )
         BottomPart(
+            viewModel = viewModel,
             modifier = Modifier.weight(.7f)
         )
     }
@@ -76,7 +76,7 @@ fun ProfileScreen(
 // TODO: Top part of profile we make like RecommendationScreen
 @Composable
 fun ProfileInfo(
-    user: User?,
+    viewModel: ProfileViewModel,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -84,32 +84,40 @@ fun ProfileInfo(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         CustomGlideImage(
-            reference = user?.photoReference,
+            reference = viewModel.profileUser?.photoReference,
             modifier = Modifier
                 .clip(CircleShape)
                 .size(64.dp)
         )
-        Text(text = "@${user?.nickname}")
+        Text(text = "@${viewModel.profileUser?.nickname}")
         // ProfileDescription
         Row {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text("Followers")
-                Text(user?.followers?.size.toString())
+                Text(viewModel.profileUser?.followers?.size.toString())
             }
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text("Following")
-                Text(user?.following?.size.toString())
+                Text(viewModel.profileUser?.following?.size.toString())
+            }
+        }
+        if (viewModel.profileUser != viewModel.currentUser) {
+            Button(onClick = { }) {
+                Text("Subscribe")
             }
         }
     }
 }
 
 @Composable
-fun BottomPart(modifier: Modifier = Modifier) {
+fun BottomPart(
+    viewModel: ProfileViewModel,
+    modifier: Modifier = Modifier
+) {
     var tabPage by remember { mutableStateOf(TabPage.Posts) }
     var isLoading by remember { mutableStateOf(false) }
 
@@ -122,8 +130,6 @@ fun BottomPart(modifier: Modifier = Modifier) {
         },
         label = "backgroundColor"
     )
-
-    val coroutineScope = rememberCoroutineScope()
 
     Scaffold(
         topBar = {
