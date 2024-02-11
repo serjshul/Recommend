@@ -48,6 +48,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.serj.recommend.android.model.User
 import com.serj.recommend.android.ui.components.media.CustomGlideImage
 
@@ -59,11 +60,11 @@ private enum class TabPage {
 // TODO: CReate ProfileViewModel
 @Composable
 fun ProfileScreen(
-    user: User?
+    viewModel: ProfileViewModel = hiltViewModel()
 ) {
     Column {
         ProfileInfo(
-            user = user,
+            user = viewModel.currentUser,
             modifier = Modifier.weight(.3f)
         )
         BottomPart(
@@ -293,5 +294,5 @@ private fun HomeTab(
 @Preview
 @Composable
 fun ProfileScreenPreview() {
-    ProfileScreen(user = User())
+    ProfileScreen()
 }
