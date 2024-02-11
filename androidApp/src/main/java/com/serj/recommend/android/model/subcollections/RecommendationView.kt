@@ -3,10 +3,10 @@ package com.serj.recommend.android.model.subcollections
 import com.google.firebase.firestore.DocumentId
 import java.util.Date
 
-data class RecommendationLikes (
+data class RecommendationView (
     @DocumentId val userId: String? = null,
 
-    val date: Date? = null,
-
-    val source: String? = null
+    val cameFrom: String? = null,
+    val startWatchTime: Date? = null,
+    val endWatchTime: Date? = null
 )

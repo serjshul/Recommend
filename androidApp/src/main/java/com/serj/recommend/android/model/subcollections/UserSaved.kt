@@ -3,7 +3,7 @@ package com.serj.recommend.android.model.subcollections
 import com.google.firebase.firestore.DocumentId
 import java.util.Date
 
-data class Saved (
+data class UserSaved (
     @DocumentId val id: String? = null,
 
     val title: String? = null,
