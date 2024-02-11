@@ -22,6 +22,13 @@ import com.serj.recommend.android.ui.screens.main.newRecommendation.components.N
 import com.serj.recommend.android.ui.screens.main.newRecommendation.components.NewRecommendationQuote
 import com.serj.recommend.android.ui.screens.main.newRecommendation.components.NewRecommendationTopBar
 
+// TODO: Read this https://refactoring.guru/smells/long-parameter-list,
+//  in compose functions, sometimes it can be more,
+//  but anyway we must only ask yourself - maybe we can make less parameters,
+//  Sometimes we can pack few parameters in to some class (for example, pack params by logic)...
+
+// TODO: Why we need NewRecommendationScreenContent? maybe its more good just make what u do
+//  inside of NewRecommendationScreenContent, right in NewRecommendationScreen? (call reasons)
 @Composable
 fun NewRecommendationScreen(
     viewModel: NewRecommendationViewModel = hiltViewModel()
