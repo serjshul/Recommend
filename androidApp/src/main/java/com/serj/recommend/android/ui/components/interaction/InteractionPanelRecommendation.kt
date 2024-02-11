@@ -8,18 +8,21 @@ import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.updateTransition
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconToggleButton
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -39,8 +42,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.serj.recommend.android.R
-import com.serj.recommend.android.common.getMonthAndDay
-import com.serj.recommend.android.common.getYear
 import com.serj.recommend.android.model.collections.Comment
 import com.serj.recommend.android.model.items.UserItem
 import com.serj.recommend.android.services.model.Response
@@ -58,9 +59,6 @@ fun InteractionPanelRecommendation(
     comments: List<Comment>,
     repostedBy: ArrayList<String>,
     topLikedComment: Comment?,
-    views: Int,
-    coverage: Int,
-    date: Date,
     recommendationId: String?,
     authorUserId: String?,
     currentUserid: String?,
@@ -68,28 +66,59 @@ fun InteractionPanelRecommendation(
     onCommentClick: (List<Comment>) -> Unit,
     onRepostClick: (String, String, Boolean) -> Unit
 ) {
+    val isOwnerView = authorUserId == currentUserid
+
     val isCurrentlyLiked = remember { mutableStateOf(isLiked) }
     val isCommentCurrentlyClicked = remember { mutableStateOf(false) }
     val isCommented = remember { mutableStateOf(false) }
     val isCurrentlyReposted = remember { mutableStateOf(isReposted) }
 
     var likesAmount by remember { mutableIntStateOf(likedBy.size) }
-    val commentsAmount by remember { mutableIntStateOf(comments.size) }
     var repostsAmount by remember { mutableIntStateOf(repostedBy.size) }
-
-    val day = getMonthAndDay(date)
-    val year = getYear(date)
 
     Column(
         modifier = modifier
             .fillMaxWidth()
             .background(Color.White)
-            .padding(15.dp, 12.5.dp)
+            .padding(start = 15.dp, end = 15.dp, top = 5.dp, bottom = 12.5.dp)
     ) {
+        if (topLikedComment != null) {
+            Column(
+                modifier = Modifier
+                    .padding(bottom = 10.dp)
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(20.dp))
+                    .background(color ?: primary)
+            ) {
+                Text(
+                    modifier = Modifier
+                        .padding(top = 15.dp, bottom = 7.dp)
+                        .align(Alignment.CenterHorizontally),
+                    text = "Top liked comment",
+                    color = Color.White,
+                    fontSize = 14.sp
+                )
+
+                if (topLikedComment.userItem?.nickname != null && topLikedComment.text != null && topLikedComment.date != null) {
+                    CommentRecommendationItem(
+                        modifier = Modifier.padding(start = 5.dp, end = 5.dp, bottom = 10.dp),
+                        comment = topLikedComment,
+                        nickname = topLikedComment.userItem?.nickname!!,
+                        photoReference = topLikedComment.userItem?.photoReference,
+                        text = topLikedComment.text,
+                        date = topLikedComment.date,
+                        onCommentClick = { _: Comment -> }
+                    )
+                }
+            }
+        }
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 10.dp)
+                .padding(start = 5.dp, end = 5.dp, bottom = 15.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
         ) {
             Row(
                 modifier = Modifier
@@ -139,16 +168,16 @@ fun InteractionPanelRecommendation(
                     )
                 }
 
-                Text(
-                    modifier = Modifier.padding(end = 9.dp),
-                    text = likesAmount.toString(),
-                    color = Color.Black,
-                    textAlign = TextAlign.Center,
-                    fontSize = 14.sp
-                )
+                if (!isOwnerView) {
+                    Text(
+                        modifier = Modifier.width(32.dp),
+                        text = if (isCurrentlyLiked.value) "Liked" else "Like",
+                        color = if (isCurrentlyLiked.value) Color.Red else Color.Black,
+                        textAlign = TextAlign.Start,
+                        fontSize = 12.sp
+                    )
+                }
             }
-
-            Spacer(modifier = Modifier.size(10.dp))
 
             Row(
                 modifier = Modifier
@@ -164,7 +193,10 @@ fun InteractionPanelRecommendation(
                         onCommentClick(comments)
                     }
                 ) {
-                    val transition = updateTransition(isCommented.value, label = "CommentTransition")
+                    val transition = updateTransition(
+                        isCommentCurrentlyClicked.value,
+                        label = "CommentTransition"
+                    )
                     val size by transition.animateDp(
                         transitionSpec = {
                             keyframes {
@@ -186,16 +218,16 @@ fun InteractionPanelRecommendation(
                     )
                 }
 
-                Text(
-                    modifier = Modifier.padding(end = 9.dp),
-                    text = commentsAmount.toString(),
-                    color = Color.Black,
-                    textAlign = TextAlign.Center,
-                    fontSize = 14.sp
-                )
+                if (!isOwnerView) {
+                    Text(
+                        modifier = Modifier.padding(end = 9.dp),
+                        text = "Comment",
+                        color = Color.Black,
+                        textAlign = TextAlign.Center,
+                        fontSize = 12.sp
+                    )
+                }
             }
-
-            Spacer(modifier = Modifier.size(10.dp))
 
             Row(
                 modifier = Modifier
@@ -245,139 +277,37 @@ fun InteractionPanelRecommendation(
                     )
                 }
 
-                Text(
-                    modifier = Modifier.padding(end = 9.dp),
-                    text = repostsAmount.toString(),
-                    color = Color.Black,
-                    textAlign = TextAlign.Center,
-                    fontSize = 14.sp
-                )
-            }
-        }
-
-        if (topLikedComment != null) {
-            Column(
-                modifier = Modifier
-                    .padding(bottom = 10.dp)
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(20.dp))
-                    .background(color ?: primary)
-            ) {
-                Text(
-                    modifier = Modifier
-                        .padding(top = 15.dp, bottom = 7.dp)
-                        .align(Alignment.CenterHorizontally),
-                    text = "Top liked comment",
-                    color = Color.White,
-                    fontSize = 14.sp
-                )
-
-                if (topLikedComment.userItem?.nickname != null && topLikedComment.text != null && topLikedComment.date != null) {
-                    CommentRecommendationItem(
-                        modifier = Modifier.padding(start = 5.dp, end = 5.dp, bottom = 10.dp),
-                        comment = topLikedComment,
-                        nickname = topLikedComment.userItem?.nickname!!,
-                        photoReference = topLikedComment.userItem?.photoReference,
-                        text = topLikedComment.text,
-                        date = topLikedComment.date,
-                        onCommentClick = { _: Comment -> }
-                    )
-                }
-            }
-        }
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 10.dp)
-        ) {
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-            ) {
-                Column(
-                    modifier = Modifier
-                        .padding(10.dp, 20.dp)
-                        .align(Alignment.Center)
-                ) {
+                if (!isOwnerView) {
                     Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = views.toString(),
-                        color = Color.Black,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center,
-                        fontSize = 17.sp
-                    )
-
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = "Views",
-                        color = Color.Black,
-                        textAlign = TextAlign.Center,
-                        fontSize = 14.sp
+                        modifier = Modifier.width(57.dp),
+                        text = if (isCurrentlyReposted.value) "Reposted" else "Repost",
+                        color = if (isCurrentlyReposted.value) color ?: primary else Color.Black,
+                        textAlign = TextAlign.Start,
+                        fontSize = 12.sp
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.size(10.dp))
-
-            if (authorUserId == currentUserid) {
+            if (isOwnerView) {
                 Box(
                     modifier = Modifier
-                        .weight(1f)
+                        .weight(2f)
                 ) {
-                    Column(
-                        modifier = Modifier
-                            .padding(10.dp, 20.dp)
-                            .align(Alignment.Center)
+                    OutlinedButton(
+                        modifier = Modifier.align(Alignment.Center),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = color ?: primary,
+                        ),
+                        border = BorderStroke(1.dp, color ?: primary),
+                        onClick = { }
                     ) {
                         Text(
-                            modifier = Modifier.fillMaxWidth(),
-                            text = coverage.toString(),
-                            color = Color.Black,
+                            text = "View insights",
                             fontWeight = FontWeight.Bold,
                             textAlign = TextAlign.Center,
-                            fontSize = 17.sp
-                        )
-
-                        Text(
-                            modifier = Modifier.fillMaxWidth(),
-                            text = "coverage",
-                            color = Color.Black,
-                            textAlign = TextAlign.Center,
-                            fontSize = 14.sp
+                            fontSize = 12.sp
                         )
                     }
-                }
-
-                Spacer(modifier = Modifier.size(10.dp))
-            }
-
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-            ) {
-                Column(
-                    modifier = Modifier
-                        .padding(10.dp, 20.dp)
-                        .align(Alignment.Center)
-                ) {
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = day,
-                        color = Color.Black,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center,
-                        fontSize = 17.sp
-                    )
-
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = year,
-                        color = Color.Black,
-                        textAlign = TextAlign.Center,
-                        fontSize = 14.sp
-                    )
                 }
             }
         }
@@ -399,11 +329,8 @@ fun InteractionPanelRecommendationPreview() {
             userItem = UserItem(nickname = "serjshul"),
             date = Date()
         ),
-        views = 348,
-        coverage = 6542,
-        date = Date(),
         recommendationId = "recommendationId",
-        authorUserId = "2131241",
+        authorUserId = "2131240",
         currentUserid = "2131241",
         onLikeClick = { _: Boolean, _: String, _: String -> Response.Success(true) },
         onCommentClick = { },

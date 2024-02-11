@@ -128,7 +128,7 @@ fun RecommendationScreenContent(
                             HeaderBackground(
                                 modifier = Modifier
                                     .align(Alignment.TopCenter)
-                                    .alpha(80 / currentOffset.toFloat()),
+                                    .alpha(200 / currentOffset.toFloat()),
                                 color = recommendation.color?.toColor(),
                                 backgroundImageReference = recommendation.backgroundImageReference,
                                 backgroundVideoReference = recommendation.backgroundVideoReference
@@ -193,9 +193,6 @@ fun RecommendationScreenContent(
                                             comments = recommendation.comments,
                                             repostedBy = recommendation.repostedBy,
                                             topLikedComment = topLikedComment,
-                                            views = recommendation.views,
-                                            coverage = recommendation.coverage,
-                                            date = recommendation.date,
                                             recommendationId = recommendation.id,
                                             authorUserId = recommendation.uid,
                                             currentUserid = currentUser.uid,

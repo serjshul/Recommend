@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 
 fun Modifier.textInterval(): Modifier {
     return this
-        .padding(bottom = 20.dp)
+        .padding(bottom = 17.dp)
 }
 
 fun Modifier.textShape(): Modifier {
@@ -31,7 +31,7 @@ fun Modifier.itemsInterval(): Modifier {
 fun Modifier.recommendationHeaderShape(): Modifier {
     return this
         .fillMaxWidth()
-        .height(450.dp)
+        .height(460.dp)
 }
 
 fun Modifier.recommendationContentShape(): Modifier {
