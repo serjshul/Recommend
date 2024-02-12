@@ -98,7 +98,7 @@ fun rememberAppState(
 @Composable
 @ReadOnlyComposable
 fun resources(): Resources {
-    LocalConfiguration.current
+    LocalConfiguration.current // TODO: Isn't this are unusable? (can we delete this code?)
     return LocalContext.current.resources
 }
 
