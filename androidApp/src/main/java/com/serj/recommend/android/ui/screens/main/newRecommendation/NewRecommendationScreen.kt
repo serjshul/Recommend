@@ -29,6 +29,13 @@ import com.serj.recommend.android.ui.screens.main.newRecommendation.components.N
 
 // TODO: Why we need NewRecommendationScreenContent? maybe its more good just make what u do
 //  inside of NewRecommendationScreenContent, right in NewRecommendationScreen? (call reasons)
+
+// TODO: еif you enter string in the input field for the year and create a recommendation,
+//  the application crashes for @serjshul
+
+// TODO: when entering the year in numbers from the keyboard and creating a recommendation,
+//  the application crashes,because they are read as String for @serjshul
+
 @Composable
 fun NewRecommendationScreen(
     viewModel: NewRecommendationViewModel = hiltViewModel()
