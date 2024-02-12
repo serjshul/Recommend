@@ -56,26 +56,33 @@ interface StorageService {
 
     fun getStorageReferenceFromUrl(url: String): GetStorageReferenceFromUrlResponse
 
-    suspend fun likeRecommendation(
+    suspend fun like(
         userId: String,
         recommendationId: String,
         date: Date,
         source: String
     ): LikeRecommendationResponse
 
-    suspend fun removeLikeRecommendation(
+    suspend fun removeLike(
         userId: String,
         recommendationId: String
     ): RemoveLikeRecommendationResponse
 
-    suspend fun repostRecommendation(
+    fun comment(recommendationId: String, userId: String, text: String):
+            UploadCommentResponse
+
+    fun removeComment(recommendationId: String, userId: String, commentId: String,
+                      commentOwnerId: String):
+            DeleteCommentResponse
+
+    suspend fun repost(
         userId: String,
         recommendationId: String,
         date: Date,
         source: String
     ): RepostRecommendationResponse
 
-    suspend fun removeRepostRecommendation(
+    suspend fun removeRepost(
         userId: String,
         recommendationId: String
     ): RemoveRepostRecommendationResponse
@@ -85,13 +92,6 @@ interface StorageService {
         currentUserId: String,
         isReposted: Boolean
     ): UploadRecommendationResponse
-
-    fun uploadComment(recommendationId: String, userId: String, text: String):
-            UploadCommentResponse
-
-    fun deleteComment(recommendationId: String, userId: String, commentId: String,
-                      commentOwnerId: String):
-            DeleteCommentResponse
 
     suspend fun uploadBackgroundImage(recommendationId: String, uri: Uri, context: Context)
 

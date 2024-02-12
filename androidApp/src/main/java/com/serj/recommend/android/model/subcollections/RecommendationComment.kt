@@ -13,7 +13,7 @@ data class RecommendationComment(
 
     val date: Date? = null,
     val source: String? = null,
-    val likedBy: List<String> = arrayListOf(),
+    val likedBy: List<String> = listOf(),
 
     var userItem: UserItem? = null
 )

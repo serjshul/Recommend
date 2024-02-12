@@ -1,5 +1,6 @@
 package com.serj.recommend.android.ui.components.comments
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
@@ -25,6 +26,7 @@ import com.serj.recommend.android.model.subcollections.RecommendationComment
 import com.serj.recommend.android.services.model.Response
 import com.serj.recommend.android.ui.components.comments.items.CommentItem
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CommentsBottomSheet(
     modifier: Modifier = Modifier,
@@ -54,25 +56,20 @@ fun CommentsBottomSheet(
             
             if (comments.isNotEmpty()) {
                 items(comments.keys.toList(), key = { it.commentId!! }) {
-                    if (it.userItem != null && it.userItem!!.nickname != null &&
-                        it.userItem!!.photoReference != null && it.text != null && it.date != null
-                    ) {
-                        CommentItem(
-                            modifier = Modifier,
-                            comment = it,
-                            nickname = it.userItem!!.nickname!!,
-                            photoReference = it.userItem!!.photoReference,
-                            text = it.text,
-                            date = it.date,
-                            isLiked = false,
-                            likedBy = it.likedBy,
-                            isDropdownMenuExpanded = comments[it]!!,
-                            onLikeClick = { _: Boolean, _: String, _: String -> Response.Success(true) },
-                            onCommentClick = onCommentClick,
-                            onCommentDismissRequest = onCommentDismissRequest,
-                            onDeleteCommentClick = onDeleteCommentClick
-                        )
-                    }
+                    CommentItem(
+                        comment = it,
+                        nickname = it.userItem!!.nickname!!,
+                        photoReference = it.userItem!!.photoReference,
+                        text = it.text!!,
+                        date = it.date!!,
+                        isLiked = false,
+                        likedBy = it.likedBy,
+                        isDropdownMenuExpanded = comments[it]!!,
+                        onLikeClick = { _: Boolean, _: String, _: String -> Response.Success(true) },
+                        onCommentClick = onCommentClick,
+                        onCommentDismissRequest = onCommentDismissRequest,
+                        onDeleteCommentClick = onDeleteCommentClick
+                    )
                 }
             } else {
                 item {

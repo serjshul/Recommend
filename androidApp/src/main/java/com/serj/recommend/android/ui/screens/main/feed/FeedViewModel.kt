@@ -78,7 +78,7 @@ class FeedViewModel @Inject constructor(
         launchCatching {
             accountService.currentUser.collect { user ->
                 user.uid?.let {
-                    storageService.uploadComment(
+                    storageService.comment(
                         recommendationId = currentRecommendationId,
                         userId = user.uid,
                         text = commentInput
@@ -110,7 +110,7 @@ class FeedViewModel @Inject constructor(
             launchCatching {
                 accountService.currentUser.collect { user ->
                     user.uid?.let {
-                        storageService.deleteComment(
+                        storageService.removeComment(
                             recommendationId = currentRecommendationId,
                             userId = user.uid,
                             commentId = comment.commentId,

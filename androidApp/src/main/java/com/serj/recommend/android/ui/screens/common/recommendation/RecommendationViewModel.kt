@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
+import com.serj.recommend.android.R
 import com.serj.recommend.android.common.Constants.RECOMMENDATION_ID
 import com.serj.recommend.android.common.ext.idFromParameter
 import com.serj.recommend.android.model.collections.Recommendation
@@ -16,6 +17,7 @@ import com.serj.recommend.android.services.LogService
 import com.serj.recommend.android.services.StorageService
 import com.serj.recommend.android.services.model.Response
 import com.serj.recommend.android.ui.components.interaction.InteractionSource
+import com.serj.recommend.android.ui.components.snackbar.SnackbarManager
 import com.serj.recommend.android.ui.screens.RecommendViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.Date
@@ -96,7 +98,9 @@ class RecommendationViewModel @Inject constructor(
                         }
                     }
                     bottomSheetComments.putAll(
-                        recommendationResponse.data.comments.associateWith { false }
+                        recommendationResponse.data.comments
+                            .sortedByDescending { it.date }
+                            .associateWith { false }
                     )
 
                     loadingStatus.value = Response.Success(true)
@@ -108,20 +112,24 @@ class RecommendationViewModel @Inject constructor(
     fun onLikeClick() {
         launchCatching {
             val result =
-                if (!isLiked)
-                    storageService.likeRecommendation(
+                if (!isLiked) {
+                    isLiked = !isLiked
+                    storageService.like(
                         userId = currentUser.value!!.uid!!,
                         recommendationId = currentRecommendationId!!,
                         date = Date(),
                         source = InteractionSource.recommendation.name
                     )
-                else
-                    storageService.removeLikeRecommendation(
+                } else {
+                    isLiked = !isLiked
+                    storageService.removeLike(
                         userId = currentUser.value!!.uid!!,
                         recommendationId = currentRecommendationId!!
                     )
+                }
 
-            if (result is Response.Success) {
+            if (result !is Response.Success) {
+                SnackbarManager.showMessage(R.string.like_exception)
                 isLiked = !isLiked
             }
         }
@@ -137,20 +145,24 @@ class RecommendationViewModel @Inject constructor(
     fun onRepostClick() {
         launchCatching {
             val result =
-                if (!isReposted)
-                    storageService.repostRecommendation(
+                if (!isReposted) {
+                    isReposted = !isReposted
+                    storageService.repost(
                         userId = currentUser.value!!.uid!!,
                         recommendationId = currentRecommendationId!!,
                         date = Date(),
                         source = InteractionSource.recommendation.name
                     )
-                else
-                    storageService.removeRepostRecommendation(
+                } else {
+                    isReposted = !isReposted
+                    storageService.removeRepost(
                         userId = currentUser.value!!.uid!!,
                         recommendationId = currentRecommendationId!!
                     )
+                }
 
-            if (result is Response.Success) {
+            if (result !is Response.Success) {
+                SnackbarManager.showMessage(R.string.repost_exception)
                 isReposted = !isReposted
             }
         }
@@ -186,7 +198,7 @@ class RecommendationViewModel @Inject constructor(
             accountService.currentUser.collect { user ->
                 user.uid?.let {
                     currentRecommendationId?.let { it1 ->
-                        storageService.uploadComment(
+                        storageService.comment(
                             recommendationId = it1,
                             userId = user.uid,
                             text = commentInput
@@ -220,7 +232,7 @@ class RecommendationViewModel @Inject constructor(
                 accountService.currentUser.collect { user ->
                     user.uid?.let {
                         currentRecommendationId?.let { it1 ->
-                            storageService.deleteComment(
+                            storageService.removeComment(
                                 recommendationId = it1,
                                 userId = user.uid,
                                 commentId = comment.commentId,

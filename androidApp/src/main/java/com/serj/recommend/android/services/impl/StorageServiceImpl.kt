@@ -4,7 +4,6 @@ import android.content.ContentValues.TAG
 import android.content.Context
 import android.net.Uri
 import android.util.Log
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.dataObjects
@@ -299,7 +298,7 @@ class StorageServiceImpl @Inject constructor(
         }
     }
 
-    override suspend fun likeRecommendation(
+    override suspend fun like(
         userId: String,
         recommendationId: String,
         date: Date,
@@ -310,8 +309,8 @@ class StorageServiceImpl @Inject constructor(
             var secondTransactionResult = false
 
             val document = hashMapOf(
-                "date" to date,
-                "source" to source
+                DATE_FIELD to date,
+                SOURCE_FIELD to source
             )
 
             firestore
@@ -320,7 +319,13 @@ class StorageServiceImpl @Inject constructor(
                 .collection(USER_LIKES_SUBCOLLECTION)
                 .document(recommendationId)
                 .set(document)
-                .addOnCompleteListener { firstTransactionResult = it.isSuccessful }
+                .addOnCompleteListener {
+                    firstTransactionResult = it.isSuccessful
+                    if (it.isSuccessful)
+                        Log.d(TAG, "Like added to User (${userId})")
+                    else
+                        Log.d(TAG, "Like didn't add to User (${userId})")
+                }
                 .await()
             firestore
                 .collection(RECOMMENDATIONS_COLLECTION)
@@ -328,7 +333,13 @@ class StorageServiceImpl @Inject constructor(
                 .collection(RECOMMENDATION_LIKES_SUBCOLLECTION)
                 .document(userId)
                 .set(document)
-                .addOnCompleteListener { secondTransactionResult = it.isSuccessful }
+                .addOnCompleteListener {
+                    secondTransactionResult = it.isSuccessful
+                    if (it.isSuccessful)
+                        Log.d(TAG, "Like added to Recommendation (${recommendationId})")
+                    else
+                        Log.d(TAG, "Like didn't add to Recommendation (${recommendationId})")
+                }
                 .await()
 
             if (firstTransactionResult && secondTransactionResult)
@@ -340,7 +351,7 @@ class StorageServiceImpl @Inject constructor(
         }
     }
 
-    override suspend fun removeLikeRecommendation(
+    override suspend fun removeLike(
         userId: String,
         recommendationId: String
     ): RemoveLikeRecommendationResponse {
@@ -354,7 +365,13 @@ class StorageServiceImpl @Inject constructor(
                 .collection(USER_LIKES_SUBCOLLECTION)
                 .document(recommendationId)
                 .delete()
-                .addOnCompleteListener { firstTransactionResult = it.isSuccessful }
+                .addOnCompleteListener {
+                    firstTransactionResult = it.isSuccessful
+                    if (it.isSuccessful)
+                        Log.d(TAG, "Like removed from User (${userId})")
+                    else
+                        Log.d(TAG, "Like didn't removed from User (${userId})")
+                }
                 .await()
             firestore
                 .collection(RECOMMENDATIONS_COLLECTION)
@@ -362,13 +379,245 @@ class StorageServiceImpl @Inject constructor(
                 .collection(RECOMMENDATION_LIKES_SUBCOLLECTION)
                 .document(userId)
                 .delete()
-                .addOnCompleteListener { secondTransactionResult = it.isSuccessful }
+                .addOnCompleteListener {
+                    secondTransactionResult = it.isSuccessful
+                    if (it.isSuccessful)
+                        Log.d(TAG, "Like removed from Recommendation (${recommendationId})")
+                    else
+                        Log.d(TAG, "Like didn't removed from Recommendation (${recommendationId})")
+                }
                 .await()
 
             if (firstTransactionResult && secondTransactionResult)
                 Success(true)
             else
                 Failure(Exception())
+        } catch (e: Exception) {
+            Failure(e)
+        }
+    }
+
+    override suspend fun repost(
+        userId: String,
+        recommendationId: String,
+        date: Date,
+        source: String
+    ): RepostRecommendationResponse {
+        return try {
+            var firstTransactionResult = false
+            var secondTransactionResult = false
+            var thirdTransactionResult = false
+
+            val contentDocument = hashMapOf(
+                IS_REPOSTED_FIELD to true,
+                DATE_FIELD to date
+            )
+            val repostDocument = hashMapOf(
+                DATE_FIELD to date,
+                SOURCE_FIELD to source
+            )
+
+            firestore
+                .collection(USERS_COLLECTION)
+                .document(userId)
+                .collection(USER_CONTENT_SUBCOLLECTION)
+                .document(recommendationId)
+                .set(contentDocument)
+                .addOnCompleteListener {
+                    firstTransactionResult = it.isSuccessful
+                    if (it.isSuccessful)
+                        Log.d(TAG, "Repost added to User (${userId})")
+                    else
+                        Log.d(TAG, "Repost didn't add to User (${userId})")
+                }
+                .await()
+            firestore
+                .collection(USERS_COLLECTION)
+                .document(userId)
+                .collection(USER_REPOSTS_SUBCOLLECTION)
+                .document(recommendationId)
+                .set(repostDocument)
+                .addOnCompleteListener {
+                    secondTransactionResult = it.isSuccessful
+                    if (it.isSuccessful)
+                        Log.d(TAG, "Repost added to User (${userId})")
+                    else
+                        Log.d(TAG, "Repost didn't add to User (${userId})")
+                }
+                .await()
+            firestore
+                .collection(RECOMMENDATIONS_COLLECTION)
+                .document(recommendationId)
+                .collection(RECOMMENDATION_REPOSTS_SUBCOLLECTION)
+                .document(userId)
+                .set(repostDocument)
+                .addOnCompleteListener {
+                    thirdTransactionResult = it.isSuccessful
+                    if (it.isSuccessful)
+                        Log.d(TAG, "Repost added to Recommendation (${recommendationId})")
+                    else
+                        Log.d(TAG, "Repost didn't add to Recommendation (${recommendationId})")
+                }
+                .await()
+
+            if (firstTransactionResult && secondTransactionResult && thirdTransactionResult)
+                Success(true)
+            else
+                Failure(Exception())
+        } catch (e: Exception) {
+            Failure(e)
+        }
+    }
+
+    override suspend fun removeRepost(
+        userId: String,
+        recommendationId: String
+    ): RemoveRepostRecommendationResponse {
+        return try {
+            var firstTransactionResult = false
+            var secondTransactionResult = false
+            var thirdTransactionResult = false
+
+            firestore
+                .collection(USERS_COLLECTION)
+                .document(userId)
+                .collection(USER_CONTENT_SUBCOLLECTION)
+                .document(recommendationId)
+                .delete()
+                .addOnCompleteListener {
+                    firstTransactionResult = it.isSuccessful
+                    if (it.isSuccessful)
+                        Log.d(TAG, "Repost removed from User (${userId})")
+                    else
+                        Log.d(TAG, "Repost didn't removed from User (${userId})")
+                }
+                .await()
+            firestore
+                .collection(USERS_COLLECTION)
+                .document(userId)
+                .collection(USER_REPOSTS_SUBCOLLECTION)
+                .document(recommendationId)
+                .delete()
+                .addOnCompleteListener {
+                    secondTransactionResult = it.isSuccessful
+                    if (it.isSuccessful)
+                        Log.d(TAG, "Repost removed from User (${userId})")
+                    else
+                        Log.d(TAG, "Repost didn't removed from User (${userId})")
+                }
+                .await()
+            firestore
+                .collection(RECOMMENDATIONS_COLLECTION)
+                .document(recommendationId)
+                .collection(RECOMMENDATION_REPOSTS_SUBCOLLECTION)
+                .document(userId)
+                .delete()
+                .addOnCompleteListener {
+                    thirdTransactionResult = it.isSuccessful
+                    if (it.isSuccessful)
+                        Log.d(TAG, "Repost removed from Recommendation (${recommendationId})")
+                    else
+                        Log.d(TAG, "Repost didn't removed from Recommendation (${recommendationId})")
+                }
+                .await()
+
+            if (firstTransactionResult && secondTransactionResult && thirdTransactionResult)
+                Success(true)
+            else
+                Failure(Exception())
+        } catch (e: Exception) {
+            Failure(e)
+        }
+    }
+
+    override fun comment(
+        recommendationId: String,
+        userId: String,
+        text: String
+    ): UploadCommentResponse {
+        return try {
+            var firstTransaction = false
+            var secondTransaction = false
+
+            var commentId: String? = null
+            val commentForRecommendation = hashMapOf(
+                USER_ID_FIELD to userId,
+                REPLIED_COMMENT_ID_FIELD to null,
+                TEXT_FIELD to text,
+                DATE_FIELD to Date(),
+                LIKED_BY_FIELD to arrayListOf<String>()
+            )
+            val commentForUser = hashMapOf(
+                RECOMMENDATION_ID_FIELD to recommendationId,
+                REPLIED_COMMENT_ID_FIELD to null,
+                DATE_FIELD to Date(),
+                LIKED_BY_FIELD to arrayListOf<String>(),
+                SOURCE_FIELD to null
+            )
+
+            firestore
+                .collection(RECOMMENDATIONS_COLLECTION)
+                .document(recommendationId)
+                .collection(COMMENTS_COLLECTION)
+                .add(commentForRecommendation)
+                .addOnCompleteListener { task ->
+                    firstTransaction = task.isSuccessful
+                    if (task.isSuccessful) {
+                        commentId = task.result.id
+                        Log.d(TAG, "Comment added to Recommendation (${recommendationId})")
+                    } else
+                        Log.d(TAG, "Comment didn't add to Recommendation (${recommendationId})")
+                }
+            if (commentId != null) {
+                firestore
+                    .collection(USERS_COLLECTION)
+                    .document(userId)
+                    .collection(USER_REPOSTS_SUBCOLLECTION)
+                    .document(commentId!!)
+                    .set(commentForUser)
+                    .addOnCompleteListener { task ->
+                        secondTransaction = task.isSuccessful
+                        if (task.isSuccessful) {
+                            Log.d(TAG, "Comment added to User (${userId})")
+                        } else
+                            Log.d(TAG, "Comment didn't add to User (${userId})")
+                    }
+            }
+
+            if (firstTransaction && secondTransaction) {
+                Success(true)
+            } else {
+                Failure(Exception())
+            }
+        } catch (e: Exception) {
+            Failure(e)
+        }
+    }
+
+    override fun removeComment(
+        recommendationId: String,
+        userId: String,
+        commentId: String,
+        commentOwnerId: String
+    ): DeleteCommentResponse {
+        return try {
+            if (userId == commentOwnerId) {
+                firestore
+                    .collection(RECOMMENDATIONS_COLLECTION)
+                    .document(recommendationId)
+                    .collection(COMMENTS_COLLECTION)
+                    .document(commentId)
+                    .delete()
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful)
+                            Log.d(TAG, "Recommendation DocumentSnapshot successfully updated!")
+                        else
+                            Log.w(TAG, "Error updating recommendation document: $task")
+                    }
+                Success(true)
+            } else {
+                Failure(Exception())
+            }
         } catch (e: Exception) {
             Failure(e)
         }
@@ -436,86 +685,6 @@ class StorageServiceImpl @Inject constructor(
         }
     }
 
-    override suspend fun repostRecommendation(
-        userId: String,
-        recommendationId: String,
-        date: Date,
-        source: String
-    ): RepostRecommendationResponse {
-        return try {
-            var firstTransactionResult = false
-            var secondTransactionResult = false
-
-            val documentForUser = hashMapOf(
-                "isReposted" to true,
-                "date" to date,
-                "source" to source
-            )
-            val documentForRecommendation = hashMapOf(
-                "date" to date,
-                "source" to source
-            )
-
-            firestore
-                .collection(USERS_COLLECTION)
-                .document(userId)
-                .collection(USER_CONTENT_SUBCOLLECTION)
-                .document(recommendationId)
-                .set(documentForUser)
-                .addOnCompleteListener { firstTransactionResult = it.isSuccessful }
-                .await()
-            firestore
-                .collection(RECOMMENDATIONS_COLLECTION)
-                .document(recommendationId)
-                .collection(RECOMMENDATION_REPOSTS_SUBCOLLECTION)
-                .document(userId)
-                .set(documentForRecommendation)
-                .addOnCompleteListener { secondTransactionResult = it.isSuccessful }
-                .await()
-
-            if (firstTransactionResult && secondTransactionResult)
-                Success(true)
-            else
-                Failure(Exception())
-        } catch (e: Exception) {
-            Failure(e)
-        }
-    }
-
-    override suspend fun removeRepostRecommendation(
-        userId: String,
-        recommendationId: String
-    ): RemoveRepostRecommendationResponse {
-        return try {
-            var firstTransactionResult = false
-            var secondTransactionResult = false
-
-            firestore
-                .collection(USERS_COLLECTION)
-                .document(userId)
-                .collection(USER_CONTENT_SUBCOLLECTION)
-                .document(recommendationId)
-                .delete()
-                .addOnCompleteListener { firstTransactionResult = it.isSuccessful }
-                .await()
-            firestore
-                .collection(RECOMMENDATIONS_COLLECTION)
-                .document(recommendationId)
-                .collection(RECOMMENDATION_REPOSTS_SUBCOLLECTION)
-                .document(userId)
-                .delete()
-                .addOnCompleteListener { secondTransactionResult = it.isSuccessful }
-                .await()
-
-            if (firstTransactionResult && secondTransactionResult)
-                Success(true)
-            else
-                Failure(Exception())
-        } catch (e: Exception) {
-            Failure(e)
-        }
-    }
-
     override suspend fun getFollowingRecommendationsIds(
         followingUids: List<String>
     ): GetFollowingRecommendationsIdsResponse {
@@ -524,7 +693,7 @@ class StorageServiceImpl @Inject constructor(
             for (followingUid in followingUids) {
                 val recommendationSnapshot = firestore
                     .collection(RECOMMENDATIONS_COLLECTION)
-                    .whereEqualTo(USER_ID_FIELD, followingUid)
+                    .whereEqualTo(UID_FIELD, followingUid)
                     .orderBy(DATE_FIELD, Query.Direction.DESCENDING)
                     .limit(10)
                     .get()
@@ -540,65 +709,6 @@ class StorageServiceImpl @Inject constructor(
             }
             followingRecommendationsIds.sortByDescending { it.second }
             Success(followingRecommendationsIds.map { it.first })
-        } catch (e: Exception) {
-            Failure(e)
-        }
-    }
-
-    override fun uploadComment(
-        recommendationId: String,
-        userId: String,
-        text: String
-    ): UploadCommentResponse {
-        return try {
-            val comment = hashMapOf(
-                "userId" to userId,
-                "repliedCommentId" to null,
-                "text" to text,
-                "date" to FieldValue.serverTimestamp(),
-                "likedBy" to arrayListOf<String>()
-            )
-            firestore
-                .collection(RECOMMENDATIONS_COLLECTION)
-                .document(recommendationId)
-                .collection(COMMENTS_COLLECTION)
-                .add(comment)
-                .addOnCompleteListener { task ->
-                if (task.isSuccessful)
-                    Log.d(TAG, "Recommendation DocumentSnapshot successfully updated!")
-                else
-                    Log.w(TAG, "Error updating recommendation document: $task")
-                }
-            Success(true)
-        } catch (e: Exception) {
-            Failure(e)
-        }
-    }
-
-    override fun deleteComment(
-        recommendationId: String,
-        userId: String,
-        commentId: String,
-        commentOwnerId: String
-    ): DeleteCommentResponse {
-        return try {
-            if (userId == commentOwnerId) {
-                firestore
-                    .collection(RECOMMENDATIONS_COLLECTION)
-                    .document(recommendationId)
-                    .collection(COMMENTS_COLLECTION)
-                    .document(commentId)
-                    .delete()
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful)
-                            Log.d(TAG, "Recommendation DocumentSnapshot successfully updated!")
-                        else
-                            Log.w(TAG, "Error updating recommendation document: $task")
-                    }
-                Success(true)
-            } else {
-                Failure(Exception())
-            }
         } catch (e: Exception) {
             Failure(e)
         }
@@ -779,13 +889,20 @@ class StorageServiceImpl @Inject constructor(
 
         private const val USER_CONTENT_SUBCOLLECTION = "content"
         private const val USER_LIKES_SUBCOLLECTION = "likes"
+        private const val USER_REPOSTS_SUBCOLLECTION = "reposts"
 
         private const val RECOMMENDATION_LIKES_SUBCOLLECTION = "likes"
         private const val RECOMMENDATION_REPOSTS_SUBCOLLECTION = "reposts"
 
-        private const val USER_ID_FIELD = "uid"
+        private const val UID_FIELD = "uid"
+
+        private const val RECOMMENDATION_ID_FIELD = "recommendationId"
+        private const val USER_ID_FIELD = "userId"
         private const val DATE_FIELD = "date"
+        private const val SOURCE_FIELD = "source"
+        private const val IS_REPOSTED_FIELD = "isReposted"
+        private const val REPLIED_COMMENT_ID_FIELD = "repliedCommentId"
+        private const val TEXT_FIELD = "text"
         private const val LIKED_BY_FIELD = "likedBy"
-        private const val REPOSTED_BY_FIELD = "repostedBy"
     }
 }
