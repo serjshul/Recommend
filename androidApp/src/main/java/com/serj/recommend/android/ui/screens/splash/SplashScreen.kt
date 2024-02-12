@@ -57,7 +57,10 @@ fun SplashScreenContent(
             )
             Text(text = stringResource(R.string.generic_error))
 
-            AuthenticationButton(R.string.try_again, Modifier.basicButton()) {
+            AuthenticationButton(
+                text = R.string.try_again,
+                modifier = Modifier.basicButton()
+            ) {
                 onAppStart()
             }
         } else {
