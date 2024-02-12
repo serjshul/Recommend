@@ -49,7 +49,7 @@ interface StorageService {
             GetRecommendationPreviewResponse
     suspend fun getUserItemByUid(uid: String): GetUserItemResponse
 
-    suspend fun getRecommendationComments(recommendationId: String): GetRecommendationCommentsResponse
+    suspend fun getCommentsFromRecommendation(recommendationId: String): GetRecommendationCommentsResponse
 
     suspend fun getFollowingRecommendationsIds(followingUids: List<String>):
             GetFollowingRecommendationsIdsResponse

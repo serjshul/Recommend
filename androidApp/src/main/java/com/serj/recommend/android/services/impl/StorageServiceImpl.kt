@@ -22,6 +22,8 @@ import com.serj.recommend.android.model.items.RecommendationItem
 import com.serj.recommend.android.model.items.RecommendationPreview
 import com.serj.recommend.android.model.items.UserItem
 import com.serj.recommend.android.model.subcollections.RecommendationComment
+import com.serj.recommend.android.model.subcollections.RecommendationLike
+import com.serj.recommend.android.model.subcollections.RecommendationRepost
 import com.serj.recommend.android.services.DeleteCommentResponse
 import com.serj.recommend.android.services.GetBannerResponse
 import com.serj.recommend.android.services.GetCategoryResponse
@@ -39,6 +41,7 @@ import com.serj.recommend.android.services.RepostRecommendationResponse
 import com.serj.recommend.android.services.StorageService
 import com.serj.recommend.android.services.UploadCommentResponse
 import com.serj.recommend.android.services.UploadRecommendationResponse
+import com.serj.recommend.android.services.model.Response
 import com.serj.recommend.android.services.model.Response.Failure
 import com.serj.recommend.android.services.model.Response.Success
 import com.serj.recommend.android.ui.components.media.BackgroundTypes
@@ -88,9 +91,20 @@ class StorageServiceImpl @Inject constructor(
                             .getOrDefault(BackgroundTypes.image.name, null)
                             ?.let { storage.getReferenceFromUrl(it) }
                 }
-                val commentsResponse = getRecommendationComments(recommendationId)
+                val likesResponse = getLikesFromRecommendation(recommendationId)
+                if (likesResponse is Success && likesResponse.data != null) {
+                    data.likes.addAll(likesResponse.data)
+                }
+                val commentsResponse = getCommentsFromRecommendation(recommendationId)
                 if (commentsResponse is Success && commentsResponse.data != null) {
                     data.comments.addAll(commentsResponse.data)
+                    if (data.comments.isNotEmpty()) {
+                        data.topLikedComment = data.comments.maxBy { it.likedBy.size }
+                    }
+                }
+                val repostsResponse = getRepostsFromRecommendation(recommendationId)
+                if (repostsResponse is Success && repostsResponse.data != null) {
+                    data.reposts.addAll(repostsResponse.data)
                 }
                 Success(data)
             } else {
@@ -182,7 +196,7 @@ class StorageServiceImpl @Inject constructor(
                     ?.let { storage.getReferenceFromUrl(it) }
                 recommendationData.isLiked = currentUserLikedIds.contains(recommendationData.id)
 
-                val commentsResponse = getRecommendationComments(recommendationId)
+                val commentsResponse = getCommentsFromRecommendation(recommendationId)
                 if (commentsResponse is Success && commentsResponse.data != null) {
                     recommendationData.comments.addAll(commentsResponse.data)
                 }
@@ -247,26 +261,39 @@ class StorageServiceImpl @Inject constructor(
         }
     }
 
-    override suspend fun getRecommendationComments(
+    override suspend fun getCommentsFromRecommendation(
         recommendationId: String
     ): GetRecommendationCommentsResponse {
         return try {
-            val commentsSnapshot = firestore
+            var transactionResult = false
+            var comments: List<RecommendationComment>? = null
+
+            firestore
                 .collection(RECOMMENDATIONS_COLLECTION)
                 .document(recommendationId)
                 .collection(COMMENTS_COLLECTION)
                 .get()
-                .await()
-            val commentsData = commentsSnapshot.toObjects<RecommendationComment>()
-
-            for (comment in commentsData) {
-                val userItemResponse = comment.userId?.let { getUserItemByUid(it) }
-                if (userItemResponse is Success && userItemResponse.data != null) {
-                    comment.userItem = userItemResponse.data
+                .addOnSuccessListener { result ->
+                    comments = result.toObjects<RecommendationComment>()
+                    transactionResult = true
                 }
-            }
+                .addOnFailureListener { exception ->
+                    transactionResult = false
+                    Log.d(TAG, "Error getting documents: ", exception)
+                }
+                .await()
 
-            Success(commentsData)
+            if (transactionResult && comments != null) {
+                for (comment in comments!!) {
+                    val userItemResponse = comment.userId?.let { getUserItemByUid(it) }
+                    if (userItemResponse is Success && userItemResponse.data != null)
+                        comment.userItem = userItemResponse.data
+                    else
+                        transactionResult = false
+                }
+                Success(comments)
+            } else
+                Failure(Exception())
         } catch (e: Exception) {
             Failure(e)
         }
@@ -340,6 +367,68 @@ class StorageServiceImpl @Inject constructor(
 
             if (firstTransactionResult && secondTransactionResult)
                 Success(true)
+            else
+                Failure(Exception())
+        } catch (e: Exception) {
+            Failure(e)
+        }
+    }
+
+    private suspend fun getLikesFromRecommendation(
+        recommendationId: String
+    ): Response<List<RecommendationLike>> {
+        return try {
+            var transactionResult = false
+            var likes: List<RecommendationLike>? = null
+
+            firestore
+                .collection(RECOMMENDATIONS_COLLECTION)
+                .document(recommendationId)
+                .collection(RECOMMENDATION_LIKES_SUBCOLLECTION)
+                .get()
+                .addOnSuccessListener { result ->
+                    likes = result.toObjects<RecommendationLike>()
+                    transactionResult = true
+                }
+                .addOnFailureListener { exception ->
+                    transactionResult = false
+                    Log.d(TAG, "Error getting documents: ", exception)
+                }
+                .await()
+
+            if (transactionResult && likes != null)
+                Success(likes)
+            else
+                Failure(Exception())
+        } catch (e: Exception) {
+            Failure(e)
+        }
+    }
+
+    private suspend fun getRepostsFromRecommendation(
+        recommendationId: String
+    ): Response<List<RecommendationRepost>> {
+        return try {
+            var transactionResult = false
+            var reposts: List<RecommendationRepost>? = null
+
+            firestore
+                .collection(RECOMMENDATIONS_COLLECTION)
+                .document(recommendationId)
+                .collection(RECOMMENDATION_REPOSTS_SUBCOLLECTION)
+                .get()
+                .addOnSuccessListener { result ->
+                    reposts = result.toObjects<RecommendationRepost>()
+                    transactionResult = true
+                }
+                .addOnFailureListener { exception ->
+                    transactionResult = false
+                    Log.d(TAG, "Error getting documents: ", exception)
+                }
+                .await()
+
+            if (transactionResult && reposts != null)
+                Success(reposts)
             else
                 Failure(Exception())
         } catch (e: Exception) {

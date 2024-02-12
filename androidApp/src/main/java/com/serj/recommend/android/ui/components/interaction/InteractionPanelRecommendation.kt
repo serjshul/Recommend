@@ -38,8 +38,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.serj.recommend.android.R
-import com.serj.recommend.android.model.subcollections.RecommendationComment
 import com.serj.recommend.android.model.items.UserItem
+import com.serj.recommend.android.model.subcollections.RecommendationComment
 import com.serj.recommend.android.ui.components.comments.items.CommentRecommendationItem
 import com.serj.recommend.android.ui.styles.primary
 import java.util.Date
@@ -57,6 +57,7 @@ fun InteractionPanelRecommendation(
     onLikeClick: () -> Unit,
     onCommentClick: () -> Unit,
     onRepostClick: () -> Unit,
+    onInsightsClick: () -> Unit
 ) {
     val isOwnerView = authorUserId == currentUserid
 
@@ -268,7 +269,7 @@ fun InteractionPanelRecommendation(
                             contentColor = color ?: primary,
                         ),
                         border = BorderStroke(1.dp, color ?: primary),
-                        onClick = { }
+                        onClick = { onInsightsClick() }
                     ) {
                         Text(
                             text = "View insights",
@@ -300,7 +301,8 @@ fun InteractionPanelRecommendationPreview() {
         currentUserid = "2131241",
         onLikeClick = { },
         onCommentClick = { },
-        onRepostClick = { }
+        onRepostClick = { },
+        onInsightsClick = { }
     )
 }
 
@@ -321,6 +323,7 @@ fun InteractionPanelRecommendationOwnerPreview() {
         currentUserid = "2131241",
         onLikeClick = { },
         onCommentClick = { },
-        onRepostClick = { }
+        onRepostClick = { },
+        onInsightsClick = { }
     )
 }

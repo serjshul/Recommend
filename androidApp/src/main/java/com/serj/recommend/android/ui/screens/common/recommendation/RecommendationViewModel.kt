@@ -12,8 +12,6 @@ import com.serj.recommend.android.model.collections.User
 import com.serj.recommend.android.model.items.UserItem
 import com.serj.recommend.android.model.subcollections.RecommendationComment
 import com.serj.recommend.android.services.AccountService
-import com.serj.recommend.android.services.GetRecommendationResponse
-import com.serj.recommend.android.services.GetUserItemResponse
 import com.serj.recommend.android.services.LogService
 import com.serj.recommend.android.services.StorageService
 import com.serj.recommend.android.services.model.Response
@@ -31,12 +29,13 @@ class RecommendationViewModel @Inject constructor(
     private val accountService: AccountService
 ) : RecommendViewModel(logService) {
 
-    val currentUser = mutableStateOf<User?>(null)
+    val loadingStatus = mutableStateOf<Response<Boolean>>(Response.Loading(true))
 
-    val getRecommendationResponse = mutableStateOf<GetRecommendationResponse?>(null)
-    val getUserItemResponse = mutableStateOf<GetUserItemResponse?>(null)
+    val currentUser = mutableStateOf<User?>(null)
+    val userItem = mutableStateOf<UserItem?>(null)
+
+    val recommendation = mutableStateOf<Recommendation?>(null)
     private var currentRecommendationId by mutableStateOf<String?>(null)
-    val topLikedComment = mutableStateOf<RecommendationComment?>(null)
 
     var isLiked by mutableStateOf(false)
         private set
@@ -45,11 +44,16 @@ class RecommendationViewModel @Inject constructor(
     var isReposted by mutableStateOf(false)
         private set
 
-    var commentInput by mutableStateOf("")
-        private set
     var showCommentsBottomSheet by mutableStateOf(false)
         private set
+    var showInsightsBottomSheet by mutableStateOf(false)
+        private set
+
+    var commentInput by mutableStateOf("")
+        private set
+
     val bottomSheetComments = mutableStateMapOf<RecommendationComment, Boolean>()
+
 
     init {
         launchCatching {
@@ -61,24 +65,41 @@ class RecommendationViewModel @Inject constructor(
         val recommendationId = savedStateHandle.get<String>(RECOMMENDATION_ID)
         if (recommendationId != null) {
             launchCatching {
-                getRecommendationResponse.value = storageService
-                    .getRecommendationById(
-                        recommendationId.idFromParameter()
+                val recommendationResponse = storageService.getRecommendationById(
+                    recommendationId.idFromParameter()
+                )
+                loadingStatus.value =
+                    if (recommendationResponse is Response.Failure)
+                        Response.Failure(Exception())
+                    else
+                        Response.Loading(true)
+
+                if (recommendationResponse is Response.Success) {
+                    recommendation.value = recommendationResponse.data!!
+                    currentRecommendationId = recommendationResponse.data.id
+
+                    val userItemResponse = recommendationResponse.data
+                        .uid?.let { storageService.getUserItemByUid(it) }
+                    if (userItemResponse is Response.Success)
+                        userItem.value = userItemResponse.data
+
+                    for (like in recommendationResponse.data.likes) {
+                        if (like.userId == currentUser.value?.uid) {
+                            isLiked = true
+                            break
+                        }
+                    }
+                    for (repost in recommendationResponse.data.reposts) {
+                        if (repost.userId == currentUser.value?.uid) {
+                            isReposted = true
+                            break
+                        }
+                    }
+                    bottomSheetComments.putAll(
+                        recommendationResponse.data.comments.associateWith { false }
                     )
 
-                if (getRecommendationResponse.value is Response.Success) {
-                    val recommendationData = (getRecommendationResponse.value as
-                            Response.Success<Recommendation?>).data
-                    currentRecommendationId = recommendationData?.id
-                    getUserItemResponse.value = recommendationData?.uid?.let {
-                        storageService.getUserItemByUid(it)
-                    }
-                    if (recommendationData != null && recommendationData.comments.isNotEmpty()) {
-                        topLikedComment.value = recommendationData.comments.maxBy { it.likedBy.size }
-                        bottomSheetComments.putAll(
-                            recommendationData.comments.associateWith { false }
-                        )
-                    }
+                    loadingStatus.value = Response.Success(true)
                 }
             }
         }
@@ -135,6 +156,14 @@ class RecommendationViewModel @Inject constructor(
         }
     }
 
+    fun onInsightsClick() {
+        showInsightsBottomSheet = true
+    }
+
+    fun onInsightsSheetDismissRequest() {
+        showInsightsBottomSheet = false
+    }
+
     fun onCommentInputValueChange(input: String) {
         commentInput = input
     }
@@ -148,7 +177,7 @@ class RecommendationViewModel @Inject constructor(
         bottomSheetComments[comment] = true
     }
 
-    fun onCommentDismissRequest(comment: RecommendationComment) {
+    fun onCommentItemDismissRequest(comment: RecommendationComment) {
         bottomSheetComments[comment] = false
     }
 
