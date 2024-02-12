@@ -98,7 +98,7 @@ fun rememberAppState(
 @Composable
 @ReadOnlyComposable
 fun resources(): Resources {
-    LocalConfiguration.current
+    LocalConfiguration.current // TODO: Isn't this are unusable? (can we delete this code?)
     return LocalContext.current.resources
 }
 
@@ -110,26 +110,34 @@ fun NavGraphBuilder.recommendGraph(
     composable(RecommendRoutes.SplashScreen.name) {
         SplashScreen(
             modifier = modifier,
-            openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) }
+            openAndPopUp = { route, popUp ->
+                appState.navigateAndPopUp(route, popUp)
+            }
         )
     }
     composable(RecommendRoutes.SignUpScreen.name) {
         SignUpScreen(
             modifier = modifier,
-            openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) }
+            openAndPopUp = { route, popUp ->
+                appState.navigateAndPopUp(route, popUp)
+            }
         )
     }
     composable(RecommendRoutes.SignInScreen.name) {
         SignInScreen(
             modifier = modifier,
             openScreen = { route -> appState.navigate(route) },
-            openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) }
+            openAndPopUp = { route, popUp ->
+                appState.navigateAndPopUp(route, popUp)
+            }
         )
     }
     composable(RecommendRoutes.ResetPasswordScreen.name) {
         ResetPasswordScreen(
             modifier = modifier,
-            openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) }
+            openAndPopUp = { route, popUp ->
+                appState.navigateAndPopUp(route, popUp)
+            }
         )
     }
     composable(RecommendRoutes.MainScreen.name) {

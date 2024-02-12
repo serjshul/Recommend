@@ -52,17 +52,16 @@ fun NewRecommendationHeader(
     onAddBackgroundImage: (Uri) -> Unit,
     onRemoveBackgroundImage: () -> Unit
 ) {
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
-        if (uri != null) {
-            onAddBackgroundImage(uri)
+    val launcher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.GetContent()
+        ) { uri: Uri? ->
+            if (uri != null) {
+                onAddBackgroundImage(uri)
+            }
         }
-    }
 
-    Column(
-        modifier = modifier
-    ) {
+    Column(modifier = modifier) {
         IconButton(
             onClick = { onRemoveBackgroundImage() },
             enabled = backgroundImageUri != null,

@@ -16,18 +16,22 @@ class SplashViewModel @Inject constructor(
     logService: LogService
 ) : RecommendViewModel(logService) {
 
-    val addRecommenderSystem = mutableStateOf(false)
+    val addRecommenderSystem =
+        mutableStateOf(false)
 
     init {
         launchCatching {
-            addRecommenderSystem.value = configurationService.fetchConfiguration()
+            addRecommenderSystem.value = configurationService
+                .fetchConfiguration()
         }
     }
 
-    fun onAppStart(openAndPopUp: (String, String) -> Unit) {
-        if (accountService.hasUser)
-            openAndPopUp(RecommendRoutes.MainScreen.name, RecommendRoutes.SplashScreen.name)
-        else
-            openAndPopUp(RecommendRoutes.SignInScreen.name, RecommendRoutes.SplashScreen.name)
-    }
+    fun onAppStart(openAndPopUp: (String, String) -> Unit) =
+        if (accountService.hasUser) openAndPopUp(
+            RecommendRoutes.MainScreen.name,
+            RecommendRoutes.SplashScreen.name
+        ) else openAndPopUp(
+            RecommendRoutes.SignInScreen.name,
+            RecommendRoutes.SplashScreen.name
+        )
 }
