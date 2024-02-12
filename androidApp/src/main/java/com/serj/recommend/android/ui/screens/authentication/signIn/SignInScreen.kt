@@ -14,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.serj.recommend.android.R
@@ -25,6 +26,10 @@ import com.serj.recommend.android.ui.components.authentication.AuthenticationTex
 import com.serj.recommend.android.ui.components.authentication.EmailField
 import com.serj.recommend.android.ui.components.authentication.PasswordField
 import com.serj.recommend.android.ui.components.splash.AppLogo
+
+val AUTHENTICATION_EMAIL_FIELD_TT = "authenticationEmailFieldTT"
+val AUTHENTICATION_PASSWORD_FIELD_TT = "authenticationPasswordFieldTT"
+val AUTHENTICATION_SIGN_IN_BUTTON_TT = "authenticationSignInButtonTT"
 
 @Composable
 fun SignInScreen(
@@ -82,20 +87,26 @@ fun SignInScreenContent(
             EmailField(
                 value = uiState.email,
                 onNewValue = onEmailChange,
-                modifier = Modifier.fieldModifier()
+                modifier = Modifier
+                    .fieldModifier()
+                    .testTag(AUTHENTICATION_EMAIL_FIELD_TT)
             )
 
             PasswordField(
                 value = uiState.password,
                 placeholder = R.string.password,
                 onNewValue = onPasswordChange,
-                modifier = Modifier.fieldModifier()
+                modifier = Modifier
+                    .fieldModifier()
+                    .testTag(AUTHENTICATION_PASSWORD_FIELD_TT)
             )
 
             AuthenticationButton(
                 text = R.string.sign_in,
                 action = onSignInClick,
-                modifier = Modifier.basicButton()
+                modifier = Modifier
+                    .basicButton()
+                    .testTag(AUTHENTICATION_SIGN_IN_BUTTON_TT)
             )
 
             AuthenticationTextButton(
@@ -115,6 +126,7 @@ fun SignInScreenContent(
             Text(text = "Don't have an account?")
 
             AuthenticationTextButton(
+                modifier = Modifier,
                 text = R.string.sign_up,
                 action = onSignUpClick
             )
