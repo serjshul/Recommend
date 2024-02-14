@@ -2,9 +2,9 @@ package com.serj.recommend.android.model.collections
 
 import com.google.firebase.firestore.DocumentId
 import com.google.firebase.storage.StorageReference
-import com.serj.recommend.android.model.subcollections.RecommendationComment
-import com.serj.recommend.android.model.subcollections.RecommendationLike
-import com.serj.recommend.android.model.subcollections.RecommendationRepost
+import com.serj.recommend.android.model.subcollections.Comment
+import com.serj.recommend.android.model.subcollections.Like
+import com.serj.recommend.android.model.subcollections.Repost
 import java.util.Date
 
 data class Recommendation(
@@ -36,10 +36,10 @@ data class Recommendation(
     val likedBy: ArrayList<String> = arrayListOf(),
     val repostedBy: ArrayList<String> = arrayListOf(),
 
-    val likes: ArrayList<RecommendationLike> = arrayListOf(),
-    val comments: ArrayList<RecommendationComment> = arrayListOf(),
-    val reposts: ArrayList<RecommendationRepost> = arrayListOf(),
-    var topLikedComment: RecommendationComment? = null,
+    val likes: ArrayList<Like> = arrayListOf(),
+    val comments: ArrayList<Comment> = arrayListOf(),
+    val reposts: ArrayList<Repost> = arrayListOf(),
+    var topLikedComment: Comment? = null,
 
     val views: Int = 0,
     val coverage: Int = 0

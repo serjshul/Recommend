@@ -27,7 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.serj.recommend.android.R
-import com.serj.recommend.android.model.subcollections.RecommendationComment
+import com.serj.recommend.android.model.subcollections.Comment
 import com.serj.recommend.android.model.collections.Recommendation
 import com.serj.recommend.android.model.collections.User
 import com.serj.recommend.android.model.items.RecommendationItem
@@ -68,18 +68,18 @@ fun FeedScreenContent(
     currentUser: User?,
     currentRecommendations: List<RecommendationItem>,
     recommendationsAmount: Int,
-    bottomSheetComments: Map<RecommendationComment, Boolean>,
+    bottomSheetComments: Map<Comment, Boolean>,
     showCommentsBottomSheet: Boolean,
     commentInput: String,
     openScreen: (String) -> Unit,
     onCommentInputValueChange: (String) -> Unit,
     onCommentSheetDismissRequest: () -> Unit,
     onUploadCommentClick: () -> Unit,
-    onDeleteCommentClick: (RecommendationComment) -> Unit,
+    onDeleteCommentClick: (Comment) -> Unit,
     onLikeClick: (Boolean, String, String) -> Response<Boolean>,
-    onCommentIconClick: (String, List<RecommendationComment>) -> Unit,
-    onCommentClick: (RecommendationComment) -> Unit,
-    onCommentDismissRequest: (RecommendationComment) -> Unit,
+    onCommentIconClick: (String, List<Comment>) -> Unit,
+    onCommentClick: (Comment) -> Unit,
+    onCommentDismissRequest: (Comment) -> Unit,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit,
 ) {
     var isLoading by remember { mutableStateOf(true) }
@@ -192,8 +192,8 @@ fun FeedScreenContentPreview() {
         onUploadCommentClick = { },
         onDeleteCommentClick = { },
         onLikeClick = { _: Boolean, _: String, _: String -> Response.Success(true) },
-        onCommentIconClick = { _: String, _: List<RecommendationComment> -> },
-        onCommentClick = { _: RecommendationComment -> },
+        onCommentIconClick = { _: String, _: List<Comment> -> },
+        onCommentClick = { _: Comment -> },
         onCommentDismissRequest = { },
         onRecommendationClick = { _: (String) -> Unit, _: Recommendation -> },
     )

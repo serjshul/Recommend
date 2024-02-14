@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.serj.recommend.android.common.ext.bannerContentShape
 import com.serj.recommend.android.common.ext.screenPaddingsInner
-import com.serj.recommend.android.model.subcollections.RecommendationComment
+import com.serj.recommend.android.model.subcollections.Comment
 import com.serj.recommend.android.model.collections.Recommendation
 import com.serj.recommend.android.model.items.RecommendationItem
 import com.serj.recommend.android.services.GetBannerResponse
@@ -131,7 +131,7 @@ fun BannerScreenContent(
                                 currentUserUid = currentUid,
                                 openScreen = openScreen,
                                 onLikeClick = onLikeClick,
-                                onCommentIconClick = { _: String, _: List<RecommendationComment> -> },
+                                onCommentIconClick = { _: String, _: List<Comment> -> },
                                 onRecommendationClick = onRecommendationClick
                             )
 

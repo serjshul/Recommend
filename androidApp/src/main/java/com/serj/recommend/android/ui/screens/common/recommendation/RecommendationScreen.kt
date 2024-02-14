@@ -28,7 +28,7 @@ import com.serj.recommend.android.common.ext.toColor
 import com.serj.recommend.android.model.collections.Recommendation
 import com.serj.recommend.android.model.collections.User
 import com.serj.recommend.android.model.items.UserItem
-import com.serj.recommend.android.model.subcollections.RecommendationComment
+import com.serj.recommend.android.model.subcollections.Comment
 import com.serj.recommend.android.services.model.Response
 import com.serj.recommend.android.services.model.Response.Success
 import com.serj.recommend.android.ui.components.comments.CommentsBottomSheet
@@ -89,7 +89,7 @@ fun RecommendationScreenContent(
     isCommented: Boolean,
     isReposted: Boolean,
     commentInput: String,
-    bottomSheetComments: Map<RecommendationComment, Boolean>,
+    bottomSheetComments: Map<Comment, Boolean>,
     showCommentsBottomSheet: Boolean,
     showInsightsBottomSheet: Boolean,
     onInsightsClick: () -> Unit,
@@ -97,12 +97,12 @@ fun RecommendationScreenContent(
     onLikeClick: () -> Unit,
     onCommentClick: () -> Unit,
     onRepostClick: () -> Unit,
-    onCommentItemClick: (RecommendationComment) -> Unit,
-    onCommentDismissRequest: (RecommendationComment) -> Unit,
+    onCommentItemClick: (Comment) -> Unit,
+    onCommentDismissRequest: (Comment) -> Unit,
     onCommentInputValueChange: (String) -> Unit,
     onCommentSheetDismissRequest: () -> Unit,
     onUploadCommentClick: () -> Unit,
-    onDeleteCommentClick: (RecommendationComment) -> Unit,
+    onDeleteCommentClick: (Comment) -> Unit,
     popUpScreen: () -> Unit
 ) {
     val lazyListState: LazyListState = rememberLazyListState()

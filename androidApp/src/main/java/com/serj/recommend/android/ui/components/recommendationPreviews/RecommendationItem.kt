@@ -37,7 +37,7 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.google.firebase.storage.StorageReference
 import com.serj.recommend.android.common.getCreatedTime
-import com.serj.recommend.android.model.subcollections.RecommendationComment
+import com.serj.recommend.android.model.subcollections.Comment
 import com.serj.recommend.android.model.collections.Recommendation
 import com.serj.recommend.android.model.items.UserItem
 import com.serj.recommend.android.services.model.Response
@@ -64,12 +64,12 @@ fun RecommendationItem(
     type: String?,
     tags: List<String>,
     isLiked: Boolean,
-    comments: List<RecommendationComment>,
+    comments: List<Comment>,
     recommendationId: String?,
     currentUserUid: String?,
     openScreen: (String) -> Unit,
     onLikeClick: (Boolean, String, String) -> Response<Boolean>,
-    onCommentIconClick: (String, List<RecommendationComment>) -> Unit,
+    onCommentIconClick: (String, List<Comment>) -> Unit,
     onRecommendationClick: ((String) -> Unit, Recommendation) -> Unit
 ) {
     val isCommentClicked = remember { mutableStateOf(false) }
@@ -339,19 +339,19 @@ fun RecommendationItem(
 @Composable
 fun PostWithBackgroundPreview() {
     val comments = listOf(
-        RecommendationComment(
+        Comment(
             text = "preview  preview preview preview preview preview preview",
             userItem = UserItem(nickname = "preview")
         ),
-        RecommendationComment(
+        Comment(
             text = "preview  preview preview preview preview preview preview",
             userItem = UserItem(nickname = "preview")
         ),
-        RecommendationComment(
+        Comment(
             text = "preview  preview preview preview preview preview preview",
             userItem = UserItem(nickname = "preview")
         ),
-        RecommendationComment(
+        Comment(
             text = "preview  preview preview preview preview preview preview",
             userItem = UserItem(nickname = "preview")
         )
@@ -380,7 +380,7 @@ fun PostWithBackgroundPreview() {
         currentUserUid = "",
         openScreen = { },
         onLikeClick = { _: Boolean, _: String, _: String -> Response.Success(true) },
-        onCommentIconClick = { _: String, _: List<RecommendationComment> -> },
+        onCommentIconClick = { _: String, _: List<Comment> -> },
         onRecommendationClick = { _: (String) -> Unit, _: Recommendation -> }
     )
 }

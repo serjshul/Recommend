@@ -1,5 +1,7 @@
 package com.serj.recommend.android.ui.screens.common.recommendation
 
+import android.content.ContentValues.TAG
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
@@ -11,7 +13,9 @@ import com.serj.recommend.android.common.ext.idFromParameter
 import com.serj.recommend.android.model.collections.Recommendation
 import com.serj.recommend.android.model.collections.User
 import com.serj.recommend.android.model.items.UserItem
-import com.serj.recommend.android.model.subcollections.RecommendationComment
+import com.serj.recommend.android.model.subcollections.Comment
+import com.serj.recommend.android.model.subcollections.Like
+import com.serj.recommend.android.model.subcollections.Repost
 import com.serj.recommend.android.services.AccountService
 import com.serj.recommend.android.services.LogService
 import com.serj.recommend.android.services.StorageService
@@ -38,6 +42,8 @@ class RecommendationViewModel @Inject constructor(
 
     val recommendation = mutableStateOf<Recommendation?>(null)
     private var currentRecommendationId by mutableStateOf<String?>(null)
+    private var currentLikeId by mutableStateOf<String?>(null)
+    private var currentRepostId by mutableStateOf<String?>(null)
 
     var isLiked by mutableStateOf(false)
         private set
@@ -54,7 +60,7 @@ class RecommendationViewModel @Inject constructor(
     var commentInput by mutableStateOf("")
         private set
 
-    val bottomSheetComments = mutableStateMapOf<RecommendationComment, Boolean>()
+    val bottomSheetComments = mutableStateMapOf<Comment, Boolean>()
 
 
     init {
@@ -88,12 +94,14 @@ class RecommendationViewModel @Inject constructor(
                     for (like in recommendationResponse.data.likes) {
                         if (like.userId == currentUser.value?.uid) {
                             isLiked = true
+                            currentLikeId = like.id
                             break
                         }
                     }
                     for (repost in recommendationResponse.data.reposts) {
                         if (repost.userId == currentUser.value?.uid) {
                             isReposted = true
+                            currentRepostId = repost.id
                             break
                         }
                     }
@@ -111,26 +119,45 @@ class RecommendationViewModel @Inject constructor(
 
     fun onLikeClick() {
         launchCatching {
-            val result =
-                if (!isLiked) {
-                    isLiked = !isLiked
-                    storageService.like(
-                        userId = currentUser.value!!.uid!!,
-                        recommendationId = currentRecommendationId!!,
+            if (!isLiked) {
+                isLiked = !isLiked
+                if (currentUser.value != null && currentUser.value!!.uid != null &&
+                    currentRecommendationId != null) {
+                    val like = Like(
+                        userId = currentUser.value!!.uid,
+                        recommendationId = currentRecommendationId,
                         date = Date(),
                         source = InteractionSource.recommendation.name
                     )
-                } else {
-                    isLiked = !isLiked
-                    storageService.removeLike(
-                        userId = currentUser.value!!.uid!!,
-                        recommendationId = currentRecommendationId!!
-                    )
-                }
 
-            if (result !is Response.Success) {
-                SnackbarManager.showMessage(R.string.like_exception)
+                    val likeResponse = storageService.like(like = like)
+                    if (likeResponse is Response.Success) {
+                        currentLikeId = likeResponse.data
+                    } else {
+                        SnackbarManager.showMessage(R.string.like_exception)
+                        isLiked = !isLiked
+                    }
+                } else {
+                    SnackbarManager.showMessage(R.string.like_exception)
+                    isLiked = !isLiked
+                }
+            } else {
                 isLiked = !isLiked
+                if (currentUser.value != null && currentUser.value!!.uid != null &&
+                    currentRecommendationId != null && currentLikeId != null) {
+                    val removeLikeResponse = storageService.removeLike(
+                        userId = currentUser.value!!.uid!!,
+                        recommendationId = currentRecommendationId!!,
+                        likeId = currentLikeId!!
+                    )
+                    if (removeLikeResponse !is Response.Success) {
+                        SnackbarManager.showMessage(R.string.like_exception)
+                        isLiked = !isLiked
+                    }
+                } else {
+                    SnackbarManager.showMessage(R.string.like_exception)
+                    isLiked = !isLiked
+                }
             }
         }
     }
@@ -144,26 +171,45 @@ class RecommendationViewModel @Inject constructor(
 
     fun onRepostClick() {
         launchCatching {
-            val result =
-                if (!isReposted) {
-                    isReposted = !isReposted
-                    storageService.repost(
+            if (!isReposted) {
+                isReposted = !isReposted
+                if (currentUser.value != null && currentUser.value!!.uid != null &&
+                    currentRecommendationId != null) {
+                    val repost = Repost(
                         userId = currentUser.value!!.uid!!,
                         recommendationId = currentRecommendationId!!,
                         date = Date(),
                         source = InteractionSource.recommendation.name
                     )
-                } else {
-                    isReposted = !isReposted
-                    storageService.removeRepost(
-                        userId = currentUser.value!!.uid!!,
-                        recommendationId = currentRecommendationId!!
-                    )
-                }
 
-            if (result !is Response.Success) {
-                SnackbarManager.showMessage(R.string.repost_exception)
+                    val repostResponse = storageService.repost(repost)
+                    if (repostResponse is Response.Success) {
+                        currentRepostId = repostResponse.data
+                    } else {
+                        SnackbarManager.showMessage(R.string.repost_exception)
+                        isReposted = !isReposted
+                    }
+                } else {
+                    SnackbarManager.showMessage(R.string.repost_exception)
+                    isReposted = !isReposted
+                }
+            } else {
                 isReposted = !isReposted
+                if (currentUser.value != null && currentUser.value!!.uid != null &&
+                    currentRecommendationId != null && currentRepostId != null) {
+                    val removeRepostResponse = storageService.removeRepost(
+                        userId = currentUser.value!!.uid!!,
+                        recommendationId = currentRecommendationId!!,
+                        repostId = currentRepostId!!
+                    )
+                    if (removeRepostResponse !is Response.Success) {
+                        SnackbarManager.showMessage(R.string.repost_exception)
+                        isReposted = !isReposted
+                    }
+                } else {
+                    SnackbarManager.showMessage(R.string.repost_exception)
+                    isReposted = !isReposted
+                }
             }
         }
     }
@@ -185,49 +231,55 @@ class RecommendationViewModel @Inject constructor(
         bottomSheetComments.clear()
     }
 
-    fun onCommentItemClick(comment: RecommendationComment) {
+    fun onCommentItemClick(comment: Comment) {
         bottomSheetComments[comment] = true
     }
 
-    fun onCommentItemDismissRequest(comment: RecommendationComment) {
+    fun onCommentItemDismissRequest(comment: Comment) {
         bottomSheetComments[comment] = false
     }
 
     fun onUploadCommentClick() {
         launchCatching {
-            accountService.currentUser.collect { user ->
-                user.uid?.let {
-                    currentRecommendationId?.let { it1 ->
-                        storageService.comment(
-                            recommendationId = it1,
-                            userId = user.uid,
-                            text = commentInput
-                        )
-                    }
+            Log.v(TAG, currentUser.value?.uid.toString())
 
-                    val comment = RecommendationComment(
-                        commentId = (user.uid + commentInput).hashCode().toString(),
-                        userId = user.uid,
-                        repliedCommentId = null,
-                        text = commentInput,
-                        date = Date(),
-                        likedBy = arrayListOf(),
-                        userItem = UserItem(
-                            uid = user.uid,
-                            nickname = user.nickname,
-                            photoReference = user.photoReference
-                        )
+            if (currentUser.value?.uid != null) {
+                storageService.comment(
+                    userId = currentUser.value!!.uid!!,
+                    recommendationId = currentRecommendationId!!,
+                    repliedCommentId = null,
+                    repliedUserId = null,
+                    text = commentInput,
+                    isReplied = false,
+                    date = Date(),
+                    source = InteractionSource.recommendation.name
+                )
+
+                val comment = Comment(
+                    id = (currentUser.value?.uid!! + commentInput).hashCode().toString(),
+                    userId = currentUser.value!!.uid!!,
+                    recommendationId = "recommendationId",
+                    repliedCommentId = null,
+                    repliedUserId = null,
+                    text = commentInput,
+                    isReply = false,
+                    date = Date(),
+                    source = InteractionSource.recommendation.name,
+                    userItem = UserItem(
+                        uid = currentUser.value?.uid!!,
+                        nickname = currentUser.value?.nickname,
+                        photoReference = currentUser.value?.photoReference
                     )
+                )
 
-                    commentInput = ""
-                    bottomSheetComments[comment] = false
-                }
+                commentInput = ""
+                bottomSheetComments[comment] = false
             }
         }
     }
 
-    fun onDeleteCommentClick(comment: RecommendationComment) {
-        if (comment.commentId != null && comment.userId != null) {
+    fun onDeleteCommentClick(comment: Comment) {
+        if (comment.id != null && comment.userId != null) {
             launchCatching {
                 accountService.currentUser.collect { user ->
                     user.uid?.let {
@@ -235,7 +287,7 @@ class RecommendationViewModel @Inject constructor(
                             storageService.removeComment(
                                 recommendationId = it1,
                                 userId = user.uid,
-                                commentId = comment.commentId,
+                                commentId = comment.id,
                                 commentOwnerId = comment.userId
                             )
                         }

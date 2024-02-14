@@ -4,7 +4,9 @@ import com.google.firebase.firestore.DocumentId
 import java.util.Date
 
 data class UserContent (
-    @DocumentId val recommendationId: String? = null,
+    @DocumentId val id: String? = null,
+    val recommendationId: String? = null,
+    val userId: String? = null,
 
     val isReposted: Boolean? = null,
     val date: Date? = null,

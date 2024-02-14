@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.google.firebase.storage.StorageReference
 import com.serj.recommend.android.common.getCreatedTime
-import com.serj.recommend.android.model.subcollections.RecommendationComment
+import com.serj.recommend.android.model.subcollections.Comment
 import com.serj.recommend.android.ui.components.media.GlideUserImage
 import com.serj.recommend.android.ui.styles.primary
 import java.util.Date
@@ -33,12 +33,12 @@ import java.util.Date
 @Composable
 fun CommentRecommendationItem(
     modifier: Modifier = Modifier,
-    comment: RecommendationComment,
+    comment: Comment,
     nickname: String,
     photoReference: StorageReference?,
     text: String,
     date: Date,
-    onCommentClick: (RecommendationComment) -> Unit,
+    onCommentClick: (Comment) -> Unit,
 ) {
     val createdTime = getCreatedTime(date)
 
@@ -96,11 +96,11 @@ fun CommentRecommendationItem(
 fun CommentRecommendationItemPreview() {
     CommentRecommendationItem(
         modifier = Modifier.background(primary),
-        comment = RecommendationComment(),
+        comment = Comment(),
         nickname = "succession",
         photoReference = null,
         text = "A note to adults in the audience: “13 Reasons Why” is not Netflix’s next “Stranger Things”.",
         date = Date(Date().time - 22 * 60 * 60 * 1000L),
-        onCommentClick = { _: RecommendationComment -> }
+        onCommentClick = { _: Comment -> }
     )
 }

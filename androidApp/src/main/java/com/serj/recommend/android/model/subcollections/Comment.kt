@@ -4,10 +4,14 @@ import com.google.firebase.firestore.DocumentId
 import com.serj.recommend.android.model.items.UserItem
 import java.util.Date
 
-data class RecommendationComment(
-    @DocumentId val commentId: String? = null,
+data class Comment(
+    @DocumentId val id: String? = null,
+    val recommendationId: String? = null,
     val userId: String? = null,
+
     val repliedCommentId: String? = null,
+    val repliedUserId: String? = null,
+    val isReply: Boolean? = false,
 
     val text: String? = null,
 

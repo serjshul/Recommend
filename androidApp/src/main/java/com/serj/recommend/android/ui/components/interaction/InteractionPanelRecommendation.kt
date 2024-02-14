@@ -39,7 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.serj.recommend.android.R
 import com.serj.recommend.android.model.items.UserItem
-import com.serj.recommend.android.model.subcollections.RecommendationComment
+import com.serj.recommend.android.model.subcollections.Comment
 import com.serj.recommend.android.ui.components.comments.items.CommentRecommendationItem
 import com.serj.recommend.android.ui.styles.primary
 import java.util.Date
@@ -51,7 +51,7 @@ fun InteractionPanelRecommendation(
     isLiked: Boolean,
     isCommented: Boolean,
     isReposted: Boolean,
-    topLikedComment: RecommendationComment?,
+    topLikedComment: Comment?,
     authorUserId: String?,
     currentUserid: String?,
     onLikeClick: () -> Unit,
@@ -92,7 +92,7 @@ fun InteractionPanelRecommendation(
                         photoReference = topLikedComment.userItem?.photoReference,
                         text = topLikedComment.text,
                         date = topLikedComment.date,
-                        onCommentClick = { _: RecommendationComment -> }
+                        onCommentClick = { _: Comment -> }
                     )
                 }
             }
@@ -292,7 +292,7 @@ fun InteractionPanelRecommendationPreview() {
         isLiked = false,
         isCommented = false,
         isReposted = false,
-        topLikedComment = RecommendationComment(
+        topLikedComment = Comment(
             text = "A note to adults in the audience: “13 Reasons Why” is not Netflix’s next “Stranger Things”.",
             userItem = UserItem(nickname = "serjshul"),
             date = Date()
@@ -314,7 +314,7 @@ fun InteractionPanelRecommendationOwnerPreview() {
         isLiked = false,
         isCommented = false,
         isReposted = false,
-        topLikedComment = RecommendationComment(
+        topLikedComment = Comment(
             text = "A note to adults in the audience: “13 Reasons Why” is not Netflix’s next “Stranger Things”.",
             userItem = UserItem(nickname = "serjshul"),
             date = Date()

@@ -9,7 +9,9 @@ import com.serj.recommend.android.model.collections.Recommendation
 import com.serj.recommend.android.model.items.RecommendationItem
 import com.serj.recommend.android.model.items.RecommendationPreview
 import com.serj.recommend.android.model.items.UserItem
-import com.serj.recommend.android.model.subcollections.RecommendationComment
+import com.serj.recommend.android.model.subcollections.Comment
+import com.serj.recommend.android.model.subcollections.Like
+import com.serj.recommend.android.model.subcollections.Repost
 import com.serj.recommend.android.services.model.Response
 import kotlinx.coroutines.flow.Flow
 import java.util.Date
@@ -20,12 +22,12 @@ typealias GetCategoryResponse = Response<Category?>
 typealias GetRecommendationItemResponse = Response<RecommendationItem?>
 typealias GetRecommendationPreviewResponse = Response<RecommendationPreview?>
 typealias GetUserItemResponse = Response<UserItem?>
-typealias GetRecommendationCommentsResponse = Response<List<RecommendationComment>>
+typealias GetRecommendationCommentsResponse = Response<List<Comment>>
 typealias GetFollowingRecommendationsIdsResponse = Response<List<String>>
 typealias GetStorageReferenceFromUrlResponse = Response<StorageReference>
-typealias LikeRecommendationResponse = Response<Boolean>
+typealias LikeRecommendationResponse = Response<String>
 typealias RemoveLikeRecommendationResponse = Response<Boolean>
-typealias RepostRecommendationResponse = Response<Boolean>
+typealias RepostRecommendationResponse = Response<String>
 typealias RemoveRepostRecommendationResponse = Response<Boolean>
 typealias UploadCommentResponse = Response<Boolean>
 typealias DeleteCommentResponse = Response<Boolean>
@@ -57,34 +59,38 @@ interface StorageService {
     fun getStorageReferenceFromUrl(url: String): GetStorageReferenceFromUrlResponse
 
     suspend fun like(
-        userId: String,
-        recommendationId: String,
-        date: Date,
-        source: String
+        like: Like
     ): LikeRecommendationResponse
 
     suspend fun removeLike(
         userId: String,
-        recommendationId: String
+        recommendationId: String,
+        likeId: String
     ): RemoveLikeRecommendationResponse
 
-    fun comment(recommendationId: String, userId: String, text: String):
-            UploadCommentResponse
+    suspend fun comment(
+        userId: String,
+        recommendationId: String,
+        repliedCommentId: String?,
+        repliedUserId: String?,
+        text: String,
+        isReplied: Boolean,
+        date: Date,
+        source: String
+    ): UploadCommentResponse
 
-    fun removeComment(recommendationId: String, userId: String, commentId: String,
+    suspend fun removeComment(recommendationId: String, userId: String, commentId: String,
                       commentOwnerId: String):
             DeleteCommentResponse
 
     suspend fun repost(
-        userId: String,
-        recommendationId: String,
-        date: Date,
-        source: String
+        repost: Repost
     ): RepostRecommendationResponse
 
     suspend fun removeRepost(
         userId: String,
-        recommendationId: String
+        recommendationId: String,
+        repostId: String
     ): RemoveRepostRecommendationResponse
 
     suspend fun uploadRecommendation(

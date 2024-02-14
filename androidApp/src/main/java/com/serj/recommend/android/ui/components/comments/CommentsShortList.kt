@@ -16,14 +16,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
-import com.serj.recommend.android.model.subcollections.RecommendationComment
+import com.serj.recommend.android.model.subcollections.Comment
 import com.serj.recommend.android.model.items.UserItem
 import com.serj.recommend.android.ui.components.comments.items.CommentShortItem
 
 @Composable
 fun CommentsShortList(
     modifier: Modifier = Modifier,
-    comments: List<RecommendationComment>
+    comments: List<Comment>
 ) {
     Column (
         modifier = modifier.fillMaxWidth(),
@@ -57,19 +57,19 @@ fun CommentsShortList(
 @Composable
 fun CommentsShortListPreview() {
     val comments = listOf(
-        RecommendationComment(
+        Comment(
             text = "preview  preview preview preview preview preview preview",
             userItem = UserItem(nickname = "preview")
         ),
-        RecommendationComment(
+        Comment(
             text = "preview  preview preview preview preview preview preview",
             userItem = UserItem(nickname = "preview")
         ),
-        RecommendationComment(
+        Comment(
             text = "preview  preview preview preview preview preview preview",
             userItem = UserItem(nickname = "preview")
         ),
-        RecommendationComment(
+        Comment(
             text = "preview  preview preview preview preview preview preview",
             userItem = UserItem(nickname = "preview")
         )

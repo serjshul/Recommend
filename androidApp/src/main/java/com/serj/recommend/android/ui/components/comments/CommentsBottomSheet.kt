@@ -22,7 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.firebase.storage.StorageReference
-import com.serj.recommend.android.model.subcollections.RecommendationComment
+import com.serj.recommend.android.model.subcollections.Comment
 import com.serj.recommend.android.services.model.Response
 import com.serj.recommend.android.ui.components.comments.items.CommentItem
 
@@ -30,14 +30,14 @@ import com.serj.recommend.android.ui.components.comments.items.CommentItem
 @Composable
 fun CommentsBottomSheet(
     modifier: Modifier = Modifier,
-    comments: Map<RecommendationComment, Boolean>,
+    comments: Map<Comment, Boolean>,
     commentInput: String,
     currentUserPhotoReference: StorageReference?,
     onCommentInputValueChange: (String) -> Unit,
     onUploadCommentClick: () -> Unit,
-    onDeleteCommentClick: (RecommendationComment) -> Unit,
-    onCommentClick: (RecommendationComment) -> Unit,
-    onCommentDismissRequest: (RecommendationComment) -> Unit
+    onDeleteCommentClick: (Comment) -> Unit,
+    onCommentClick: (Comment) -> Unit,
+    onCommentDismissRequest: (Comment) -> Unit
 ) {
     Box(
         modifier = modifier
@@ -55,7 +55,7 @@ fun CommentsBottomSheet(
             }
             
             if (comments.isNotEmpty()) {
-                items(comments.keys.toList(), key = { it.commentId!! }) {
+                items(comments.keys.toList(), key = { it.id!! }) {
                     CommentItem(
                         comment = it,
                         nickname = it.userItem!!.nickname!!,
@@ -129,7 +129,7 @@ fun CommentsBottomSheet(
 @Preview
 @Composable
 fun CommentsBottomSheetPreview() {
-    val comments = mapOf<RecommendationComment, Boolean>()
+    val comments = mapOf<Comment, Boolean>()
 
     CommentsBottomSheet(
         comments = comments,
@@ -138,7 +138,7 @@ fun CommentsBottomSheetPreview() {
         onCommentInputValueChange = { },
         onUploadCommentClick = { },
         onDeleteCommentClick = { },
-        onCommentClick = { _: RecommendationComment -> },
+        onCommentClick = { _: Comment -> },
         onCommentDismissRequest = { }
     )
 }

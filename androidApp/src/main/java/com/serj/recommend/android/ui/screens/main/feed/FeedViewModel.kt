@@ -9,15 +9,16 @@ import androidx.compose.runtime.setValue
 import com.serj.recommend.android.R
 import com.serj.recommend.android.RecommendRoutes
 import com.serj.recommend.android.common.Constants.RECOMMENDATION_ID
-import com.serj.recommend.android.model.subcollections.RecommendationComment
 import com.serj.recommend.android.model.collections.Recommendation
 import com.serj.recommend.android.model.collections.User
 import com.serj.recommend.android.model.items.RecommendationItem
 import com.serj.recommend.android.model.items.UserItem
+import com.serj.recommend.android.model.subcollections.Comment
 import com.serj.recommend.android.services.AccountService
 import com.serj.recommend.android.services.LogService
 import com.serj.recommend.android.services.StorageService
 import com.serj.recommend.android.services.model.Response
+import com.serj.recommend.android.ui.components.interaction.InteractionSource
 import com.serj.recommend.android.ui.components.snackbar.SnackbarManager
 import com.serj.recommend.android.ui.screens.RecommendViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -44,7 +45,7 @@ class FeedViewModel @Inject constructor(
 
     var showCommentsBottomSheet by mutableStateOf(false)
         private set
-    val bottomSheetComments = mutableStateMapOf<RecommendationComment, Boolean>()
+    val bottomSheetComments = mutableStateMapOf<Comment, Boolean>()
 
     init {
         launchCatching {
@@ -79,13 +80,18 @@ class FeedViewModel @Inject constructor(
             accountService.currentUser.collect { user ->
                 user.uid?.let {
                     storageService.comment(
-                        recommendationId = currentRecommendationId,
                         userId = user.uid,
-                        text = commentInput
+                        recommendationId = currentRecommendationId,
+                        repliedCommentId = null,
+                        repliedUserId = null,
+                        text = commentInput,
+                        isReplied = false,
+                        date = Date(),
+                        source = InteractionSource.recommendation.name
                     )
 
-                    val comment = RecommendationComment(
-                        commentId = (user.uid + commentInput).hashCode().toString(),
+                    val comment = Comment(
+                        id = (user.uid + commentInput).hashCode().toString(),
                         userId = user.uid,
                         repliedCommentId = null,
                         text = commentInput,
@@ -105,15 +111,15 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    fun onDeleteCommentClick(comment: RecommendationComment) {
-        if (comment.commentId != null && comment.userId != null) {
+    fun onDeleteCommentClick(comment: Comment) {
+        if (comment.id != null && comment.userId != null) {
             launchCatching {
                 accountService.currentUser.collect { user ->
                     user.uid?.let {
                         storageService.removeComment(
                             recommendationId = currentRecommendationId,
                             userId = user.uid,
-                            commentId = comment.commentId,
+                            commentId = comment.id,
                             commentOwnerId = comment.userId
                         )
                         commentInput = ""
@@ -135,7 +141,7 @@ class FeedViewModel @Inject constructor(
 
          */
 
-    fun onCommentIconClick(recommendationId: String, comments: List<RecommendationComment>) {
+    fun onCommentIconClick(recommendationId: String, comments: List<Comment>) {
         currentRecommendationId = recommendationId
         bottomSheetComments.putAll(comments.associateWith { false })
         showCommentsBottomSheet = true
@@ -150,11 +156,11 @@ class FeedViewModel @Inject constructor(
         bottomSheetComments.clear()
     }
 
-    fun onCommentClick(comment: RecommendationComment) {
+    fun onCommentClick(comment: Comment) {
         bottomSheetComments[comment] = true
     }
 
-    fun onCommentDismissRequest(comment: RecommendationComment) {
+    fun onCommentDismissRequest(comment: Comment) {
         bottomSheetComments[comment] = false
     }
 

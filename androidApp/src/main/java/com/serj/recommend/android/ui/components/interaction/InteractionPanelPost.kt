@@ -31,7 +31,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.serj.recommend.android.R
-import com.serj.recommend.android.model.subcollections.RecommendationComment
+import com.serj.recommend.android.model.subcollections.Comment
 import com.serj.recommend.android.services.model.Response
 import com.serj.recommend.android.ui.styles.primary
 
@@ -41,11 +41,11 @@ fun InteractionPanelPost(
     modifier: Modifier = Modifier,
     isLiked: Boolean,
     isCommentClicked: MutableState<Boolean>,
-    comments: List<RecommendationComment>,
+    comments: List<Comment>,
     recommendationId: String?,
     currentUserUid: String?,
     onLikeClick: (Boolean, String, String) -> Response<Boolean>,
-    onCommentClick: (String, List<RecommendationComment>) -> Unit
+    onCommentClick: (String, List<Comment>) -> Unit
 ) {
     val isCurrentlyLiked = remember { mutableStateOf(isLiked) }
     val isCurrentlyReposted = remember { mutableStateOf(false) }
@@ -230,6 +230,6 @@ fun InteractionPanelPreview() {
         recommendationId = "",
         currentUserUid = "",
         onLikeClick = { _: Boolean, _: String, _: String -> Response.Success(true) },
-        onCommentClick = { _: String, _: List<RecommendationComment> -> }
+        onCommentClick = { _: String, _: List<Comment> -> }
     )
 }
