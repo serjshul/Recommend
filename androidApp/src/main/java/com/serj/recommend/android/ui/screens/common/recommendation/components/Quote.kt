@@ -27,7 +27,7 @@ fun Quote(
         modifier = modifier
             .fillMaxWidth()
             .background(Color.White)
-            .padding(15.dp, 12.5.dp)
+            .padding(start = 15.dp, end = 15.dp, top = 12.5.dp, bottom = 5.dp)
     ) {
         Column(
             modifier = Modifier
@@ -40,7 +40,7 @@ fun Quote(
                     .align(Alignment.CenterHorizontally),
                 text = "Favourite quote",
                 color = Color.White,
-                fontSize = 12.sp
+                fontSize = 14.sp
             )
 
             Text(
@@ -48,7 +48,7 @@ fun Quote(
                 text = quote.replace("\\n", "\n"),
                 fontWeight = FontWeight.Bold,
                 color = Color.White,
-                fontSize = 17.sp
+                fontSize = 16.sp
             )
         }
     }

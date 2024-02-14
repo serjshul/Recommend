@@ -17,9 +17,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.serj.recommend.android.model.Banner
-import com.serj.recommend.android.model.Category
-import com.serj.recommend.android.model.Recommendation
+import com.serj.recommend.android.model.collections.Banner
+import com.serj.recommend.android.model.collections.Category
+import com.serj.recommend.android.model.collections.Recommendation
 import com.serj.recommend.android.ui.components.categories.CategoryTypes
 import com.serj.recommend.android.ui.components.categories.ExtendedCategory
 import com.serj.recommend.android.ui.components.categories.OrdinaryCategory

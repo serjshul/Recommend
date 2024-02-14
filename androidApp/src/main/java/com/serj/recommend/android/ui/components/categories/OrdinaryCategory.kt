@@ -25,8 +25,8 @@ import com.serj.recommend.android.R
 import com.serj.recommend.android.common.ext.categoryItemsInterval
 import com.serj.recommend.android.common.ext.itemsInterval
 import com.serj.recommend.android.common.ext.screenPaddingsInner
-import com.serj.recommend.android.model.Category
-import com.serj.recommend.android.model.Recommendation
+import com.serj.recommend.android.model.collections.Category
+import com.serj.recommend.android.model.collections.Recommendation
 import com.serj.recommend.android.ui.components.loadingIndicators.SmallLoadingIndicator
 import com.serj.recommend.android.ui.components.recommendationPreviews.ItemsShapes
 import com.serj.recommend.android.ui.components.recommendationPreviews.transparent.HorizontalItemTransparent

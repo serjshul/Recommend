@@ -21,8 +21,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.serj.recommend.android.common.ext.bannerContentShape
 import com.serj.recommend.android.common.ext.screenPaddingsInner
-import com.serj.recommend.android.model.Comment
-import com.serj.recommend.android.model.Recommendation
+import com.serj.recommend.android.model.subcollections.Comment
+import com.serj.recommend.android.model.collections.Recommendation
 import com.serj.recommend.android.model.items.RecommendationItem
 import com.serj.recommend.android.services.GetBannerResponse
 import com.serj.recommend.android.services.model.Response

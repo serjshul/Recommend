@@ -37,7 +37,7 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.firebase.storage.StorageReference
-import com.serj.recommend.android.model.Banner
+import com.serj.recommend.android.model.collections.Banner
 import com.serj.recommend.android.ui.components.media.CustomGlideImage
 
 @Composable

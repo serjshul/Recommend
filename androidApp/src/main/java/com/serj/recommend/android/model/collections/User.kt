@@ -1,4 +1,4 @@
-package com.serj.recommend.android.model
+package com.serj.recommend.android.model.collections
 
 import com.google.firebase.firestore.DocumentId
 import com.google.firebase.storage.StorageReference
@@ -18,6 +18,8 @@ data class User(
     val following: ArrayList<String> = arrayListOf(),
 
     val recommendationsIds: ArrayList<String> = arrayListOf(),
+
+    val content: HashMap<String, Boolean> = hashMapOf(),
 
     val likedIds: ArrayList<String> = arrayListOf(),
     val savedIds: ArrayList<String> = arrayListOf()

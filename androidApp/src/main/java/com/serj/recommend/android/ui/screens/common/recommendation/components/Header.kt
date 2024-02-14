@@ -34,6 +34,7 @@ fun Header(
     ) {
         if (nickname != null) {
             UserInfo(
+                modifier = Modifier.padding(top = 10.dp),
                 photoReference = photoReference,
                 nickname = nickname
             )

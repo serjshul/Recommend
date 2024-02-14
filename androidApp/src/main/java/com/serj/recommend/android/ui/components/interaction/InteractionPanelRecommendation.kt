@@ -8,24 +8,24 @@ import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.updateTransition
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconToggleButton
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,9 +38,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.serj.recommend.android.R
-import com.serj.recommend.android.model.Comment
-import com.serj.recommend.android.services.model.Response
-import com.serj.recommend.android.ui.styles.filling
+import com.serj.recommend.android.model.items.UserItem
+import com.serj.recommend.android.model.subcollections.Comment
+import com.serj.recommend.android.ui.components.comments.items.CommentRecommendationItem
 import com.serj.recommend.android.ui.styles.primary
 import java.util.Date
 
@@ -49,54 +49,74 @@ fun InteractionPanelRecommendation(
     modifier: Modifier = Modifier,
     color: Color?,
     isLiked: Boolean,
+    isCommented: Boolean,
     isReposted: Boolean,
-    likedBy: ArrayList<String>,
-    repostedBy: ArrayList<String>,
-    comments: ArrayList<Comment>,
-    views: Int,
-    date: Date,
-    recommendationId: String?,
-    currentUserUid: String?,
-    onLikeClick: (Boolean, String, String) -> Response<Boolean>,
+    topLikedComment: Comment?,
+    authorUserId: String?,
+    currentUserid: String?,
+    onLikeClick: () -> Unit,
+    onCommentClick: () -> Unit,
+    onRepostClick: () -> Unit,
+    onInsightsClick: () -> Unit
 ) {
-    val day = "Apr 9"
-    val year = 2023
-
-    val isCurrentlyLiked = remember { mutableStateOf(isLiked) }
-    val isCommented = remember { mutableStateOf(false) }
-    val isCurrentlyReposted = remember { mutableStateOf(isReposted) }
+    val isOwnerView = authorUserId == currentUserid
 
     Column(
         modifier = modifier
             .fillMaxWidth()
             .background(Color.White)
-            .padding(15.dp, 12.5.dp)
+            .padding(start = 15.dp, end = 15.dp, top = 5.dp, bottom = 12.5.dp)
     ) {
+        if (topLikedComment != null) {
+            Column(
+                modifier = Modifier
+                    .padding(bottom = 10.dp)
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(20.dp))
+                    .background(color ?: primary)
+            ) {
+                Text(
+                    modifier = Modifier
+                        .padding(top = 15.dp, bottom = 7.dp)
+                        .align(Alignment.CenterHorizontally),
+                    text = "Top liked comment",
+                    color = Color.White,
+                    fontSize = 14.sp
+                )
+
+                if (topLikedComment.userItem?.nickname != null && topLikedComment.text != null && topLikedComment.date != null) {
+                    CommentRecommendationItem(
+                        modifier = Modifier.padding(start = 5.dp, end = 5.dp, bottom = 10.dp),
+                        comment = topLikedComment,
+                        nickname = topLikedComment.userItem?.nickname!!,
+                        photoReference = topLikedComment.userItem?.photoReference,
+                        text = topLikedComment.text,
+                        date = topLikedComment.date,
+                        onCommentClick = { _: Comment -> }
+                    )
+                }
+            }
+        }
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 10.dp)
+                .padding(bottom = 15.dp)
         ) {
             Row(
-                modifier = Modifier
-                    .weight(1f)
-                    .clip(RoundedCornerShape(20.dp))
-                    .background(color ?: primary),
+                modifier =
+                    if (isOwnerView) Modifier.weight(1f)
+                    else Modifier.width(90.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
+                horizontalArrangement = if (isOwnerView) Arrangement.Center else Arrangement.Start
             ) {
                 IconToggleButton(
-                    checked = isCurrentlyLiked.value,
-                    onCheckedChange = {
-                        if (currentUserUid != null && recommendationId != null) {
-                            onLikeClick(isCurrentlyLiked.value, currentUserUid, recommendationId)
-                        }
-                        isCurrentlyLiked.value = !isCurrentlyLiked.value
-                    }
+                    checked = isLiked,
+                    onCheckedChange = { onLikeClick() }
                 ) {
-                    val transition = updateTransition(isCurrentlyLiked.value, label = "likeTransition")
+                    val transition = updateTransition(isLiked, label = "likeTransition")
                     val tint by transition.animateColor(label = "likeTint") { isLiked ->
-                        if (isLiked) Color.White else Color.White
+                        if (isLiked) Color.Red else Color.Black
                     }
                     val size by transition.animateDp(
                         transitionSpec = {
@@ -117,7 +137,7 @@ fun InteractionPanelRecommendation(
 
                     Icon(
                         ImageVector.vectorResource(
-                            id = if (isCurrentlyLiked.value) R.drawable.interaction_like_filled
+                            id = if (isLiked) R.drawable.interaction_like_filled
                             else R.drawable.interaction_like_bordered
                         ),
                         contentDescription = "like",
@@ -126,31 +146,30 @@ fun InteractionPanelRecommendation(
                     )
                 }
 
-                Text(
-                    modifier = Modifier.padding(end = 9.dp),
-                    text = likedBy.size.toString(),
-                    color = Color.White,
-                    textAlign = TextAlign.Center,
-                    fontSize = 14.sp
-                )
+                if (!isOwnerView) {
+                    Text(
+                        modifier = Modifier.width(32.dp),
+                        text = if (isLiked) "Liked" else "Like",
+                        color = if (isLiked) Color.Red else Color.Black,
+                        textAlign = TextAlign.Start,
+                        fontSize = 12.sp
+                    )
+                }
             }
 
-            Spacer(modifier = Modifier.size(10.dp))
-
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .clip(RoundedCornerShape(20.dp))
-                    .background(color ?: primary)
+            Row(
+                modifier =
+                    if (isOwnerView) Modifier.weight(1f)
+                    else Modifier.width(115.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = if (isOwnerView) Arrangement.Center else Arrangement.Start
             ) {
                 IconToggleButton(
-                    modifier = Modifier.align(Alignment.Center),
-                    checked = isCommented.value,
-                    onCheckedChange = {
-                        isCommented.value = !isCommented.value
-                    }
+                    modifier = Modifier,
+                    checked = isCommented,
+                    onCheckedChange = { onCommentClick() }
                 ) {
-                    val transition = updateTransition(isCommented.value, label = "CommentTransition")
+                    val transition = updateTransition(isCommented, label = "CommentTransition")
                     val size by transition.animateDp(
                         transitionSpec = {
                             keyframes {
@@ -167,31 +186,39 @@ fun InteractionPanelRecommendation(
                     Icon(
                         ImageVector.vectorResource(id = R.drawable.interaction_comment),
                         contentDescription = "Comment",
-                        tint = Color.White,
+                        tint = Color.Black,
                         modifier = Modifier.size(size)
+                    )
+                }
+
+                if (!isOwnerView) {
+                    Text(
+                        modifier = Modifier.padding(end = 9.dp),
+                        text = "Comment",
+                        color = Color.Black,
+                        textAlign = TextAlign.Center,
+                        fontSize = 12.sp
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.size(10.dp))
-
             Row(
-                modifier = Modifier
-                    .weight(1f)
-                    .clip(RoundedCornerShape(20.dp))
-                    .background(color ?: primary),
+                modifier =
+                    if (isOwnerView) Modifier.weight(1f)
+                    else Modifier.width(110.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
+                horizontalArrangement = if (isOwnerView) Arrangement.Center else Arrangement.Start
             ) {
                 IconToggleButton(
-                    checked = isCurrentlyReposted.value,
-                    onCheckedChange = {
-                        isCurrentlyReposted.value = !isCurrentlyReposted.value
-                    }
+                    checked = isReposted,
+                    onCheckedChange = { onRepostClick() }
                 ) {
-                    val transition = updateTransition(isCurrentlyReposted.value, label = "repostTransition")
+                    val transition = updateTransition(isReposted, label = "repostTransition")
                     val tint by transition.animateColor(label = "repostTint") { isReposted ->
-                        if (isReposted) filling else Color.White
+                        if (isReposted)
+                            color ?: primary
+                        else
+                            Color.Black
                     }
                     val size by transition.animateDp(
                         transitionSpec = {
@@ -218,85 +245,39 @@ fun InteractionPanelRecommendation(
                     )
                 }
 
-                Text(
-                    modifier = Modifier.padding(end = 9.dp),
-                    text = repostedBy.size.toString(),
-                    color = Color.White,
-                    textAlign = TextAlign.Center,
-                    fontSize = 14.sp
-                )
-            }
-        }
-
-        Box(
-            modifier = Modifier
-                .padding(bottom = 10.dp)
-                .fillMaxWidth()
-                .height(100.dp)
-                .clip(RoundedCornerShape(20.dp))
-                .background(color ?: primary)
-        )
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 10.dp)
-        ) {
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-            ) {
-                Column(
-                    modifier = Modifier
-                        .padding(10.dp, 20.dp)
-                        .align(Alignment.Center)
-                ) {
+                if (!isOwnerView) {
                     Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = views.toString(),
-                        color = Color.Black,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center,
-                        fontSize = 17.sp
-                    )
-
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = "Views",
-                        color = Color.Black,
-                        textAlign = TextAlign.Center,
-                        fontSize = 14.sp
+                        modifier = Modifier.width(57.dp),
+                        text = if (isReposted) "Reposted" else "Repost",
+                        color = if (isReposted) color ?: primary else Color.Black,
+                        textAlign = TextAlign.Start,
+                        fontSize = 12.sp
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.size(10.dp))
-
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-            ) {
-                Column(
+            if (isOwnerView) {
+                Box(
                     modifier = Modifier
-                        .padding(10.dp, 20.dp)
-                        .align(Alignment.Center)
+                        .weight(2f)
                 ) {
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = day,
-                        color = Color.Black,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center,
-                        fontSize = 17.sp
-                    )
-
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = year.toString(),
-                        color = Color.Black,
-                        textAlign = TextAlign.Center,
-                        fontSize = 14.sp
-                    )
+                    OutlinedButton(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.Center),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = color ?: primary,
+                        ),
+                        border = BorderStroke(1.dp, color ?: primary),
+                        onClick = { onInsightsClick() }
+                    ) {
+                        Text(
+                            text = "View insights",
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center,
+                            fontSize = 12.sp
+                        )
+                    }
                 }
             }
         }
@@ -309,14 +290,40 @@ fun InteractionPanelRecommendationPreview() {
     InteractionPanelRecommendation(
         color = null,
         isLiked = false,
+        isCommented = false,
         isReposted = false,
-        likedBy = arrayListOf("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""),
-        repostedBy = arrayListOf("", "", "", ""),
-        comments = arrayListOf(),
-        views = 348,
-        date = Date(0),
-        recommendationId = "recommendationId",
-        currentUserUid = "userId",
-        onLikeClick = { _: Boolean, _: String, _: String -> Response.Success(true) }
+        topLikedComment = Comment(
+            text = "A note to adults in the audience: “13 Reasons Why” is not Netflix’s next “Stranger Things”.",
+            userItem = UserItem(nickname = "serjshul"),
+            date = Date()
+        ),
+        authorUserId = "2131240",
+        currentUserid = "2131241",
+        onLikeClick = { },
+        onCommentClick = { },
+        onRepostClick = { },
+        onInsightsClick = { }
+    )
+}
+
+@Preview
+@Composable
+fun InteractionPanelRecommendationOwnerPreview() {
+    InteractionPanelRecommendation(
+        color = null,
+        isLiked = false,
+        isCommented = false,
+        isReposted = false,
+        topLikedComment = Comment(
+            text = "A note to adults in the audience: “13 Reasons Why” is not Netflix’s next “Stranger Things”.",
+            userItem = UserItem(nickname = "serjshul"),
+            date = Date()
+        ),
+        authorUserId = "2131241",
+        currentUserid = "2131241",
+        onLikeClick = { },
+        onCommentClick = { },
+        onRepostClick = { },
+        onInsightsClick = { }
     )
 }

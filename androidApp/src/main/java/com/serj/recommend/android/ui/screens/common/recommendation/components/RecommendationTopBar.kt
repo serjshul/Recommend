@@ -21,21 +21,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
-import com.serj.recommend.android.R
 import com.serj.recommend.android.ui.styles.secondary
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecommendationTopBar(
     modifier: Modifier = Modifier,
+    title: String,
     type: String,
     color: Color?,
     isBackgroundHidden: Boolean,
@@ -87,14 +86,17 @@ fun RecommendationTopBar(
                             .padding(15.dp, 0.dp)
                             .fillMaxWidth()
                             .align(Alignment.Center),
-                        text = type,
+                        text = if (isBackgroundHidden) title else type,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center,
                         fontSize = 16.sp,
-                        maxLines = 1
+                        lineHeight = 1.2.em,
+                        maxLines = 2
                     )
                 }
-            },
+            }
+            // TODO: add the save action
+            /*
             actions = {
                 IconButton(onClick = { /* do something */ }) {
                     Icon(
@@ -104,6 +106,8 @@ fun RecommendationTopBar(
                     )
                 }
             }
+            
+             */
         )
     }
 }
@@ -118,6 +122,7 @@ fun RecommendationTopBarPreview() {
     ) {
         RecommendationTopBar(
             modifier = Modifier.align(Alignment.TopCenter),
+            title = "Title",
             type = "Type",
             color = Color.Red,
             isBackgroundHidden = true,

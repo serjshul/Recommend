@@ -37,8 +37,8 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.google.firebase.storage.StorageReference
 import com.serj.recommend.android.common.getCreatedTime
-import com.serj.recommend.android.model.Comment
-import com.serj.recommend.android.model.Recommendation
+import com.serj.recommend.android.model.subcollections.Comment
+import com.serj.recommend.android.model.collections.Recommendation
 import com.serj.recommend.android.model.items.UserItem
 import com.serj.recommend.android.services.model.Response
 import com.serj.recommend.android.ui.components.comments.CommentsShortList

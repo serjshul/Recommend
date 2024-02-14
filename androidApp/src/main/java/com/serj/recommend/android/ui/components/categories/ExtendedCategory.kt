@@ -31,8 +31,8 @@ import com.serj.recommend.android.common.ext.extendedCategoryBackgroundShape
 import com.serj.recommend.android.common.ext.itemsInterval
 import com.serj.recommend.android.common.ext.screenPaddingsInner
 import com.serj.recommend.android.common.ext.toColor
-import com.serj.recommend.android.model.Category
-import com.serj.recommend.android.model.Recommendation
+import com.serj.recommend.android.model.collections.Category
+import com.serj.recommend.android.model.collections.Recommendation
 import com.serj.recommend.android.ui.components.loadingIndicators.SmallLoadingIndicator
 import com.serj.recommend.android.ui.components.media.CustomGlideImage
 import com.serj.recommend.android.ui.components.recommendationPreviews.ItemsShapes

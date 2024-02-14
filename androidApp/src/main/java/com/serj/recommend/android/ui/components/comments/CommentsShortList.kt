@@ -16,7 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
-import com.serj.recommend.android.model.Comment
+import com.serj.recommend.android.model.subcollections.Comment
 import com.serj.recommend.android.model.items.UserItem
 import com.serj.recommend.android.ui.components.comments.items.CommentShortItem
 

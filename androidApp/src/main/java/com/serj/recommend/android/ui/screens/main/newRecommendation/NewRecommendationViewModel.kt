@@ -8,8 +8,8 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.serj.recommend.android.model.Recommendation
-import com.serj.recommend.android.model.User
+import com.serj.recommend.android.model.collections.Recommendation
+import com.serj.recommend.android.model.collections.User
 import com.serj.recommend.android.services.AccountService
 import com.serj.recommend.android.services.LogService
 import com.serj.recommend.android.services.StorageService
@@ -175,9 +175,13 @@ class NewRecommendationViewModel @Inject constructor(
         )
 
         launchCatching {
-            val recommendationIdResponse = storageService.uploadRecommendation(
-                recommendation = recommendation
-            )
+            val recommendationIdResponse = currentUser?.uid?.let {
+                storageService.uploadRecommendation(
+                    recommendation = recommendation,
+                    currentUserId = it,
+                    isReposted = false
+                )
+            }
             if (recommendationIdResponse is Response.Success &&
                 recommendationIdResponse.data != null) {
                 backgroundImageUri.value?.let {

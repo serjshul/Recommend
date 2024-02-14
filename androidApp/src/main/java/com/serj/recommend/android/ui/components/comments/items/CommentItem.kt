@@ -43,7 +43,7 @@ import androidx.compose.ui.unit.sp
 import com.google.firebase.storage.StorageReference
 import com.serj.recommend.android.R
 import com.serj.recommend.android.common.getCreatedTime
-import com.serj.recommend.android.model.Comment
+import com.serj.recommend.android.model.subcollections.Comment
 import com.serj.recommend.android.services.model.Response
 import com.serj.recommend.android.ui.components.comments.CommentDropdownMenu
 import com.serj.recommend.android.ui.components.media.GlideUserImage

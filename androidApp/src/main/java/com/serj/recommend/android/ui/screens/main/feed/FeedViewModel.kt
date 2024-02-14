@@ -9,15 +9,16 @@ import androidx.compose.runtime.setValue
 import com.serj.recommend.android.R
 import com.serj.recommend.android.RecommendRoutes
 import com.serj.recommend.android.common.Constants.RECOMMENDATION_ID
-import com.serj.recommend.android.model.Comment
-import com.serj.recommend.android.model.Recommendation
-import com.serj.recommend.android.model.User
+import com.serj.recommend.android.model.collections.Recommendation
+import com.serj.recommend.android.model.collections.User
 import com.serj.recommend.android.model.items.RecommendationItem
 import com.serj.recommend.android.model.items.UserItem
+import com.serj.recommend.android.model.subcollections.Comment
 import com.serj.recommend.android.services.AccountService
 import com.serj.recommend.android.services.LogService
 import com.serj.recommend.android.services.StorageService
 import com.serj.recommend.android.services.model.Response
+import com.serj.recommend.android.ui.components.interaction.InteractionSource
 import com.serj.recommend.android.ui.components.snackbar.SnackbarManager
 import com.serj.recommend.android.ui.screens.RecommendViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -78,10 +79,15 @@ class FeedViewModel @Inject constructor(
         launchCatching {
             accountService.currentUser.collect { user ->
                 user.uid?.let {
-                    storageService.uploadComment(
-                        recommendationId = currentRecommendationId,
+                    storageService.comment(
                         userId = user.uid,
-                        text = commentInput
+                        recommendationId = currentRecommendationId,
+                        repliedCommentId = null,
+                        repliedUserId = null,
+                        text = commentInput,
+                        isReplied = false,
+                        date = Date(),
+                        source = InteractionSource.recommendation.name
                     )
 
                     val comment = Comment(
@@ -110,7 +116,7 @@ class FeedViewModel @Inject constructor(
             launchCatching {
                 accountService.currentUser.collect { user ->
                     user.uid?.let {
-                        storageService.deleteComment(
+                        storageService.removeComment(
                             recommendationId = currentRecommendationId,
                             userId = user.uid,
                             commentId = comment.id,
@@ -124,8 +130,16 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    fun onLikeClick(isLiked: Boolean, uid: String, recommendationId: String) =
-        storageService.likeOrUnlikeRecommendation(isLiked, uid, recommendationId)
+    fun onLikeClick(isLiked: Boolean, uid: String, recommendationId: String) = Response.Success(true)
+        /*
+        storageService.likeOrUnlikeRecommendation(
+            isLiked = isLiked,
+            userId = uid,
+            recommendationId = recommendationId,
+            source = InteractionSource.feed.name
+        )
+
+         */
 
     fun onCommentIconClick(recommendationId: String, comments: List<Comment>) {
         currentRecommendationId = recommendationId
