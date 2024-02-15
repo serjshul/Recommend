@@ -43,6 +43,9 @@ import com.serj.recommend.android.ui.screens.common.recommendation.components.Qu
 import com.serj.recommend.android.ui.screens.common.recommendation.components.RecommendationTopBar
 import java.util.Date
 
+//TODO: when leaving the recommendation with two clicks on the left,
+// just a white screen appeared for @serjshul
+
 @Composable
 fun RecommendationScreen(
     modifier: Modifier = Modifier,
