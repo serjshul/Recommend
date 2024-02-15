@@ -30,12 +30,12 @@ import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.Text
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TabPosition
 import androidx.compose.material3.TabRow
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,6 +49,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.serj.recommend.android.model.User
 import com.serj.recommend.android.ui.components.media.CustomGlideImage
 
 private enum class TabPage {
@@ -59,52 +60,67 @@ private enum class TabPage {
 @Composable
 fun ProfileScreen(
     viewModel: ProfileViewModel = hiltViewModel()
-) {
-    Column {
-        ProfileInfo(
-            viewModel = viewModel,
-            modifier = Modifier.weight(.3f)
-        )
-        BottomPart(
-            viewModel = viewModel,
-            modifier = Modifier.weight(.7f)
-        )
-    }
+) = ProfileScreenContent(
+    profileUser = viewModel.profileUser,
+    currentUser = viewModel.currentUser,
+)
+
+@Composable
+private fun ProfileScreenContent(
+    profileUser: User?,
+    currentUser: User?,
+) = Column {
+    ProfileInfo(
+        profileUser = profileUser,
+        currentUser = currentUser,
+        modifier = Modifier.weight(.3f)
+    )
+    BottomPart(
+        profileUser = profileUser,
+        currentUser = currentUser,
+        modifier = Modifier.weight(.7f)
+    )
 }
 
 // TODO: Top part of profile we make like RecommendationScreen
 @Composable
-fun ProfileInfo(
-    viewModel: ProfileViewModel,
+private fun ProfileInfo(
+    profileUser: User?,
+    currentUser: User?,
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 30.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         CustomGlideImage(
-            reference = viewModel.profileUser?.photoReference,
+            reference = profileUser?.photoReference,
             modifier = Modifier
                 .clip(CircleShape)
                 .size(64.dp)
         )
-        Text(text = "@${viewModel.profileUser?.nickname}")
+        Text(text = "@${profileUser?.nickname}")
+
         // ProfileDescription
-        Row {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(20.dp)
+        ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text("Followers")
-                Text(viewModel.profileUser?.followers?.size.toString())
+                Text(profileUser?.followers?.size.toString())
             }
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text("Following")
-                Text(viewModel.profileUser?.following?.size.toString())
+                Text(profileUser?.following?.size.toString())
             }
         }
-        if (viewModel.profileUser != viewModel.currentUser) {
+        if (profileUser != currentUser) {
             Button(onClick = { }) {
                 Text("Subscribe")
             }
@@ -113,8 +129,9 @@ fun ProfileInfo(
 }
 
 @Composable
-fun BottomPart(
-    viewModel: ProfileViewModel,
+private fun BottomPart(
+    profileUser: User?,
+    currentUser: User?,
     modifier: Modifier = Modifier
 ) {
     var tabPage by remember { mutableStateOf(TabPage.Posts) }
@@ -123,9 +140,9 @@ fun BottomPart(
     // later it can be set by user itself
     val backgroundColor by animateColorAsState(
         when (tabPage) {
-            TabPage.Posts -> Color(0xfff3b391)
-            TabPage.Likes -> Color(0xfff6d4ba)
-            TabPage.Favourites -> Color(0xfffefadc)
+            TabPage.Posts -> Color(0xffef823c)
+            TabPage.Likes -> Color(0xfff3b391)
+            TabPage.Favourites -> Color(0xfff6d4ba)
         },
         label = "backgroundColor"
     )
@@ -133,7 +150,8 @@ fun BottomPart(
     Scaffold(
         topBar = {
             ProfileTabBar(
-                viewModel = viewModel,
+                profileUser = profileUser,
+                currentUser = currentUser,
                 backgroundColor = backgroundColor,
                 tabPage = tabPage,
                 onTabSelected = { tabPage = it }
@@ -162,7 +180,8 @@ fun BottomPart(
 
 @Composable
 private fun ProfileTabBar(
-    viewModel: ProfileViewModel,
+    profileUser: User?,
+    currentUser: User?,
     backgroundColor: Color,
     tabPage: TabPage,
     onTabSelected: (tabPage: TabPage) -> Unit
@@ -189,18 +208,15 @@ private fun ProfileTabBar(
             }
         ) {
             HomeTab(
-//                icon = Icons.Default.Home,
                 title = TabPage.Posts.name,
                 onClick = { onTabSelected(TabPage.Posts) }
             )
             HomeTab(
-//                icon = Icons.Default.AccountBox,
                 title = TabPage.Likes.name,
                 onClick = { onTabSelected(TabPage.Likes) }
             )
-            if (viewModel.profileUser != viewModel.currentUser) {
+            if (profileUser != currentUser) {
                 HomeTab(
-//                icon = Icons.Default.AccountBox,
                     title = TabPage.Favourites.name,
                     onClick = { onTabSelected(TabPage.Favourites) }
                 )
@@ -220,8 +236,12 @@ private fun HomeTabIndicator(
     val indicatorLeft by transition.animateDp(
         transitionSpec = {
             when {
-                TabPage.Posts isTransitioningTo TabPage.Likes -> spring(stiffness = Spring.StiffnessVeryLow)
-                TabPage.Likes isTransitioningTo TabPage.Posts -> spring(stiffness = Spring.StiffnessMedium)
+                TabPage.Posts isTransitioningTo TabPage.Likes -> spring(
+                    stiffness = Spring.StiffnessVeryLow
+                )
+                TabPage.Likes isTransitioningTo TabPage.Posts -> spring(
+                    stiffness = Spring.StiffnessMedium
+                )
                 else -> spring()
             }
         },
@@ -232,8 +252,12 @@ private fun HomeTabIndicator(
     val indicatorCenter by transition.animateDp(
         transitionSpec = {
             when {
-                TabPage.Posts isTransitioningTo TabPage.Likes -> spring(stiffness = Spring.StiffnessMedium)
-                TabPage.Likes isTransitioningTo TabPage.Posts -> spring(stiffness = Spring.StiffnessVeryLow)
+                TabPage.Posts isTransitioningTo TabPage.Likes -> spring(
+                    stiffness = Spring.StiffnessMedium
+                )
+                TabPage.Likes isTransitioningTo TabPage.Posts -> spring(
+                    stiffness = Spring.StiffnessVeryLow
+                )
                 else -> spring()
             }
         },
@@ -244,8 +268,12 @@ private fun HomeTabIndicator(
     val indicatorRight by transition.animateDp(
         transitionSpec = {
             when {
-                TabPage.Posts isTransitioningTo TabPage.Likes -> spring(stiffness = Spring.StiffnessMedium)
-                TabPage.Likes isTransitioningTo TabPage.Posts -> spring(stiffness = Spring.StiffnessVeryLow)
+                TabPage.Posts isTransitioningTo TabPage.Likes -> spring(
+                    stiffness = Spring.StiffnessMedium
+                )
+                TabPage.Likes isTransitioningTo TabPage.Posts -> spring(
+                    stiffness = Spring.StiffnessVeryLow
+                )
                 else -> spring()
             }
         },
@@ -257,9 +285,9 @@ private fun HomeTabIndicator(
         label = "borderColor"
     ) { page ->
         when (page) {
-            TabPage.Posts -> Color(0xffed6f0d)
-            TabPage.Likes -> Color(0xfff1823b)
-            TabPage.Favourites -> Color(0xfff1de59)
+            TabPage.Posts -> Color(0xffd56103)
+            TabPage.Likes -> Color(0xffe26908)
+            TabPage.Favourites -> Color(0xffed6f0d)
         }
     }
     Box(
@@ -279,29 +307,25 @@ private fun HomeTabIndicator(
 
 @Composable
 private fun HomeTab(
-//    icon: ImageVector,
     title: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
+) = Row(
+    modifier = modifier
+        .clickable(onClick = onClick)
+        .padding(16.dp),
+    horizontalArrangement = Arrangement.Center,
+    verticalAlignment = Alignment.CenterVertically
 ) {
-    Row(
-        modifier = modifier
-            .clickable(onClick = onClick)
-            .padding(16.dp),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-//        Icon(
-//            imageVector = icon,
-//            contentDescription = null
-//        )
-        Spacer(modifier = Modifier.width(16.dp))
-        Text(text = title)
-    }
+    Text(text = title)
 }
 
 @Preview
 @Composable
-fun ProfileScreenPreview() {
-    ProfileScreen()
-}
+private fun ProfileScreenPreview() =
+    ProfileScreenContent(
+        profileUser = User(
+            nickname = "b0r1ngx"
+        ),
+        currentUser = User()
+    )

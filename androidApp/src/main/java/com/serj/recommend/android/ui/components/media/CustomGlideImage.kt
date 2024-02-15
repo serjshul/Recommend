@@ -20,19 +20,24 @@ fun CustomGlideImage(
     reference: StorageReference?,
     modifier: Modifier = Modifier
 ) {
-  if (reference != null) {
+    if (reference != null) {
         GlideImage(
             modifier = modifier,
             model = reference,
-            loading = placeholder(ColorPainter(Color.LightGray)),
-            failure = placeholder(R.drawable.glide_failure),
+            loading = placeholder(
+                ColorPainter(Color.LightGray)
+            ),
+            failure = placeholder(
+                R.drawable.glide_failure
+            ),
             transition = CrossFade,
             contentScale = ContentScale.Crop,
             contentDescription = "Glide image"
         )
     } else {
         Box(
-            modifier = modifier.background(Color.LightGray)
+            modifier = modifier
+                .background(Color.LightGray)
         )
     }
 }

@@ -16,18 +16,23 @@ class ConfigurationServiceImpl @Inject constructor(
 
     init {
         if (BuildConfig.DEBUG) {
-            val configSettings = remoteConfigSettings {
-                minimumFetchIntervalInSeconds = 0
-            }
+            val configSettings =
+                remoteConfigSettings {
+                    minimumFetchIntervalInSeconds = 0
+                }
             remoteConfig.setConfigSettingsAsync(configSettings)
         }
 
-        remoteConfig.setDefaultsAsync(AppConfig.remote_config_defaults)
+        remoteConfig.setDefaultsAsync(
+            AppConfig.remote_config_defaults
+        )
     }
 
     override suspend fun fetchConfiguration(): Boolean =
         trace(FETCH_CONFIG_TRACE) {
-            remoteConfig.fetchAndActivate().await()
+            remoteConfig
+                .fetchAndActivate()
+                .await()
         }
 
     override val isAddRecommenderSystem: Boolean

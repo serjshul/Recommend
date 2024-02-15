@@ -15,6 +15,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color.Companion.White
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.serj.recommend.android.model.Banner
@@ -130,3 +131,8 @@ fun HomeScreenContent(
         }
     }
 }
+
+@Preview
+@Composable
+fun HomeScreenPreview() =
+    HomeScreen(openScreen =  {})
