@@ -3,7 +3,7 @@ package com.serj.recommend.android.ui.screens.main.profile
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.serj.recommend.android.model.User
+import com.serj.recommend.android.model.collections.User
 import com.serj.recommend.android.services.AccountService
 import com.serj.recommend.android.services.LogService
 import com.serj.recommend.android.services.StorageService

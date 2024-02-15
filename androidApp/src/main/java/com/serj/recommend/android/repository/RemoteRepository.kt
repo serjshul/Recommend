@@ -1,6 +1,6 @@
 package com.serj.recommend.android.repository
 
-import com.serj.recommend.android.model.Recommendation
+import com.serj.recommend.android.model.collections.Recommendation
 
 class RemoteRepository: Repository {
     override fun getPosts(): List<Recommendation> {
