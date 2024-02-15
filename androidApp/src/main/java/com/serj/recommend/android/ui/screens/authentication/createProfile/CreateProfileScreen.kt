@@ -13,7 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.serj.recommend.android.ui.screens.authentication.createProfile.components.CreateProfileInput
 import com.serj.recommend.android.ui.screens.authentication.createProfile.components.CreateProfileTopBar
-import com.serj.recommend.android.ui.styles.outline
+import com.serj.recommend.android.ui.screens.authentication.createProfile.components.CreateProfileUserPhoto
 
 @Composable
 fun CreateProfileScreen(
@@ -47,20 +47,44 @@ fun CreateProfileContent(
                 .fillMaxSize()
                 .background(backgroundColor)
         ) {
-            items(10) {
+            item {
+                CreateProfileUserPhoto(
+                    userPhotoUri = null,
+                    onAddUserPhoto = { }
+                )
+            }
+
+
+            item {
                 CreateProfileInput(
                     text = "",
-                    label = "Title",
-                    placeholder = "Title",
-                    textColor = Color.Black,
-                    labelColor = outline,
-                    placeHolderColor = Color.Gray,
-                    borderColor = outline,
+                    label = "Name",
                     isError = false,
                     maxLines = 1,
                     onValueChange = { }
                 )
             }
+
+            item {
+                CreateProfileInput(
+                    text = "",
+                    label = "Nickname",
+                    isError = false,
+                    maxLines = 1,
+                    onValueChange = { }
+                )
+            }
+
+            item {
+                CreateProfileInput(
+                    text = "",
+                    label = "Bio",
+                    isError = false,
+                    maxLines = 3,
+                    onValueChange = { }
+                )
+            }
+
         }
     }
 }
