@@ -1,11 +1,13 @@
 package com.serj.recommend.android.ui.screens.authentication.createProfile
 
 import android.net.Uri
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import com.serj.recommend.android.services.AccountService
 import com.serj.recommend.android.services.LogService
 import com.serj.recommend.android.services.StorageService
 import com.serj.recommend.android.ui.screens.RecommendViewModel
+import com.serj.recommend.android.ui.styles.background
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.Date
 import javax.inject.Inject
@@ -16,6 +18,9 @@ class CreateProfileViewModel @Inject constructor(
     private val accountService: AccountService,
     private val storageService: StorageService
 ) : RecommendViewModel(logService) {
+
+    val backgroundColor by mutableStateOf(background)
+
     var uiState = mutableStateOf(CreateProfileUiState())
         private set
 
