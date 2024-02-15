@@ -1,11 +1,13 @@
 package com.serj.recommend.android.ui.screens.authentication.createProfile
 
+import android.net.Uri
 import androidx.compose.runtime.mutableStateOf
 import com.serj.recommend.android.services.AccountService
 import com.serj.recommend.android.services.LogService
 import com.serj.recommend.android.services.StorageService
 import com.serj.recommend.android.ui.screens.RecommendViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,5 +31,29 @@ class CreateProfileViewModel @Inject constructor(
         get() = uiState.value.gender
     private val profileImageUri
         get() = uiState.value.profileImageUri
+
+    fun onNameValueChange(input: String) {
+        uiState.value = uiState.value.copy(name = input)
+    }
+
+    fun onNicknameValueChange(input: String) {
+        uiState.value = uiState.value.copy(nickname = input)
+    }
+
+    fun onBioValueChange(input: String) {
+        uiState.value = uiState.value.copy(bio = input)
+    }
+
+    fun onDateOfBirthValueChange(input: Date) {
+        uiState.value = uiState.value.copy(dateOfBirth = input)
+    }
+
+    fun onGenderValueChange(input: String) {
+        uiState.value = uiState.value.copy(gender = input)
+    }
+
+    fun onProfileImageUriValueChange(input: Uri) {
+        uiState.value = uiState.value.copy(profileImageUri = input)
+    }
 
 }
