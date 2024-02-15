@@ -1,7 +1,6 @@
 package com.serj.recommend.android.ui.screens.authentication.createProfile.components
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -22,7 +21,8 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun CreateProfileTopBar(
     modifier: Modifier = Modifier,
-    isDataValid: Boolean
+    isDataValid: Boolean,
+    onCreateProfileClick: () -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
@@ -42,17 +42,9 @@ fun CreateProfileTopBar(
                     overflow = TextOverflow.Ellipsis
                 )
             },
-            navigationIcon = {
-                IconButton(onClick = { /* do something */ }) {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = "Localized description"
-                    )
-                }
-            },
             actions = {
                 IconButton(
-                    onClick = { /* do something */ },
+                    onClick = { onCreateProfileClick() },
                     enabled = isDataValid
                 ) {
                     Icon(

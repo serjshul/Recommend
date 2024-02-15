@@ -47,7 +47,7 @@ class SignInUiTests {
     }
 
     private fun checkThatWeOnSignUpScreen() {
-        val createAccountText = rule.activity.getString(R.string.create_account)
+        val createAccountText = rule.activity.getString(R.string.sign_up)
         val createAccountButtonMatcher = hasText(
             text = createAccountText, ignoreCase = true
         )

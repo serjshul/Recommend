@@ -3,11 +3,13 @@ package com.serj.recommend.android.ui.screens.authentication.createProfile
 import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color
+import com.serj.recommend.android.RecommendRoutes
 import com.serj.recommend.android.services.AccountService
 import com.serj.recommend.android.services.LogService
 import com.serj.recommend.android.services.StorageService
 import com.serj.recommend.android.ui.screens.RecommendViewModel
-import com.serj.recommend.android.ui.styles.background
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.Date
 import javax.inject.Inject
@@ -19,7 +21,7 @@ class CreateProfileViewModel @Inject constructor(
     private val storageService: StorageService
 ) : RecommendViewModel(logService) {
 
-    val backgroundColor by mutableStateOf(background)
+    val backgroundColor by mutableStateOf(Color.White)
 
     var uiState = mutableStateOf(CreateProfileUiState())
         private set
@@ -36,6 +38,13 @@ class CreateProfileViewModel @Inject constructor(
         get() = uiState.value.gender
     private val profileImageUri
         get() = uiState.value.profileImageUri
+
+    var isGenderOptionsExpanded by mutableStateOf(false)
+        private set
+    val genderOptions = listOf("Male", "Female", "Prefer not to say")
+
+    var isDataPickerShown by mutableStateOf(false)
+        private set
 
     fun onNameValueChange(input: String) {
         uiState.value = uiState.value.copy(name = input)
@@ -61,4 +70,23 @@ class CreateProfileViewModel @Inject constructor(
         uiState.value = uiState.value.copy(profileImageUri = input)
     }
 
+    fun onGenderOptionsClick() {
+        isGenderOptionsExpanded = true
+    }
+
+    fun onGenderDismissRequest() {
+        isGenderOptionsExpanded = false
+    }
+
+    fun onDatePickerClick() {
+        isDataPickerShown = true
+    }
+
+    fun onDatePickerDismissRequest() {
+        isDataPickerShown = false
+    }
+
+    fun onCreateProfileClick(clearAndOpen: (String) -> Unit) {
+        clearAndOpen(RecommendRoutes.MainScreen.name)
+    }
 }

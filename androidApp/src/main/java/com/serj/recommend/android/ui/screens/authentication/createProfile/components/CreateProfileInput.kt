@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -40,20 +39,8 @@ fun CreateProfileInput(
         maxLines = maxLines,
         singleLine = maxLines == 1,
         isError = isError,
-        colors = OutlinedTextFieldDefaults.colors(
-            focusedContainerColor = Color.Transparent,
-            unfocusedContainerColor = Color.Transparent,
-            disabledContainerColor = Color.Transparent,
-            errorContainerColor = Color.Transparent,
-            focusedTextColor = Color.Black,
-            unfocusedTextColor = Color.Black,
-            focusedLabelColor = Color.Black,
-            unfocusedLabelColor = Color.Gray,
-            focusedBorderColor = Color.Black,
-            unfocusedBorderColor = Color.Gray
-        ),
         modifier = modifier
-            .padding(15.dp, 5.dp)
+            .padding(15.dp, 2.5.dp)
             .fillMaxWidth()
     )
 }
