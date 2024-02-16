@@ -31,7 +31,7 @@ import com.serj.recommend.android.ui.components.splash.AppLogo
 @Composable
 fun SignUpScreen(
     modifier: Modifier = Modifier,
-    openAndPopUp: (String, String) -> Unit,
+    openScreen: (String) -> Unit,
     viewModel: SignUpViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState
@@ -42,7 +42,7 @@ fun SignUpScreen(
         onEmailChange = viewModel::onEmailChange,
         onPasswordChange = viewModel::onPasswordChange,
         onRepeatPasswordChange = viewModel::onRepeatPasswordChange,
-        onSignUpClick = { viewModel.onSignUpClick(openAndPopUp) }
+        onSignUpClick = { viewModel.onSignUpClick(openScreen) }
     )
 }
 
@@ -84,7 +84,7 @@ fun SignUpScreenContent(
         ) {
             Text(
                 modifier = Modifier.padding(bottom = 30.dp),
-                text = "Sign up to see recommendation\nfrom your friends",
+                text = "Sign up to see recommendations\nfrom your friends",
                 fontSize = 16.sp,
                 textAlign = TextAlign.Center
             )
@@ -94,10 +94,10 @@ fun SignUpScreenContent(
             PasswordField(uiState.password, R.string.password, onPasswordChange, fieldModifier)
 
             RepeatPasswordField(uiState.repeatPassword, onRepeatPasswordChange, fieldModifier)
+        }
 
-            AuthenticationButton(R.string.create_account, Modifier.basicButton()) {
-                onSignUpClick()
-            }
+        AuthenticationButton(R.string.sign_up_button, Modifier.basicButton()) {
+            onSignUpClick()
         }
     }
 }

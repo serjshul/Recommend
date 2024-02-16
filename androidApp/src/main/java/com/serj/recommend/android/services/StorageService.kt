@@ -6,6 +6,7 @@ import com.google.firebase.storage.StorageReference
 import com.serj.recommend.android.model.collections.Banner
 import com.serj.recommend.android.model.collections.Category
 import com.serj.recommend.android.model.collections.Recommendation
+import com.serj.recommend.android.model.collections.User
 import com.serj.recommend.android.model.items.RecommendationItem
 import com.serj.recommend.android.model.items.RecommendationPreview
 import com.serj.recommend.android.model.items.UserItem
@@ -32,6 +33,8 @@ typealias RemoveRepostRecommendationResponse = Response<Boolean>
 typealias UploadCommentResponse = Response<Boolean>
 typealias DeleteCommentResponse = Response<Boolean>
 typealias UploadRecommendationResponse = Response<String>
+typealias UploadUserResponse = Response<Boolean>
+typealias UploadUserPhotoResponse = Response<Boolean>
 
 interface StorageService {
 
@@ -104,4 +107,14 @@ interface StorageService {
     suspend fun uploadCoverImage(
         recommendationId: String, uri: Uri, coverType: String, context: Context
     )
+
+    suspend fun uploadUser(
+        user: User
+    ): UploadUserResponse
+
+    suspend fun uploadUserPhoto(
+        userId: String,
+        uri: Uri,
+        context: Context
+    ): UploadUserPhotoResponse
 }

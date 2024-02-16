@@ -54,7 +54,7 @@ class CategoryViewModel @Inject constructor(
                         }
                         for (recommendationId in currentCategory?.recommendationsIds!!) {
                             val currentRecommendationItemResponse = storageService
-                                .getRecommendationItemById(recommendationId, user.likedIds)
+                                .getRecommendationItemById(recommendationId, arrayListOf())
                             if (currentRecommendationItemResponse is Response.Success &&
                                 currentRecommendationItemResponse.data != null) {
                                 currentRecommendations.add(

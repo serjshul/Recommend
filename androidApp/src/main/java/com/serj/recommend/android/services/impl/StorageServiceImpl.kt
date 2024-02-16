@@ -17,6 +17,7 @@ import com.serj.recommend.android.common.UserNotFoundException
 import com.serj.recommend.android.model.collections.Banner
 import com.serj.recommend.android.model.collections.Category
 import com.serj.recommend.android.model.collections.Recommendation
+import com.serj.recommend.android.model.collections.User
 import com.serj.recommend.android.model.items.RecommendationItem
 import com.serj.recommend.android.model.items.RecommendationPreview
 import com.serj.recommend.android.model.items.UserItem
@@ -41,6 +42,8 @@ import com.serj.recommend.android.services.RepostRecommendationResponse
 import com.serj.recommend.android.services.StorageService
 import com.serj.recommend.android.services.UploadCommentResponse
 import com.serj.recommend.android.services.UploadRecommendationResponse
+import com.serj.recommend.android.services.UploadUserPhotoResponse
+import com.serj.recommend.android.services.UploadUserResponse
 import com.serj.recommend.android.services.model.Response
 import com.serj.recommend.android.services.model.Response.Failure
 import com.serj.recommend.android.services.model.Response.Success
@@ -815,6 +818,89 @@ class StorageServiceImpl @Inject constructor(
             }
 
             Success(uploadedRecommendationId)
+        } catch (e: Exception) {
+            Failure(e)
+        }
+    }
+
+    override suspend fun uploadUser(
+        user: User
+    ): UploadUserResponse {
+        return try {
+            var transactionResult = false
+
+            firestore
+                .collection(USERS_COLLECTION)
+                .document(user.uid!!)
+                .set(user)
+                .addOnCompleteListener {
+                    transactionResult = it.isSuccessful
+                    if (it.isSuccessful)
+                        Log.d(TAG, "${user.uid}: Added user's info to \"$USERS_COLLECTION\" collection")
+                    else
+                        Log.w(TAG, "${user.uid}: Error while adding user's info: ${it.result}")
+                }
+                .await()
+
+            if (transactionResult)
+                Success(true)
+            else
+                Failure(Exception())
+        } catch (e: Exception) {
+            Failure(e)
+        }
+    }
+
+    override suspend fun uploadUserPhoto(
+        userId: String,
+        uri: Uri,
+        context: Context
+    ): UploadUserPhotoResponse {
+        return try {
+            var photoUrl: String? = null
+            var storageTransaction = false
+            var userTransaction = false
+
+            val storageRef = storage.reference
+            val backgroundImageRef = storageRef
+                .child("$USERS_COLLECTION/$userId/user_photo.jpg")
+
+            val byteArray = context.contentResolver
+                .openInputStream(uri)
+                ?.use { it.readBytes() }
+
+            byteArray?.let {
+                backgroundImageRef
+                    .putBytes(byteArray)
+                    .addOnCompleteListener {
+                        storageTransaction = it.isSuccessful
+                        if (it.isSuccessful) {
+                            Log.d(TAG, "$userId: User's photo was uploaded")
+                            photoUrl = it.result.storage.toString()
+                        } else
+                            Log.w(TAG, "$userId: Error while uploading user's photo (${it.result})")
+                    }
+                    .await()
+            }
+            if (photoUrl != null) {
+                firestore
+                    .collection(USERS_COLLECTION)
+                    .document(userId)
+                    .update("photoUrl", photoUrl)
+                    .addOnCompleteListener {
+                        userTransaction = it.isSuccessful
+                        if (it.isSuccessful)
+                            Log.d(TAG, "$userId: User's document updated")
+                        else
+                            Log.w(TAG, "$userId: Error while updating user's document (${it.result})")
+                    }
+                    .await()
+            }
+
+            if (storageTransaction && userTransaction)
+                Success(true)
+            else
+                Failure(Exception())
         } catch (e: Exception) {
             Failure(e)
         }
