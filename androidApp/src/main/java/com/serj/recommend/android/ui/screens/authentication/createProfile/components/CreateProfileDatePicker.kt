@@ -77,7 +77,7 @@ fun CreateProfileDatePicker(
             singleLine = true,
             isError = isError,
             modifier = modifier
-                .padding(15.dp, 2.5.dp)
+                .padding(start = 15.dp, top = 2.5.dp, end = 7.5.dp, bottom = 2.5.dp)
                 .fillMaxWidth()
         )
 

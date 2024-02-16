@@ -65,7 +65,7 @@ fun CreateProfileList(
             singleLine = maxLines == 1,
             isError = isError,
             modifier = modifier
-                .padding(15.dp, 2.5.dp)
+                .padding(start = 7.5.dp, top = 2.5.dp, end = 15.dp, bottom = 2.5.dp)
                 .fillMaxWidth()
         )
 

@@ -70,4 +70,6 @@
     <string name="like_exception">Like error</string>
     <string name="repost_exception">Repost error</string>
     <string name="comment_exception">Comment error</string>
+
+    <string name="create_account_button">Create account</string>
 </resources>

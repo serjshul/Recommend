@@ -86,6 +86,10 @@ class CreateProfileViewModel @Inject constructor(
         isDataPickerShown = false
     }
 
+    fun onProfileImageUriDisable() {
+        uiState.value = uiState.value.copy(profileImageUri = null)
+    }
+
     fun onCreateProfileClick(clearAndOpen: (String) -> Unit) {
         clearAndOpen(RecommendRoutes.MainScreen.name)
     }

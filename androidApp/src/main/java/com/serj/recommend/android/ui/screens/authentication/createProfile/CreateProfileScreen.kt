@@ -1,20 +1,26 @@
 package com.serj.recommend.android.ui.screens.authentication.createProfile
 
+import android.net.Uri
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.serj.recommend.android.R
+import com.serj.recommend.android.common.getDateOfBirth
+import com.serj.recommend.android.ui.screens.authentication.createProfile.components.CreateProfileButton
 import com.serj.recommend.android.ui.screens.authentication.createProfile.components.CreateProfileDatePicker
 import com.serj.recommend.android.ui.screens.authentication.createProfile.components.CreateProfileInput
 import com.serj.recommend.android.ui.screens.authentication.createProfile.components.CreateProfileList
-import com.serj.recommend.android.ui.screens.authentication.createProfile.components.CreateProfileTopBar
 import com.serj.recommend.android.ui.screens.authentication.createProfile.components.CreateProfileUserPhoto
 import java.util.Date
 
@@ -31,6 +37,7 @@ fun CreateProfileScreen(
         isDataPickerShown = viewModel.isDataPickerShown,
         isGenderOptionsExpanded = viewModel.isGenderOptionsExpanded,
         genderOptions = viewModel.genderOptions,
+        onProfileImageUriValueChange = viewModel::onProfileImageUriValueChange,
         onNameValueChange = viewModel::onNameValueChange,
         onNicknameValueChange = viewModel::onNicknameValueChange,
         onBioValueChange = viewModel::onBioValueChange,
@@ -40,6 +47,7 @@ fun CreateProfileScreen(
         onDatePickerDismissRequest = viewModel::onDatePickerDismissRequest,
         onGenderOptionsClick = viewModel::onGenderOptionsClick,
         onGenderDismissRequest = viewModel::onGenderDismissRequest,
+        onProfileImageUriDisable = viewModel::onProfileImageUriDisable,
         onCreateProfileClick = { viewModel.onCreateProfileClick(clearAndOpen) }
     )
 }
@@ -52,6 +60,7 @@ fun CreateProfileContent(
     isDataPickerShown: Boolean,
     isGenderOptionsExpanded: Boolean,
     genderOptions: List<String>,
+    onProfileImageUriValueChange: (Uri) -> Unit,
     onNameValueChange: (String) -> Unit,
     onNicknameValueChange: (String) -> Unit,
     onBioValueChange: (String) -> Unit,
@@ -61,32 +70,33 @@ fun CreateProfileContent(
     onDatePickerDismissRequest: () -> Unit,
     onGenderOptionsClick: () -> Unit,
     onGenderDismissRequest: () -> Unit,
+    onProfileImageUriDisable: () -> Unit,
     onCreateProfileClick: () -> Unit
 ) {
     Scaffold(
-        modifier = modifier,
-        topBar = {
-            CreateProfileTopBar(
-                isDataValid = true,
-                onCreateProfileClick = onCreateProfileClick
-            )
-        },
+        modifier =
+            if (isDataPickerShown)
+                modifier.blur(radius = 8.dp)
+            else
+                modifier
     ) { paddingValues ->
-        LazyColumn(
+        Column(
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
                 .background(backgroundColor)
         ) {
-            item {
-                CreateProfileUserPhoto(
-                    userPhotoUri = null,
-                    onAddUserPhoto = { }
-                )
-            }
+            CreateProfileUserPhoto(
+                userPhotoUri = uiState.profileImageUri,
+                onAddUserPhoto = onProfileImageUriValueChange,
+                onProfileImageUriDisable = onProfileImageUriDisable,
+                modifier = Modifier
+                    .weight(5f)
+            )
 
-
-            item {
+            Column(
+                modifier = Modifier.weight(6f)
+            ) {
                 CreateProfileInput(
                     text = uiState.name,
                     label = "Name",
@@ -94,9 +104,6 @@ fun CreateProfileContent(
                     maxLines = 1,
                     onValueChange = onNameValueChange
                 )
-            }
-
-            item {
                 CreateProfileInput(
                     text = uiState.nickname,
                     label = "Nickname",
@@ -104,22 +111,16 @@ fun CreateProfileContent(
                     maxLines = 1,
                     onValueChange = onNicknameValueChange
                 )
-            }
-
-            item {
                 CreateProfileInput(
                     text = uiState.bio,
                     label = "Bio",
                     isError = false,
-                    maxLines = 3,
+                    maxLines = 5,
                     onValueChange = onBioValueChange
                 )
-            }
-            
-            item {
                 Row {
                     CreateProfileDatePicker(
-                        dateOfBirth = uiState.dateOfBirth.toString(),
+                        dateOfBirth = getDateOfBirth(uiState.dateOfBirth),
                         label = "Date of birth",
                         isError = false,
                         showDatePicker = isDataPickerShown,
@@ -128,7 +129,6 @@ fun CreateProfileContent(
                         onDismissRequest = onDatePickerDismissRequest,
                         modifier = Modifier.weight(1f)
                     )
-
                     CreateProfileList(
                         chosenOption = uiState.gender,
                         options = genderOptions,
@@ -141,9 +141,15 @@ fun CreateProfileContent(
                         modifier = Modifier.weight(1f)
                     )
                 }
-
             }
 
+            CreateProfileButton(
+                text = R.string.create_account_button,
+                action = onCreateProfileClick,
+                modifier = Modifier
+                    .padding(start = 15.dp, end = 15.dp, bottom = 20.dp)
+                    .fillMaxWidth()
+            )
         }
     }
 }
@@ -157,6 +163,7 @@ fun CreateProfileScreenPreview() {
         isDataPickerShown = false,
         isGenderOptionsExpanded = false,
         genderOptions = listOf("item1", "item2"),
+        onProfileImageUriValueChange = { },
         onNameValueChange = { },
         onNicknameValueChange = { },
         onBioValueChange = { },
@@ -166,6 +173,7 @@ fun CreateProfileScreenPreview() {
         onGenderValueChange = { },
         onGenderOptionsClick = { },
         onGenderDismissRequest = { },
+        onProfileImageUriDisable = { },
         onCreateProfileClick = { }
     )
 }
