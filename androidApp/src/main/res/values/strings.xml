@@ -25,9 +25,9 @@
     <string name="reset_password">Reset password</string>
 
     <!-- SignUpScreen -->
-    <string name="sign_up_button">Sing up</string>
-    <string name="password_error">Your password should have at least six digits and include one digit, one lower case letter and one upper case letter</string>
-    <string name="password_match_error">Passwords do not match</string>
+    <string name="create_account">Create account</string>
+    <string name="password_error">Your password should have at least six digits and include one digit, one lower case letter and one upper case letter.</string>
+    <string name="password_match_error">Passwords do not match.</string>
     <string name="success_sign_up">Success</string>
     <string name="error_sign_up">Error</string>
 
@@ -70,15 +70,4 @@
     <string name="like_exception">Like error</string>
     <string name="repost_exception">Repost error</string>
     <string name="comment_exception">Comment error</string>
-
-    <string name="create_account_button">Create account</string>
-
-    <string name="create_account_name_error">Cannot be blank and can contain up to 45 symbols</string>
-    <string name="create_account_nickname_error">Cannot be blank, can contain up to 30 symbols and can contain letters, numbers and underscores</string>
-    <string name="create_account_bio_error">Can contain up to 240 symbols</string>
-    <string name="create_account_gender_error">Cannot be blank</string>
-    <string name="create_account_date_of_birth_error">Cannot be blank</string>
-
-    <string name="create_account_uploading_photo_error">Error while uploading photo</string>
-    <string name="create_account_uploading_user_info_error">Error while uploading account data</string>
 </resources>

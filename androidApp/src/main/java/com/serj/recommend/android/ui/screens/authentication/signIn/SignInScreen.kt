@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
@@ -17,9 +16,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.serj.recommend.android.R
+import com.serj.recommend.android.common.ext.basicButton
 import com.serj.recommend.android.common.ext.fieldModifier
 import com.serj.recommend.android.common.ext.textButton
 import com.serj.recommend.android.ui.components.authentication.AuthenticationButton
@@ -37,7 +36,7 @@ fun SignInScreen(
     modifier: Modifier = Modifier,
     viewModel: SignInViewModel = hiltViewModel(),
     openScreen: (String) -> Unit,
-    clearAndOpen: (String) -> Unit,
+    openAndPopUp: (String, String) -> Unit
 ) {
     val uiState by viewModel.uiState
 
@@ -46,7 +45,7 @@ fun SignInScreen(
         uiState = uiState,
         onEmailChange = viewModel::onEmailChange,
         onPasswordChange = viewModel::onPasswordChange,
-        onSignInClick = { viewModel.onSignInClick(clearAndOpen) },
+        onSignInClick = { viewModel.onSignInClick(openAndPopUp) },
         onSignUpClick = { viewModel.onSignUpClick(openScreen) },
         onForgotPasswordClick = { viewModel.onForgotPasswordClick(openScreen) }
     )
@@ -106,8 +105,7 @@ fun SignInScreenContent(
                 text = R.string.sign_in,
                 action = onSignInClick,
                 modifier = Modifier
-                    .padding(start = 15.dp, top = 50.dp, end = 15.dp)
-                    .fillMaxWidth()
+                    .basicButton()
                     .testTag(AUTHENTICATION_SIGN_IN_BUTTON_TT)
             )
 
@@ -140,7 +138,7 @@ fun SignInScreenContent(
 @Composable
 fun SignInScreenPreview() {
     val uiState = SignInUiState(
-        email = ""
+        email = "email@test.com"
     )
 
     SignInScreenContent(

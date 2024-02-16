@@ -52,7 +52,7 @@ class FeedViewModel @Inject constructor(
             accountService.currentUser.collect { user ->
                 currentUser.value = user
 
-                //val currentLikedIds = user.likedIds
+                val currentLikedIds = user.likedIds
                 val followingRecommendationsIdsResponse = storageService
                     .getFollowingRecommendationsIds(user.following)
 
@@ -62,7 +62,7 @@ class FeedViewModel @Inject constructor(
                         followingRecommendationsIdsResponse.data.size
                     for (followingId in followingRecommendationsIdsResponse.data) {
                         val recommendationItemResponse = storageService
-                            .getRecommendationItemById(followingId, arrayListOf())
+                            .getRecommendationItemById(followingId, currentLikedIds)
                         if (recommendationItemResponse is Response.Success &&
                             recommendationItemResponse.data != null) {
                             currentRecommendations.add(recommendationItemResponse.data)

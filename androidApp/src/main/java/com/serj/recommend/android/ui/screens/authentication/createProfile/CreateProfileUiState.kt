@@ -9,5 +9,5 @@ data class CreateProfileUiState(
     val bio: String = "",
     val dateOfBirth: Date? = null,
     val gender: String = "",
-    val userImageUri: Uri? = null
+    val profileImageUri: Uri? = null
 )
