@@ -1,5 +1,8 @@
 package com.serj.recommend.android
 
+import android.content.Intent
+import android.net.Uri
+import android.provider.MediaStore
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertIsDisplayed
@@ -20,6 +23,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+
 
 val email = "daxavic@yandex.ru"
 val password = "123Qwerty"
@@ -44,7 +48,7 @@ class UiTests {
     @OptIn(ExperimentalTestApi::class)
     @Test
     fun completeUserAuthentication() {
-        rule.apply{
+        rule.apply {
             waitUntilNodeCount(hasText("Email"), 1, 3000)
             onNodeWithTag(AUTHENTICATION_EMAIL_FIELD_TT)
                 .assertIsDisplayed()
@@ -186,5 +190,33 @@ class UiTests {
                     "& check that notification window is out." +
                     "Task for @Daxavic"
         )
+    }
+
+    @Test
+    fun accessImageTest() {
+        // мысли как можно делать - но походу не то
+        val assetManager = rule.activity.assets
+        assetManager.open("")
+        val testUri = "content://media/picker/0/com.android.providers.media.photopicker/media/1000000020"
+
+        // идешь на экрана NewRecommendationScreen
+        // кликаешь на кнопку add a background / add a cover
+
+        val resultData = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        val selectedData = resultData.data
+
+        // TODO: Get Uri of image-element from Compose-tree
+        val onViewElementData = Uri.EMPTY
+
+        assert(selectedData == onViewElementData)
+
+        // source:  https://stackoverflow.com/questions/32142463/how-to-stub-select-images-intent-using-espresso-intents
+//        intending(not(isInternal())).respondWith(
+//            Instrumentation.ActivityResult(
+//                Activity.RESULT_OK,
+//                resultData
+//            )
+//        )
+
     }
 }

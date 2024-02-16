@@ -48,7 +48,10 @@ class SignInViewModel @Inject constructor(
 
         launchCatching {
             accountService.signIn(email, password)
-            openAndPopUp(RecommendRoutes.MainScreen.name, RecommendRoutes.SignInScreen.name)
+            openAndPopUp(
+                RecommendRoutes.MainScreen.name,
+                RecommendRoutes.SignInScreen.name
+            )
         }
     }
 

@@ -2,6 +2,7 @@ package com.serj.recommend.android.ui.screens.main.newRecommendation
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -14,6 +15,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.serj.recommend.android.model.collections.User
+import com.serj.recommend.android.ui.components.snackbar.SnackbarManager
+import com.serj.recommend.android.ui.components.snackbar.SnackbarMessage
 import com.serj.recommend.android.ui.screens.main.newRecommendation.components.NewRecommendationCover
 import com.serj.recommend.android.ui.screens.main.newRecommendation.components.NewRecommendationDescription
 import com.serj.recommend.android.ui.screens.main.newRecommendation.components.NewRecommendationHeader
@@ -197,6 +200,16 @@ fun NewRecommendationScreenContent(
                             disableQuote = disableQuote
                         )
                     }
+
+                    val coverTypeMsg = "coverType: ${coverType}"
+                    val coverImageUriMsg = "coverImageUri: ${coverImageUri}"
+                    Log.d("Test", coverTypeMsg)
+                    Log.d("Test", coverImageUriMsg)
+                    SnackbarManager.showMessage(
+                        SnackbarMessage.StringSnackbar(
+                            message = coverImageUriMsg
+                        )
+                    )
 
                     item {
                         NewRecommendationCover(

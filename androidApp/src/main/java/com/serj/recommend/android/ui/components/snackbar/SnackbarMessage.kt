@@ -23,3 +23,16 @@ sealed class SnackbarMessage {
         }
     }
 }
+
+//class SnackbarMessage2() {
+//
+//    constructor(message: String) : this() {
+//
+//    }
+//
+//    constructor(@StringRes message: Int) : this() {
+//
+//    }
+//
+//
+//}
