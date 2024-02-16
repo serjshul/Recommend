@@ -55,7 +55,7 @@ class SignUpViewModel @Inject constructor(
         }
 
         launchCatching {
-            //accountService.signUp(email, password)
+            accountService.signUp(email, password)
             //accountService.linkAccount(email, password)
             openScreen(RecommendRoutes.CreateProfileScreen.name)
         }

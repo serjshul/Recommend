@@ -73,10 +73,12 @@
 
     <string name="create_account_button">Create account</string>
 
-
     <string name="create_account_name_error">Cannot be blank and can contain up to 45 symbols</string>
     <string name="create_account_nickname_error">Cannot be blank, can contain up to 30 symbols and can contain letters, numbers and underscores</string>
     <string name="create_account_bio_error">Can contain up to 240 symbols</string>
     <string name="create_account_gender_error">Cannot be blank</string>
     <string name="create_account_date_of_birth_error">Cannot be blank</string>
+
+    <string name="create_account_uploading_photo_error">Error while uploading photo</string>
+    <string name="create_account_uploading_user_info_error">Error while uploading account data</string>
 </resources>

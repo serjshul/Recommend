@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -30,10 +31,11 @@ fun CreateProfileScreen(
     clearAndOpen: (String) -> Unit,
     viewModel: CreateProfileViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
+
     CreateProfileContent(
         modifier = modifier,
         uiState = viewModel.uiState.value,
-        backgroundColor = viewModel.backgroundColor,
         isErrors = viewModel.isErrors,
         isDataPickerShown = viewModel.isDataPickerShown,
         isGenderOptionsExpanded = viewModel.isGenderOptionsExpanded,
@@ -49,7 +51,7 @@ fun CreateProfileScreen(
         onGenderOptionsClick = viewModel::onGenderOptionsClick,
         onGenderDismissRequest = viewModel::onGenderDismissRequest,
         onProfileImageUriDisable = viewModel::onProfileImageUriDisable,
-        onCreateProfileClick = { viewModel.onCreateProfileClick(clearAndOpen) }
+        onCreateProfileClick = { viewModel.onCreateProfileClick(context, clearAndOpen) }
     )
 }
 
@@ -57,7 +59,6 @@ fun CreateProfileScreen(
 fun CreateProfileContent(
     modifier: Modifier = Modifier,
     uiState: CreateProfileUiState,
-    backgroundColor: Color,
     isErrors: Map<String, Boolean>,
     isDataPickerShown: Boolean,
     isGenderOptionsExpanded: Boolean,
@@ -86,10 +87,10 @@ fun CreateProfileContent(
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
-                .background(backgroundColor)
+                .background(Color.White)
         ) {
             CreateProfileUserPhoto(
-                userPhotoUri = uiState.profileImageUri,
+                userPhotoUri = uiState.userImageUri,
                 onAddUserPhoto = onProfileImageUriValueChange,
                 onProfileImageUriDisable = onProfileImageUriDisable,
                 modifier = Modifier
@@ -165,7 +166,6 @@ fun CreateProfileContent(
 @Composable
 fun CreateProfileScreenPreview() {
     CreateProfileContent(
-        backgroundColor = Color.White,
         uiState = CreateProfileUiState(),
         isErrors = hashMapOf(
             "name" to true,

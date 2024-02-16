@@ -1,19 +1,23 @@
 package com.serj.recommend.android.ui.screens.authentication.createProfile
 
+import android.content.Context
 import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.graphics.Color
+import com.serj.recommend.android.R
 import com.serj.recommend.android.RecommendRoutes
 import com.serj.recommend.android.common.ext.isBioValid
 import com.serj.recommend.android.common.ext.isGenderValid
 import com.serj.recommend.android.common.ext.isNameValid
 import com.serj.recommend.android.common.ext.isNicknameValid
+import com.serj.recommend.android.model.collections.User
 import com.serj.recommend.android.services.AccountService
 import com.serj.recommend.android.services.LogService
 import com.serj.recommend.android.services.StorageService
+import com.serj.recommend.android.services.model.Response
+import com.serj.recommend.android.ui.components.snackbar.SnackbarManager
 import com.serj.recommend.android.ui.screens.RecommendViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.Date
@@ -26,7 +30,7 @@ class CreateProfileViewModel @Inject constructor(
     private val storageService: StorageService
 ) : RecommendViewModel(logService) {
 
-    val backgroundColor by mutableStateOf(Color.White)
+    private val currentUserId = mutableStateOf<String?>(null)
 
     var uiState = mutableStateOf(CreateProfileUiState())
         private set
@@ -41,8 +45,8 @@ class CreateProfileViewModel @Inject constructor(
         get() = uiState.value.dateOfBirth
     private val gender
         get() = uiState.value.gender
-    private val profileImageUri
-        get() = uiState.value.profileImageUri
+    private val userImageUri
+        get() = uiState.value.userImageUri
 
     var isGenderOptionsExpanded by mutableStateOf(false)
         private set
@@ -60,6 +64,12 @@ class CreateProfileViewModel @Inject constructor(
         "dateOfBirth" to false,
         "gender" to false
     )
+
+    init {
+        launchCatching {
+            currentUserId.value = accountService.currentUid
+        }
+    }
 
     fun onNameValueChange(input: String) {
         uiState.value = uiState.value.copy(name = input)
@@ -97,7 +107,7 @@ class CreateProfileViewModel @Inject constructor(
     }
 
     fun onProfileImageUriValueChange(input: Uri) {
-        uiState.value = uiState.value.copy(profileImageUri = input)
+        uiState.value = uiState.value.copy(userImageUri = input)
     }
 
     fun onGenderOptionsClick() {
@@ -117,10 +127,13 @@ class CreateProfileViewModel @Inject constructor(
     }
 
     fun onProfileImageUriDisable() {
-        uiState.value = uiState.value.copy(profileImageUri = null)
+        uiState.value = uiState.value.copy(userImageUri = null)
     }
 
-    fun onCreateProfileClick(clearAndOpen: (String) -> Unit) {
+    fun onCreateProfileClick(
+        context: Context,
+        clearAndOpen: (String) -> Unit
+    ) {
         isStartedValidation = true
         var isValid = true
 
@@ -146,7 +159,35 @@ class CreateProfileViewModel @Inject constructor(
         }
 
         if (isValid) {
-            clearAndOpen(RecommendRoutes.MainScreen.name)
+            launchCatching {
+                if (currentUserId.value != null) {
+                    val user = User(
+                        uid = currentUserId.value!!,
+                        name = name,
+                        nickname = nickname,
+                        bio = bio,
+                        dateOfBirth = dateOfBirth
+                    )
+                    val uploadUserResponse = storageService.uploadUser(user)
+                    if (uploadUserResponse is Response.Success) {
+                        if (userImageUri != null) {
+                            val uploadUserPhotoResponse = storageService.uploadUserPhoto(
+                                userId = currentUserId.value!!,
+                                uri = userImageUri!!,
+                                context = context
+                            )
+                            if (uploadUserPhotoResponse !is Response.Success) {
+                                SnackbarManager.showMessage(R.string.create_account_uploading_photo_error)
+                            }
+                        }
+                        clearAndOpen(RecommendRoutes.MainScreen.name)
+                    } else {
+                        SnackbarManager.showMessage(R.string.create_account_uploading_user_info_error)
+                    }
+                } else {
+                    SnackbarManager.showMessage(R.string.create_account_uploading_user_info_error)
+                }
+            }
         }
     }
 }
