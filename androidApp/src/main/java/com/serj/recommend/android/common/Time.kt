@@ -78,26 +78,3 @@ fun getYear(date: Date): String {
 
     return calendar.get(Calendar.YEAR).toString()
 }
-
-fun getDateOfBirth(date: Date?): String {
-    return if (date != null) {
-        val calendar = Calendar.getInstance()
-        calendar.time = date
-
-        val dayOfMonth =
-            if (calendar.get(Calendar.DAY_OF_MONTH) < 10)
-                "0${calendar.get(Calendar.DAY_OF_MONTH)}"
-            else
-                "${calendar.get(Calendar.DAY_OF_MONTH)}"
-        val month =
-            if (calendar.get(Calendar.MONTH) + 1 < 10)
-                "0${calendar.get(Calendar.MONTH) + 1}"
-            else
-                "${calendar.get(Calendar.MONTH) + 1}"
-        val year = "${calendar.get(Calendar.YEAR)}"
-
-        "$dayOfMonth.$month.$year"
-    } else {
-        ""
-    }
-}

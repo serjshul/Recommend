@@ -116,7 +116,7 @@ fun Modifier.fieldModifier(): Modifier {
 fun Modifier.basicButton(): Modifier {
     return this
         .fillMaxWidth()
-        .padding(15.dp, 30.dp)
+        .padding(15.dp, 10.dp)
 }
 
 fun Modifier.textButton() = this

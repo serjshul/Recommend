@@ -17,8 +17,8 @@ class SignInActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             SignInScreen(
-                openScreen = { },
-                clearAndOpen = { }
+                openScreen = {},
+                openAndPopUp = { _, _ -> }
             )
         }
     }
