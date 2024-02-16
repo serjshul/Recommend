@@ -32,6 +32,7 @@ import com.serj.recommend.android.common.Constants.CATEGORY_ID_ARG
 import com.serj.recommend.android.common.Constants.RECOMMENDATION_ID
 import com.serj.recommend.android.common.Constants.RECOMMENDATION_ID_ARG
 import com.serj.recommend.android.ui.components.snackbar.SnackbarManager
+import com.serj.recommend.android.ui.screens.authentication.createProfile.CreateProfileScreen
 import com.serj.recommend.android.ui.screens.authentication.resetPassword.ResetPasswordScreen
 import com.serj.recommend.android.ui.screens.authentication.signIn.SignInScreen
 import com.serj.recommend.android.ui.screens.authentication.signUp.SignUpScreen
@@ -109,7 +110,7 @@ fun NavGraphBuilder.recommendGraph(
 ) {
     composable(RecommendRoutes.SplashScreen.name) {
         SplashScreen(
-            modifier = modifier,
+            modifier = Modifier,
             openAndPopUp = { route, popUp ->
                 appState.navigateAndPopUp(route, popUp)
             }
@@ -117,24 +118,30 @@ fun NavGraphBuilder.recommendGraph(
     }
     composable(RecommendRoutes.SignUpScreen.name) {
         SignUpScreen(
-            modifier = modifier,
-            openAndPopUp = { route, popUp ->
-                appState.navigateAndPopUp(route, popUp)
+            modifier = Modifier,
+            openScreen = { route -> appState.navigate(route) },
+        )
+    }
+    composable(RecommendRoutes.CreateProfileScreen.name) {
+        CreateProfileScreen(
+            modifier = Modifier,
+            clearAndOpen = { route ->
+                appState.clearAndNavigate(route)
             }
         )
     }
     composable(RecommendRoutes.SignInScreen.name) {
         SignInScreen(
-            modifier = modifier,
+            modifier = Modifier,
             openScreen = { route -> appState.navigate(route) },
-            openAndPopUp = { route, popUp ->
-                appState.navigateAndPopUp(route, popUp)
+            clearAndOpen = { route ->
+                appState.clearAndNavigate(route)
             }
         )
     }
     composable(RecommendRoutes.ResetPasswordScreen.name) {
         ResetPasswordScreen(
-            modifier = modifier,
+            modifier = Modifier,
             openAndPopUp = { route, popUp ->
                 appState.navigateAndPopUp(route, popUp)
             }
@@ -142,7 +149,7 @@ fun NavGraphBuilder.recommendGraph(
     }
     composable(RecommendRoutes.MainScreen.name) {
         MainScreen(
-            modifier = modifier,
+            modifier = Modifier,
             appState = appState
         )
     }
@@ -154,7 +161,7 @@ fun NavGraphBuilder.recommendGraph(
         })
     ) {
         RecommendationScreen(
-            modifier = modifier,
+            modifier = Modifier,
             popUpScreen = { appState.popUp() }
         )
     }
@@ -166,7 +173,7 @@ fun NavGraphBuilder.recommendGraph(
         })
     ) {
         BannerScreen(
-            modifier = modifier,
+            modifier = Modifier,
             openScreen = { route -> appState.navigate(route) },
             popUpScreen = { appState.popUp() }
         )
@@ -179,7 +186,7 @@ fun NavGraphBuilder.recommendGraph(
         })
     ) {
         CategoryScreen(
-            modifier = modifier,
+            modifier = Modifier,
             openScreen = { route -> appState.navigate(route) },
             popUpScreen = { appState.popUp() }
         )
