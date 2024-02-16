@@ -70,7 +70,8 @@ fun RecommendationTopBar(
             ),
             navigationIcon = {
                 IconButton(onClick = { popUpScreen() }) {
-                    Icon(
+                    Icon( // TODO: Always use: Icons.Filled.ArrowBack
+                        //     because somewhere you are using: R.drawable.ic_arrow_back_white
                         imageVector = Icons.Filled.ArrowBack,
                         tint = titleContentColor,
                         contentDescription = "Localized description"

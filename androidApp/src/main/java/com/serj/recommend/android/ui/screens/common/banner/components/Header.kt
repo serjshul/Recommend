@@ -22,14 +22,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.google.firebase.storage.StorageReference
 import com.serj.recommend.android.R
 import com.serj.recommend.android.common.ext.bannerHeaderShape
 import com.serj.recommend.android.common.ext.mediaHeaderShape
 import com.serj.recommend.android.ui.components.media.CustomGlideImage
 
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun Header(
     modifier: Modifier = Modifier,
@@ -84,23 +82,24 @@ fun Header(
 fun HeaderTopBar(
     modifier: Modifier = Modifier,
     popUpScreen: () -> Unit
+) = Box(
+    modifier = modifier
+        .fillMaxWidth()
+        .height(64.dp)
 ) {
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(64.dp)
-    ) {
-        Image(
-            modifier = Modifier
-                .padding(20.dp)
-                .align(Alignment.TopStart)
-                .clickable { popUpScreen() },
-            painter = painterResource(id = R.drawable.ic_arrow_back_white),
-            contentDescription = "button_back",
-            contentScale = ContentScale.Crop
-        )
-    }
+    Image(
+        modifier = Modifier
+            .padding(20.dp)
+            .align(Alignment.TopStart)
+            .clickable { popUpScreen() },
+        painter = painterResource(
+            id = R.drawable.ic_arrow_back_white
+        ),
+        contentDescription = "button_back",
+        contentScale = ContentScale.Crop
+    )
 }
+
 
 @Composable
 fun HeaderInfo(

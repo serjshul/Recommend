@@ -86,7 +86,9 @@ fun NewRecommendationCover(
 
             if (coverImageUri == null) {
                 ElevatedButton(
-                    onClick = { launcher.launch("image/*") },
+                    onClick = {
+                        launcher.launch("image/*")
+                    },
                     modifier = Modifier.align(Alignment.Center),
                     colors = ButtonDefaults.elevatedButtonColors(
                         containerColor = secondary,
@@ -109,6 +111,7 @@ fun NewRecommendationCover(
                 }
             }
 
+            // TODO: LAST_CHECK
             if (coverImageUri != null) {
                 IconButton(
                     onClick = { onRemoveCoverImage() },
