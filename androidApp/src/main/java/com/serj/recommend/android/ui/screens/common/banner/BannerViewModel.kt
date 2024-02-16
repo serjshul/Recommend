@@ -53,7 +53,7 @@ class BannerViewModel @Inject constructor(
                                 currentBanner.recommendationIds.size
                             for (recommendationId in currentBanner.recommendationIds) {
                                 val currentRecommendationItemResponse = storageService
-                                    .getRecommendationItemById(recommendationId, user.likedIds)
+                                    .getRecommendationItemById(recommendationId, arrayListOf())
                                 if (currentRecommendationItemResponse is Response.Success &&
                                     currentRecommendationItemResponse.data != null) {
                                     currentRecommendations.add(
