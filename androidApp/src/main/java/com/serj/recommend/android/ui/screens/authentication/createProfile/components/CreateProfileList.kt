@@ -1,5 +1,6 @@
 package com.serj.recommend.android.ui.screens.authentication.createProfile.components
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,11 +16,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.serj.recommend.android.R
 
 @Composable
 fun CreateProfileList(
@@ -27,6 +30,7 @@ fun CreateProfileList(
     chosenOption: String,
     options: List<String>,
     label: String,
+    @StringRes supportingText: Int,
     isError: Boolean,
     expanded: Boolean,
     maxLines: Int = Int.MAX_VALUE,
@@ -45,6 +49,13 @@ fun CreateProfileList(
                     text = label,
                     style = TextStyle(fontSize = 12.sp),
                 )
+            },
+            supportingText = {
+                if (isError) {
+                    Text(
+                        text = stringResource(id = supportingText)
+                    )
+                }
             },
             textStyle = TextStyle(
                 fontSize = 14.sp,
@@ -95,6 +106,7 @@ fun CreateProfileListPreview() {
         chosenOption = "",
         options = listOf("item 1", "item 2", "item 3"),
         label = "Title",
+        supportingText = R.string.create_account_gender_error,
         isError = false,
         maxLines = 1,
         expanded = false,

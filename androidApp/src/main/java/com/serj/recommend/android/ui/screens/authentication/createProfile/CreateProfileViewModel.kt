@@ -2,10 +2,15 @@ package com.serj.recommend.android.ui.screens.authentication.createProfile
 
 import android.net.Uri
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import com.serj.recommend.android.RecommendRoutes
+import com.serj.recommend.android.common.ext.isBioValid
+import com.serj.recommend.android.common.ext.isGenderValid
+import com.serj.recommend.android.common.ext.isNameValid
+import com.serj.recommend.android.common.ext.isNicknameValid
 import com.serj.recommend.android.services.AccountService
 import com.serj.recommend.android.services.LogService
 import com.serj.recommend.android.services.StorageService
@@ -46,24 +51,49 @@ class CreateProfileViewModel @Inject constructor(
     var isDataPickerShown by mutableStateOf(false)
         private set
 
+    var isStartedValidation by mutableStateOf(false)
+        private set
+    val isErrors = mutableStateMapOf(
+        "name" to false,
+        "nickname" to false,
+        "bio" to false,
+        "dateOfBirth" to false,
+        "gender" to false
+    )
+
     fun onNameValueChange(input: String) {
         uiState.value = uiState.value.copy(name = input)
+        if (isStartedValidation) {
+            isErrors["name"] = !name.isNameValid()
+        }
     }
 
     fun onNicknameValueChange(input: String) {
         uiState.value = uiState.value.copy(nickname = input)
+        if (isStartedValidation) {
+            isErrors["nickname"] = !nickname.isNicknameValid()
+        }
     }
 
     fun onBioValueChange(input: String) {
         uiState.value = uiState.value.copy(bio = input)
+        if (isStartedValidation) {
+            isErrors["bio"] = !bio.isBioValid()
+        }
     }
 
     fun onDateOfBirthValueChange(input: Date) {
         uiState.value = uiState.value.copy(dateOfBirth = input)
+        if (isStartedValidation) {
+            isErrors["dateOfBirth"] = dateOfBirth == null
+        }
     }
 
     fun onGenderValueChange(input: String) {
         uiState.value = uiState.value.copy(gender = input)
+        if (isStartedValidation) {
+            isErrors["gender"] = !gender.isGenderValid()
+        }
     }
 
     fun onProfileImageUriValueChange(input: Uri) {
@@ -91,6 +121,32 @@ class CreateProfileViewModel @Inject constructor(
     }
 
     fun onCreateProfileClick(clearAndOpen: (String) -> Unit) {
-        clearAndOpen(RecommendRoutes.MainScreen.name)
+        isStartedValidation = true
+        var isValid = true
+
+        if (!name.isNameValid()) {
+            isErrors["name"] = true
+            isValid = false
+        }
+        if (!nickname.isNicknameValid()) {
+            isErrors["nickname"] = true
+            isValid = false
+        }
+        if (!bio.isBioValid()) {
+            isErrors["bio"] = true
+            isValid = false
+        }
+        if (!gender.isGenderValid()) {
+            isErrors["gender"] = true
+            isValid = false
+        }
+        if (dateOfBirth == null) {
+            isErrors["dateOfBirth"] = true
+            isValid = false
+        }
+
+        if (isValid) {
+            clearAndOpen(RecommendRoutes.MainScreen.name)
+        }
     }
 }

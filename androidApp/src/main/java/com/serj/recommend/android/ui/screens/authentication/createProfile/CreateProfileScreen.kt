@@ -34,6 +34,7 @@ fun CreateProfileScreen(
         modifier = modifier,
         uiState = viewModel.uiState.value,
         backgroundColor = viewModel.backgroundColor,
+        isErrors = viewModel.isErrors,
         isDataPickerShown = viewModel.isDataPickerShown,
         isGenderOptionsExpanded = viewModel.isGenderOptionsExpanded,
         genderOptions = viewModel.genderOptions,
@@ -57,6 +58,7 @@ fun CreateProfileContent(
     modifier: Modifier = Modifier,
     uiState: CreateProfileUiState,
     backgroundColor: Color,
+    isErrors: Map<String, Boolean>,
     isDataPickerShown: Boolean,
     isGenderOptionsExpanded: Boolean,
     genderOptions: List<String>,
@@ -91,7 +93,7 @@ fun CreateProfileContent(
                 onAddUserPhoto = onProfileImageUriValueChange,
                 onProfileImageUriDisable = onProfileImageUriDisable,
                 modifier = Modifier
-                    .weight(5f)
+                    .weight(4f)
             )
 
             Column(
@@ -100,21 +102,24 @@ fun CreateProfileContent(
                 CreateProfileInput(
                     text = uiState.name,
                     label = "Name",
-                    isError = false,
+                    supportingText = R.string.create_account_name_error,
+                    isError = isErrors["name"]!!,
                     maxLines = 1,
                     onValueChange = onNameValueChange
                 )
                 CreateProfileInput(
                     text = uiState.nickname,
                     label = "Nickname",
-                    isError = false,
+                    supportingText = R.string.create_account_nickname_error,
+                    isError = isErrors["nickname"]!!,
                     maxLines = 1,
                     onValueChange = onNicknameValueChange
                 )
                 CreateProfileInput(
                     text = uiState.bio,
                     label = "Bio",
-                    isError = false,
+                    supportingText = R.string.create_account_bio_error,
+                    isError = isErrors["bio"]!!,
                     maxLines = 5,
                     onValueChange = onBioValueChange
                 )
@@ -122,7 +127,8 @@ fun CreateProfileContent(
                     CreateProfileDatePicker(
                         dateOfBirth = getDateOfBirth(uiState.dateOfBirth),
                         label = "Date of birth",
-                        isError = false,
+                        supportingText = R.string.create_account_date_of_birth_error,
+                        isError = isErrors["dateOfBirth"]!!,
                         showDatePicker = isDataPickerShown,
                         onValueChange = onDateOfBirthValueChange,
                         onIconClick = onDatePickerClick,
@@ -133,7 +139,8 @@ fun CreateProfileContent(
                         chosenOption = uiState.gender,
                         options = genderOptions,
                         label = "Gender",
-                        isError = false,
+                        supportingText = R.string.create_account_gender_error,
+                        isError = isErrors["gender"]!!,
                         expanded = isGenderOptionsExpanded,
                         onValueChange = onGenderValueChange,
                         onOptionsClick = onGenderOptionsClick,
@@ -160,6 +167,13 @@ fun CreateProfileScreenPreview() {
     CreateProfileContent(
         backgroundColor = Color.White,
         uiState = CreateProfileUiState(),
+        isErrors = hashMapOf(
+            "name" to true,
+            "nickname" to true,
+            "bio" to true,
+            "dateOfBirth" to true,
+            "gender" to true
+        ),
         isDataPickerShown = false,
         isGenderOptionsExpanded = false,
         genderOptions = listOf("item1", "item2"),

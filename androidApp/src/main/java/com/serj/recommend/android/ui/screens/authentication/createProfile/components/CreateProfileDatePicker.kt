@@ -1,5 +1,6 @@
 package com.serj.recommend.android.ui.screens.authentication.createProfile.components
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -20,11 +21,13 @@ import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.serj.recommend.android.R
 import java.util.Calendar
 import java.util.Date
 
@@ -34,6 +37,7 @@ fun CreateProfileDatePicker(
     modifier: Modifier = Modifier,
     dateOfBirth: String,
     label: String,
+    @StringRes supportingText: Int,
     isError: Boolean,
     showDatePicker: Boolean,
     onValueChange: (Date) -> Unit,
@@ -41,7 +45,7 @@ fun CreateProfileDatePicker(
     onDismissRequest: () -> Unit
 ) {
     val calendar = Calendar.getInstance()
-    calendar.set(1980, 1, 1)
+    calendar.time = Date()
 
     val datePickerState = rememberDatePickerState(initialSelectedDateMillis = calendar.timeInMillis)
     var selectedDate by remember { mutableLongStateOf(calendar.timeInMillis) }
@@ -57,6 +61,13 @@ fun CreateProfileDatePicker(
                     text = label,
                     style = TextStyle(fontSize = 12.sp),
                 )
+            },
+            supportingText = {
+                if (isError) {
+                    Text(
+                        text = stringResource(id = supportingText)
+                    )
+                }
             },
             textStyle = TextStyle(
                 fontSize = 14.sp,
@@ -117,6 +128,7 @@ fun CreateProfileDatePickerPreview() {
     CreateProfileDatePicker(
         dateOfBirth = "",
         label = "Date of birth",
+        supportingText = R.string.create_account_date_of_birth_error,
         isError = false,
         showDatePicker = false,
         onValueChange = { },
