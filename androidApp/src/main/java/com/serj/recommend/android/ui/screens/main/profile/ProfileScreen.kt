@@ -49,7 +49,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.serj.recommend.android.model.User
+import com.serj.recommend.android.model.collections.User
 import com.serj.recommend.android.ui.components.media.CustomGlideImage
 
 private enum class TabPage {
