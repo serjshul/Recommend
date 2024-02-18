@@ -15,7 +15,6 @@ class SplashViewModel @Inject constructor(
     private val accountService: AccountService,
     logService: LogService
 ) : RecommendViewModel(logService) {
-
     val addRecommenderSystem =
         mutableStateOf(false)
 
