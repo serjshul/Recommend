@@ -42,6 +42,9 @@ import com.serj.recommend.android.ui.screens.splash.SplashScreen
 import com.serj.recommend.android.ui.styles.RecommendTheme
 import kotlinx.coroutines.CoroutineScope
 
+// TODO: Start use Material3 (M3) only! Instead of mix Material + M3
+// TODO: Resolve why part of dependencies in .toml file, part in .gradle
+// TODO: Upgrade dependencies - but also test before and after, how app is work - for this we need good size of tests!
 @Composable
 fun RecommendApp() {
     RecommendTheme {
