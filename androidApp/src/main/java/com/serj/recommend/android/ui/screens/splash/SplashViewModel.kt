@@ -15,14 +15,14 @@ class SplashViewModel @Inject constructor(
     private val accountService: AccountService,
     logService: LogService
 ) : RecommendViewModel(logService) {
-
     val addRecommenderSystem =
         mutableStateOf(false)
 
     init {
         launchCatching {
-            addRecommenderSystem.value = configurationService
-                .fetchConfiguration()
+            addRecommenderSystem.value =
+                configurationService
+                    .fetchConfiguration()
         }
     }
 

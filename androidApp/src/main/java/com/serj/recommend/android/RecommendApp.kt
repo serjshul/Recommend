@@ -3,14 +3,12 @@ package com.serj.recommend.android
 import android.content.res.Resources
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.ScaffoldState
-import androidx.compose.material.Snackbar
-import androidx.compose.material.SnackbarHost
-import androidx.compose.material.Surface
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.remember
@@ -44,28 +42,20 @@ import com.serj.recommend.android.ui.screens.splash.SplashScreen
 import com.serj.recommend.android.ui.styles.RecommendTheme
 import kotlinx.coroutines.CoroutineScope
 
-@OptIn(ExperimentalMaterialApi::class)
+// TODO: Start use Material3 (M3) only! Instead of mix Material + M3
+// TODO: Resolve why part of dependencies in .toml file, part in .gradle
+// TODO: Upgrade dependencies - but also test before and after, how app is work - for this we need good size of tests!
 @Composable
 fun RecommendApp() {
     RecommendTheme {
-        Surface(color = MaterialTheme.colors.background) {
+        Surface(color = MaterialTheme.colorScheme.background) {
             val appState = rememberAppState()
 
             Scaffold(
                 modifier = Modifier.fillMaxSize(),
                 snackbarHost = {
-                    SnackbarHost(
-                        hostState = it,
-                        modifier = Modifier.padding(8.dp),
-                        snackbar = { snackbarData ->
-                            Snackbar(
-                                snackbarData = snackbarData,
-                                contentColor = MaterialTheme.colors.onPrimary
-                            )
-                        }
-                    )
+                    SnackBar(hostState = appState.snackbarHostState)
                 },
-                scaffoldState = appState.scaffoldState
             ) { paddingValues ->
                 NavHost(
                     modifier = Modifier.padding(paddingValues),
@@ -80,18 +70,30 @@ fun RecommendApp() {
 }
 
 @Composable
+fun SnackBar(hostState: SnackbarHostState) = SnackbarHost(
+    hostState = hostState,
+    modifier = Modifier.padding(8.dp),
+    snackbar = { snackbarData ->
+        Snackbar(
+            snackbarData = snackbarData,
+            contentColor = MaterialTheme.colorScheme.onPrimary
+        )
+    }
+)
+
+@Composable
 fun rememberAppState(
-    scaffoldState: ScaffoldState = rememberScaffoldState(),
+    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     navController: NavHostController = rememberNavController(),
     snackbarManager: SnackbarManager = SnackbarManager,
     resources: Resources = resources(),
     coroutineScope: CoroutineScope = rememberCoroutineScope()
 ) = remember(
-    scaffoldState, navController, snackbarManager,
+    snackbarHostState, navController, snackbarManager,
     resources, coroutineScope
 ) {
     RecommendAppState(
-        scaffoldState, navController, snackbarManager,
+        snackbarHostState, navController, snackbarManager,
         resources, coroutineScope
     )
 }
@@ -103,7 +105,6 @@ fun resources(): Resources {
     return LocalContext.current.resources
 }
 
-@ExperimentalMaterialApi
 fun NavGraphBuilder.recommendGraph(
     modifier: Modifier = Modifier,
     appState: RecommendAppState
@@ -119,7 +120,9 @@ fun NavGraphBuilder.recommendGraph(
     composable(RecommendRoutes.SignUpScreen.name) {
         SignUpScreen(
             modifier = Modifier,
-            openScreen = { route -> appState.navigate(route) },
+            openScreen = { route ->
+                appState.navigate(route)
+            },
         )
     }
     composable(RecommendRoutes.CreateProfileScreen.name) {
@@ -133,7 +136,9 @@ fun NavGraphBuilder.recommendGraph(
     composable(RecommendRoutes.SignInScreen.name) {
         SignInScreen(
             modifier = Modifier,
-            openScreen = { route -> appState.navigate(route) },
+            openScreen = { route ->
+                appState.navigate(route)
+            },
             clearAndOpen = { route ->
                 appState.clearAndNavigate(route)
             }
@@ -174,7 +179,9 @@ fun NavGraphBuilder.recommendGraph(
     ) {
         BannerScreen(
             modifier = Modifier,
-            openScreen = { route -> appState.navigate(route) },
+            openScreen = { route ->
+                appState.navigate(route)
+            },
             popUpScreen = { appState.popUp() }
         )
     }
@@ -187,7 +194,9 @@ fun NavGraphBuilder.recommendGraph(
     ) {
         CategoryScreen(
             modifier = Modifier,
-            openScreen = { route -> appState.navigate(route) },
+            openScreen = { route ->
+                appState.navigate(route)
+            },
             popUpScreen = { appState.popUp() }
         )
     }

@@ -96,9 +96,11 @@ fun SignUpScreenContent(
             RepeatPasswordField(uiState.repeatPassword, onRepeatPasswordChange, fieldModifier)
         }
 
-        AuthenticationButton(R.string.sign_up_button, Modifier.basicButton()) {
-            onSignUpClick()
-        }
+        AuthenticationButton(
+            text = R.string.sign_up_button,
+            action = onSignUpClick,
+            modifier = Modifier.basicButton()
+        )
     }
 }
 

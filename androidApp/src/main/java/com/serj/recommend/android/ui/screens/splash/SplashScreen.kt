@@ -52,22 +52,17 @@ fun SplashScreenContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         if (shouldShowError) {
-            AppLogo(
-                size = 200.dp
-            )
-            Text(text = stringResource(R.string.generic_error))
-
+            AppLogo(size = 200.dp)
+            Text(text = stringResource(
+                R.string.generic_error
+            ))
             AuthenticationButton(
                 text = R.string.try_again,
+                action = onAppStart,
                 modifier = Modifier.basicButton()
-            ) {
-                onAppStart()
-            }
-        } else {
-            AppLogo(
-                size = 200.dp
             )
-
+        } else {
+            AppLogo(size = 200.dp)
             LaunchedEffect(true) {
                 delay(SPLASH_TIMEOUT)
                 onAppStart()

@@ -58,7 +58,6 @@ class StorageServiceImpl @Inject constructor(
     private val firestore: FirebaseFirestore,
     private val storage: FirebaseStorage
 ) : StorageService {
-
     override val banners: Flow<List<Banner>>
         get() = firestore
             .collection(BANNERS_COLLECTION)
@@ -86,13 +85,13 @@ class StorageServiceImpl @Inject constructor(
             if (data != null) {
                 if (data.backgroundUrl[BackgroundTypes.image.name] != null) {
                     data.backgroundImageReference = data
-                            .backgroundUrl[BackgroundTypes.image.name]
-                            ?.let { storage.getReferenceFromUrl(it) }
+                        .backgroundUrl[BackgroundTypes.image.name]
+                        ?.let { storage.getReferenceFromUrl(it) }
                 }
                 for (paragraph in data.paragraphs) {
                     data.paragraphsReferences[paragraph.getValue("title")] = paragraph
-                            .getOrDefault(BackgroundTypes.image.name, null)
-                            ?.let { storage.getReferenceFromUrl(it) }
+                        .getOrDefault(BackgroundTypes.image.name, null)
+                        ?.let { storage.getReferenceFromUrl(it) }
                 }
                 val likesResponse = getLikesFromRecommendation(recommendationId)
                 if (likesResponse is Success && likesResponse.data != null) {
@@ -195,8 +194,9 @@ class StorageServiceImpl @Inject constructor(
                 recommendationData.coverType = coverType
                 recommendationData.coverReference = recommendationData.coversUrl[coverType]
                     ?.let { storage.getReferenceFromUrl(it) }
-                recommendationData.backgroundImageReference = recommendationData.backgroundUrl[BackgroundTypes.image.name]
-                    ?.let { storage.getReferenceFromUrl(it) }
+                recommendationData.backgroundImageReference =
+                    recommendationData.backgroundUrl[BackgroundTypes.image.name]
+                        ?.let { storage.getReferenceFromUrl(it) }
                 recommendationData.isLiked = currentUserLikedIds.contains(recommendationData.id)
 
                 val commentsResponse = getCommentsFromRecommendation(recommendationId)
@@ -299,7 +299,10 @@ class StorageServiceImpl @Inject constructor(
                         if (it.isSuccessful)
                             Log.d(TAG, "Like added to Recommendation (${like.recommendationId})")
                         else
-                            Log.d(TAG, "Like wasn't added to Recommendation (${like.recommendationId})")
+                            Log.d(
+                                TAG,
+                                "Like wasn't added to Recommendation (${like.recommendationId})"
+                            )
                     }
                     .await()
             }
@@ -450,7 +453,10 @@ class StorageServiceImpl @Inject constructor(
                         if (task.isSuccessful) {
                             Log.d(TAG, "Comment removed from Recommendation (${recommendationId})")
                         } else
-                            Log.d(TAG, "Comment wasn't removed from Recommendation (${recommendationId})")
+                            Log.d(
+                                TAG,
+                                "Comment wasn't removed from Recommendation (${recommendationId})"
+                            )
                     }
                     .await()
                 firestore
@@ -605,7 +611,10 @@ class StorageServiceImpl @Inject constructor(
                     if (it.isSuccessful)
                         Log.d(TAG, "Repost removed from Recommendation (${recommendationId})")
                     else
-                        Log.d(TAG, "Repost wasn't removed from Recommendation (${recommendationId})")
+                        Log.d(
+                            TAG,
+                            "Repost wasn't removed from Recommendation (${recommendationId})"
+                        )
                 }
                 .await()
 
@@ -736,8 +745,9 @@ class StorageServiceImpl @Inject constructor(
     private fun isLikeValid(like: Like) =
         like.userId != null && like.recommendationId != null && like.date != null && like.source != null
 
-    private fun isCommentValid(comment: Comment) = comment.userId != null && comment.recommendationId != null &&
-            comment.text != null && comment.date != null && comment.source != null
+    private fun isCommentValid(comment: Comment) =
+        comment.userId != null && comment.recommendationId != null &&
+                comment.text != null && comment.date != null && comment.source != null
 
     private fun isRepostValid(repost: Repost) =
         repost.userId != null && repost.recommendationId != null && repost.date != null && repost.source != null
@@ -789,10 +799,13 @@ class StorageServiceImpl @Inject constructor(
                 .add(recommendation)
                 .addOnCompleteListener { task ->
                     uploadedRecommendationId = task.result.id
-                    if (task.isSuccessful)
-                        Log.d(TAG, "Recommendation (id = ${uploadedRecommendationId}) successfully uploaded!")
-                    else
-                        Log.w(TAG, "Error uploading recommendation (id = ${uploadedRecommendationId}) document: $task")
+                    if (task.isSuccessful) Log.d(
+                        TAG,
+                        "Recommendation (id = ${uploadedRecommendationId}) successfully uploaded!"
+                    ) else Log.w(
+                        TAG,
+                        "Error uploading recommendation (id = ${uploadedRecommendationId}) document: $task"
+                    )
                 }
                 .await()
             if (uploadedRecommendationId != "") {
@@ -803,16 +816,13 @@ class StorageServiceImpl @Inject constructor(
                     .document(uploadedRecommendationId)
                     .set(userContent)
                     .addOnCompleteListener { task ->
-                        if (task.isSuccessful)
-                            Log.d(
-                                TAG,
-                                "UserContent (uid = ${currentUserId}) successfully uploaded!"
-                            )
-                        else
-                            Log.w(
-                                TAG,
-                                "Error uploading userContent (uid = ${currentUserId}) document: $task"
-                            )
+                        if (task.isSuccessful) Log.d(
+                            TAG,
+                            "UserContent (uid = ${currentUserId}) successfully uploaded!"
+                        ) else Log.w(
+                            TAG,
+                            "Error uploading userContent (uid = ${currentUserId}) document: $task"
+                        )
                     }
                     .await()
             }
@@ -835,10 +845,13 @@ class StorageServiceImpl @Inject constructor(
                 .set(user)
                 .addOnCompleteListener {
                     transactionResult = it.isSuccessful
-                    if (it.isSuccessful)
-                        Log.d(TAG, "${user.uid}: Added user's info to \"$USERS_COLLECTION\" collection")
-                    else
-                        Log.w(TAG, "${user.uid}: Error while adding user's info: ${it.result}")
+                    if (it.isSuccessful) Log.d(
+                        TAG,
+                        "${user.uid}: Added user's info to \"$USERS_COLLECTION\" collection"
+                    ) else Log.w(
+                        TAG,
+                        "${user.uid}: Error while adding user's info: ${it.result}"
+                    )
                 }
                 .await()
 
@@ -891,8 +904,10 @@ class StorageServiceImpl @Inject constructor(
                         userTransaction = it.isSuccessful
                         if (it.isSuccessful)
                             Log.d(TAG, "$userId: User's document updated")
-                        else
-                            Log.w(TAG, "$userId: Error while updating user's document (${it.result})")
+                        else Log.w(
+                            TAG,
+                            "$userId: Error while updating user's document (${it.result})"
+                        )
                     }
                     .await()
             }
@@ -1008,10 +1023,13 @@ class StorageServiceImpl @Inject constructor(
         return when {
             coversUrl[ItemsShapes.square.name] != null ->
                 ItemsShapes.square.name
+
             coversUrl[ItemsShapes.vertical.name] != null ->
                 ItemsShapes.vertical.name
+
             coversUrl[ItemsShapes.horizontal.name] != null ->
                 ItemsShapes.horizontal.name
+
             else -> ItemsShapes.horizontal.name
         }
     }

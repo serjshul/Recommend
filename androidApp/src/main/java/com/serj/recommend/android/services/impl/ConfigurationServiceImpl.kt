@@ -13,7 +13,6 @@ import com.serj.recommend.android.R.xml as AppConfig
 class ConfigurationServiceImpl @Inject constructor(
     private val remoteConfig: FirebaseRemoteConfig
 ) : ConfigurationService {
-
     init {
         if (BuildConfig.DEBUG) {
             val configSettings =
