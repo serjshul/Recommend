@@ -119,10 +119,12 @@ fun RecommendationScreenContent(
             lazyListState.firstVisibleItemIndex > 0
         }
     }
-    val commentSheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true
-    )
-    val insightsSheetState = rememberModalBottomSheetState()
+    val commentSheetState =
+        rememberModalBottomSheetState(
+            skipPartiallyExpanded = true
+        )
+    val insightsSheetState =
+        rememberModalBottomSheetState()
 
     Scaffold(
         modifier = modifier
@@ -258,6 +260,7 @@ fun RecommendationScreenContent(
                     )
                 }
             }
+
             is Response.Failure -> {
                 Box(
                     modifier = Modifier
@@ -273,6 +276,7 @@ fun RecommendationScreenContent(
                     )
                 }
             }
+
             else -> {
                 LargeLoadingIndicator(
                     backgroundColor = Color.White

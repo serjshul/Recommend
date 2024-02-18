@@ -37,29 +37,41 @@ typealias UploadUserResponse = Response<Boolean>
 typealias UploadUserPhotoResponse = Response<Boolean>
 
 interface StorageService {
-
     val banners: Flow<List<Banner>>
     val categories: Flow<List<Category>>
 
-    suspend fun getRecommendationById(recommendationId: String):
-            GetRecommendationResponse
+    suspend fun getRecommendationById(
+        recommendationId: String
+    ): GetRecommendationResponse
+
     suspend fun getBannerById(bannerId: String): GetBannerResponse
     suspend fun getCategoryById(categoryId: String): GetCategoryResponse
 
     suspend fun getRecommendationItemById(
-        recommendationId: String, currentUserLikedIds: ArrayList<String>
+        recommendationId: String,
+        currentUserLikedIds: ArrayList<String>
     ): GetRecommendationItemResponse
 
-    suspend fun getRecommendationPreviewById(recommendationId: String, coverType: String):
-            GetRecommendationPreviewResponse
-    suspend fun getUserItemByUid(uid: String): GetUserItemResponse
+    suspend fun getRecommendationPreviewById(
+        recommendationId: String,
+        coverType: String
+    ): GetRecommendationPreviewResponse
 
-    suspend fun getCommentsFromRecommendation(recommendationId: String): GetRecommendationCommentsResponse
+    suspend fun getUserItemByUid(
+        uid: String
+    ): GetUserItemResponse
 
-    suspend fun getFollowingRecommendationsIds(followingUids: List<String>):
-            GetFollowingRecommendationsIdsResponse
+    suspend fun getCommentsFromRecommendation(
+        recommendationId: String
+    ): GetRecommendationCommentsResponse
 
-    fun getStorageReferenceFromUrl(url: String): GetStorageReferenceFromUrlResponse
+    suspend fun getFollowingRecommendationsIds(
+        followingUids: List<String>
+    ): GetFollowingRecommendationsIdsResponse
+
+    fun getStorageReferenceFromUrl(
+        url: String
+    ): GetStorageReferenceFromUrlResponse
 
     suspend fun like(
         like: Like
@@ -82,9 +94,12 @@ interface StorageService {
         source: String
     ): UploadCommentResponse
 
-    suspend fun removeComment(recommendationId: String, userId: String, commentId: String,
-                      commentOwnerId: String):
-            DeleteCommentResponse
+    suspend fun removeComment(
+        recommendationId: String,
+        userId: String,
+        commentId: String,
+        commentOwnerId: String
+    ): DeleteCommentResponse
 
     suspend fun repost(
         repost: Repost
@@ -102,10 +117,17 @@ interface StorageService {
         isReposted: Boolean
     ): UploadRecommendationResponse
 
-    suspend fun uploadBackgroundImage(recommendationId: String, uri: Uri, context: Context)
+    suspend fun uploadBackgroundImage(
+        recommendationId: String,
+        uri: Uri,
+        context: Context
+    )
 
     suspend fun uploadCoverImage(
-        recommendationId: String, uri: Uri, coverType: String, context: Context
+        recommendationId: String,
+        uri: Uri,
+        coverType: String,
+        context: Context
     )
 
     suspend fun uploadUser(

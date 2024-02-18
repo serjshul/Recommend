@@ -30,9 +30,11 @@ class CreateProfileViewModel @Inject constructor(
     private val storageService: StorageService
 ) : RecommendViewModel(logService) {
 
-    private val currentUserId = mutableStateOf<String?>(null)
+    private val currentUserId =
+        mutableStateOf<String?>(null)
 
-    var uiState = mutableStateOf(CreateProfileUiState())
+    var uiState =
+        mutableStateOf(CreateProfileUiState())
         private set
 
     private val name
@@ -48,15 +50,21 @@ class CreateProfileViewModel @Inject constructor(
     private val userImageUri
         get() = uiState.value.userImageUri
 
-    var isGenderOptionsExpanded by mutableStateOf(false)
+    var isGenderOptionsExpanded
+            by mutableStateOf(false)
         private set
-    val genderOptions = listOf("Male", "Female", "Prefer not to say")
+    val genderOptions = listOf(
+        "Male", "Female", "Prefer not to say"
+    )
 
-    var isDataPickerShown by mutableStateOf(false)
+    var isDataPickerShown
+            by mutableStateOf(false)
         private set
 
-    var isStartedValidation by mutableStateOf(false)
+    private var isStartedValidation
+            by mutableStateOf(false)
         private set
+
     val isErrors = mutableStateMapOf(
         "name" to false,
         "nickname" to false,
@@ -67,7 +75,8 @@ class CreateProfileViewModel @Inject constructor(
 
     init {
         launchCatching {
-            currentUserId.value = accountService.currentUid
+            currentUserId.value =
+                accountService.currentUid
         }
     }
 
@@ -107,7 +116,9 @@ class CreateProfileViewModel @Inject constructor(
     }
 
     fun onProfileImageUriValueChange(input: Uri) {
-        uiState.value = uiState.value.copy(userImageUri = input)
+        uiState.value = uiState.value.copy(
+            userImageUri = input
+        )
     }
 
     fun onGenderOptionsClick() {
@@ -127,7 +138,9 @@ class CreateProfileViewModel @Inject constructor(
     }
 
     fun onProfileImageUriDisable() {
-        uiState.value = uiState.value.copy(userImageUri = null)
+        uiState.value = uiState.value.copy(
+            userImageUri = null
+        )
     }
 
     fun onCreateProfileClick(
@@ -168,24 +181,34 @@ class CreateProfileViewModel @Inject constructor(
                         bio = bio,
                         dateOfBirth = dateOfBirth
                     )
-                    val uploadUserResponse = storageService.uploadUser(user)
+
+                    val uploadUserResponse =
+                        storageService.uploadUser(user)
+
                     if (uploadUserResponse is Response.Success) {
                         if (userImageUri != null) {
-                            val uploadUserPhotoResponse = storageService.uploadUserPhoto(
-                                userId = currentUserId.value!!,
-                                uri = userImageUri!!,
-                                context = context
-                            )
+                            val uploadUserPhotoResponse =
+                                storageService.uploadUserPhoto(
+                                    userId = currentUserId.value!!,
+                                    uri = userImageUri!!,
+                                    context = context
+                                )
                             if (uploadUserPhotoResponse !is Response.Success) {
-                                SnackbarManager.showMessage(R.string.create_account_uploading_photo_error)
+                                SnackbarManager.showMessage(
+                                    R.string.create_account_uploading_photo_error
+                                )
                             }
                         }
                         clearAndOpen(RecommendRoutes.MainScreen.name)
                     } else {
-                        SnackbarManager.showMessage(R.string.create_account_uploading_user_info_error)
+                        SnackbarManager.showMessage(
+                            R.string.create_account_uploading_user_info_error
+                        )
                     }
                 } else {
-                    SnackbarManager.showMessage(R.string.create_account_uploading_user_info_error)
+                    SnackbarManager.showMessage(
+                        R.string.create_account_uploading_user_info_error
+                    )
                 }
             }
         }
