@@ -26,7 +26,7 @@
 
     <!-- SignUpScreen -->
     <string name="sign_up_button">Sing up</string>
-    <string name="password_error">Your password should have at least six digits and include one digit, one lower case letter and one upper case letter</string>
+    <string name="password_error">Your password should have at least six letters, including minimum one digit, one lower case letter and one upper case letter</string>
     <string name="password_match_error">Passwords do not match</string>
     <string name="success_sign_up">Success</string>
     <string name="error_sign_up">Error</string>
