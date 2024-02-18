@@ -30,15 +30,15 @@ fun Header(
     nickname: String?
 ) {
     Column(
-        modifier = modifier
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        if (nickname != null) {
-            UserInfo(
-                modifier = Modifier.padding(top = 10.dp),
-                photoReference = photoReference,
-                nickname = nickname
-            )
-        }
+        if (nickname != null) UserInfo(
+            photoReference = photoReference,
+            nickname = nickname,
+            modifier = Modifier
+                .padding(top = 10.dp)
+        )
 
         Text(
             modifier = Modifier
@@ -135,11 +135,24 @@ fun HeaderInfo(
 
 @Preview
 @Composable
-fun RecommendationHeaderPreview() {
+private fun RecommendationHeaderPreview() {
     Header(
         title = "Title",
         creator = "Creator",
-        tags = listOf("tag", "tag", "tag", "tag", "tag", "tag", "tag", "tag", "tag", "tag", "tag", "tag"),
+        tags = listOf(
+            "tag",
+            "tag",
+            "tag",
+            "tag",
+            "tag",
+            "tag",
+            "tag",
+            "tag",
+            "tag",
+            "tag",
+            "tag",
+            "tag"
+        ),
         year = 2023,
         photoReference = null,
         nickname = "nickname"

@@ -59,15 +59,15 @@ fun NavGraphBuilder.mainScreenGraph(
 ) {
     composable(RecommendRoutes.HomeScreen.name) {
         HomeScreen(
-            openScreen = {
-                route -> appState.navigate(route)
+            openScreen = { route ->
+                appState.navigate(route)
             }
         )
     }
     composable(RecommendRoutes.FeedScreen.name) {
         FeedScreen(
-            openScreen = {
-                route -> appState.navigate(route)
+            openScreen = { route ->
+                appState.navigate(route)
             }
         )
     }
