@@ -8,7 +8,8 @@ The project is still in progress but there are structure of done screens:
 
 ## Design System Structure
 Some of ~high-level system architecture of our App:
-![Design System Structure]()
+![Design System Structure](https://github.com/serjshul/Recommend/assets/55315908/750a24e0-1947-4570-8452-3c2e951e2ec9)
+
 
 ## Database schema
 The app is using Cloud Firestore where this database schema was implemented:
