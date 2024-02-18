@@ -11,15 +11,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun AuthenticationButton(@StringRes text: Int, modifier: Modifier, action: () -> Unit) {
-    FilledTonalButton(
-        onClick = action,
-        modifier = modifier,
-        colors = ButtonDefaults.filledTonalButtonColors(
-            containerColor = Color.Black,
-            contentColor = Color.White
-        )
-    ) {
-        Text(text = stringResource(text), fontSize = 16.sp)
-    }
+fun AuthenticationButton(
+    @StringRes text: Int,
+    action: () -> Unit,
+    modifier: Modifier = Modifier
+) = FilledTonalButton(
+    onClick = action,
+    modifier = modifier,
+    colors = ButtonDefaults.filledTonalButtonColors(
+        containerColor = Color.Black,
+        contentColor = Color.White
+    )
+) {
+    Text(
+        text = stringResource(text),
+        fontSize = 16.sp
+    )
 }
