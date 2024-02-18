@@ -34,13 +34,14 @@ class RecommendationViewModel @Inject constructor(
     private val storageService: StorageService,
     private val accountService: AccountService
 ) : RecommendViewModel(logService) {
-
-    val loadingStatus = mutableStateOf<Response<Boolean>>(Response.Loading(true))
+    val loadingStatus =
+        mutableStateOf<Response<Boolean>>(Response.Loading(true))
 
     val currentUser = mutableStateOf<User?>(null)
     val userItem = mutableStateOf<UserItem?>(null)
+    val recommendation =
+        mutableStateOf<Recommendation?>(null)
 
-    val recommendation = mutableStateOf<Recommendation?>(null)
     private var currentRecommendationId by mutableStateOf<String?>(null)
     private var currentLikeId by mutableStateOf<String?>(null)
     private var currentRepostId by mutableStateOf<String?>(null)
@@ -61,7 +62,6 @@ class RecommendationViewModel @Inject constructor(
         private set
 
     val bottomSheetComments = mutableStateMapOf<Comment, Boolean>()
-
 
     init {
         launchCatching {
@@ -122,7 +122,8 @@ class RecommendationViewModel @Inject constructor(
             if (!isLiked) {
                 isLiked = !isLiked
                 if (currentUser.value != null && currentUser.value!!.uid != null &&
-                    currentRecommendationId != null) {
+                    currentRecommendationId != null
+                ) {
                     val like = Like(
                         userId = currentUser.value!!.uid,
                         recommendationId = currentRecommendationId,
@@ -144,7 +145,8 @@ class RecommendationViewModel @Inject constructor(
             } else {
                 isLiked = !isLiked
                 if (currentUser.value != null && currentUser.value!!.uid != null &&
-                    currentRecommendationId != null && currentLikeId != null) {
+                    currentRecommendationId != null && currentLikeId != null
+                ) {
                     val removeLikeResponse = storageService.removeLike(
                         userId = currentUser.value!!.uid!!,
                         recommendationId = currentRecommendationId!!,
@@ -174,7 +176,8 @@ class RecommendationViewModel @Inject constructor(
             if (!isReposted) {
                 isReposted = !isReposted
                 if (currentUser.value != null && currentUser.value!!.uid != null &&
-                    currentRecommendationId != null) {
+                    currentRecommendationId != null
+                ) {
                     val repost = Repost(
                         userId = currentUser.value!!.uid!!,
                         recommendationId = currentRecommendationId!!,
@@ -196,7 +199,8 @@ class RecommendationViewModel @Inject constructor(
             } else {
                 isReposted = !isReposted
                 if (currentUser.value != null && currentUser.value!!.uid != null &&
-                    currentRecommendationId != null && currentRepostId != null) {
+                    currentRecommendationId != null && currentRepostId != null
+                ) {
                     val removeRepostResponse = storageService.removeRepost(
                         userId = currentUser.value!!.uid!!,
                         recommendationId = currentRecommendationId!!,

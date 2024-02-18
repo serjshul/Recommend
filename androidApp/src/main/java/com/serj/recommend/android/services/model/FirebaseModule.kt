@@ -20,21 +20,23 @@ import dagger.hilt.components.SingletonComponent
 @Module
 @InstallIn(SingletonComponent::class)
 object FirebaseModule {
-    @Provides fun auth(): FirebaseAuth = Firebase.auth
+    @Provides
+    fun auth(): FirebaseAuth = Firebase.auth
 
-    @Provides fun remoteConfig(): FirebaseRemoteConfig = Firebase.remoteConfig
+    @Provides
+    fun remoteConfig(): FirebaseRemoteConfig = Firebase.remoteConfig
 
-    @Provides fun firestore(): FirebaseFirestore {
+    @Provides
+    fun firestore(): FirebaseFirestore {
         val db = Firebase.firestore
-
         val settings = firestoreSettings {
             setLocalCacheSettings(memoryCacheSettings {})
             setLocalCacheSettings(persistentCacheSettings {})
         }
         db.firestoreSettings = settings
-
-        return  db
+        return db
     }
 
-    @Provides fun storage(): FirebaseStorage = Firebase.storage
+    @Provides
+    fun storage(): FirebaseStorage = Firebase.storage
 }

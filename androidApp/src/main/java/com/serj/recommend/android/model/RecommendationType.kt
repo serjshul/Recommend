@@ -4,16 +4,16 @@ import androidx.compose.ui.graphics.Color
 
 enum class RecommendationType {
     Film, Music, Book,
-    Series, Perfume, Place
-}
+    Series, Perfume, Place;
 
-fun RecommendationType.getColor(): Color {
-    return when(this) {
-        RecommendationType.Film -> Color.Red
-        RecommendationType.Music -> Color.Blue
-        RecommendationType.Book -> Color.Yellow
-        RecommendationType.Series -> Color.Green
-        RecommendationType.Perfume -> Color.Magenta
-        RecommendationType.Place -> Color.Cyan
+    fun getColor(): Color {
+        return when (this) {
+            Film -> Color.Red
+            Music -> Color.Blue
+            Book -> Color.Yellow
+            Series -> Color.Green
+            Perfume -> Color.Magenta
+            Place -> Color.Cyan
+        }
     }
 }

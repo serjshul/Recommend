@@ -21,8 +21,9 @@ class SplashViewModel @Inject constructor(
 
     init {
         launchCatching {
-            addRecommenderSystem.value = configurationService
-                .fetchConfiguration()
+            addRecommenderSystem.value =
+                configurationService
+                    .fetchConfiguration()
         }
     }
 
