@@ -1,16 +1,15 @@
 package com.serj.recommend.android.services.model
 
 sealed class Response<out T> {
-
     data class Success<out T>(
         val data: T?
-    ): Response<T>()
+    ) : Response<T>()
 
     data class Loading<out T>(
         val data: T?
-    ): Response<T>()
+    ) : Response<T>()
 
     data class Failure(
         val e: Exception
-    ): Response<Nothing>()
+    ) : Response<Nothing>()
 }

@@ -38,10 +38,8 @@ class AccountServiceImpl @Inject constructor(
                 auth.removeAuthStateListener(listener)
             }
         }
-
     override val currentUid: String
         get() = auth.currentUser?.uid.orEmpty()
-
     override val hasUser: Boolean
         get() = auth.currentUser != null
 
@@ -106,7 +104,6 @@ class AccountServiceImpl @Inject constructor(
         currentUser?.photoReference = currentUser?.photoUrl?.let {
             storage.getReferenceFromUrl(it)
         }
-
         return currentUser
     }
 
