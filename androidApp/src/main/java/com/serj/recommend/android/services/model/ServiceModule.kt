@@ -18,10 +18,10 @@ import com.serj.recommend.android.services.impl.ConfigurationServiceImpl
 @InstallIn(SingletonComponent::class)
 abstract class ServiceModule {
     @Binds
-    abstract fun provideAccountService(impl: AccountServiceImpl): AccountService
+    abstract fun provideLogService(impl: LogServiceImpl): LogService
 
     @Binds
-    abstract fun provideLogService(impl: LogServiceImpl): LogService
+    abstract fun provideAccountService(impl: AccountServiceImpl): AccountService
 
     @Binds
     abstract fun provideStorageService(impl: StorageServiceImpl): StorageService
