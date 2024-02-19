@@ -6,17 +6,26 @@ import android.provider.MediaStore
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertTextContains
+import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.serj.recommend.android.tests.MainScreenActivity
-import com.serj.recommend.android.ui.screens.authentication.signIn.AUTHENTICATION_EMAIL_FIELD_TT
-import com.serj.recommend.android.ui.screens.authentication.signIn.AUTHENTICATION_PASSWORD_FIELD_TT
+import com.serj.recommend.android.ui.components.authentication.AUTHENTICATION_EMAIL_FIELD_TT
+import com.serj.recommend.android.ui.components.authentication.AUTHENTICATION_PASSWORD_FIELD_TT
+import com.serj.recommend.android.ui.screens.authentication.resetPassword.RESET_PASSWORD_BUTTON_TT
+import com.serj.recommend.android.ui.screens.authentication.signIn.AUTHENTICATION_FORGOT_PASSWORD_BUTTON_TT
 import com.serj.recommend.android.ui.screens.authentication.signIn.AUTHENTICATION_SIGN_IN_BUTTON_TT
+import com.serj.recommend.android.ui.screens.authentication.signIn.AUTHENTICATION_SIGN_UP_BUTTON_TT
+import com.serj.recommend.android.ui.screens.authentication.signUp.SIGNUP_SCREEN_SIGN_UP_BUTTON_TT
+import com.serj.recommend.android.ui.screens.authentication.signUp.SIGN_UP_PASSWORDS_FIELD_TT
+import com.serj.recommend.android.ui.screens.authentication.signUp.SIGN_UP_REPEAT_PASSWORDS_FIELD_TT
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
@@ -25,8 +34,11 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 
-val email = "daxavic@yandex.ru"
-val password = "123Qwerty"
+const val EMAIL_TC = "daxavic@yandex.ru"
+const val PASSWORD_TC = "123Qwerty"
+const val SLEEP_TIME_TC: Long  = 20000
+const val UNREGISTERED_EMAIL_TC = "d@yandex.ru"
+const val PASSWORD_FOR_UNREGISTERED_EMAIL_TC = "123Qwe"
 
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
@@ -49,59 +61,192 @@ class UiTests {
     @Test
     fun completeUserAuthentication() {
         rule.apply {
-            waitUntilNodeCount(hasText("Email"), 1, 3000)
+            waitUntilNodeCount(hasText("Email"), 1, SLEEP_TIME_TC)
+
             onNodeWithTag(AUTHENTICATION_EMAIL_FIELD_TT)
                 .assertIsDisplayed()
-                .performTextInput(email)
+                .performTextInput(EMAIL_TC)
+
             onNodeWithTag(AUTHENTICATION_PASSWORD_FIELD_TT)
                 .assertIsDisplayed()
-                .performTextInput(password)
+                .performTextInput(PASSWORD_TC)
+
             onNodeWithTag(AUTHENTICATION_SIGN_IN_BUTTON_TT)
                 .performClick()
-           waitUntilNodeCount(hasText("Read"), 1, 20000)
+
+           waitUntilNodeCount(hasText("Read"), 1, SLEEP_TIME_TC)
+
             onNodeWithText("Read")
                 .assertIsDisplayed()
         }
     }
-
     @OptIn(ExperimentalTestApi::class)
     @Test
     fun makeAuthenticationEmptyPassword() {
         rule.apply {
-            waitUntilNodeCount(hasText("Email"), 1, 3000)
+            waitUntilNodeCount(hasText("Email"), 1, SLEEP_TIME_TC)
+
             onNodeWithTag(AUTHENTICATION_EMAIL_FIELD_TT)
                 .assertIsDisplayed()
-                .performTextInput(email)
+                .performTextInput(EMAIL_TC)
+
             onNodeWithTag(AUTHENTICATION_SIGN_IN_BUTTON_TT)
                 .performClick()
+
             onNodeWithText(rule.activity.getString(R.string.empty_password_error))
-            //onNodeWithText("Password cannot be empty")
                 .assertIsDisplayed()
         }
     }
 
+    @OptIn(ExperimentalTestApi::class)
+    @Test
+    fun enteredPasswordIsMaskedThenOpensThenMaskedThen() {
+        rule.apply {
+            waitUntilNodeCount(hasText("Email"), 1, SLEEP_TIME_TC)
 
-    //failed test:(
+            onNodeWithTag(AUTHENTICATION_PASSWORD_FIELD_TT)
+                .assertIsDisplayed()
+                .performTextInput(PASSWORD_TC)
+
+            onNodeWithTag(AUTHENTICATION_PASSWORD_FIELD_TT)
+                .assertTextContains("•••••••••")
+
+            onNodeWithContentDescription("Visibility")
+                .assertIsDisplayed()
+                .performClick()
+
+            onNodeWithTag(AUTHENTICATION_PASSWORD_FIELD_TT)
+                .assertTextContains(PASSWORD_TC)
+
+            onNodeWithContentDescription("Visibility")
+                .assertIsDisplayed()
+                .performClick()
+
+            onNodeWithTag(AUTHENTICATION_PASSWORD_FIELD_TT)
+                .assertTextContains("•••••••••")
+
+        }
+    }
+
+    @OptIn(ExperimentalTestApi::class)
+    @Test
+    fun forgotPasswordAndActionsOnSignInScreen() {
+        rule.apply {
+            waitUntilNodeCount(hasText("Email"), 1, SLEEP_TIME_TC)
+
+            onNodeWithTag(AUTHENTICATION_FORGOT_PASSWORD_BUTTON_TT)
+                .assertIsDisplayed()
+                .performClick()
+
+            waitUntilNodeCount(hasTestTag(RESET_PASSWORD_BUTTON_TT), 1, SLEEP_TIME_TC)
+        }
+    }
+
     @OptIn(ExperimentalTestApi::class)
     @Test
     fun makeAuthenticationIncorrectPassword() {
-        val error = "The supplied auth credential is incorrect, malformed or has expired."
+        //val error = "The supplied auth credential is incorrect, malformed or has expired."
         rule.apply {
-            waitUntilNodeCount(hasText("Email"), 1, 3000)
+            waitUntilNodeCount(hasText("Email"), 1, SLEEP_TIME_TC)
+
             onNodeWithTag(AUTHENTICATION_EMAIL_FIELD_TT)
                 .assertIsDisplayed()
-                .performTextInput(email)
+                .performTextInput(EMAIL_TC)
+
             onNodeWithTag(AUTHENTICATION_PASSWORD_FIELD_TT)
                 .assertIsDisplayed()
                 .performTextInput("111")
+
             onNodeWithTag(AUTHENTICATION_SIGN_IN_BUTTON_TT)
                 .performClick()
-            waitUntilNodeCount(hasText("Error"), 1, 20000)
-            onNode(
-                hasText(rule.activity.getString(R.string.error_sign_in))
-                        or hasText(error))
+
+            waitUntilNodeCount(hasText("Error"), 1, SLEEP_TIME_TC)
+
+            onNodeWithText(rule.activity.getString(R.string.error_sign_in))
                 .assertIsDisplayed()
         }
+    }
+
+    @OptIn(ExperimentalTestApi::class)
+    @Test
+    fun goFromSignInScreenToSignUpScreen() {
+        rule.apply {
+            waitUntilNodeCount(hasText("Email"), 1, SLEEP_TIME_TC)
+
+            onNodeWithTag(AUTHENTICATION_SIGN_UP_BUTTON_TT)
+                .assertIsDisplayed()
+                .performClick()
+
+            waitUntilNodeCount(hasTestTag(
+                SIGNUP_SCREEN_SIGN_UP_BUTTON_TT),
+                1,
+                SLEEP_TIME_TC
+            )
+
+            onNodeWithTag(SIGNUP_SCREEN_SIGN_UP_BUTTON_TT)
+                .assertIsDisplayed()
+        }
+    }
+
+    //SignUpScreen
+
+    @OptIn(ExperimentalTestApi::class)
+    @Test
+    fun checkExistingEmailForRegistrationUser(){
+        val messageError = "The email address is already in use by another account."
+        goFromSignInScreenToSignUpScreen()
+
+        rule.apply {
+            onNodeWithTag(AUTHENTICATION_EMAIL_FIELD_TT)
+                .assertIsDisplayed()
+                .performTextInput(EMAIL_TC)
+
+            onNodeWithTag(SIGN_UP_PASSWORDS_FIELD_TT)
+                .assertIsDisplayed()
+                .performTextInput(PASSWORD_FOR_UNREGISTERED_EMAIL_TC)
+
+            onNodeWithTag(SIGN_UP_REPEAT_PASSWORDS_FIELD_TT)
+                .assertIsDisplayed()
+                .performTextInput(PASSWORD_FOR_UNREGISTERED_EMAIL_TC)
+
+            onNodeWithTag(SIGNUP_SCREEN_SIGN_UP_BUTTON_TT)
+                .assertIsDisplayed()
+                .performClick()
+
+            waitUntilNodeCount(hasText(messageError), 1, SLEEP_TIME_TC)
+        }
+    }
+
+    @OptIn(ExperimentalTestApi::class)
+    @Test
+    fun checkEnteringIncorrectPassword() {
+         val incorrectPassword = "12Qw"
+
+        goFromSignInScreenToSignUpScreen()
+
+        rule.apply {
+            onNodeWithTag(AUTHENTICATION_EMAIL_FIELD_TT)
+                .assertIsDisplayed()
+                .performTextInput(UNREGISTERED_EMAIL_TC)
+
+            onNodeWithTag(SIGN_UP_PASSWORDS_FIELD_TT)
+                .assertIsDisplayed()
+                .performTextInput(incorrectPassword)
+
+            onNodeWithTag(SIGN_UP_REPEAT_PASSWORDS_FIELD_TT)
+                .assertIsDisplayed()
+                .performTextInput(incorrectPassword)
+
+            onNodeWithTag(SIGNUP_SCREEN_SIGN_UP_BUTTON_TT)
+                .assertIsDisplayed()
+                .performClick()
+
+            waitUntilNodeCount(hasText(
+                rule.activity.getString(R.string.password_error)),
+                1,
+                SLEEP_TIME_TC)
+        }
+
     }
 
 
@@ -112,41 +257,13 @@ class UiTests {
     fun openHomeScreen() {
         rule.setContent { MainScreenActivity() }
         rule.apply{
-            waitUntilNodeCount(hasText("Read"), 1, 20000)
+            waitUntilNodeCount(hasText("Read"), 1, SLEEP_TIME_TC)
             onNodeWithText("Read")
                 .assertIsDisplayed()
 
         }
-//         val nodeWithReadText =
-//            rule.onNodeWithText("Read")
-//
-//        rule.mainClock.advanceTimeUntil(3_000) {
-//            1 == 1
-//        }
-//
-//        nodeWithReadText.assertExists()
-
-//        nodeWithReadText.performClick()
-
-//        val sameNodeWithOtherRules = rule.onNode(
-//            hasText("Norwegian Forest")
-//                    and
-//                    hasText("Haruki Murakami")
-//        )
-//        sameNodeWithOtherRules.assertExists()
-//        sameNodeWithOtherRules.performClick()
-
-        // check that node parent are same
-//        assert(nodeWithNorwegianForest.onParent() == sameNodeWithOtherRules.onParent())
-//        nodeWithNorwegianForest.onChildAt(3)
-
-//        compareAuthorNamesOnScreen(
-//            authorNameFromInteraction=,
-//            authorName=
-//        )
-
-//        nodeWithNorwegianForest.performClick()
     }
+
 
     private fun compareAuthorNamesOnScreen(
         authorNameFromInteraction: String,

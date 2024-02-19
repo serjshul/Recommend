@@ -14,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -25,6 +26,8 @@ import com.serj.recommend.android.common.ext.fieldModifier
 import com.serj.recommend.android.ui.components.authentication.AuthenticationButton
 import com.serj.recommend.android.ui.components.authentication.EmailField
 import com.serj.recommend.android.ui.components.splash.AppLogo
+
+val RESET_PASSWORD_BUTTON_TT = "resetPasswordButtonTT"
 
 @Composable
 fun ResetPasswordScreen(
@@ -89,7 +92,9 @@ fun ResetPasswordScreenContent(
             AuthenticationButton(
                 text = R.string.reset_password,
                 action = onResetPasswordClick,
-                modifier = Modifier.basicButton()
+                modifier = Modifier
+                    .basicButton()
+                    .testTag(RESET_PASSWORD_BUTTON_TT)
             )
         }
     }

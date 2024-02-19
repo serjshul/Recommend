@@ -14,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -27,6 +28,10 @@ import com.serj.recommend.android.ui.components.authentication.EmailField
 import com.serj.recommend.android.ui.components.authentication.PasswordField
 import com.serj.recommend.android.ui.components.authentication.RepeatPasswordField
 import com.serj.recommend.android.ui.components.splash.AppLogo
+
+val SIGNUP_SCREEN_SIGN_UP_BUTTON_TT = "SignUpScreenSignUpButton"
+val SIGN_UP_PASSWORDS_FIELD_TT = "signUpPasswordsFieldTT"
+val SIGN_UP_REPEAT_PASSWORDS_FIELD_TT = "signUpRepeatPasswordsFieldTT"
 
 @Composable
 fun SignUpScreen(
@@ -89,14 +94,26 @@ fun SignUpScreenContent(
                 textAlign = TextAlign.Center
             )
             EmailField(uiState.email, onEmailChange, fieldModifier)
-            PasswordField(uiState.password, R.string.password, onPasswordChange, fieldModifier)
-            RepeatPasswordField(uiState.repeatPassword, onRepeatPasswordChange, fieldModifier)
+            PasswordField(
+                uiState.password,
+                R.string.password,
+                onPasswordChange,
+                fieldModifier.testTag(SIGN_UP_PASSWORDS_FIELD_TT)
+            )
+
+            RepeatPasswordField(
+                uiState.repeatPassword,
+                onRepeatPasswordChange,
+                fieldModifier.testTag(SIGN_UP_REPEAT_PASSWORDS_FIELD_TT)
+            )
         }
 
         AuthenticationButton(
             text = R.string.sign_up_button,
             action = onSignUpClick,
-            modifier = Modifier.basicButton()
+            modifier = Modifier
+                .basicButton()
+                .testTag(SIGNUP_SCREEN_SIGN_UP_BUTTON_TT)
         )
     }
 }
