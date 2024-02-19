@@ -1,17 +1,13 @@
 package com.serj.recommend.android.model
 
 import androidx.compose.ui.graphics.Color
+import com.serj.recommend.datalayer.RecommendationType
 
-enum class RecommendationType {
-    Film, Music, Book,
-    Series, Perfume, Place;
-
-    fun getColor() = when (this) {
-        Film -> Color.Red
-        Music -> Color.Blue
-        Book -> Color.Yellow
-        Series -> Color.Green
-        Perfume -> Color.Magenta
-        Place -> Color.Cyan
-    }
+fun RecommendationType.getColor() = when (this) {
+    RecommendationType.Film -> Color.Red
+    RecommendationType.Music -> Color.Blue
+    RecommendationType.Book -> Color.Yellow
+    RecommendationType.Series -> Color.Green
+    RecommendationType.Perfume -> Color.Magenta
+    RecommendationType.Place -> Color.Cyan
 }

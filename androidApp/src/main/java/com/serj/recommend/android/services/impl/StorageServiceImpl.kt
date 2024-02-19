@@ -10,10 +10,10 @@ import com.google.firebase.firestore.dataObjects
 import com.google.firebase.firestore.toObject
 import com.google.firebase.firestore.toObjects
 import com.google.firebase.storage.FirebaseStorage
-import com.serj.recommend.android.common.BannerNotFoundException
-import com.serj.recommend.android.common.CategoryNotFoundException
-import com.serj.recommend.android.common.RecommendationNotFoundException
-import com.serj.recommend.android.common.UserNotFoundException
+import com.serj.recommend.constants.BannerNotFoundException
+import com.serj.recommend.constants.CategoryNotFoundException
+import com.serj.recommend.constants.RecommendationNotFoundException
+import com.serj.recommend.constants.UserNotFoundException
 import com.serj.recommend.android.model.collections.Banner
 import com.serj.recommend.android.model.collections.Category
 import com.serj.recommend.android.model.collections.Recommendation

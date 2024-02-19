@@ -36,7 +36,7 @@ import org.junit.runner.RunWith
 
 const val EMAIL_TC = "daxavic@yandex.ru"
 const val PASSWORD_TC = "123Qwerty"
-const val SLEEP_TIME_TC: Long  = 20000
+const val SLEEP_TIME_TC: Long = 20000
 const val UNREGISTERED_EMAIL_TC = "d@yandex.ru"
 const val PASSWORD_FOR_UNREGISTERED_EMAIL_TC = "123Qwe"
 
@@ -74,12 +74,13 @@ class UiTests {
             onNodeWithTag(AUTHENTICATION_SIGN_IN_BUTTON_TT)
                 .performClick()
 
-           waitUntilNodeCount(hasText("Read"), 1, SLEEP_TIME_TC)
+            waitUntilNodeCount(hasText("Read"), 1, SLEEP_TIME_TC)
 
             onNodeWithText("Read")
                 .assertIsDisplayed()
         }
     }
+
     @OptIn(ExperimentalTestApi::class)
     @Test
     fun makeAuthenticationEmptyPassword() {
@@ -177,8 +178,10 @@ class UiTests {
                 .assertIsDisplayed()
                 .performClick()
 
-            waitUntilNodeCount(hasTestTag(
-                SIGNUP_SCREEN_SIGN_UP_BUTTON_TT),
+            waitUntilNodeCount(
+                hasTestTag(
+                    SIGNUP_SCREEN_SIGN_UP_BUTTON_TT
+                ),
                 1,
                 SLEEP_TIME_TC
             )
@@ -192,7 +195,7 @@ class UiTests {
 
     @OptIn(ExperimentalTestApi::class)
     @Test
-    fun checkExistingEmailForRegistrationUser(){
+    fun checkExistingEmailForRegistrationUser() {
         val messageError = "The email address is already in use by another account."
         goFromSignInScreenToSignUpScreen()
 
@@ -220,7 +223,7 @@ class UiTests {
     @OptIn(ExperimentalTestApi::class)
     @Test
     fun checkEnteringIncorrectPassword() {
-         val incorrectPassword = "12Qw"
+        val incorrectPassword = "12Qw"
 
         goFromSignInScreenToSignUpScreen()
 
@@ -241,22 +244,23 @@ class UiTests {
                 .assertIsDisplayed()
                 .performClick()
 
-            waitUntilNodeCount(hasText(
-                rule.activity.getString(R.string.password_error)),
+            waitUntilNodeCount(
+                hasText(
+                    rule.activity.getString(R.string.password_error)
+                ),
                 1,
-                SLEEP_TIME_TC)
+                SLEEP_TIME_TC
+            )
         }
 
     }
-
-
 
 
     @OptIn(ExperimentalTestApi::class)
     @Test
     fun openHomeScreen() {
         rule.setContent { MainScreenActivity() }
-        rule.apply{
+        rule.apply {
             waitUntilNodeCount(hasText("Read"), 1, SLEEP_TIME_TC)
             onNodeWithText("Read")
                 .assertIsDisplayed()
@@ -314,7 +318,8 @@ class UiTests {
         // мысли как можно делать - но походу не то
         val assetManager = rule.activity.assets
         assetManager.open("")
-        val testUri = "content://media/picker/0/com.android.providers.media.photopicker/media/1000000020"
+        val testUri =
+            "content://media/picker/0/com.android.providers.media.photopicker/media/1000000020"
 
         // идешь на экрана NewRecommendationScreen
         // кликаешь на кнопку add a background / add a cover
