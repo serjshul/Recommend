@@ -28,9 +28,9 @@ import com.serj.recommend.android.ui.components.authentication.EmailField
 import com.serj.recommend.android.ui.components.authentication.PasswordField
 import com.serj.recommend.android.ui.components.splash.AppLogo
 
-val AUTHENTICATION_EMAIL_FIELD_TT = "authenticationEmailFieldTT"
-val AUTHENTICATION_PASSWORD_FIELD_TT = "authenticationPasswordFieldTT"
 val AUTHENTICATION_SIGN_IN_BUTTON_TT = "authenticationSignInButtonTT"
+val AUTHENTICATION_SIGN_UP_BUTTON_TT = "authenticationSignUPButtonTT"
+val AUTHENTICATION_FORGOT_PASSWORD_BUTTON_TT = "authenticationForgotPasswordButtonTT"
 
 @Composable
 fun SignInScreen(
@@ -90,7 +90,6 @@ fun SignInScreenContent(
                 onNewValue = onEmailChange,
                 modifier = Modifier
                     .fieldModifier()
-                    .testTag(AUTHENTICATION_EMAIL_FIELD_TT)
             )
 
             PasswordField(
@@ -99,7 +98,6 @@ fun SignInScreenContent(
                 onNewValue = onPasswordChange,
                 modifier = Modifier
                     .fieldModifier()
-                    .testTag(AUTHENTICATION_PASSWORD_FIELD_TT)
             )
 
             AuthenticationButton(
@@ -113,7 +111,9 @@ fun SignInScreenContent(
 
             AuthenticationTextButton(
                 text = R.string.forgot_password,
-                modifier = Modifier.textButton(),
+                modifier = Modifier
+                    .textButton()
+                    .testTag(AUTHENTICATION_FORGOT_PASSWORD_BUTTON_TT),
                 action = onForgotPasswordClick
             )
         }
@@ -128,7 +128,7 @@ fun SignInScreenContent(
             Text(text = "Don't have an account?")
 
             AuthenticationTextButton(
-                modifier = Modifier,
+                modifier = Modifier.testTag(AUTHENTICATION_SIGN_UP_BUTTON_TT),
                 text = R.string.sign_up,
                 action = onSignUpClick
             )

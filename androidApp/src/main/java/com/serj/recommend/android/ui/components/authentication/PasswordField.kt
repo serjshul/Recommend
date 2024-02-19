@@ -14,12 +14,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import com.serj.recommend.android.R
+
+val AUTHENTICATION_VISIBILITY_PASSWORD_BUTTON_TT = "authenticationVisibilityPasswordButtonTT"
+val AUTHENTICATION_PASSWORD_FIELD_TT = "authenticationPasswordFieldTT"
 
 @Composable
 fun PasswordField(
@@ -40,14 +44,16 @@ fun PasswordField(
         if (isVisible) VisualTransformation.None else PasswordVisualTransformation()
 
     OutlinedTextField(
-        modifier = modifier,
+        modifier = modifier.testTag(AUTHENTICATION_PASSWORD_FIELD_TT),
         value = value,
         onValueChange = { onNewValue(it) },
         placeholder = { Text(text = stringResource(placeholder)) },
         leadingIcon = { Icon(imageVector = Icons.Default.Lock, contentDescription = "Lock") },
         trailingIcon = {
             IconButton(onClick = { isVisible = !isVisible }) {
-                Icon(painter = icon, contentDescription = "Visibility")
+                Icon(painter = icon,
+                     contentDescription = "Visibility",
+                     modifier = modifier.testTag(AUTHENTICATION_VISIBILITY_PASSWORD_BUTTON_TT))
             }
         },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
