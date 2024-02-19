@@ -35,7 +35,6 @@ import com.serj.recommend.android.ui.styles.secondary
 
 @Composable
 fun NewRecommendationHeader(
-    modifier: Modifier = Modifier,
     title: String,
     type: String,
     creator: String,
@@ -50,7 +49,8 @@ fun NewRecommendationHeader(
     onTagsValueChange: (String) -> Unit,
     onYearValueChange: (String) -> Unit,
     onAddBackgroundImage: (Uri) -> Unit,
-    onRemoveBackgroundImage: () -> Unit
+    onRemoveBackgroundImage: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val launcher =
         rememberLauncherForActivityResult(
@@ -224,7 +224,7 @@ fun NewRecommendationHeaderInfo(
 
 @Preview
 @Composable
-fun NewRecommendationHeaderPreview() {
+private fun NewRecommendationHeaderPreview() {
     NewRecommendationHeader(
         title = "Title",
         type = "Type",

@@ -1,8 +1,8 @@
 package com.serj.recommend.android.ui.screens.common.recommendation.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -26,12 +26,15 @@ import com.serj.recommend.android.ui.components.media.GlideUserImage
 
 @Composable
 fun UserInfo(
-    modifier: Modifier = Modifier,
     photoReference: StorageReference?,
-    nickname: String
+    nickname: String,
+    modifier: Modifier = Modifier,
+    navigateTo: () -> Unit = {}
 ) {
     Row(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.clickable {
+            navigateTo()
+        },
         horizontalArrangement = Arrangement.Center
     ) {
         GlideUserImage(
@@ -61,7 +64,7 @@ fun UserInfo(
 
 @Preview
 @Composable
-fun UserInfoPreview() {
+private fun UserInfoPreview() {
     UserInfo(
         photoReference = null,
         nickname = "preview"

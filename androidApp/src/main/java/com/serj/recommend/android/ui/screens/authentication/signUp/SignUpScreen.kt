@@ -93,9 +93,7 @@ fun SignUpScreenContent(
                 fontSize = 16.sp,
                 textAlign = TextAlign.Center
             )
-
             EmailField(uiState.email, onEmailChange, fieldModifier)
-
             PasswordField(
                 uiState.password,
                 R.string.password,
@@ -122,7 +120,7 @@ fun SignUpScreenContent(
 
 @Preview(showBackground = true)
 @Composable
-fun SignUpScreenPreview() {
+private fun SignUpScreenPreview() {
     val uiState = SignUpUiState(
         email = "email@test.com"
     )

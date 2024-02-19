@@ -18,7 +18,8 @@ class SignUpViewModel @Inject constructor(
     private val accountService: AccountService,
     logService: LogService
 ) : RecommendViewModel(logService) {
-    var uiState = mutableStateOf(SignUpUiState())
+    var uiState =
+        mutableStateOf(SignUpUiState())
         private set
 
     private val email
@@ -27,30 +28,42 @@ class SignUpViewModel @Inject constructor(
         get() = uiState.value.password
 
     fun onEmailChange(newValue: String) {
-        uiState.value = uiState.value.copy(email = newValue)
+        uiState.value = uiState.value.copy(
+            email = newValue
+        )
     }
 
     fun onPasswordChange(newValue: String) {
-        uiState.value = uiState.value.copy(password = newValue)
+        uiState.value = uiState.value.copy(
+            password = newValue
+        )
     }
 
     fun onRepeatPasswordChange(newValue: String) {
-        uiState.value = uiState.value.copy(repeatPassword = newValue)
+        uiState.value = uiState.value.copy(
+            repeatPassword = newValue
+        )
     }
 
     fun onSignUpClick(openScreen: (String) -> Unit) {
         if (!email.isValidEmail()) {
-            SnackbarManager.showMessage(R.string.email_error)
+            SnackbarManager.showMessage(
+                R.string.email_error
+            )
             return
         }
 
         if (!password.isValidPassword()) {
-            SnackbarManager.showMessage(R.string.password_error)
+            SnackbarManager.showMessage(
+                R.string.password_error
+            )
             return
         }
 
         if (!password.passwordMatches(uiState.value.repeatPassword)) {
-            SnackbarManager.showMessage(R.string.password_match_error)
+            SnackbarManager.showMessage(
+                R.string.password_match_error
+            )
             return
         }
 

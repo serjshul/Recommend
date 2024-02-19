@@ -148,6 +148,7 @@ private fun BottomPart(
     )
 
     Scaffold(
+        modifier = modifier,
         topBar = {
             ProfileTabBar(
                 profileUser = profileUser,
@@ -157,7 +158,7 @@ private fun BottomPart(
                 onTabSelected = { tabPage = it }
             )
         },
-        containerColor = backgroundColor,
+        containerColor = backgroundColor
     ) { padding ->
         Box(
             modifier = Modifier.padding(
@@ -239,9 +240,11 @@ private fun HomeTabIndicator(
                 TabPage.Posts isTransitioningTo TabPage.Likes -> spring(
                     stiffness = Spring.StiffnessVeryLow
                 )
+
                 TabPage.Likes isTransitioningTo TabPage.Posts -> spring(
                     stiffness = Spring.StiffnessMedium
                 )
+
                 else -> spring()
             }
         },
@@ -255,9 +258,11 @@ private fun HomeTabIndicator(
                 TabPage.Posts isTransitioningTo TabPage.Likes -> spring(
                     stiffness = Spring.StiffnessMedium
                 )
+
                 TabPage.Likes isTransitioningTo TabPage.Posts -> spring(
                     stiffness = Spring.StiffnessVeryLow
                 )
+
                 else -> spring()
             }
         },
@@ -271,9 +276,11 @@ private fun HomeTabIndicator(
                 TabPage.Posts isTransitioningTo TabPage.Likes -> spring(
                     stiffness = Spring.StiffnessMedium
                 )
+
                 TabPage.Likes isTransitioningTo TabPage.Posts -> spring(
                     stiffness = Spring.StiffnessVeryLow
                 )
+
                 else -> spring()
             }
         },

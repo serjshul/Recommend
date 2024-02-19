@@ -9,11 +9,9 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.material.ExperimentalMaterialApi
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-@ExperimentalMaterialApi
 class RecommendActivity : ComponentActivity() {
     private val connectedToastMessage by lazy {
         getString(R.string.goes_online_toast)
@@ -33,7 +31,9 @@ class RecommendActivity : ComponentActivity() {
             override fun onAvailable(net: Network) {
                 super.onAvailable(net)
                 Toast.makeText(
-                    applicationContext, connectedToastMessage, Toast.LENGTH_SHORT
+                    applicationContext,
+                    connectedToastMessage,
+                    Toast.LENGTH_SHORT
                 ).show()
                 // for example in app use like that:
 //            viewModel.isWiFiAvailable = true
@@ -42,7 +42,9 @@ class RecommendActivity : ComponentActivity() {
             override fun onLost(net: Network) {
                 super.onLost(net)
                 Toast.makeText(
-                    applicationContext, disconnectedToastMessage, Toast.LENGTH_SHORT
+                    applicationContext,
+                    disconnectedToastMessage,
+                    Toast.LENGTH_SHORT
                 ).show()
 //            viewModel.isWiFiAvailable = false
             }
