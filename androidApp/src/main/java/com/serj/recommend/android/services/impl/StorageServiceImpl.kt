@@ -12,8 +12,12 @@ import com.google.firebase.firestore.toObjects
 import com.google.firebase.storage.FirebaseStorage
 import com.serj.recommend.android.common.BannerNotFoundException
 import com.serj.recommend.android.common.CategoryNotFoundException
-import com.serj.recommend.android.common.RecommendationNotFoundException
+import com.serj.recommend.android.common.RecommendationIsNotValidException
 import com.serj.recommend.android.common.UserNotFoundException
+import com.serj.recommend.android.common.isCommentValid
+import com.serj.recommend.android.common.isLikeValid
+import com.serj.recommend.android.common.isRecommendationValid
+import com.serj.recommend.android.common.isRepostValid
 import com.serj.recommend.android.model.collections.Banner
 import com.serj.recommend.android.model.collections.Category
 import com.serj.recommend.android.model.collections.Recommendation
@@ -80,21 +84,22 @@ class StorageServiceImpl @Inject constructor(
                 .await()
             val data = recommendationSnapshot.toObject<Recommendation>()
 
-            if (data != null) {
-                if (data.backgroundUrl[BackgroundTypes.image.name] != null) {
-                    data.backgroundImageReference = data
-                            .backgroundUrl[BackgroundTypes.image.name]
-                            ?.let { storage.getReferenceFromUrl(it) }
+            if (isRecommendationValid(data)) {
+                if (data!!.backgroundUrl[BackgroundTypes.image.name] != null) {
+                    data.backgroundImageReference =
+                        data.backgroundUrl[BackgroundTypes.image.name]?.let {
+                            storage.getReferenceFromUrl(it)
+                        }
                 }
                 for (paragraph in data.paragraphs) {
-                    data.paragraphsReferences[paragraph.getValue("title")] = paragraph
-                            .getOrDefault(BackgroundTypes.image.name, null)
-                            ?.let { storage.getReferenceFromUrl(it) }
+                    data.paragraphsReferences[paragraph.getValue("title")] =
+                        paragraph.getOrDefault(BackgroundTypes.image.name, null)?.let {
+                            storage.getReferenceFromUrl(it)
+                        }
                 }
-
                 val likesResponse = getLikes(recommendationId)
-                if (likesResponse is Success && likesResponse.data != null) {
-                    data.likes.addAll(likesResponse.data)
+                if (likesResponse is Success) {
+                    data.likes.addAll(likesResponse.data!!)
                     for (like in likesResponse.data) {
                         if (like.userId == userId) {
                             data.likeId = like.id
@@ -104,15 +109,15 @@ class StorageServiceImpl @Inject constructor(
                     }
                 }
                 val commentsResponse = getComments(recommendationId)
-                if (commentsResponse is Success && commentsResponse.data != null) {
-                    data.comments.addAll(commentsResponse.data)
+                if (commentsResponse is Success) {
+                    data.comments.addAll(commentsResponse.data!!)
                     if (data.comments.isNotEmpty()) {
                         data.topLikedComment = data.comments.maxBy { it.likedBy.size }
                     }
                 }
                 val repostsResponse = getReposts(recommendationId)
-                if (repostsResponse is Success && repostsResponse.data != null) {
-                    data.reposts.addAll(repostsResponse.data)
+                if (repostsResponse is Success) {
+                    data.reposts.addAll(repostsResponse.data!!)
                     for (repost in repostsResponse.data) {
                         if (repost.userId == userId) {
                             data.repostId = repost.id
@@ -123,14 +128,19 @@ class StorageServiceImpl @Inject constructor(
                 }
                 val userItemResponse = getUserItemByUid(data.uid!!)
                 if (userItemResponse is Success) {
-                    data.userItem = userItemResponse.data
+                    data.authorUserItem = userItemResponse.data
+                    Log.d(TAG, "StorageService: Recommendation was loaded - ${data.id}")
+                    Success(data)
+                } else {
+                    Log.w(TAG, "StorageService: Recommendation wasn't loaded (cannot load authorUserItem)")
+                    Failure(Exception())
                 }
-
-                Success(data)
             } else {
-                Failure(RecommendationNotFoundException())
+                Log.w(TAG, "StorageService: Recommendation wasn't loaded (is not valid)")
+                Failure(RecommendationIsNotValidException())
             }
         } catch (e: Exception) {
+            Log.w(TAG, "StorageService: Recommendation wasn't loaded (caught an exception)")
             Failure(e)
         }
     }
@@ -223,7 +233,7 @@ class StorageServiceImpl @Inject constructor(
 
                 Success(recommendationData)
             } else {
-                Failure(RecommendationNotFoundException())
+                Failure(RecommendationIsNotValidException())
             }
         } catch (e: Exception) {
             Failure(e)
@@ -251,7 +261,7 @@ class StorageServiceImpl @Inject constructor(
                     ?.let { storage.getReferenceFromUrl(it) }
                 Success(data)
             } else {
-                Failure(RecommendationNotFoundException())
+                Failure(RecommendationIsNotValidException())
             }
         } catch (e: Exception) {
             Failure(e)
@@ -679,16 +689,6 @@ class StorageServiceImpl @Inject constructor(
             else -> ItemsShapes.horizontal.name
         }
     }
-
-    private fun isLikeValid(like: Like) =
-        like.userId != null && like.recommendationId != null && like.date != null && like.source != null
-
-    private fun isCommentValid(comment: Comment) = comment.userId != null && comment.recommendationId != null &&
-            comment.text != null && comment.date != null && comment.source != null
-
-    private fun isRepostValid(repost: Repost) =
-        repost.userId != null && repost.recommendationId != null && repost.date != null && repost.source != null
-
 
     private fun getAvailableCoverTypes(
         coversUrl: HashMap<String, String>

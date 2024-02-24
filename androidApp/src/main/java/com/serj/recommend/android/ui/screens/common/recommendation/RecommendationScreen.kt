@@ -53,8 +53,7 @@ fun RecommendationScreen(
 ) {
     RecommendationScreenContent(
         modifier = modifier,
-        loadingStatus = viewModel.loadingStatus.value,
-        recommendation = viewModel.recommendation.value,
+        recommendationResponse = viewModel.recommendationResponse.value,
         currentUserId = viewModel.currentUserId,
         currentUserPhotoReference = viewModel.currentUserPhotoReference,
         isLiked = viewModel.isLiked,
@@ -83,8 +82,7 @@ fun RecommendationScreen(
 @Composable
 fun RecommendationScreenContent(
     modifier: Modifier = Modifier,
-    loadingStatus: Response<Boolean>,
-    recommendation: Recommendation?,
+    recommendationResponse: Response<Recommendation?>,
     currentUserId: String?,
     currentUserPhotoReference: StorageReference?,
     isLiked: Boolean,
@@ -126,8 +124,10 @@ fun RecommendationScreenContent(
     Scaffold(
         modifier = modifier
     ) { paddingValues ->
-        when (loadingStatus) {
+        when (recommendationResponse) {
             is Success -> {
+                val data = recommendationResponse.data
+
                 Box(
                     modifier = Modifier
                         .padding(paddingValues)
@@ -137,9 +137,9 @@ fun RecommendationScreenContent(
                         modifier = Modifier
                             .align(Alignment.TopCenter)
                             .alpha(200 / currentOffset.toFloat()),
-                        color = recommendation!!.color?.toColor(),
-                        backgroundImageReference = recommendation.backgroundImageReference,
-                        backgroundVideoReference = recommendation.backgroundVideoReference
+                        color = data!!.color?.toColor(),
+                        backgroundImageReference = data.backgroundImageReference,
+                        backgroundVideoReference = data.backgroundVideoReference
                     )
 
                     LazyColumn(
@@ -148,70 +148,66 @@ fun RecommendationScreenContent(
                             .align(Alignment.TopCenter),
                         state = lazyListState
                     ) {
-                        if (recommendation.userItem != null) {
-                            item {
-                                Header(
-                                    modifier = Modifier
-                                        .padding(top = 50.dp),
-                                    title = recommendation.title!!,
-                                    creator = recommendation.creator!!,
-                                    tags = recommendation.tags!!,
-                                    year = recommendation.year!!,
-                                    photoReference = recommendation.userItem!!.photoReference,
-                                    nickname = recommendation.userItem!!.nickname
-                                )
-                            }
+                        item {
+                            Header(
+                                modifier = Modifier
+                                    .padding(top = 50.dp),
+                                title = data.title!!,
+                                creator = data.creator!!,
+                                tags = data.tags,
+                                year = data.year!!,
+                                photoReference = data.authorUserItem!!.photoReference,
+                                nickname = data.authorUserItem!!.nickname
+                            )
                         }
 
                         item {
                             Description(
-                                description = recommendation.description!!
+                                description = data.description!!
                             )
                         }
 
                         item {
                             Paragraphs(
-                                paragraphs = recommendation.paragraphs,
-                                paragraphsReferences = recommendation.paragraphsReferences,
-                                color = recommendation.color?.toColor() ?: Color.Black
+                                paragraphs = data.paragraphs,
+                                paragraphsReferences = data.paragraphsReferences,
+                                color = data.color?.toColor() ?: Color.Black
                             )
                         }
 
-                        if (recommendation.quote != null) {
+                        if (data.quote != null) {
                             item {
                                 Quote(
-                                    quote = recommendation.quote,
-                                    color = recommendation.color?.toColor()
+                                    quote = data.quote,
+                                    color = data.color?.toColor()
                                 )
                             }
                         }
 
-                        if (currentUserId != null) {
-                            item {
-                                InteractionPanelRecommendation(
-                                    modifier = Modifier,
-                                    color = recommendation.color?.toColor(),
-                                    isLiked = isLiked,
-                                    isCommented = isCommented,
-                                    isReposted = isReposted,
-                                    topLikedComment = recommendation.topLikedComment,
-                                    authorUserId = recommendation.uid,
-                                    currentUserid = currentUserId,
-                                    onLikeClick = onLikeClick,
-                                    onCommentClick = onCommentClick,
-                                    onRepostClick = onRepostClick,
-                                    onInsightsClick = onInsightsClick
-                                )
-                            }
+                        item {
+                            InteractionPanelRecommendation(
+                                modifier = Modifier,
+                                color = data.color?.toColor(),
+                                isLiked = isLiked,
+                                isCommented = isCommented,
+                                isReposted = isReposted,
+                                topLikedComment = data.topLikedComment,
+                                authorUserId = data.uid,
+                                currentUserid = currentUserId,
+                                onLikeClick = onLikeClick,
+                                onCommentClick = onCommentClick,
+                                onRepostClick = onRepostClick,
+                                onInsightsClick = onInsightsClick
+                            )
                         }
                     }
 
                     RecommendationTopBar(
                         modifier = Modifier
                             .align(Alignment.TopCenter),
-                        title = recommendation.title!!,
-                        type = recommendation.type!!,
-                        color = recommendation.color?.toColor(),
+                        title = data.title!!,
+                        type = data.type!!,
+                        color = data.color?.toColor(),
                         isBackgroundHidden = isBackgroundHidden,
                         popUpScreen = popUpScreen
                     )
@@ -223,13 +219,13 @@ fun RecommendationScreenContent(
                             containerColor = Color.White,
                             content = {
                                 InsightsBottomSheet(
-                                    likesAmount = recommendation.likes.size,
-                                    commentsAmount = recommendation.comments.size,
-                                    repostsAmount = recommendation.reposts.size,
+                                    likesAmount = data.likes.size,
+                                    commentsAmount = data.comments.size,
+                                    repostsAmount = data.reposts.size,
                                     savedAmounts = 0,
                                     viewsAmount = 0,
                                     coverageAmount = 0,
-                                    date = recommendation.date!!
+                                    date = data.date!!
                                 )
                             }
                         )
@@ -258,6 +254,7 @@ fun RecommendationScreenContent(
                 }
             }
             is Response.Failure -> {
+                val exception = recommendationResponse.e
                 Box(
                     modifier = Modifier
                         .padding(paddingValues)
@@ -265,7 +262,7 @@ fun RecommendationScreenContent(
                         .background(Color.White)
                 ) {
                     Text(
-                        text = "Couldn't open the recommendation",
+                        text = "Couldn't open the recommendation: $exception",
                         color = Color.Black,
                         fontSize = 14.sp,
                         modifier = Modifier.align(Alignment.Center)
@@ -335,8 +332,7 @@ fun RecommendationScreenContentPreview() {
 
     RecommendationScreenContent(
         modifier = Modifier,
-        loadingStatus = Success(true),
-        recommendation = recommendation,
+        recommendationResponse = Success(recommendation),
         currentUserId = "",
         currentUserPhotoReference = null,
         isLiked = false,

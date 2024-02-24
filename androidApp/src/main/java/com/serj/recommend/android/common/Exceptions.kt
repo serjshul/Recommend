@@ -1,7 +1,7 @@
 package com.serj.recommend.android.common
 
-class RecommendationNotFoundException(
-    message: String = "Recommendation not found!"
+class RecommendationIsNotValidException(
+    message: String = "Recommendation is not valid!"
 ) : Exception(message)
 
 class UserNotFoundException(

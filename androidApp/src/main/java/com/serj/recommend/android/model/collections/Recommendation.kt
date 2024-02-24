@@ -15,7 +15,7 @@ data class Recommendation(
     val title: String? = null,
     val type: String? = null,
     val creator: String? = null,
-    val tags: List<String>? = null,
+    val tags: List<String> = listOf(),
     val year: Int? = null,
 
     val description: String? = null,
@@ -40,7 +40,7 @@ data class Recommendation(
     val coverage: Int = 0,
     val date: Date? = Date(),
 
-    var userItem: UserItem? = null,
+    var authorUserItem: UserItem? = null,
     var isLiked: Boolean = false,
     var likeId: String? = null,
     var isReposted: Boolean = false,
