@@ -1,6 +1,6 @@
 package com.serj.recommend.android.services.impl
 
-import android.content.ContentValues
+import android.content.ContentValues.TAG
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.serj.recommend.android.model.subcollections.Comment
@@ -27,43 +27,31 @@ class InteractionServiceImpl @Inject constructor(
         like: Like
     ): LikeResponse {
         return try {
-            var userTransactionResult = false
-            var recommendationTransactionResult = false
-
-            var likeId: String? = null
-
-            firestore
+            val likeId = generateLikeId(like.recommendationId!!, like.userId!!)
+            val userLikeRef = firestore
                 .collection(USERS_COLLECTION)
-                .document(like.userId!!)
+                .document(like.userId)
                 .collection(USER_LIKES_SUBCOLLECTION)
-                .add(like)
-                .addOnCompleteListener {
-                    userTransactionResult = it.isSuccessful
-                    if (it.isSuccessful) {
-                        likeId = it.result.id
-                        Log.d(ContentValues.TAG, "Like added to User (${like.userId})")
-                    } else
-                        Log.d(ContentValues.TAG, "Like wasn't added to User (${like.userId})")
-                }
-                .await()
-            if (likeId != null) {
-                firestore
-                    .collection(RECOMMENDATIONS_COLLECTION)
-                    .document(like.recommendationId!!)
-                    .collection(RECOMMENDATION_LIKES_SUBCOLLECTION)
-                    .document(likeId!!)
-                    .set(like)
-                    .addOnCompleteListener {
-                        recommendationTransactionResult = it.isSuccessful
-                        if (it.isSuccessful)
-                            Log.d(ContentValues.TAG, "Like added to Recommendation (${like.recommendationId})")
-                        else
-                            Log.d(ContentValues.TAG, "Like wasn't added to Recommendation (${like.recommendationId})")
-                    }
-                    .await()
-            }
+                .document(likeId)
+            val recommendationLikeRef = firestore
+                .collection(RECOMMENDATIONS_COLLECTION)
+                .document(like.recommendationId)
+                .collection(RECOMMENDATION_LIKES_SUBCOLLECTION)
+                .document(likeId)
+            var batchResult = false
 
-            if (userTransactionResult && recommendationTransactionResult)
+            firestore.runBatch { batch ->
+                batch.set(userLikeRef, like)
+                batch.set(recommendationLikeRef, like)
+            }.addOnSuccessListener {
+                batchResult = true
+                Log.d(TAG, "InteractionService: Like was added to firestore - $likeId")
+            }.addOnFailureListener {
+                batchResult = false
+                Log.w(TAG, "InteractionService: Like wasn't added to firestore - $it")
+            }.await()
+
+            if (batchResult)
                 Response.Success(likeId)
             else
                 Response.Failure(Exception())
@@ -78,39 +66,30 @@ class InteractionServiceImpl @Inject constructor(
         likeId: String
     ): RemoveLikeResponse {
         return try {
-            var userTransactionResult = false
-            var recommendationTransactionResult = false
-
-            firestore
+            val userLikeRef = firestore
                 .collection(USERS_COLLECTION)
                 .document(userId)
                 .collection(USER_LIKES_SUBCOLLECTION)
                 .document(likeId)
-                .delete()
-                .addOnCompleteListener {
-                    userTransactionResult = it.isSuccessful
-                    if (it.isSuccessful)
-                        Log.d(ContentValues.TAG, "Like removed from User (${userId})")
-                    else
-                        Log.d(ContentValues.TAG, "Like wasn't removed from User (${userId})")
-                }
-                .await()
-            firestore
+            val recommendationLikeRef = firestore
                 .collection(RECOMMENDATIONS_COLLECTION)
                 .document(recommendationId)
                 .collection(RECOMMENDATION_LIKES_SUBCOLLECTION)
                 .document(likeId)
-                .delete()
-                .addOnCompleteListener {
-                    recommendationTransactionResult = it.isSuccessful
-                    if (it.isSuccessful)
-                        Log.d(ContentValues.TAG, "Like removed from Recommendation (${recommendationId})")
-                    else
-                        Log.d(ContentValues.TAG, "Like wasn't removed from Recommendation (${recommendationId})")
-                }
-                .await()
+            var batchResult = false
 
-            if (userTransactionResult && recommendationTransactionResult)
+            firestore.runBatch { batch ->
+                batch.delete(userLikeRef)
+                batch.delete(recommendationLikeRef)
+            }.addOnSuccessListener {
+                batchResult = true
+                Log.d(TAG, "InteractionService: Like was removed from firestore - $likeId")
+            }.addOnFailureListener {
+                batchResult = false
+                Log.w(TAG, "InteractionService: Like wasn't removed from firestore - $it")
+            }.await()
+
+            if (batchResult)
                 Response.Success(true)
             else
                 Response.Failure(Exception())
@@ -155,9 +134,9 @@ class InteractionServiceImpl @Inject constructor(
                     recommendationTransaction = task.isSuccessful
                     if (task.isSuccessful) {
                         commentId = task.result.id
-                        Log.d(ContentValues.TAG, "Comment added to Recommendation (${recommendationId})")
+                        Log.d(TAG, "Comment added to Recommendation (${recommendationId})")
                     } else
-                        Log.d(ContentValues.TAG, "Comment wasn't add to Recommendation (${recommendationId})")
+                        Log.d(TAG, "Comment wasn't add to Recommendation (${recommendationId})")
                 }
                 .await()
             if (commentId != null) {
@@ -170,9 +149,9 @@ class InteractionServiceImpl @Inject constructor(
                     .addOnCompleteListener { task ->
                         userTransaction = task.isSuccessful
                         if (task.isSuccessful) {
-                            Log.d(ContentValues.TAG, "Comment added to User (${userId})")
+                            Log.d(TAG, "Comment added to User (${userId})")
                         } else
-                            Log.d(ContentValues.TAG, "Comment wasn't add to User (${userId})")
+                            Log.d(TAG, "Comment wasn't add to User (${userId})")
                     }
                     .await()
             }
@@ -207,9 +186,9 @@ class InteractionServiceImpl @Inject constructor(
                     .addOnCompleteListener { task ->
                         recommendationTransaction = task.isSuccessful
                         if (task.isSuccessful) {
-                            Log.d(ContentValues.TAG, "Comment removed from Recommendation (${recommendationId})")
+                            Log.d(TAG, "Comment removed from Recommendation (${recommendationId})")
                         } else
-                            Log.d(ContentValues.TAG, "Comment wasn't removed from Recommendation (${recommendationId})")
+                            Log.d(TAG, "Comment wasn't removed from Recommendation (${recommendationId})")
                     }
                     .await()
                 firestore
@@ -221,9 +200,9 @@ class InteractionServiceImpl @Inject constructor(
                     .addOnCompleteListener { task ->
                         userTransaction = task.isSuccessful
                         if (task.isSuccessful)
-                            Log.d(ContentValues.TAG, "Comment removed from User (${userId})")
+                            Log.d(TAG, "Comment removed from User (${userId})")
                         else
-                            Log.w(ContentValues.TAG, "Comment wasn't remove from User (${userId})")
+                            Log.w(TAG, "Comment wasn't remove from User (${userId})")
                     }
                     .await()
                 if (recommendationTransaction && userTransaction)
@@ -264,9 +243,9 @@ class InteractionServiceImpl @Inject constructor(
                     firstTransactionResult = it.isSuccessful
                     if (it.isSuccessful) {
                         repostId = it.result.id
-                        Log.d(ContentValues.TAG, "Repost added to User (${userContent.userId})")
+                        Log.d(TAG, "Repost added to User (${userContent.userId})")
                     } else
-                        Log.d(ContentValues.TAG, "Repost wasn't added to User (${userContent.userId})")
+                        Log.d(TAG, "Repost wasn't added to User (${userContent.userId})")
                 }
                 .await()
             if (repostId != null) {
@@ -279,9 +258,9 @@ class InteractionServiceImpl @Inject constructor(
                     .addOnCompleteListener {
                         secondTransactionResult = it.isSuccessful
                         if (it.isSuccessful)
-                            Log.d(ContentValues.TAG, "Repost added to User (${repost.userId})")
+                            Log.d(TAG, "Repost added to User (${repost.userId})")
                         else
-                            Log.d(ContentValues.TAG, "Repost wasn't added to User (${repost.userId})")
+                            Log.d(TAG, "Repost wasn't added to User (${repost.userId})")
                     }
                     .await()
                 firestore
@@ -294,12 +273,12 @@ class InteractionServiceImpl @Inject constructor(
                         thirdTransactionResult = it.isSuccessful
                         if (it.isSuccessful)
                             Log.d(
-                                ContentValues.TAG,
+                                TAG,
                                 "Repost added to Recommendation (${repost.recommendationId})"
                             )
                         else
                             Log.d(
-                                ContentValues.TAG,
+                                TAG,
                                 "Repost wasn't added to Recommendation (${repost.recommendationId})"
                             )
                     }
@@ -334,9 +313,9 @@ class InteractionServiceImpl @Inject constructor(
                 .addOnCompleteListener {
                     firstTransactionResult = it.isSuccessful
                     if (it.isSuccessful)
-                        Log.d(ContentValues.TAG, "Repost removed from User (${userId})")
+                        Log.d(TAG, "Repost removed from User (${userId})")
                     else
-                        Log.d(ContentValues.TAG, "Repost wasn't removed from User (${userId})")
+                        Log.d(TAG, "Repost wasn't removed from User (${userId})")
                 }
                 .await()
             firestore
@@ -348,9 +327,9 @@ class InteractionServiceImpl @Inject constructor(
                 .addOnCompleteListener {
                     secondTransactionResult = it.isSuccessful
                     if (it.isSuccessful)
-                        Log.d(ContentValues.TAG, "Repost removed from User (${userId})")
+                        Log.d(TAG, "Repost removed from User (${userId})")
                     else
-                        Log.d(ContentValues.TAG, "Repost wasn't removed from User (${userId})")
+                        Log.d(TAG, "Repost wasn't removed from User (${userId})")
                 }
                 .await()
             firestore
@@ -362,9 +341,9 @@ class InteractionServiceImpl @Inject constructor(
                 .addOnCompleteListener {
                     thirdTransactionResult = it.isSuccessful
                     if (it.isSuccessful)
-                        Log.d(ContentValues.TAG, "Repost removed from Recommendation (${recommendationId})")
+                        Log.d(TAG, "Repost removed from Recommendation (${recommendationId})")
                     else
-                        Log.d(ContentValues.TAG, "Repost wasn't removed from Recommendation (${recommendationId})")
+                        Log.d(TAG, "Repost wasn't removed from Recommendation (${recommendationId})")
                 }
                 .await()
 
@@ -376,6 +355,11 @@ class InteractionServiceImpl @Inject constructor(
             Response.Failure(e)
         }
     }
+
+    private fun generateLikeId(
+        recommendationId: String,
+        userId: String
+    ): String = (recommendationId + userId + "like").hashCode().toString()
 
     companion object {
         private const val USERS_COLLECTION = "users"
