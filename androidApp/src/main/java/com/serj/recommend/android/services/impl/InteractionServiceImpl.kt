@@ -41,8 +41,8 @@ class InteractionServiceImpl @Inject constructor(
                 .document(like.recommendationId!!)
                 .collection(LIKES_SUBCOLLECTION)
                 .document(like.id)
-            var batchResult = false
 
+            var batchResult = false
             firestore.runBatch { batch ->
                 batch.set(userLikeRef, like)
                 batch.set(recommendationLikeRef, like)
@@ -79,8 +79,8 @@ class InteractionServiceImpl @Inject constructor(
                 .document(recommendationId)
                 .collection(LIKES_SUBCOLLECTION)
                 .document(likeId)
-            var batchResult = false
 
+            var batchResult = false
             firestore.runBatch { batch ->
                 batch.delete(userLikeRef)
                 batch.delete(recommendationLikeRef)
@@ -115,8 +115,8 @@ class InteractionServiceImpl @Inject constructor(
                 .document(comment.recommendationId!!)
                 .collection(COMMENTS_SUBCOLLECTION)
                 .document(comment.id)
-            var batchResult = false
 
+            var batchResult = false
             firestore.runBatch { batch ->
                 batch.set(userCommentRef, comment)
                 batch.set(recommendationCommentRef, comment)
@@ -160,8 +160,8 @@ class InteractionServiceImpl @Inject constructor(
                     .document(recommendationId)
                     .collection(COMMENTS_SUBCOLLECTION)
                     .document(commentId)
-                var batchResult = false
 
+                var batchResult = false
                 firestore.runBatch { batch ->
                     batch.delete(userCommentRef)
                     batch.delete(recommendationCommentRef)
@@ -186,75 +186,41 @@ class InteractionServiceImpl @Inject constructor(
     }
 
     override suspend fun repost(
-        repost: Repost
+        repost: Repost,
+        userContent: UserContent
     ): RepostResponse {
         return try {
-            var firstTransactionResult = false
-            var secondTransactionResult = false
-            var thirdTransactionResult = false
-
-            var repostId: String? = null
-            val userContent = UserContent(
-                recommendationId = repost.recommendationId,
-                userId = repost.userId,
-                isReposted = true,
-                date = repost.date,
-                source = repost.source
-            )
-
-            firestore
+            val userContentRef = firestore
                 .collection(USERS_COLLECTION)
-                .document(userContent.userId!!)
+                .document(repost.userId!!)
                 .collection(CONTENT_SUBCOLLECTION)
-                .add(userContent)
-                .addOnCompleteListener {
-                    firstTransactionResult = it.isSuccessful
-                    if (it.isSuccessful) {
-                        repostId = it.result.id
-                        Log.d(TAG, "Repost added to User (${userContent.userId})")
-                    } else
-                        Log.d(TAG, "Repost wasn't added to User (${userContent.userId})")
-                }
-                .await()
-            if (repostId != null) {
-                firestore
-                    .collection(USERS_COLLECTION)
-                    .document(repost.userId!!)
-                    .collection(REPOSTS_SUBCOLLECTION)
-                    .document(repostId!!)
-                    .set(repost)
-                    .addOnCompleteListener {
-                        secondTransactionResult = it.isSuccessful
-                        if (it.isSuccessful)
-                            Log.d(TAG, "Repost added to User (${repost.userId})")
-                        else
-                            Log.d(TAG, "Repost wasn't added to User (${repost.userId})")
-                    }
-                    .await()
-                firestore
-                    .collection(RECOMMENDATIONS_COLLECTION)
-                    .document(repost.recommendationId!!)
-                    .collection(REPOSTS_SUBCOLLECTION)
-                    .document(repostId!!)
-                    .set(repost)
-                    .addOnCompleteListener {
-                        thirdTransactionResult = it.isSuccessful
-                        if (it.isSuccessful)
-                            Log.d(
-                                TAG,
-                                "Repost added to Recommendation (${repost.recommendationId})"
-                            )
-                        else
-                            Log.d(
-                                TAG,
-                                "Repost wasn't added to Recommendation (${repost.recommendationId})"
-                            )
-                    }
-                    .await()
-            }
+                .document(repost.id!!)
+            val userRepostRef = firestore
+                .collection(USERS_COLLECTION)
+                .document(repost.userId)
+                .collection(REPOSTS_SUBCOLLECTION)
+                .document(repost.id)
+            val recommendationRepostRef = firestore
+                .collection(RECOMMENDATIONS_COLLECTION)
+                .document(repost.recommendationId!!)
+                .collection(REPOSTS_SUBCOLLECTION)
+                .document(repost.id)
 
-            if (firstTransactionResult && secondTransactionResult && thirdTransactionResult)
-                Response.Success(repostId)
+            var batchResult = false
+            firestore.runBatch { batch ->
+                batch.set(userContentRef, userContent)
+                batch.set(userRepostRef, repost)
+                batch.set(recommendationRepostRef, repost)
+            }.addOnSuccessListener {
+                batchResult = true
+                Log.d(TAG, "InteractionService: Repost was added to firestore - ${repost.id}")
+            }.addOnFailureListener {
+                batchResult = false
+                Log.w(TAG, "InteractionService: Repost wasn't added to firestore - $it")
+            }.await()
+
+            if (batchResult)
+                Response.Success(repost.id)
             else
                 Response.Failure(Exception())
         } catch (e: Exception) {
@@ -268,54 +234,36 @@ class InteractionServiceImpl @Inject constructor(
         repostId: String
     ): RemoveRepostResponse {
         return try {
-            var firstTransactionResult = false
-            var secondTransactionResult = false
-            var thirdTransactionResult = false
-
-            firestore
+            val userContentRef = firestore
                 .collection(USERS_COLLECTION)
                 .document(userId)
                 .collection(CONTENT_SUBCOLLECTION)
                 .document(repostId)
-                .delete()
-                .addOnCompleteListener {
-                    firstTransactionResult = it.isSuccessful
-                    if (it.isSuccessful)
-                        Log.d(TAG, "Repost removed from User (${userId})")
-                    else
-                        Log.d(TAG, "Repost wasn't removed from User (${userId})")
-                }
-                .await()
-            firestore
+            val userRepostRef = firestore
                 .collection(USERS_COLLECTION)
                 .document(userId)
                 .collection(REPOSTS_SUBCOLLECTION)
                 .document(repostId)
-                .delete()
-                .addOnCompleteListener {
-                    secondTransactionResult = it.isSuccessful
-                    if (it.isSuccessful)
-                        Log.d(TAG, "Repost removed from User (${userId})")
-                    else
-                        Log.d(TAG, "Repost wasn't removed from User (${userId})")
-                }
-                .await()
-            firestore
+            val recommendationRepostRef = firestore
                 .collection(RECOMMENDATIONS_COLLECTION)
                 .document(recommendationId)
                 .collection(REPOSTS_SUBCOLLECTION)
                 .document(repostId)
-                .delete()
-                .addOnCompleteListener {
-                    thirdTransactionResult = it.isSuccessful
-                    if (it.isSuccessful)
-                        Log.d(TAG, "Repost removed from Recommendation (${recommendationId})")
-                    else
-                        Log.d(TAG, "Repost wasn't removed from Recommendation (${recommendationId})")
-                }
-                .await()
 
-            if (firstTransactionResult && secondTransactionResult && thirdTransactionResult)
+            var batchResult = false
+            firestore.runBatch { batch ->
+                batch.delete(userContentRef)
+                batch.delete(userRepostRef)
+                batch.delete(recommendationRepostRef)
+            }.addOnSuccessListener {
+                batchResult = true
+                Log.d(TAG, "InteractionService: Repost was removed from firestore - $repostId")
+            }.addOnFailureListener {
+                batchResult = false
+                Log.w(TAG, "InteractionService: Repost wasn't removed from firestore - $it")
+            }.await()
+
+            if (batchResult)
                 Response.Success(true)
             else
                 Response.Failure(Exception())

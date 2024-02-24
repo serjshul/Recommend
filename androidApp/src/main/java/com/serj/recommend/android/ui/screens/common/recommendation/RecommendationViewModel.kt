@@ -14,6 +14,7 @@ import com.serj.recommend.android.model.items.UserItem
 import com.serj.recommend.android.model.subcollections.Comment
 import com.serj.recommend.android.model.subcollections.Like
 import com.serj.recommend.android.model.subcollections.Repost
+import com.serj.recommend.android.model.subcollections.UserContent
 import com.serj.recommend.android.services.AccountService
 import com.serj.recommend.android.services.InteractionService
 import com.serj.recommend.android.services.LogService
@@ -177,13 +178,21 @@ class RecommendationViewModel @Inject constructor(
                 if (currentUser.value != null && currentUser.value!!.uid != null &&
                     currentRecommendationId != null) {
                     val repost = Repost(
+                        id = generateRepostId(currentRecommendationId!!, currentUser.value!!.uid!!),
                         userId = currentUser.value!!.uid!!,
                         recommendationId = currentRecommendationId!!,
                         date = Date(),
                         source = InteractionSource.recommendation.name
                     )
+                    val userContent = UserContent(
+                        recommendationId = repost.recommendationId,
+                        userId = repost.userId,
+                        isReposted = true,
+                        date = repost.date,
+                        source = repost.source
+                    )
 
-                    val repostResponse = interactionService.repost(repost)
+                    val repostResponse = interactionService.repost(repost, userContent)
                     if (repostResponse is Response.Success) {
                         currentRepostId = repostResponse.data
                     } else {
@@ -294,6 +303,13 @@ class RecommendationViewModel @Inject constructor(
         recommendationId: String,
         userId: String
     ): String = (recommendationId + userId + "comment" + (0..1000).random())
+        .hashCode()
+        .toString()
+
+    private fun generateRepostId(
+        recommendationId: String,
+        userId: String
+    ): String = (recommendationId + userId + "repost")
         .hashCode()
         .toString()
 }

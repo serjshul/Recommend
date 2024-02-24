@@ -3,6 +3,7 @@ package com.serj.recommend.android.services
 import com.serj.recommend.android.model.subcollections.Comment
 import com.serj.recommend.android.model.subcollections.Like
 import com.serj.recommend.android.model.subcollections.Repost
+import com.serj.recommend.android.model.subcollections.UserContent
 import com.serj.recommend.android.services.model.Response
 
 typealias LikeResponse = Response<String>
@@ -35,7 +36,8 @@ interface InteractionService {
     ): RemoveCommentResponse
 
     suspend fun repost(
-        repost: Repost
+        repost: Repost,
+        userContent: UserContent
     ): RepostResponse
 
     suspend fun removeRepost(
