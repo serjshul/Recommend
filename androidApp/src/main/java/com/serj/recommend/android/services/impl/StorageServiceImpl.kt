@@ -69,7 +69,8 @@ class StorageServiceImpl @Inject constructor(
             .dataObjects()
 
     override suspend fun getRecommendationById(
-        recommendationId: String
+        recommendationId: String,
+        userId: String,
     ): GetRecommendationResponse {
         return try {
             val recommendationSnapshot = firestore
@@ -90,9 +91,17 @@ class StorageServiceImpl @Inject constructor(
                             .getOrDefault(BackgroundTypes.image.name, null)
                             ?.let { storage.getReferenceFromUrl(it) }
                 }
+
                 val likesResponse = getLikes(recommendationId)
                 if (likesResponse is Success && likesResponse.data != null) {
                     data.likes.addAll(likesResponse.data)
+                    for (like in likesResponse.data) {
+                        if (like.userId == userId) {
+                            data.likeId = like.id
+                            data.isLiked = true
+                            break
+                        }
+                    }
                 }
                 val commentsResponse = getComments(recommendationId)
                 if (commentsResponse is Success && commentsResponse.data != null) {
@@ -104,7 +113,15 @@ class StorageServiceImpl @Inject constructor(
                 val repostsResponse = getReposts(recommendationId)
                 if (repostsResponse is Success && repostsResponse.data != null) {
                     data.reposts.addAll(repostsResponse.data)
+                    for (repost in repostsResponse.data) {
+                        if (repost.userId == userId) {
+                            data.repostId = repost.id
+                            data.isReposted = true
+                            break
+                        }
+                    }
                 }
+
                 Success(data)
             } else {
                 Failure(RecommendationNotFoundException())

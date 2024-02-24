@@ -26,7 +26,6 @@ class InteractionServiceImpl @Inject constructor(
     private val firestore: FirebaseFirestore,
     private val storage: FirebaseStorage
 ) : InteractionService {
-
     override suspend fun like(
         like: Like
     ): LikeResponse {

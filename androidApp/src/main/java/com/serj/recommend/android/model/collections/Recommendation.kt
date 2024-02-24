@@ -38,6 +38,11 @@ data class Recommendation(
     val reposts: ArrayList<Repost> = arrayListOf(),
     var topLikedComment: Comment? = null,
 
+    var isLiked: Boolean = false,
+    var likeId: String? = null,
+    var isReposted: Boolean = false,
+    var repostId: String? = null,
+
     val views: Int = 0,
     val coverage: Int = 0
 )

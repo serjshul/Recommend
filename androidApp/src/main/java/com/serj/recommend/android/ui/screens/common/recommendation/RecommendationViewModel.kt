@@ -5,11 +5,11 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
+import com.google.firebase.storage.StorageReference
 import com.serj.recommend.android.R
 import com.serj.recommend.android.common.Constants.RECOMMENDATION_ID
 import com.serj.recommend.android.common.ext.idFromParameter
 import com.serj.recommend.android.model.collections.Recommendation
-import com.serj.recommend.android.model.collections.User
 import com.serj.recommend.android.model.items.UserItem
 import com.serj.recommend.android.model.subcollections.Comment
 import com.serj.recommend.android.model.subcollections.Like
@@ -38,7 +38,10 @@ class RecommendationViewModel @Inject constructor(
 
     val loadingStatus = mutableStateOf<Response<Boolean>>(Response.Loading(true))
 
-    val currentUser = mutableStateOf<User?>(null)
+    var currentUserId by mutableStateOf<String?>(null)
+        private set
+    var currentUserPhotoReference by mutableStateOf<StorageReference?>(null)
+        private set
     val userItem = mutableStateOf<UserItem?>(null)
 
     val recommendation = mutableStateOf<Recommendation?>(null)
@@ -65,54 +68,42 @@ class RecommendationViewModel @Inject constructor(
 
 
     init {
-        launchCatching {
-            accountService.currentUser.collect { user ->
-                currentUser.value = user
-            }
-        }
-
         val recommendationId = savedStateHandle.get<String>(RECOMMENDATION_ID)
         if (recommendationId != null) {
             launchCatching {
-                val recommendationResponse = storageService.getRecommendationById(
-                    recommendationId.idFromParameter()
-                )
-                loadingStatus.value =
-                    if (recommendationResponse is Response.Failure)
-                        Response.Failure(Exception())
-                    else
-                        Response.Loading(true)
+                accountService.currentUser.collect { user ->
+                    currentUserId = user.uid
+                    currentUserPhotoReference = user.photoReference
+                    if (currentUserId != null) {
+                        val recommendationResponse = storageService.getRecommendationById(
+                            recommendationId.idFromParameter(),
+                            currentUserId!!
+                        )
+                        loadingStatus.value =
+                            if (recommendationResponse is Response.Failure)
+                                Response.Failure(Exception())
+                            else
+                                Response.Loading(true)
 
-                if (recommendationResponse is Response.Success) {
-                    recommendation.value = recommendationResponse.data!!
-                    currentRecommendationId = recommendationResponse.data.id
+                        if (recommendationResponse is Response.Success) {
+                            recommendation.value = recommendationResponse.data!!
+                            currentRecommendationId = recommendationResponse.data.id
 
-                    val userItemResponse = recommendationResponse.data
-                        .uid?.let { storageService.getUserItemByUid(it) }
-                    if (userItemResponse is Response.Success)
-                        userItem.value = userItemResponse.data
+                            isLiked = recommendationResponse.data.isLiked
+                            currentLikeId = recommendationResponse.data.likeId
 
-                    for (like in recommendationResponse.data.likes) {
-                        if (like.userId == currentUser.value?.uid) {
-                            isLiked = true
-                            currentLikeId = like.id
-                            break
+                            isReposted = recommendationResponse.data.isReposted
+                            currentRepostId = recommendationResponse.data.repostId
+
+                            val userItemResponse = recommendationResponse.data.uid?.let {
+                                storageService.getUserItemByUid(it)
+                            }
+                            if (userItemResponse is Response.Success)
+                                userItem.value = userItemResponse.data
+
+                            loadingStatus.value = Response.Success(true)
                         }
                     }
-                    for (repost in recommendationResponse.data.reposts) {
-                        if (repost.userId == currentUser.value?.uid) {
-                            isReposted = true
-                            currentRepostId = repost.id
-                            break
-                        }
-                    }
-                    bottomSheetComments.putAll(
-                        recommendationResponse.data.comments
-                            .sortedByDescending { it.date }
-                            .associateWith { false }
-                    )
-
-                    loadingStatus.value = Response.Success(true)
                 }
             }
         }
@@ -122,11 +113,10 @@ class RecommendationViewModel @Inject constructor(
         launchCatching {
             if (!isLiked) {
                 isLiked = !isLiked
-                if (currentUser.value != null && currentUser.value!!.uid != null &&
-                    currentRecommendationId != null) {
+                if (currentUserId != null && currentRecommendationId != null) {
                     val like = Like(
-                        id = generateLikeId(currentRecommendationId!!, currentUser.value!!.uid!!),
-                        userId = currentUser.value!!.uid,
+                        id = generateLikeId(currentRecommendationId!!, currentUserId!!),
+                        userId = currentUserId,
                         recommendationId = currentRecommendationId,
                         date = Date(),
                         source = InteractionSource.recommendation.name
@@ -145,10 +135,9 @@ class RecommendationViewModel @Inject constructor(
                 }
             } else {
                 isLiked = !isLiked
-                if (currentUser.value != null && currentUser.value!!.uid != null &&
-                    currentRecommendationId != null && currentLikeId != null) {
+                if (currentUserId != null && currentRecommendationId != null && currentLikeId != null) {
                     val removeLikeResponse = interactionService.removeLike(
-                        userId = currentUser.value!!.uid!!,
+                        userId = currentUserId!!,
                         recommendationId = currentRecommendationId!!,
                         likeId = currentLikeId!!
                     )
@@ -166,6 +155,11 @@ class RecommendationViewModel @Inject constructor(
 
     fun onCommentClick() {
         launchCatching {
+            bottomSheetComments.putAll(
+                recommendation.value!!.comments
+                    .sortedByDescending { it.date }
+                    .associateWith { false }
+            )
             showCommentsBottomSheet = true
             isCommented = !isCommented
         }
@@ -175,11 +169,10 @@ class RecommendationViewModel @Inject constructor(
         launchCatching {
             if (!isReposted) {
                 isReposted = !isReposted
-                if (currentUser.value != null && currentUser.value!!.uid != null &&
-                    currentRecommendationId != null) {
+                if (currentUserId != null && currentRecommendationId != null) {
                     val repost = Repost(
-                        id = generateRepostId(currentRecommendationId!!, currentUser.value!!.uid!!),
-                        userId = currentUser.value!!.uid!!,
+                        id = generateRepostId(currentRecommendationId!!, currentUserId!!),
+                        userId = currentUserId!!,
                         recommendationId = currentRecommendationId!!,
                         date = Date(),
                         source = InteractionSource.recommendation.name
@@ -205,10 +198,9 @@ class RecommendationViewModel @Inject constructor(
                 }
             } else {
                 isReposted = !isReposted
-                if (currentUser.value != null && currentUser.value!!.uid != null &&
-                    currentRecommendationId != null && currentRepostId != null) {
+                if (currentUserId != null && currentRecommendationId != null && currentRepostId != null) {
                     val removeRepostResponse = interactionService.removeRepost(
-                        userId = currentUser.value!!.uid!!,
+                        userId = currentUserId!!,
                         recommendationId = currentRecommendationId!!,
                         repostId = currentRepostId!!
                     )
@@ -251,10 +243,10 @@ class RecommendationViewModel @Inject constructor(
 
     fun onUploadCommentClick() {
         launchCatching {
-            if (currentUser.value?.uid != null) {
+            if (currentUserId != null) {
                 val comment = Comment(
-                    id = generateCommentId(currentRecommendationId!!, currentUser.value!!.uid!!),
-                    userId = currentUser.value!!.uid!!,
+                    id = generateCommentId(currentRecommendationId!!, currentUserId!!),
+                    userId = currentUserId!!,
                     recommendationId = currentRecommendationId!!,
                     text = commentInput,
                     date = Date(),

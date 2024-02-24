@@ -38,23 +38,40 @@ interface StorageService {
     val banners: Flow<List<Banner>>
     val categories: Flow<List<Category>>
 
-    suspend fun getRecommendationById(recommendationId: String):
-            GetRecommendationResponse
-    suspend fun getBannerById(bannerId: String): GetBannerResponse
-    suspend fun getCategoryById(categoryId: String): GetCategoryResponse
+    suspend fun getRecommendationById(
+        recommendationId: String,
+        userId: String,
+    ): GetRecommendationResponse
+
+    suspend fun getBannerById(
+        bannerId: String
+    ): GetBannerResponse
+
+    suspend fun getCategoryById(
+        categoryId: String
+    ): GetCategoryResponse
 
     suspend fun getRecommendationItemById(
-        recommendationId: String, currentUserLikedIds: ArrayList<String>
+        recommendationId: String,
+        currentUserLikedIds: ArrayList<String>
     ): GetRecommendationItemResponse
 
-    suspend fun getRecommendationPreviewById(recommendationId: String, coverType: String):
-            GetRecommendationPreviewResponse
-    suspend fun getUserItemByUid(uid: String): GetUserItemResponse
+    suspend fun getRecommendationPreviewById(
+        recommendationId: String,
+        coverType: String
+    ): GetRecommendationPreviewResponse
 
-    suspend fun getFollowingRecommendationsIds(followingUids: List<String>):
-            GetFollowingRecommendationsIdsResponse
+    suspend fun getUserItemByUid(
+        uid: String
+    ): GetUserItemResponse
 
-    fun getStorageReferenceFromUrl(url: String): GetStorageReferenceFromUrlResponse
+    suspend fun getFollowingRecommendationsIds(
+        followingUids: List<String>
+    ): GetFollowingRecommendationsIdsResponse
+
+    fun getStorageReferenceFromUrl(
+        url: String
+    ): GetStorageReferenceFromUrlResponse
 
     suspend fun uploadRecommendation(
         recommendation: Recommendation,
@@ -62,10 +79,17 @@ interface StorageService {
         isReposted: Boolean
     ): UploadRecommendationResponse
 
-    suspend fun uploadBackgroundImage(recommendationId: String, uri: Uri, context: Context)
+    suspend fun uploadBackgroundImage(
+        recommendationId: String,
+        uri: Uri,
+        context: Context
+    )
 
     suspend fun uploadCoverImage(
-        recommendationId: String, uri: Uri, coverType: String, context: Context
+        recommendationId: String,
+        uri: Uri,
+        coverType: String,
+        context: Context
     )
 
     suspend fun uploadUser(

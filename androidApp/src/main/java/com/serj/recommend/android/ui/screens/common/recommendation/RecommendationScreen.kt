@@ -24,9 +24,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.firebase.storage.StorageReference
 import com.serj.recommend.android.common.ext.toColor
 import com.serj.recommend.android.model.collections.Recommendation
-import com.serj.recommend.android.model.collections.User
 import com.serj.recommend.android.model.items.UserItem
 import com.serj.recommend.android.model.subcollections.Comment
 import com.serj.recommend.android.services.model.Response
@@ -57,7 +57,8 @@ fun RecommendationScreen(
         loadingStatus = viewModel.loadingStatus.value,
         recommendation = viewModel.recommendation.value,
         userItem = viewModel.userItem.value,
-        currentUser = viewModel.currentUser.value,
+        currentUserId = viewModel.currentUserId,
+        currentUserPhotoReference = viewModel.currentUserPhotoReference,
         isLiked = viewModel.isLiked,
         isCommented = viewModel.isCommented,
         isReposted = viewModel.isReposted,
@@ -87,7 +88,8 @@ fun RecommendationScreenContent(
     loadingStatus: Response<Boolean>,
     recommendation: Recommendation?,
     userItem: UserItem?,
-    currentUser: User?,
+    currentUserId: String?,
+    currentUserPhotoReference: StorageReference?,
     isLiked: Boolean,
     isCommented: Boolean,
     isReposted: Boolean,
@@ -187,7 +189,7 @@ fun RecommendationScreenContent(
                             }
                         }
 
-                        if (currentUser != null) {
+                        if (currentUserId != null) {
                             item {
                                 InteractionPanelRecommendation(
                                     modifier = Modifier,
@@ -197,7 +199,7 @@ fun RecommendationScreenContent(
                                     isReposted = isReposted,
                                     topLikedComment = recommendation.topLikedComment,
                                     authorUserId = recommendation.uid,
-                                    currentUserid = currentUser.uid,
+                                    currentUserid = currentUserId,
                                     onLikeClick = onLikeClick,
                                     onCommentClick = onCommentClick,
                                     onRepostClick = onRepostClick,
@@ -247,7 +249,7 @@ fun RecommendationScreenContent(
                                 modifier = Modifier,
                                 comments = bottomSheetComments,
                                 commentInput = commentInput,
-                                currentUserPhotoReference = currentUser!!.photoReference,
+                                currentUserPhotoReference = currentUserPhotoReference,
                                 onCommentInputValueChange = onCommentInputValueChange,
                                 onUploadCommentClick = onUploadCommentClick,
                                 onDeleteCommentClick = onDeleteCommentClick,
@@ -343,7 +345,8 @@ fun RecommendationScreenContentPreview() {
         loadingStatus = Success(true),
         recommendation = recommendation,
         userItem = userItem,
-        currentUser = null,
+        currentUserId = "",
+        currentUserPhotoReference = null,
         isLiked = false,
         isCommented = false,
         isReposted = false,
