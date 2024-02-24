@@ -331,8 +331,6 @@ fun RecommendationScreenContentPreview() {
         ),
         date = Date(0),
         color = "#ad0f0b",
-        likedBy = arrayListOf(),
-        repostedBy = arrayListOf(),
         views = 0
     )
     val userItem = UserItem(

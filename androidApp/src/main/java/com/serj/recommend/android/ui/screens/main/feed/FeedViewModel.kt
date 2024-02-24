@@ -12,17 +12,14 @@ import com.serj.recommend.android.common.Constants.RECOMMENDATION_ID
 import com.serj.recommend.android.model.collections.Recommendation
 import com.serj.recommend.android.model.collections.User
 import com.serj.recommend.android.model.items.RecommendationItem
-import com.serj.recommend.android.model.items.UserItem
 import com.serj.recommend.android.model.subcollections.Comment
 import com.serj.recommend.android.services.AccountService
 import com.serj.recommend.android.services.LogService
 import com.serj.recommend.android.services.StorageService
 import com.serj.recommend.android.services.model.Response
-import com.serj.recommend.android.ui.components.interaction.InteractionSource
 import com.serj.recommend.android.ui.components.snackbar.SnackbarManager
 import com.serj.recommend.android.ui.screens.RecommendViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
@@ -79,6 +76,7 @@ class FeedViewModel @Inject constructor(
         launchCatching {
             accountService.currentUser.collect { user ->
                 user.uid?.let {
+                    /*
                     storageService.comment(
                         userId = user.uid,
                         recommendationId = currentRecommendationId,
@@ -106,6 +104,8 @@ class FeedViewModel @Inject constructor(
 
                     commentInput = ""
                     bottomSheetComments[comment] = false
+
+                     */
                 }
             }
         }
@@ -116,6 +116,7 @@ class FeedViewModel @Inject constructor(
             launchCatching {
                 accountService.currentUser.collect { user ->
                     user.uid?.let {
+                        /*
                         storageService.removeComment(
                             recommendationId = currentRecommendationId,
                             userId = user.uid,
@@ -124,6 +125,8 @@ class FeedViewModel @Inject constructor(
                         )
                         commentInput = ""
                         bottomSheetComments.remove(comment)
+
+                         */
                     }
                 }
             }

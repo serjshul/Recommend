@@ -17,6 +17,7 @@ import com.serj.recommend.android.model.subcollections.Comment
 import com.serj.recommend.android.model.subcollections.Like
 import com.serj.recommend.android.model.subcollections.Repost
 import com.serj.recommend.android.services.AccountService
+import com.serj.recommend.android.services.InteractionService
 import com.serj.recommend.android.services.LogService
 import com.serj.recommend.android.services.StorageService
 import com.serj.recommend.android.services.model.Response
@@ -32,6 +33,7 @@ class RecommendationViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     logService: LogService,
     private val storageService: StorageService,
+    private val interactionService: InteractionService,
     private val accountService: AccountService
 ) : RecommendViewModel(logService) {
 
@@ -130,7 +132,7 @@ class RecommendationViewModel @Inject constructor(
                         source = InteractionSource.recommendation.name
                     )
 
-                    val likeResponse = storageService.like(like = like)
+                    val likeResponse = interactionService.like(like = like)
                     if (likeResponse is Response.Success) {
                         currentLikeId = likeResponse.data
                     } else {
@@ -145,7 +147,7 @@ class RecommendationViewModel @Inject constructor(
                 isLiked = !isLiked
                 if (currentUser.value != null && currentUser.value!!.uid != null &&
                     currentRecommendationId != null && currentLikeId != null) {
-                    val removeLikeResponse = storageService.removeLike(
+                    val removeLikeResponse = interactionService.removeLike(
                         userId = currentUser.value!!.uid!!,
                         recommendationId = currentRecommendationId!!,
                         likeId = currentLikeId!!
@@ -182,7 +184,7 @@ class RecommendationViewModel @Inject constructor(
                         source = InteractionSource.recommendation.name
                     )
 
-                    val repostResponse = storageService.repost(repost)
+                    val repostResponse = interactionService.repost(repost)
                     if (repostResponse is Response.Success) {
                         currentRepostId = repostResponse.data
                     } else {
@@ -197,7 +199,7 @@ class RecommendationViewModel @Inject constructor(
                 isReposted = !isReposted
                 if (currentUser.value != null && currentUser.value!!.uid != null &&
                     currentRecommendationId != null && currentRepostId != null) {
-                    val removeRepostResponse = storageService.removeRepost(
+                    val removeRepostResponse = interactionService.removeRepost(
                         userId = currentUser.value!!.uid!!,
                         recommendationId = currentRecommendationId!!,
                         repostId = currentRepostId!!
@@ -244,7 +246,7 @@ class RecommendationViewModel @Inject constructor(
             Log.v(TAG, currentUser.value?.uid.toString())
 
             if (currentUser.value?.uid != null) {
-                storageService.comment(
+                interactionService.comment(
                     userId = currentUser.value!!.uid!!,
                     recommendationId = currentRecommendationId!!,
                     repliedCommentId = null,
@@ -284,7 +286,7 @@ class RecommendationViewModel @Inject constructor(
                 accountService.currentUser.collect { user ->
                     user.uid?.let {
                         currentRecommendationId?.let { it1 ->
-                            storageService.removeComment(
+                            interactionService.removeComment(
                                 recommendationId = it1,
                                 userId = user.uid,
                                 commentId = comment.id,

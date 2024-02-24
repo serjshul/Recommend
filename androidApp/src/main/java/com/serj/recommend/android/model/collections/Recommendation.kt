@@ -33,9 +33,6 @@ data class Recommendation(
 
     val date: Date? = Date(),
 
-    val likedBy: ArrayList<String> = arrayListOf(),
-    val repostedBy: ArrayList<String> = arrayListOf(),
-
     val likes: ArrayList<Like> = arrayListOf(),
     val comments: ArrayList<Comment> = arrayListOf(),
     val reposts: ArrayList<Repost> = arrayListOf(),

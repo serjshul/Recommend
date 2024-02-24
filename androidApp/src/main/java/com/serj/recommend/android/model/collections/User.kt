@@ -19,8 +19,8 @@ data class User(
     val photoUrl: String? = null,
     var photoReference: StorageReference? = null,
 
-    val followers: ArrayList<String> = arrayListOf(),
-    val following: ArrayList<String> = arrayListOf(),
+    val followers: List<String> = listOf(),
+    val following: List<String> = listOf(),
 
     val content: List<UserContent> = listOf(),
 

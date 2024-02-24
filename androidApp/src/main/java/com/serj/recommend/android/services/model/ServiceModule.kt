@@ -2,10 +2,12 @@ package com.serj.recommend.android.services.model
 
 import com.serj.recommend.android.services.AccountService
 import com.serj.recommend.android.services.ConfigurationService
+import com.serj.recommend.android.services.InteractionService
 import com.serj.recommend.android.services.LogService
 import com.serj.recommend.android.services.StorageService
 import com.serj.recommend.android.services.impl.AccountServiceImpl
 import com.serj.recommend.android.services.impl.ConfigurationServiceImpl
+import com.serj.recommend.android.services.impl.InteractionServiceImpl
 import com.serj.recommend.android.services.impl.LogServiceImpl
 import com.serj.recommend.android.services.impl.StorageServiceImpl
 import dagger.Binds
@@ -24,6 +26,9 @@ abstract class ServiceModule {
 
     @Binds
     abstract fun provideStorageService(impl: StorageServiceImpl): StorageService
+
+    @Binds
+    abstract fun provideInteractionService(impl: InteractionServiceImpl): InteractionService
 
     @Binds
     abstract fun provideConfigurationService(impl: ConfigurationServiceImpl): ConfigurationService

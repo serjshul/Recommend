@@ -24,29 +24,25 @@ import com.serj.recommend.android.model.items.UserItem
 import com.serj.recommend.android.model.subcollections.Comment
 import com.serj.recommend.android.model.subcollections.Like
 import com.serj.recommend.android.model.subcollections.Repost
-import com.serj.recommend.android.model.subcollections.UserContent
-import com.serj.recommend.android.services.DeleteCommentResponse
 import com.serj.recommend.android.services.GetBannerResponse
 import com.serj.recommend.android.services.GetCategoryResponse
+import com.serj.recommend.android.services.GetCommentsResponse
 import com.serj.recommend.android.services.GetFollowingRecommendationsIdsResponse
-import com.serj.recommend.android.services.GetRecommendationCommentsResponse
 import com.serj.recommend.android.services.GetRecommendationItemResponse
 import com.serj.recommend.android.services.GetRecommendationPreviewResponse
 import com.serj.recommend.android.services.GetRecommendationResponse
+import com.serj.recommend.android.services.GetRepostsResponse
 import com.serj.recommend.android.services.GetStorageReferenceFromUrlResponse
 import com.serj.recommend.android.services.GetUserItemResponse
-import com.serj.recommend.android.services.LikeRecommendationResponse
-import com.serj.recommend.android.services.RemoveLikeRecommendationResponse
-import com.serj.recommend.android.services.RemoveRepostRecommendationResponse
-import com.serj.recommend.android.services.RepostRecommendationResponse
 import com.serj.recommend.android.services.StorageService
-import com.serj.recommend.android.services.UploadCommentResponse
 import com.serj.recommend.android.services.UploadRecommendationResponse
 import com.serj.recommend.android.services.UploadUserPhotoResponse
 import com.serj.recommend.android.services.UploadUserResponse
 import com.serj.recommend.android.services.model.Response
 import com.serj.recommend.android.services.model.Response.Failure
 import com.serj.recommend.android.services.model.Response.Success
+import com.serj.recommend.android.services.uploadFollowersResponse
+import com.serj.recommend.android.services.uploadFollowingResponse
 import com.serj.recommend.android.ui.components.media.BackgroundTypes
 import com.serj.recommend.android.ui.components.recommendationPreviews.ItemsShapes
 import kotlinx.coroutines.flow.Flow
@@ -94,18 +90,18 @@ class StorageServiceImpl @Inject constructor(
                             .getOrDefault(BackgroundTypes.image.name, null)
                             ?.let { storage.getReferenceFromUrl(it) }
                 }
-                val likesResponse = getLikesFromRecommendation(recommendationId)
+                val likesResponse = getLikes(recommendationId)
                 if (likesResponse is Success && likesResponse.data != null) {
                     data.likes.addAll(likesResponse.data)
                 }
-                val commentsResponse = getCommentsFromRecommendation(recommendationId)
+                val commentsResponse = getComments(recommendationId)
                 if (commentsResponse is Success && commentsResponse.data != null) {
                     data.comments.addAll(commentsResponse.data)
                     if (data.comments.isNotEmpty()) {
                         data.topLikedComment = data.comments.maxBy { it.likedBy.size }
                     }
                 }
-                val repostsResponse = getRepostsFromRecommendation(recommendationId)
+                val repostsResponse = getReposts(recommendationId)
                 if (repostsResponse is Success && repostsResponse.data != null) {
                     data.reposts.addAll(repostsResponse.data)
                 }
@@ -199,7 +195,7 @@ class StorageServiceImpl @Inject constructor(
                     ?.let { storage.getReferenceFromUrl(it) }
                 recommendationData.isLiked = currentUserLikedIds.contains(recommendationData.id)
 
-                val commentsResponse = getCommentsFromRecommendation(recommendationId)
+                val commentsResponse = getComments(recommendationId)
                 if (commentsResponse is Success && commentsResponse.data != null) {
                     recommendationData.comments.addAll(commentsResponse.data)
                 }
@@ -263,484 +259,6 @@ class StorageServiceImpl @Inject constructor(
             Failure(e)
         }
     }
-
-    override suspend fun like(
-        like: Like
-    ): LikeRecommendationResponse {
-        return try {
-            var userTransactionResult = false
-            var recommendationTransactionResult = false
-
-            var likeId: String? = null
-
-            firestore
-                .collection(USERS_COLLECTION)
-                .document(like.userId!!)
-                .collection(USER_LIKES_SUBCOLLECTION)
-                .add(like)
-                .addOnCompleteListener {
-                    userTransactionResult = it.isSuccessful
-                    if (it.isSuccessful) {
-                        likeId = it.result.id
-                        Log.d(TAG, "Like added to User (${like.userId})")
-                    } else
-                        Log.d(TAG, "Like wasn't added to User (${like.userId})")
-                }
-                .await()
-            if (likeId != null) {
-                firestore
-                    .collection(RECOMMENDATIONS_COLLECTION)
-                    .document(like.recommendationId!!)
-                    .collection(RECOMMENDATION_LIKES_SUBCOLLECTION)
-                    .document(likeId!!)
-                    .set(like)
-                    .addOnCompleteListener {
-                        recommendationTransactionResult = it.isSuccessful
-                        if (it.isSuccessful)
-                            Log.d(TAG, "Like added to Recommendation (${like.recommendationId})")
-                        else
-                            Log.d(TAG, "Like wasn't added to Recommendation (${like.recommendationId})")
-                    }
-                    .await()
-            }
-
-            if (userTransactionResult && recommendationTransactionResult)
-                Success(likeId)
-            else
-                Failure(Exception())
-        } catch (e: Exception) {
-            Failure(e)
-        }
-    }
-
-    override suspend fun removeLike(
-        userId: String,
-        recommendationId: String,
-        likeId: String
-    ): RemoveLikeRecommendationResponse {
-        return try {
-            var userTransactionResult = false
-            var recommendationTransactionResult = false
-
-            firestore
-                .collection(USERS_COLLECTION)
-                .document(userId)
-                .collection(USER_LIKES_SUBCOLLECTION)
-                .document(likeId)
-                .delete()
-                .addOnCompleteListener {
-                    userTransactionResult = it.isSuccessful
-                    if (it.isSuccessful)
-                        Log.d(TAG, "Like removed from User (${userId})")
-                    else
-                        Log.d(TAG, "Like wasn't removed from User (${userId})")
-                }
-                .await()
-            firestore
-                .collection(RECOMMENDATIONS_COLLECTION)
-                .document(recommendationId)
-                .collection(RECOMMENDATION_LIKES_SUBCOLLECTION)
-                .document(likeId)
-                .delete()
-                .addOnCompleteListener {
-                    recommendationTransactionResult = it.isSuccessful
-                    if (it.isSuccessful)
-                        Log.d(TAG, "Like removed from Recommendation (${recommendationId})")
-                    else
-                        Log.d(TAG, "Like wasn't removed from Recommendation (${recommendationId})")
-                }
-                .await()
-
-            if (userTransactionResult && recommendationTransactionResult)
-                Success(true)
-            else
-                Failure(Exception())
-        } catch (e: Exception) {
-            Failure(e)
-        }
-    }
-
-    override suspend fun comment(
-        userId: String,
-        recommendationId: String,
-        repliedCommentId: String?,
-        repliedUserId: String?,
-        text: String,
-        isReplied: Boolean,
-        date: Date,
-        source: String
-    ): UploadCommentResponse {
-        return try {
-            var recommendationTransaction = false
-            var userTransaction = false
-            var commentId: String? = null
-
-            val document = Comment(
-                userId = userId,
-                recommendationId = recommendationId,
-                repliedCommentId = repliedCommentId,
-                repliedUserId = repliedUserId,
-                isReply = isReplied,
-                text = text,
-                date = date,
-                likedBy = listOf(),
-                source = source
-            )
-
-            firestore
-                .collection(RECOMMENDATIONS_COLLECTION)
-                .document(recommendationId)
-                .collection(COMMENTS_COLLECTION)
-                .add(document)
-                .addOnCompleteListener { task ->
-                    recommendationTransaction = task.isSuccessful
-                    if (task.isSuccessful) {
-                        commentId = task.result.id
-                        Log.d(TAG, "Comment added to Recommendation (${recommendationId})")
-                    } else
-                        Log.d(TAG, "Comment wasn't add to Recommendation (${recommendationId})")
-                }
-                .await()
-            if (commentId != null) {
-                firestore
-                    .collection(USERS_COLLECTION)
-                    .document(userId)
-                    .collection(USER_COMMENTS_SUBCOLLECTION)
-                    .document(commentId!!)
-                    .set(document)
-                    .addOnCompleteListener { task ->
-                        userTransaction = task.isSuccessful
-                        if (task.isSuccessful) {
-                            Log.d(TAG, "Comment added to User (${userId})")
-                        } else
-                            Log.d(TAG, "Comment wasn't add to User (${userId})")
-                    }
-                    .await()
-            }
-
-            if (recommendationTransaction && userTransaction) {
-                Success(true)
-            } else {
-                Failure(Exception())
-            }
-        } catch (e: Exception) {
-            Failure(e)
-        }
-    }
-
-    override suspend fun removeComment(
-        recommendationId: String,
-        userId: String,
-        commentId: String,
-        commentOwnerId: String
-    ): DeleteCommentResponse {
-        return try {
-            if (userId == commentOwnerId) {
-                var recommendationTransaction = false
-                var userTransaction = false
-
-                firestore
-                    .collection(RECOMMENDATIONS_COLLECTION)
-                    .document(recommendationId)
-                    .collection(COMMENTS_COLLECTION)
-                    .document(commentId)
-                    .delete()
-                    .addOnCompleteListener { task ->
-                        recommendationTransaction = task.isSuccessful
-                        if (task.isSuccessful) {
-                            Log.d(TAG, "Comment removed from Recommendation (${recommendationId})")
-                        } else
-                            Log.d(TAG, "Comment wasn't removed from Recommendation (${recommendationId})")
-                    }
-                    .await()
-                firestore
-                    .collection(USERS_COLLECTION)
-                    .document(userId)
-                    .collection(USER_COMMENTS_SUBCOLLECTION)
-                    .document(commentId)
-                    .delete()
-                    .addOnCompleteListener { task ->
-                        userTransaction = task.isSuccessful
-                        if (task.isSuccessful)
-                            Log.d(TAG, "Comment removed from User (${userId})")
-                        else
-                            Log.w(TAG, "Comment wasn't remove from User (${userId})")
-                    }
-                    .await()
-                if (recommendationTransaction && userTransaction)
-                    Success(true)
-                else
-                    Failure(Exception())
-            } else {
-                Failure(Exception())
-            }
-        } catch (e: Exception) {
-            Failure(e)
-        }
-    }
-
-    override suspend fun repost(
-        repost: Repost
-    ): RepostRecommendationResponse {
-        return try {
-            var firstTransactionResult = false
-            var secondTransactionResult = false
-            var thirdTransactionResult = false
-
-            var repostId: String? = null
-            val userContent = UserContent(
-                recommendationId = repost.recommendationId,
-                userId = repost.userId,
-                isReposted = true,
-                date = repost.date,
-                source = repost.source
-            )
-
-            firestore
-                .collection(USERS_COLLECTION)
-                .document(userContent.userId!!)
-                .collection(USER_CONTENT_SUBCOLLECTION)
-                .add(userContent)
-                .addOnCompleteListener {
-                    firstTransactionResult = it.isSuccessful
-                    if (it.isSuccessful) {
-                        repostId = it.result.id
-                        Log.d(TAG, "Repost added to User (${userContent.userId})")
-                    } else
-                        Log.d(TAG, "Repost wasn't added to User (${userContent.userId})")
-                }
-                .await()
-            if (repostId != null) {
-                firestore
-                    .collection(USERS_COLLECTION)
-                    .document(repost.userId!!)
-                    .collection(USER_REPOSTS_SUBCOLLECTION)
-                    .document(repostId!!)
-                    .set(repost)
-                    .addOnCompleteListener {
-                        secondTransactionResult = it.isSuccessful
-                        if (it.isSuccessful)
-                            Log.d(TAG, "Repost added to User (${repost.userId})")
-                        else
-                            Log.d(TAG, "Repost wasn't added to User (${repost.userId})")
-                    }
-                    .await()
-                firestore
-                    .collection(RECOMMENDATIONS_COLLECTION)
-                    .document(repost.recommendationId!!)
-                    .collection(RECOMMENDATION_REPOSTS_SUBCOLLECTION)
-                    .document(repostId!!)
-                    .set(repost)
-                    .addOnCompleteListener {
-                        thirdTransactionResult = it.isSuccessful
-                        if (it.isSuccessful)
-                            Log.d(
-                                TAG,
-                                "Repost added to Recommendation (${repost.recommendationId})"
-                            )
-                        else
-                            Log.d(
-                                TAG,
-                                "Repost wasn't added to Recommendation (${repost.recommendationId})"
-                            )
-                    }
-                    .await()
-            }
-
-            if (firstTransactionResult && secondTransactionResult && thirdTransactionResult)
-                Success(repostId)
-            else
-                Failure(Exception())
-        } catch (e: Exception) {
-            Failure(e)
-        }
-    }
-
-    override suspend fun removeRepost(
-        userId: String,
-        recommendationId: String,
-        repostId: String
-    ): RemoveRepostRecommendationResponse {
-        return try {
-            var firstTransactionResult = false
-            var secondTransactionResult = false
-            var thirdTransactionResult = false
-
-            firestore
-                .collection(USERS_COLLECTION)
-                .document(userId)
-                .collection(USER_CONTENT_SUBCOLLECTION)
-                .document(repostId)
-                .delete()
-                .addOnCompleteListener {
-                    firstTransactionResult = it.isSuccessful
-                    if (it.isSuccessful)
-                        Log.d(TAG, "Repost removed from User (${userId})")
-                    else
-                        Log.d(TAG, "Repost wasn't removed from User (${userId})")
-                }
-                .await()
-            firestore
-                .collection(USERS_COLLECTION)
-                .document(userId)
-                .collection(USER_REPOSTS_SUBCOLLECTION)
-                .document(repostId)
-                .delete()
-                .addOnCompleteListener {
-                    secondTransactionResult = it.isSuccessful
-                    if (it.isSuccessful)
-                        Log.d(TAG, "Repost removed from User (${userId})")
-                    else
-                        Log.d(TAG, "Repost wasn't removed from User (${userId})")
-                }
-                .await()
-            firestore
-                .collection(RECOMMENDATIONS_COLLECTION)
-                .document(recommendationId)
-                .collection(RECOMMENDATION_REPOSTS_SUBCOLLECTION)
-                .document(repostId)
-                .delete()
-                .addOnCompleteListener {
-                    thirdTransactionResult = it.isSuccessful
-                    if (it.isSuccessful)
-                        Log.d(TAG, "Repost removed from Recommendation (${recommendationId})")
-                    else
-                        Log.d(TAG, "Repost wasn't removed from Recommendation (${recommendationId})")
-                }
-                .await()
-
-            if (firstTransactionResult && secondTransactionResult && thirdTransactionResult)
-                Success(true)
-            else
-                Failure(Exception())
-        } catch (e: Exception) {
-            Failure(e)
-        }
-    }
-
-    private suspend fun getLikesFromRecommendation(
-        recommendationId: String
-    ): Response<List<Like>> {
-        return try {
-            var transactionResult = false
-            val likes: ArrayList<Like> = arrayListOf()
-
-            firestore
-                .collection(RECOMMENDATIONS_COLLECTION)
-                .document(recommendationId)
-                .collection(RECOMMENDATION_LIKES_SUBCOLLECTION)
-                .get()
-                .addOnSuccessListener {
-                    val result = it.toObjects<Like>()
-                    for (like in result) {
-                        if (isLikeValid(like)) {
-                            likes.add(like)
-                        }
-                    }
-                    transactionResult = true
-                }
-                .addOnFailureListener { exception ->
-                    transactionResult = false
-                    Log.d(TAG, "Error getting documents: ", exception)
-                }
-                .await()
-
-            if (transactionResult)
-                Success(likes)
-            else
-                Failure(Exception())
-        } catch (e: Exception) {
-            Failure(e)
-        }
-    }
-
-    override suspend fun getCommentsFromRecommendation(
-        recommendationId: String
-    ): GetRecommendationCommentsResponse {
-        return try {
-            var transactionResult = false
-            val comments: ArrayList<Comment> = arrayListOf()
-
-            firestore
-                .collection(RECOMMENDATIONS_COLLECTION)
-                .document(recommendationId)
-                .collection(COMMENTS_COLLECTION)
-                .get()
-                .addOnSuccessListener {
-                    val result = it.toObjects<Comment>()
-                    for (comment in result) {
-                        if (isCommentValid(comment)) {
-                            comments.add(comment)
-                        }
-                    }
-                    transactionResult = true
-                }
-                .addOnFailureListener { exception ->
-                    transactionResult = false
-                    Log.d(TAG, "Error getting documents: ", exception)
-                }
-                .await()
-
-            if (transactionResult) {
-                for (comment in comments) {
-                    val userItemResponse = comment.userId?.let { getUserItemByUid(it) }
-                    if (userItemResponse is Success && userItemResponse.data != null)
-                        comment.userItem = userItemResponse.data
-                    else
-                        transactionResult = false
-                }
-                Success(comments)
-            } else
-                Failure(Exception())
-        } catch (e: Exception) {
-            Failure(e)
-        }
-    }
-
-    private suspend fun getRepostsFromRecommendation(
-        recommendationId: String
-    ): Response<List<Repost>> {
-        return try {
-            var transactionResult = false
-            val reposts: ArrayList<Repost> = arrayListOf()
-
-            firestore
-                .collection(RECOMMENDATIONS_COLLECTION)
-                .document(recommendationId)
-                .collection(RECOMMENDATION_REPOSTS_SUBCOLLECTION)
-                .get()
-                .addOnSuccessListener {
-                    val result = it.toObjects<Repost>()
-                    for (repost in result) {
-                        if (isRepostValid(repost)) {
-                            reposts.add(repost)
-                        }
-                    }
-                    transactionResult = true
-                }
-                .addOnFailureListener { exception ->
-                    transactionResult = false
-                    Log.d(TAG, "Error getting documents: ", exception)
-                }
-                .await()
-
-            if (transactionResult)
-                Success(reposts)
-            else
-                Failure(Exception())
-        } catch (e: Exception) {
-            Failure(e)
-        }
-    }
-
-    private fun isLikeValid(like: Like) =
-        like.userId != null && like.recommendationId != null && like.date != null && like.source != null
-
-    private fun isCommentValid(comment: Comment) = comment.userId != null && comment.recommendationId != null &&
-            comment.text != null && comment.date != null && comment.source != null
-
-    private fun isRepostValid(repost: Repost) =
-        repost.userId != null && repost.recommendationId != null && repost.date != null && repost.source != null
 
     override suspend fun getFollowingRecommendationsIds(
         followingUids: List<String>
@@ -818,6 +336,121 @@ class StorageServiceImpl @Inject constructor(
             }
 
             Success(uploadedRecommendationId)
+        } catch (e: Exception) {
+            Failure(e)
+        }
+    }
+
+    override suspend fun getLikes(
+        recommendationId: String
+    ): Response<List<Like>> {
+        return try {
+            var transactionResult = false
+            val likes: ArrayList<Like> = arrayListOf()
+
+            firestore
+                .collection(RECOMMENDATIONS_COLLECTION)
+                .document(recommendationId)
+                .collection(RECOMMENDATION_LIKES_SUBCOLLECTION)
+                .get()
+                .addOnSuccessListener {
+                    val result = it.toObjects<Like>()
+                    for (like in result) {
+                        if (isLikeValid(like)) {
+                            likes.add(like)
+                        }
+                    }
+                    transactionResult = true
+                }
+                .addOnFailureListener { exception ->
+                    transactionResult = false
+                    Log.d(TAG, "Error getting documents: ", exception)
+                }
+                .await()
+
+            if (transactionResult)
+                Success(likes)
+            else
+                Failure(Exception())
+        } catch (e: Exception) {
+            Failure(e)
+        }
+    }
+
+    override suspend fun getComments(
+        recommendationId: String
+    ): GetCommentsResponse {
+        return try {
+            var transactionResult = false
+            val comments: ArrayList<Comment> = arrayListOf()
+
+            firestore
+                .collection(RECOMMENDATIONS_COLLECTION)
+                .document(recommendationId)
+                .collection(COMMENTS_COLLECTION)
+                .get()
+                .addOnSuccessListener {
+                    val result = it.toObjects<Comment>()
+                    for (comment in result) {
+                        if (isCommentValid(comment)) {
+                            comments.add(comment)
+                        }
+                    }
+                    transactionResult = true
+                }
+                .addOnFailureListener { exception ->
+                    transactionResult = false
+                    Log.d(TAG, "Error getting documents: ", exception)
+                }
+                .await()
+
+            if (transactionResult) {
+                for (comment in comments) {
+                    val userItemResponse = comment.userId?.let { getUserItemByUid(it) }
+                    if (userItemResponse is Success && userItemResponse.data != null)
+                        comment.userItem = userItemResponse.data
+                    else
+                        transactionResult = false
+                }
+                Success(comments)
+            } else
+                Failure(Exception())
+        } catch (e: Exception) {
+            Failure(e)
+        }
+    }
+
+    override suspend fun getReposts(
+        recommendationId: String
+    ): GetRepostsResponse {
+        return try {
+            var transactionResult = false
+            val reposts: ArrayList<Repost> = arrayListOf()
+
+            firestore
+                .collection(RECOMMENDATIONS_COLLECTION)
+                .document(recommendationId)
+                .collection(RECOMMENDATION_REPOSTS_SUBCOLLECTION)
+                .get()
+                .addOnSuccessListener {
+                    val result = it.toObjects<Repost>()
+                    for (repost in result) {
+                        if (isRepostValid(repost)) {
+                            reposts.add(repost)
+                        }
+                    }
+                    transactionResult = true
+                }
+                .addOnFailureListener { exception ->
+                    transactionResult = false
+                    Log.d(TAG, "Error getting documents: ", exception)
+                }
+                .await()
+
+            if (transactionResult)
+                Success(reposts)
+            else
+                Failure(Exception())
         } catch (e: Exception) {
             Failure(e)
         }
@@ -906,6 +539,14 @@ class StorageServiceImpl @Inject constructor(
         }
     }
 
+    override suspend fun getFollowing(userId: String): uploadFollowingResponse {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getFollowers(userId: String): uploadFollowersResponse {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun uploadBackgroundImage(
         recommendationId: String,
         uri: Uri,
@@ -991,6 +632,8 @@ class StorageServiceImpl @Inject constructor(
         }
     }
 
+
+
     override fun getStorageReferenceFromUrl(
         url: String
     ): GetStorageReferenceFromUrlResponse {
@@ -1016,6 +659,16 @@ class StorageServiceImpl @Inject constructor(
         }
     }
 
+    private fun isLikeValid(like: Like) =
+        like.userId != null && like.recommendationId != null && like.date != null && like.source != null
+
+    private fun isCommentValid(comment: Comment) = comment.userId != null && comment.recommendationId != null &&
+            comment.text != null && comment.date != null && comment.source != null
+
+    private fun isRepostValid(repost: Repost) =
+        repost.userId != null && repost.recommendationId != null && repost.date != null && repost.source != null
+
+
     private fun getAvailableCoverTypes(
         coversUrl: HashMap<String, String>
     ): List<String> = coversUrl.keys.toList()
@@ -1028,15 +681,10 @@ class StorageServiceImpl @Inject constructor(
         private const val COMMENTS_COLLECTION = "comments"
 
         private const val USER_CONTENT_SUBCOLLECTION = "content"
-        private const val USER_LIKES_SUBCOLLECTION = "likes"
-        private const val USER_COMMENTS_SUBCOLLECTION = "comments"
-        private const val USER_REPOSTS_SUBCOLLECTION = "reposts"
-
         private const val RECOMMENDATION_LIKES_SUBCOLLECTION = "likes"
         private const val RECOMMENDATION_REPOSTS_SUBCOLLECTION = "reposts"
 
         private const val UID_FIELD = "uid"
-
         private const val DATE_FIELD = "date"
     }
 }

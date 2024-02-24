@@ -1,6 +1,6 @@
 package com.serj.recommend.android.services.impl
 
-import android.content.ContentValues
+import android.content.ContentValues.TAG
 import android.util.Log
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
@@ -82,28 +82,21 @@ class AccountServiceImpl @Inject constructor(
         }
 
     private suspend fun getUser(uid: String): User? {
+        var isSuccess = false
         var currentUser: User? = null
 
         firestore
             .collection(USERS_COLLECTION)
             .document(uid)
             .get()
-            .addOnSuccessListener {document ->
-                val user = document.toObject<User>()
-                if (user != null) {
-                    currentUser = User(
-                        uid = user.uid,
-                        nickname = user.nickname,
-                        name = user.name,
-                        dateOfBirth = user.dateOfBirth,
-                        photoUrl = user.photoUrl,
-                        followers = user.followers,
-                        following = user.following
-                    )
+            .addOnCompleteListener {
+                isSuccess = it.isSuccessful
+                if (it.isSuccessful) {
+                    currentUser = it.result.toObject<User>()
+                    Log.d(TAG, "${currentUser?.uid}: User's profile was successfully uploaded")
+                } else {
+                    Log.w(TAG, "${currentUser?.uid}: User's profile wasn't uploaded")
                 }
-            }.addOnFailureListener {
-                // Handle any errors
-                Log.v(ContentValues.TAG, "error getUserData()")
             }
             .await()
 

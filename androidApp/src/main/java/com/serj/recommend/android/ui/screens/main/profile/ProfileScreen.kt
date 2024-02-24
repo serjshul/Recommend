@@ -7,6 +7,7 @@ import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -69,17 +70,21 @@ fun ProfileScreen(
 private fun ProfileScreenContent(
     profileUser: User?,
     currentUser: User?,
-) = Column {
-    ProfileInfo(
-        profileUser = profileUser,
-        currentUser = currentUser,
-        modifier = Modifier.weight(.3f)
-    )
-    BottomPart(
-        profileUser = profileUser,
-        currentUser = currentUser,
-        modifier = Modifier.weight(.7f)
-    )
+) {
+    Column(
+        modifier = Modifier.background(Color.White)
+    ) {
+        ProfileInfo(
+            profileUser = profileUser,
+            currentUser = currentUser,
+            modifier = Modifier.weight(.3f)
+        )
+        BottomPart(
+            profileUser = profileUser,
+            currentUser = currentUser,
+            modifier = Modifier.weight(.7f)
+        )
+    }
 }
 
 // TODO: Top part of profile we make like RecommendationScreen
