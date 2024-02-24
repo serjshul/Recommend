@@ -2,6 +2,7 @@ package com.serj.recommend.android.model.collections
 
 import com.google.firebase.firestore.DocumentId
 import com.google.firebase.storage.StorageReference
+import com.serj.recommend.android.model.items.UserItem
 import com.serj.recommend.android.model.subcollections.Comment
 import com.serj.recommend.android.model.subcollections.Like
 import com.serj.recommend.android.model.subcollections.Repost
@@ -31,18 +32,17 @@ data class Recommendation(
     var backgroundImageReference: StorageReference? = null,
     var backgroundVideoReference: StorageReference? = null,
 
-    val date: Date? = Date(),
-
     val likes: ArrayList<Like> = arrayListOf(),
     val comments: ArrayList<Comment> = arrayListOf(),
     val reposts: ArrayList<Repost> = arrayListOf(),
     var topLikedComment: Comment? = null,
+    val views: Int = 0,
+    val coverage: Int = 0,
+    val date: Date? = Date(),
 
+    var userItem: UserItem? = null,
     var isLiked: Boolean = false,
     var likeId: String? = null,
     var isReposted: Boolean = false,
-    var repostId: String? = null,
-
-    val views: Int = 0,
-    val coverage: Int = 0
+    var repostId: String? = null
 )

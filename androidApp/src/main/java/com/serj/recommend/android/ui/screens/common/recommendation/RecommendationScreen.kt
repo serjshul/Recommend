@@ -27,7 +27,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.firebase.storage.StorageReference
 import com.serj.recommend.android.common.ext.toColor
 import com.serj.recommend.android.model.collections.Recommendation
-import com.serj.recommend.android.model.items.UserItem
 import com.serj.recommend.android.model.subcollections.Comment
 import com.serj.recommend.android.services.model.Response
 import com.serj.recommend.android.services.model.Response.Success
@@ -56,7 +55,6 @@ fun RecommendationScreen(
         modifier = modifier,
         loadingStatus = viewModel.loadingStatus.value,
         recommendation = viewModel.recommendation.value,
-        userItem = viewModel.userItem.value,
         currentUserId = viewModel.currentUserId,
         currentUserPhotoReference = viewModel.currentUserPhotoReference,
         isLiked = viewModel.isLiked,
@@ -87,7 +85,6 @@ fun RecommendationScreenContent(
     modifier: Modifier = Modifier,
     loadingStatus: Response<Boolean>,
     recommendation: Recommendation?,
-    userItem: UserItem?,
     currentUserId: String?,
     currentUserPhotoReference: StorageReference?,
     isLiked: Boolean,
@@ -151,7 +148,7 @@ fun RecommendationScreenContent(
                             .align(Alignment.TopCenter),
                         state = lazyListState
                     ) {
-                        if (userItem != null) {
+                        if (recommendation.userItem != null) {
                             item {
                                 Header(
                                     modifier = Modifier
@@ -160,8 +157,8 @@ fun RecommendationScreenContent(
                                     creator = recommendation.creator!!,
                                     tags = recommendation.tags!!,
                                     year = recommendation.year!!,
-                                    photoReference = userItem.photoReference,
-                                    nickname = userItem.nickname
+                                    photoReference = recommendation.userItem!!.photoReference,
+                                    nickname = recommendation.userItem!!.nickname
                                 )
                             }
                         }
@@ -335,16 +332,11 @@ fun RecommendationScreenContentPreview() {
         color = "#ad0f0b",
         views = 0
     )
-    val userItem = UserItem(
-        uid = "userId",
-        nickname = "nickname"
-    )
 
     RecommendationScreenContent(
         modifier = Modifier,
         loadingStatus = Success(true),
         recommendation = recommendation,
-        userItem = userItem,
         currentUserId = "",
         currentUserPhotoReference = null,
         isLiked = false,

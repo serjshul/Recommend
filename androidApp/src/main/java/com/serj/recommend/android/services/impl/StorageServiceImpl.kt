@@ -121,6 +121,10 @@ class StorageServiceImpl @Inject constructor(
                         }
                     }
                 }
+                val userItemResponse = getUserItemByUid(data.uid!!)
+                if (userItemResponse is Success) {
+                    data.userItem = userItemResponse.data
+                }
 
                 Success(data)
             } else {

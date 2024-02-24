@@ -10,7 +10,6 @@ import com.serj.recommend.android.R
 import com.serj.recommend.android.common.Constants.RECOMMENDATION_ID
 import com.serj.recommend.android.common.ext.idFromParameter
 import com.serj.recommend.android.model.collections.Recommendation
-import com.serj.recommend.android.model.items.UserItem
 import com.serj.recommend.android.model.subcollections.Comment
 import com.serj.recommend.android.model.subcollections.Like
 import com.serj.recommend.android.model.subcollections.Repost
@@ -42,7 +41,6 @@ class RecommendationViewModel @Inject constructor(
         private set
     var currentUserPhotoReference by mutableStateOf<StorageReference?>(null)
         private set
-    val userItem = mutableStateOf<UserItem?>(null)
 
     val recommendation = mutableStateOf<Recommendation?>(null)
     private var currentRecommendationId by mutableStateOf<String?>(null)
@@ -94,12 +92,6 @@ class RecommendationViewModel @Inject constructor(
 
                             isReposted = recommendationResponse.data.isReposted
                             currentRepostId = recommendationResponse.data.repostId
-
-                            val userItemResponse = recommendationResponse.data.uid?.let {
-                                storageService.getUserItemByUid(it)
-                            }
-                            if (userItemResponse is Response.Success)
-                                userItem.value = userItemResponse.data
 
                             loadingStatus.value = Response.Success(true)
                         }
