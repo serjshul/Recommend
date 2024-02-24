@@ -1,7 +1,5 @@
 package com.serj.recommend.android.ui.screens.common.recommendation
 
-import android.content.ContentValues.TAG
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
@@ -126,6 +124,7 @@ class RecommendationViewModel @Inject constructor(
                 if (currentUser.value != null && currentUser.value!!.uid != null &&
                     currentRecommendationId != null) {
                     val like = Like(
+                        id = generateLikeId(currentRecommendationId!!, currentUser.value!!.uid!!),
                         userId = currentUser.value!!.uid,
                         recommendationId = currentRecommendationId,
                         date = Date(),
@@ -243,39 +242,20 @@ class RecommendationViewModel @Inject constructor(
 
     fun onUploadCommentClick() {
         launchCatching {
-            Log.v(TAG, currentUser.value?.uid.toString())
-
             if (currentUser.value?.uid != null) {
-                interactionService.comment(
+                val comment = Comment(
+                    id = generateCommentId(currentRecommendationId!!, currentUser.value!!.uid!!),
                     userId = currentUser.value!!.uid!!,
                     recommendationId = currentRecommendationId!!,
-                    repliedCommentId = null,
-                    repliedUserId = null,
                     text = commentInput,
-                    isReplied = false,
                     date = Date(),
                     source = InteractionSource.recommendation.name
                 )
-
-                val comment = Comment(
-                    id = (currentUser.value?.uid!! + commentInput).hashCode().toString(),
-                    userId = currentUser.value!!.uid!!,
-                    recommendationId = "recommendationId",
-                    repliedCommentId = null,
-                    repliedUserId = null,
-                    text = commentInput,
-                    isReply = false,
-                    date = Date(),
-                    source = InteractionSource.recommendation.name,
-                    userItem = UserItem(
-                        uid = currentUser.value?.uid!!,
-                        nickname = currentUser.value?.nickname,
-                        photoReference = currentUser.value?.photoReference
-                    )
-                )
-
-                commentInput = ""
-                bottomSheetComments[comment] = false
+                val commentResponse = interactionService.comment(comment)
+                if (commentResponse is Response.Success) {
+                    commentInput = ""
+                    bottomSheetComments[comment] = false
+                }
             }
         }
     }
@@ -300,4 +280,20 @@ class RecommendationViewModel @Inject constructor(
             }
         }
     }
+
+
+
+    private fun generateLikeId(
+        recommendationId: String,
+        userId: String
+    ): String = (recommendationId + userId + "like")
+        .hashCode()
+        .toString()
+
+    private fun generateCommentId(
+        recommendationId: String,
+        userId: String
+    ): String = (recommendationId + userId + "comment" + (0..1000).random())
+        .hashCode()
+        .toString()
 }

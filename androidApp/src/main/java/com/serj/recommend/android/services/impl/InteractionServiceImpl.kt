@@ -3,6 +3,10 @@ package com.serj.recommend.android.services.impl
 import android.content.ContentValues.TAG
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.toObject
+import com.google.firebase.storage.FirebaseStorage
+import com.serj.recommend.android.common.UserNotFoundException
+import com.serj.recommend.android.model.items.UserItem
 import com.serj.recommend.android.model.subcollections.Comment
 import com.serj.recommend.android.model.subcollections.Like
 import com.serj.recommend.android.model.subcollections.Repost
@@ -16,28 +20,27 @@ import com.serj.recommend.android.services.RemoveRepostResponse
 import com.serj.recommend.android.services.RepostResponse
 import com.serj.recommend.android.services.model.Response
 import kotlinx.coroutines.tasks.await
-import java.util.Date
 import javax.inject.Inject
 
 class InteractionServiceImpl @Inject constructor(
-    private val firestore: FirebaseFirestore
+    private val firestore: FirebaseFirestore,
+    private val storage: FirebaseStorage
 ) : InteractionService {
 
     override suspend fun like(
         like: Like
     ): LikeResponse {
         return try {
-            val likeId = generateLikeId(like.recommendationId!!, like.userId!!)
             val userLikeRef = firestore
                 .collection(USERS_COLLECTION)
-                .document(like.userId)
-                .collection(USER_LIKES_SUBCOLLECTION)
-                .document(likeId)
+                .document(like.userId!!)
+                .collection(LIKES_SUBCOLLECTION)
+                .document(like.id!!)
             val recommendationLikeRef = firestore
                 .collection(RECOMMENDATIONS_COLLECTION)
-                .document(like.recommendationId)
-                .collection(RECOMMENDATION_LIKES_SUBCOLLECTION)
-                .document(likeId)
+                .document(like.recommendationId!!)
+                .collection(LIKES_SUBCOLLECTION)
+                .document(like.id)
             var batchResult = false
 
             firestore.runBatch { batch ->
@@ -45,14 +48,14 @@ class InteractionServiceImpl @Inject constructor(
                 batch.set(recommendationLikeRef, like)
             }.addOnSuccessListener {
                 batchResult = true
-                Log.d(TAG, "InteractionService: Like was added to firestore - $likeId")
+                Log.d(TAG, "InteractionService: Like was added to firestore - ${like.id}")
             }.addOnFailureListener {
                 batchResult = false
                 Log.w(TAG, "InteractionService: Like wasn't added to firestore - $it")
             }.await()
 
             if (batchResult)
-                Response.Success(likeId)
+                Response.Success(like.id)
             else
                 Response.Failure(Exception())
         } catch (e: Exception) {
@@ -69,12 +72,12 @@ class InteractionServiceImpl @Inject constructor(
             val userLikeRef = firestore
                 .collection(USERS_COLLECTION)
                 .document(userId)
-                .collection(USER_LIKES_SUBCOLLECTION)
+                .collection(LIKES_SUBCOLLECTION)
                 .document(likeId)
             val recommendationLikeRef = firestore
                 .collection(RECOMMENDATIONS_COLLECTION)
                 .document(recommendationId)
-                .collection(RECOMMENDATION_LIKES_SUBCOLLECTION)
+                .collection(LIKES_SUBCOLLECTION)
                 .document(likeId)
             var batchResult = false
 
@@ -99,68 +102,41 @@ class InteractionServiceImpl @Inject constructor(
     }
 
     override suspend fun comment(
-        userId: String,
-        recommendationId: String,
-        repliedCommentId: String?,
-        repliedUserId: String?,
-        text: String,
-        isReplied: Boolean,
-        date: Date,
-        source: String
+        comment: Comment
     ): CommentResponse {
         return try {
-            var recommendationTransaction = false
-            var userTransaction = false
-            var commentId: String? = null
-
-            val document = Comment(
-                userId = userId,
-                recommendationId = recommendationId,
-                repliedCommentId = repliedCommentId,
-                repliedUserId = repliedUserId,
-                isReply = isReplied,
-                text = text,
-                date = date,
-                likedBy = listOf(),
-                source = source
-            )
-
-            firestore
+            val userCommentRef = firestore
+                .collection(USERS_COLLECTION)
+                .document(comment.userId!!)
+                .collection(COMMENTS_SUBCOLLECTION)
+                .document(comment.id!!)
+            val recommendationCommentRef = firestore
                 .collection(RECOMMENDATIONS_COLLECTION)
-                .document(recommendationId)
-                .collection(COMMENTS_COLLECTION)
-                .add(document)
-                .addOnCompleteListener { task ->
-                    recommendationTransaction = task.isSuccessful
-                    if (task.isSuccessful) {
-                        commentId = task.result.id
-                        Log.d(TAG, "Comment added to Recommendation (${recommendationId})")
-                    } else
-                        Log.d(TAG, "Comment wasn't add to Recommendation (${recommendationId})")
-                }
-                .await()
-            if (commentId != null) {
-                firestore
-                    .collection(USERS_COLLECTION)
-                    .document(userId)
-                    .collection(USER_COMMENTS_SUBCOLLECTION)
-                    .document(commentId!!)
-                    .set(document)
-                    .addOnCompleteListener { task ->
-                        userTransaction = task.isSuccessful
-                        if (task.isSuccessful) {
-                            Log.d(TAG, "Comment added to User (${userId})")
-                        } else
-                            Log.d(TAG, "Comment wasn't add to User (${userId})")
-                    }
-                    .await()
-            }
+                .document(comment.recommendationId!!)
+                .collection(COMMENTS_SUBCOLLECTION)
+                .document(comment.id)
+            var batchResult = false
 
-            if (recommendationTransaction && userTransaction) {
-                Response.Success(true)
-            } else {
+            firestore.runBatch { batch ->
+                batch.set(userCommentRef, comment)
+                batch.set(recommendationCommentRef, comment)
+            }.addOnSuccessListener {
+                batchResult = true
+                Log.d(TAG, "InteractionService: Comment was added to firestore - ${comment.id}")
+            }.addOnFailureListener {
+                batchResult = false
+                Log.w(TAG, "InteractionService: Comment wasn't added to firestore - $it")
+            }.await()
+
+            if (batchResult) {
+                val userItemResponse = getUserItemByUid(comment.userId)
+                if (userItemResponse is Response.Success && userItemResponse.data != null) {
+                    comment.userItem = userItemResponse.data
+                    Response.Success(comment)
+                } else
+                    Response.Failure(Exception())
+            } else
                 Response.Failure(Exception())
-            }
         } catch (e: Exception) {
             Response.Failure(e)
         }
@@ -174,38 +150,30 @@ class InteractionServiceImpl @Inject constructor(
     ): RemoveCommentResponse {
         return try {
             if (userId == commentOwnerId) {
-                var recommendationTransaction = false
-                var userTransaction = false
-
-                firestore
-                    .collection(RECOMMENDATIONS_COLLECTION)
-                    .document(recommendationId)
-                    .collection(COMMENTS_COLLECTION)
-                    .document(commentId)
-                    .delete()
-                    .addOnCompleteListener { task ->
-                        recommendationTransaction = task.isSuccessful
-                        if (task.isSuccessful) {
-                            Log.d(TAG, "Comment removed from Recommendation (${recommendationId})")
-                        } else
-                            Log.d(TAG, "Comment wasn't removed from Recommendation (${recommendationId})")
-                    }
-                    .await()
-                firestore
+                val userCommentRef = firestore
                     .collection(USERS_COLLECTION)
                     .document(userId)
-                    .collection(USER_COMMENTS_SUBCOLLECTION)
+                    .collection(COMMENTS_SUBCOLLECTION)
                     .document(commentId)
-                    .delete()
-                    .addOnCompleteListener { task ->
-                        userTransaction = task.isSuccessful
-                        if (task.isSuccessful)
-                            Log.d(TAG, "Comment removed from User (${userId})")
-                        else
-                            Log.w(TAG, "Comment wasn't remove from User (${userId})")
-                    }
-                    .await()
-                if (recommendationTransaction && userTransaction)
+                val recommendationCommentRef = firestore
+                    .collection(RECOMMENDATIONS_COLLECTION)
+                    .document(recommendationId)
+                    .collection(COMMENTS_SUBCOLLECTION)
+                    .document(commentId)
+                var batchResult = false
+
+                firestore.runBatch { batch ->
+                    batch.delete(userCommentRef)
+                    batch.delete(recommendationCommentRef)
+                }.addOnSuccessListener {
+                    batchResult = true
+                    Log.d(TAG, "InteractionService: Comment was removed from firestore - $commentId")
+                }.addOnFailureListener {
+                    batchResult = false
+                    Log.w(TAG, "InteractionService: Comment wasn't removed from firestore - $it")
+                }.await()
+
+                if (batchResult)
                     Response.Success(true)
                 else
                     Response.Failure(Exception())
@@ -237,7 +205,7 @@ class InteractionServiceImpl @Inject constructor(
             firestore
                 .collection(USERS_COLLECTION)
                 .document(userContent.userId!!)
-                .collection(USER_CONTENT_SUBCOLLECTION)
+                .collection(CONTENT_SUBCOLLECTION)
                 .add(userContent)
                 .addOnCompleteListener {
                     firstTransactionResult = it.isSuccessful
@@ -252,7 +220,7 @@ class InteractionServiceImpl @Inject constructor(
                 firestore
                     .collection(USERS_COLLECTION)
                     .document(repost.userId!!)
-                    .collection(USER_REPOSTS_SUBCOLLECTION)
+                    .collection(REPOSTS_SUBCOLLECTION)
                     .document(repostId!!)
                     .set(repost)
                     .addOnCompleteListener {
@@ -266,7 +234,7 @@ class InteractionServiceImpl @Inject constructor(
                 firestore
                     .collection(RECOMMENDATIONS_COLLECTION)
                     .document(repost.recommendationId!!)
-                    .collection(RECOMMENDATION_REPOSTS_SUBCOLLECTION)
+                    .collection(REPOSTS_SUBCOLLECTION)
                     .document(repostId!!)
                     .set(repost)
                     .addOnCompleteListener {
@@ -307,7 +275,7 @@ class InteractionServiceImpl @Inject constructor(
             firestore
                 .collection(USERS_COLLECTION)
                 .document(userId)
-                .collection(USER_CONTENT_SUBCOLLECTION)
+                .collection(CONTENT_SUBCOLLECTION)
                 .document(repostId)
                 .delete()
                 .addOnCompleteListener {
@@ -321,7 +289,7 @@ class InteractionServiceImpl @Inject constructor(
             firestore
                 .collection(USERS_COLLECTION)
                 .document(userId)
-                .collection(USER_REPOSTS_SUBCOLLECTION)
+                .collection(REPOSTS_SUBCOLLECTION)
                 .document(repostId)
                 .delete()
                 .addOnCompleteListener {
@@ -335,7 +303,7 @@ class InteractionServiceImpl @Inject constructor(
             firestore
                 .collection(RECOMMENDATIONS_COLLECTION)
                 .document(recommendationId)
-                .collection(RECOMMENDATION_REPOSTS_SUBCOLLECTION)
+                .collection(REPOSTS_SUBCOLLECTION)
                 .document(repostId)
                 .delete()
                 .addOnCompleteListener {
@@ -356,22 +324,37 @@ class InteractionServiceImpl @Inject constructor(
         }
     }
 
-    private fun generateLikeId(
-        recommendationId: String,
-        userId: String
-    ): String = (recommendationId + userId + "like").hashCode().toString()
+    private suspend fun getUserItemByUid(
+        uid: String
+    ): Response<UserItem> {
+        return try {
+            val recommendationPreviewSnapshot = firestore
+                .collection(USERS_COLLECTION)
+                .document(uid)
+                .get()
+                .await()
+            val data = recommendationPreviewSnapshot.toObject<UserItem>()
+
+            if (data != null) {
+                data.photoReference = data.photoUrl?.let {
+                    storage.getReferenceFromUrl(it)
+                }
+                Response.Success(data)
+            } else {
+                Response.Failure(UserNotFoundException())
+            }
+        } catch (e: Exception) {
+            Response.Failure(e)
+        }
+    }
 
     companion object {
         private const val USERS_COLLECTION = "users"
         private const val RECOMMENDATIONS_COLLECTION = "recommendations"
-        private const val COMMENTS_COLLECTION = "comments"
 
-        private const val USER_CONTENT_SUBCOLLECTION = "content"
-        private const val USER_LIKES_SUBCOLLECTION = "likes"
-        private const val USER_COMMENTS_SUBCOLLECTION = "comments"
-        private const val USER_REPOSTS_SUBCOLLECTION = "reposts"
-
-        private const val RECOMMENDATION_LIKES_SUBCOLLECTION = "likes"
-        private const val RECOMMENDATION_REPOSTS_SUBCOLLECTION = "reposts"
+        private const val CONTENT_SUBCOLLECTION = "content"
+        private const val LIKES_SUBCOLLECTION = "likes"
+        private const val COMMENTS_SUBCOLLECTION = "comments"
+        private const val REPOSTS_SUBCOLLECTION = "reposts"
     }
 }

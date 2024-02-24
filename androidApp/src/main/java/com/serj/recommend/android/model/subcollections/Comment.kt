@@ -11,7 +11,7 @@ data class Comment(
 
     val repliedCommentId: String? = null,
     val repliedUserId: String? = null,
-    val isReply: Boolean? = false,
+    val isReply: Boolean = false,
 
     val text: String? = null,
 
