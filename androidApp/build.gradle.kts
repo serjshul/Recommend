@@ -101,9 +101,13 @@ dependencies {
     testImplementation("com.google.dagger:hilt-android-testing:2.49")
     kspTest("com.google.dagger:hilt-android-compiler:2.49")
 
-    // For Instrumented (UI) tests
-    androidTestImplementation("com.google.dagger:hilt-android-testing:2.49")
-    kspAndroidTest("com.google.dagger:hilt-android-compiler:2.49")
+    implementation("com.google.dagger:hilt-android:2.49")
+    ksp("com.google.dagger:hilt-compiler:2.49")
+    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
+
+    // For Robolectric tests
+    testImplementation("com.google.dagger:hilt-android-testing:2.49")
+    kspTest("com.google.dagger:hilt-android-compiler:2.49")
 
     // Setup Preferences DataStore
     implementation("androidx.datastore:datastore-preferences:1.0.0")
