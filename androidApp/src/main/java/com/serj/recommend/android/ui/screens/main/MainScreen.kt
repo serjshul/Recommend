@@ -18,7 +18,6 @@ import com.serj.recommend.android.ui.screens.main.feed.FeedScreen
 import com.serj.recommend.android.ui.screens.main.home.HomeScreen
 import com.serj.recommend.android.ui.screens.main.newRecommendation.NewRecommendationScreen
 import com.serj.recommend.android.ui.screens.main.profile.ProfileScreen
-import com.serj.recommend.android.ui.screens.main.rec.CreateRecommendScreen
 import com.serj.recommend.android.ui.screens.main.search.SearchScreen
 import com.serj.recommend.android.ui.styles.RecommendTheme
 

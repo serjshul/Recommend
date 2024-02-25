@@ -34,14 +34,12 @@ import com.serj.recommend.android.ui.screens.authentication.createProfile.Create
 import com.serj.recommend.android.ui.screens.authentication.resetPassword.ResetPasswordScreen
 import com.serj.recommend.android.ui.screens.authentication.signIn.SignInScreen
 import com.serj.recommend.android.ui.screens.authentication.signUp.SignUpScreen
-import com.serj.recommend.android.ui.screens.authentication.splash.SplashScreen
 import com.serj.recommend.android.ui.screens.common.banner.BannerScreen
 import com.serj.recommend.android.ui.screens.common.category.CategoryScreen
 import com.serj.recommend.android.ui.screens.common.recommendation.RecommendationScreen
 import com.serj.recommend.android.ui.screens.main.MainScreen
 import com.serj.recommend.android.ui.screens.splash.SplashScreen
 import com.serj.recommend.android.ui.styles.RecommendTheme
-import com.serj.recommend.android.ui.styles.MyApplicationTheme
 import kotlinx.coroutines.CoroutineScope
 
 // TODO: Start use Material3 (M3) only! Instead of mix Material + M3
@@ -55,14 +53,14 @@ fun RecommendApp() {
 
             Scaffold(
                 modifier = Modifier.fillMaxSize(),
-                scaffoldState = appState.scaffoldState,
                 snackbarHost = {
                     SnackBar(hostState = appState.snackbarHostState)
                 },
+                // TODO: @serjshul, if you think this floating button is useless - delete it
                 floatingActionButton = {
                     RecommendFloatingActionBar {
                         appState.navController.navigate(
-                            RecommendRoutes.CreateRecommendScreen.name
+                            RecommendRoutes.NewRecommendationScreen.name
                         )
                     }
                 }
