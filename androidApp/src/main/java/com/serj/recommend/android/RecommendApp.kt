@@ -1,22 +1,16 @@
 package com.serj.recommend.android
 
-import android.Manifest
 import android.content.res.Resources
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.ScaffoldState
-import androidx.compose.material.Snackbar
-import androidx.compose.material.SnackbarHost
-import androidx.compose.material.Surface
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -29,129 +23,188 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.isGranted
-import com.google.accompanist.permissions.rememberPermissionState
-import com.google.accompanist.permissions.shouldShowRationale
-import com.serj.recommend.android.common.composable.PermissionDialog
-import com.serj.recommend.android.common.composable.RationaleDialog
-import com.serj.recommend.android.ui.BottomNavigationBar
-import com.serj.recommend.android.ui.screens.FeedScreen
-import com.serj.recommend.android.ui.screens.home.HomeScreen
-import com.serj.recommend.android.ui.screens.profile.ProfileScreen
-import com.serj.recommend.android.ui.screens.rec.RecScreen
-import com.serj.recommend.android.ui.screens.recommendation.RecommendationScreen
-import com.serj.recommend.android.ui.screens.search.SearchScreen
-import com.serj.recommend.android.ui.snackbar.SnackbarManager
-import com.serj.recommend.android.ui.styles.MyApplicationTheme
+import com.serj.recommend.android.common.Constants.BANNER_ID
+import com.serj.recommend.android.common.Constants.BANNER_ID_ARG
+import com.serj.recommend.android.common.Constants.CATEGORY_ID
+import com.serj.recommend.android.common.Constants.CATEGORY_ID_ARG
+import com.serj.recommend.android.common.Constants.RECOMMENDATION_ID
+import com.serj.recommend.android.common.Constants.RECOMMENDATION_ID_ARG
+import com.serj.recommend.android.ui.components.snackbar.SnackbarManager
+import com.serj.recommend.android.ui.screens.authentication.createProfile.CreateProfileScreen
+import com.serj.recommend.android.ui.screens.authentication.resetPassword.ResetPasswordScreen
+import com.serj.recommend.android.ui.screens.authentication.signIn.SignInScreen
+import com.serj.recommend.android.ui.screens.authentication.signUp.SignUpScreen
+import com.serj.recommend.android.ui.screens.common.banner.BannerScreen
+import com.serj.recommend.android.ui.screens.common.category.CategoryScreen
+import com.serj.recommend.android.ui.screens.common.recommendation.RecommendationScreen
+import com.serj.recommend.android.ui.screens.main.MainScreen
+import com.serj.recommend.android.ui.screens.splash.SplashScreen
+import com.serj.recommend.android.ui.styles.RecommendTheme
 import kotlinx.coroutines.CoroutineScope
 
-@OptIn(ExperimentalMaterialApi::class)
+// TODO: Start use Material3 (M3) only! Instead of mix Material + M3
+// TODO: Resolve why part of dependencies in .toml file, part in .gradle
+// TODO: Upgrade dependencies - but also test before and after, how app is work - for this we need good size of tests!
 @Composable
 fun RecommendApp() {
-    MyApplicationTheme {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            RequestNotificationPermissionDialog()
-        }
-
-        val buttonsVisible = remember { mutableStateOf(true) }
-
-        Surface(color = MaterialTheme.colors.background) {
+    RecommendTheme {
+        Surface(color = MaterialTheme.colorScheme.background) {
             val appState = rememberAppState()
 
             Scaffold(
                 modifier = Modifier.fillMaxSize(),
-                bottomBar = {
-                    BottomNavigationBar(
-                        navController = appState.navController,
-                        state = buttonsVisible,
-                        modifier = Modifier
-                    )
-                },
                 snackbarHost = {
-                    SnackbarHost(
-                        hostState = it,
-                        modifier = Modifier.padding(8.dp),
-                        snackbar = { snackbarData ->
-                            Snackbar(snackbarData, contentColor = MaterialTheme.colors.onPrimary)
-                        }
-                    )
+                    SnackBar(hostState = appState.snackbarHostState)
                 },
-                scaffoldState = appState.scaffoldState
+                // TODO: @serjshul, if you think this floating button is useless - delete it
+                floatingActionButton = {
+                    RecommendFloatingActionBar {
+                        appState.navController.navigate(
+                            RecommendRoutes.NewRecommendationScreen.name
+                        )
+                    }
+                }
             ) { paddingValues ->
                 NavHost(
                     modifier = Modifier.padding(paddingValues),
                     navController = appState.navController,
-                    startDestination = HOME_SCREEN
+                    startDestination = RecommendRoutes.SplashScreen.name
                 ) {
-                    recommendGraph(appState=appState)
+                    recommendGraph(appState = appState)
                 }
             }
         }
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.TIRAMISU)
-@OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun RequestNotificationPermissionDialog() {
-    val permissionState = rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)
-
-    if (!permissionState.status.isGranted) {
-        if (permissionState.status.shouldShowRationale) RationaleDialog()
-        else PermissionDialog { permissionState.launchPermissionRequest() }
+fun SnackBar(hostState: SnackbarHostState) = SnackbarHost(
+    hostState = hostState,
+    modifier = Modifier.padding(8.dp),
+    snackbar = { snackbarData ->
+        Snackbar(
+            snackbarData = snackbarData,
+            contentColor = MaterialTheme.colorScheme.onPrimary
+        )
     }
-}
+)
 
 @Composable
 fun rememberAppState(
-    scaffoldState: ScaffoldState = rememberScaffoldState(),
+    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     navController: NavHostController = rememberNavController(),
     snackbarManager: SnackbarManager = SnackbarManager,
     resources: Resources = resources(),
     coroutineScope: CoroutineScope = rememberCoroutineScope()
-) =
-    remember(scaffoldState, navController, snackbarManager, resources, coroutineScope) {
-        RecommendAppState(scaffoldState, navController, snackbarManager, resources, coroutineScope)
-    }
+) = remember(
+    snackbarHostState, navController, snackbarManager,
+    resources, coroutineScope
+) {
+    RecommendAppState(
+        snackbarHostState, navController, snackbarManager,
+        resources, coroutineScope
+    )
+}
 
 @Composable
 @ReadOnlyComposable
 fun resources(): Resources {
-    LocalConfiguration.current
+    LocalConfiguration.current // TODO: Isn't this are unusable? (can we delete this code?)
     return LocalContext.current.resources
 }
 
-@ExperimentalMaterialApi
 fun NavGraphBuilder.recommendGraph(
     modifier: Modifier = Modifier,
     appState: RecommendAppState
 ) {
-    composable(HOME_SCREEN) {
-        HomeScreen(
-            openScreen = { route -> appState.navigate(route) }
+    composable(RecommendRoutes.SplashScreen.name) {
+        SplashScreen(
+            modifier = Modifier,
+            openAndPopUp = { route, popUp ->
+                appState.navigateAndPopUp(route, popUp)
+            }
         )
     }
-    composable(FEED_SCREEN) {
-        FeedScreen()
+    composable(RecommendRoutes.SignUpScreen.name) {
+        SignUpScreen(
+            modifier = Modifier,
+            openScreen = { route ->
+                appState.navigate(route)
+            },
+        )
     }
-    composable(REC_SCREEN) {
-        RecScreen()
+    composable(RecommendRoutes.CreateProfileScreen.name) {
+        CreateProfileScreen(
+            modifier = Modifier,
+            clearAndOpen = { route ->
+                appState.clearAndNavigate(route)
+            }
+        )
     }
-    composable(SEARCH_SCREEN) {
-        SearchScreen()
+    composable(RecommendRoutes.SignInScreen.name) {
+        SignInScreen(
+            modifier = Modifier,
+            openScreen = { route ->
+                appState.navigate(route)
+            },
+            clearAndOpen = { route ->
+                appState.clearAndNavigate(route)
+            }
+        )
     }
-    composable(PROFILE_SCREEN) {
-        ProfileScreen()
+    composable(RecommendRoutes.ResetPasswordScreen.name) {
+        ResetPasswordScreen(
+            modifier = Modifier,
+            openAndPopUp = { route, popUp ->
+                appState.navigateAndPopUp(route, popUp)
+            }
+        )
+    }
+    composable(RecommendRoutes.MainScreen.name) {
+        MainScreen(
+            modifier = Modifier,
+            appState = appState
+        )
     }
     composable(
-        route = "$RECOMMENDATION_SCREEN$RECOMMENDATION_ID_ARG",
+        route = "${RecommendRoutes.RecommendationScreen.name}$RECOMMENDATION_ID_ARG",
         arguments = listOf(navArgument(RECOMMENDATION_ID) {
             nullable = true
             defaultValue = null
         })
     ) {
         RecommendationScreen(
+            modifier = Modifier,
+            popUpScreen = { appState.popUp() }
+        )
+    }
+    composable(
+        route = "${RecommendRoutes.BannerScreen.name}$BANNER_ID_ARG",
+        arguments = listOf(navArgument(BANNER_ID) {
+            nullable = true
+            defaultValue = null
+        })
+    ) {
+        BannerScreen(
+            modifier = Modifier,
+            openScreen = { route ->
+                appState.navigate(route)
+            },
+            popUpScreen = { appState.popUp() }
+        )
+    }
+    composable(
+        route = "${RecommendRoutes.CategoryScreen.name}$CATEGORY_ID_ARG",
+        arguments = listOf(navArgument(CATEGORY_ID) {
+            nullable = true
+            defaultValue = null
+        })
+    ) {
+        CategoryScreen(
+            modifier = Modifier,
+            openScreen = { route ->
+                appState.navigate(route)
+            },
             popUpScreen = { appState.popUp() }
         )
     }

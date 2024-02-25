@@ -8,18 +8,24 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
 
     <application
-        android:allowBackup="false"
+        android:name=".RecommendHiltApp"
+        android:enableOnBackInvokedCallback="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:name=".RecommendHiltApp">
+        tools:targetApi="tiramisu">
         <activity
             android:name=".RecommendActivity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,7 +33,7 @@
             </intent-filter>
         </activity>
         <service
-            android:name=".RecommendMessagingService"
+            android:name=".services.RecommendMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
@@ -35,14 +41,23 @@
         </service>
 
         <provider
-            android:authorities="${applicationId}.provider"
             android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-    </application>
 
+        <!-- Декларация активити для использования их в тестах (пожалуйста не трогайте) -->
+        <activity
+            android:name=".tests.MainScreenActivity"
+            android:exported="false">
+        </activity>
+        <activity
+            android:name=".tests.SignInActivity"
+            android:exported="false">
+        </activity>
+    </application>
 </manifest>

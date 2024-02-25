@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Common -->
-    <string name="app_name">Make It So</string>
+    <string name="app_name">Recommend</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="repeat_password">Repeat password</string>
@@ -11,19 +11,25 @@
     <string name="try_again">Try again</string>
     <string name="ok">OK</string>
 
-    <string name="rec_screen">Rec</string>
+    <string name="new_screen">New</string>
 
     <!-- LoginScreen -->
     <string name="sign_in">Sign in</string>
+    <string name="sign_up">Sign up</string>
     <string name="login_details">Enter your login details</string>
-    <string name="forgot_password">Forgot password? Click to get recovery email</string>
-    <string name="recovery_email_sent">Check your inbox for the recovery email.</string>
-    <string name="empty_password_error">Password cannot be empty.</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="recovery_email_sent">Check your inbox for the recovery email</string>
+    <string name="empty_password_error">Password cannot be empty</string>
+    <string name="success_sign_in">Success</string>
+    <string name="error_sign_in">Error</string>
+    <string name="reset_password">Reset password</string>
 
     <!-- SignUpScreen -->
-    <string name="create_account">Create account</string>
-    <string name="password_error">Your password should have at least six digits and include one digit, one lower case letter and one upper case letter.</string>
-    <string name="password_match_error">Passwords do not match.</string>
+    <string name="sign_up_button">Sign up</string>
+    <string name="password_error">Your password should have at least six letters, including minimum one digit, one lower case letter and one upper case letter</string>
+    <string name="password_match_error">Passwords do not match</string>
+    <string name="success_sign_up">Success</string>
+    <string name="error_sign_up">Error</string>
 
     <!-- Navigation -->
     <string name="navigation_title_home_screen">Home</string>
@@ -53,4 +59,26 @@
     <string name="notification_permission_description">The notification permission is important for this app. Please grant the permission.</string>
     <string name="notification_permission_settings">The notification permission is important for this app. Please navigate to your device settings and enable notifications for Make it So.</string>
 
+    <string name="goes_online_toast">You\'re online now!</string>
+    <string name="goes_offline_toast">Problems with network!</string>
+
+    <string name="error_cover_type">Wrong cover type</string>
+    <string name="error_category_type">Wrong category type</string>
+
+    <string name="error_feed">Has no feed!</string>
+
+    <string name="like_exception">Like error</string>
+    <string name="repost_exception">Repost error</string>
+    <string name="comment_exception">Comment error</string>
+
+    <string name="create_account_button">Create account</string>
+
+    <string name="create_account_name_error">Cannot be blank and can contain up to 45 symbols</string>
+    <string name="create_account_nickname_error">Cannot be blank, can contain up to 30 symbols and can contain letters, numbers and underscores</string>
+    <string name="create_account_bio_error">Can contain up to 240 symbols</string>
+    <string name="create_account_gender_error">Cannot be blank</string>
+    <string name="create_account_date_of_birth_error">Cannot be blank</string>
+
+    <string name="create_account_uploading_photo_error">Error while uploading photo</string>
+    <string name="create_account_uploading_user_info_error">Error while uploading account data</string>
 </resources>

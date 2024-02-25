@@ -17,7 +17,8 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+//        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.serj.recommend.android.CustomTestRunner"
     }
     buildFeatures {
         compose = true
@@ -53,7 +54,6 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.appcompat)
-    implementation(libs.material)
     implementation("androidx.navigation:navigation-compose:2.7.6")
     implementation("androidx.compose.ui:ui-util:1.5.4")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
@@ -80,10 +80,26 @@ dependencies {
 
     implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
     implementation("com.google.firebase:firebase-crashlytics")
+    implementation("com.google.firebase:firebase-config")
     implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-perf")
+    implementation("com.google.firebase:firebase-appcheck-playintegrity")
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.firebase:firebase-storage")
-    implementation("com.google.firebase:firebase-perf")
+    implementation("com.firebaseui:firebase-ui-storage:7.2.0")
+
+    implementation("com.github.bumptech.glide:glide:4.14.2")
+    implementation("com.github.bumptech.glide:compose:1.0.0-beta01")
+    ksp("com.github.bumptech.glide:ksp:4.14.2")
+
+    implementation("com.google.dagger:hilt-android:2.49")
+    ksp("com.google.dagger:hilt-compiler:2.49")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0-alpha01")
+
+    // For Robolectric (emulate simulator on JVM on your machine) tests
+    testImplementation("com.google.dagger:hilt-android-testing:2.49")
+    kspTest("com.google.dagger:hilt-android-compiler:2.49")
 
     implementation("com.google.dagger:hilt-android:2.49")
     ksp("com.google.dagger:hilt-compiler:2.49")
@@ -92,4 +108,7 @@ dependencies {
     // For Robolectric tests
     testImplementation("com.google.dagger:hilt-android-testing:2.49")
     kspTest("com.google.dagger:hilt-android-compiler:2.49")
+
+    // Setup Preferences DataStore
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
 }

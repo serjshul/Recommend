@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.androidLibrary)
 }
 
+
 @OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
 kotlin {
     kotlin.applyDefaultHierarchyTemplate()
@@ -25,15 +26,23 @@ kotlin {
         }
     }
 
+    //noinspection UseTomlInstead
     sourceSets {
         val commonMain by getting {
             dependencies {
                 //put your multiplatform dependencies here
+                implementation(libs.kotlinx.datetime)
             }
         }
         val commonTest by getting {
             dependencies {
                 implementation(libs.kotlin.test)
+            }
+        }
+
+        val androidMain by getting {
+            dependencies {
+                implementation("androidx.datastore:datastore-preferences-core:1.0.0")
             }
         }
 

@@ -2,7 +2,8 @@ package com.serj.recommend.android.ui.styles
 
 import androidx.compose.ui.graphics.Color
 
-// Recommend palette
-val Muesli = Color(0xFFA67A53)
-val TigerEye = Color(0xFFB87446)
-val AppleRed = Color(0xFF6E0103)
+val primary = Color(0xFF92100E)
+val secondary = Color(0xFF541010)
+val background = Color(0xFFBFC1B2)
+val filling = Color(0xFFD7CFB8)
+val outline = Color(0xFF3e392b)
