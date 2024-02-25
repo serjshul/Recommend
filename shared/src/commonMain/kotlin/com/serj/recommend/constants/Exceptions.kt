@@ -1,4 +1,4 @@
-package com.serj.recommend.android.common
+package com.serj.recommend.constants
 
 class RecommendationNotFoundException(
     message: String = "Recommendation not found!"
