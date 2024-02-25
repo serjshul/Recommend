@@ -54,7 +54,6 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.appcompat)
-    implementation(libs.material)
     implementation("androidx.navigation:navigation-compose:2.7.6")
     implementation("androidx.compose.ui:ui-util:1.5.4")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
@@ -105,4 +104,7 @@ dependencies {
     // For Instrumented (UI) tests
     androidTestImplementation("com.google.dagger:hilt-android-testing:2.49")
     kspAndroidTest("com.google.dagger:hilt-android-compiler:2.49")
+
+    // Setup Preferences DataStore
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
 }
