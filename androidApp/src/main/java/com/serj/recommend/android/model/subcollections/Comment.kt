@@ -1,5 +1,7 @@
 package com.serj.recommend.android.model.subcollections
 
+// TODO: Push this file to shared folder,
+//  using: https://github.com/Kotlin/kotlinx-datetime
 import com.google.firebase.firestore.DocumentId
 import com.serj.recommend.android.model.items.UserItem
 import java.util.Date
