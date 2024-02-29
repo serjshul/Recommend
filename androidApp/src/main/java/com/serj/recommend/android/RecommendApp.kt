@@ -55,14 +55,6 @@ fun RecommendApp() {
                 modifier = Modifier.fillMaxSize(),
                 snackbarHost = {
                     SnackBar(hostState = appState.snackbarHostState)
-                },
-                // TODO: @serjshul, if you think this floating button is useless - delete it
-                floatingActionButton = {
-                    RecommendFloatingActionBar {
-                        appState.navController.navigate(
-                            RecommendRoutes.NewRecommendationScreen.name
-                        )
-                    }
                 }
             ) { paddingValues ->
                 NavHost(
