@@ -41,15 +41,14 @@ class RecommendationViewModel @Inject constructor(
     var currentUserPhotoReference by mutableStateOf<StorageReference?>(null)
     private var recommendationId by mutableStateOf<String?>(null)
         private set
-    private var likeId by mutableStateOf<String?>(null)
-        private set
-    private var repostId by mutableStateOf<String?>(null)
-        private set
 
     var commentInput by mutableStateOf("")
         private set
     val bottomSheetComments = mutableStateMapOf<Comment, Boolean>()
-
+    private var likeId by mutableStateOf<String?>(null)
+        private set
+    private var repostId by mutableStateOf<String?>(null)
+        private set
     var isLiked by mutableStateOf(false)
         private set
     var isCommented by mutableStateOf(false)

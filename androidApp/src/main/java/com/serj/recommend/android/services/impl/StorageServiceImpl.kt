@@ -204,12 +204,24 @@ class StorageServiceImpl @Inject constructor(
         currentUserLikedIds: ArrayList<String>
     ): GetRecommendationItemResponse {
         return try {
-            val recommendationItemSnapshot = firestore
+            val recommendationSnapshot = firestore
                 .collection(RECOMMENDATIONS_COLLECTION)
                 .document(recommendationId)
                 .get()
                 .await()
-            val recommendationData = recommendationItemSnapshot.toObject<RecommendationItem>()
+
+            val recommendationData = RecommendationItem(
+                id = recommendationSnapshot.id,
+                uid = recommendationSnapshot.getString("uid"),
+                title = recommendationSnapshot.getString("title"),
+                creator = recommendationSnapshot.getString("creator"),
+                type = recommendationSnapshot.getString("type"),
+                tags = recommendationSnapshot.get("tags") as List<String>,
+                description = recommendationSnapshot.getString("description"),
+                date = recommendationSnapshot.getDate("date"),
+                coversUrl = recommendationSnapshot.get("coversUrl") as HashMap<String, String>,
+                backgroundUrl = recommendationSnapshot.get("backgroundUrl") as HashMap<String, String>
+            )
 
             if (recommendationData != null) {
                 val coverType = getCoverType(recommendationData.coversUrl)
