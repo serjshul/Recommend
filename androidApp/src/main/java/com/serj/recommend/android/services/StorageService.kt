@@ -8,7 +8,7 @@ import com.serj.recommend.android.model.collections.Category
 import com.serj.recommend.android.model.collections.Recommendation
 import com.serj.recommend.android.model.collections.User
 import com.serj.recommend.android.model.items.Post
-import com.serj.recommend.android.model.items.RecommendationPreview
+import com.serj.recommend.android.model.items.Preview
 import com.serj.recommend.android.model.items.UserItem
 import com.serj.recommend.android.model.subcollections.Comment
 import com.serj.recommend.android.model.subcollections.Like
@@ -20,7 +20,7 @@ typealias GetRecommendationResponse = Response<Recommendation?>
 typealias GetBannerResponse = Response<Banner?>
 typealias GetCategoryResponse = Response<Category?>
 typealias GetPostResponse = Response<Post?>
-typealias GetRecommendationPreviewResponse = Response<RecommendationPreview?>
+typealias GetPreviewResponse = Response<Preview?>
 typealias GetUserItemResponse = Response<UserItem?>
 typealias GetFollowingRecommendationsIdsResponse = Response<List<String>>
 typealias GetStorageReferenceFromUrlResponse = Response<StorageReference>
@@ -56,10 +56,10 @@ interface StorageService {
         currentUserLikedIds: ArrayList<String>
     ): GetPostResponse
 
-    suspend fun getRecommendationPreviewById(
+    suspend fun getPreviewById(
         recommendationId: String,
         coverType: String
-    ): GetRecommendationPreviewResponse
+    ): GetPreviewResponse
 
     suspend fun getUserItemByUid(
         uid: String

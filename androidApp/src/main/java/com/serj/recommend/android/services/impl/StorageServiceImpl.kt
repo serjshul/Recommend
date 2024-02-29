@@ -16,14 +16,17 @@ import com.serj.recommend.android.common.RecommendationIsNotValidException
 import com.serj.recommend.android.common.UserNotFoundException
 import com.serj.recommend.android.common.isCommentValid
 import com.serj.recommend.android.common.isLikeValid
+import com.serj.recommend.android.common.isPostValid
+import com.serj.recommend.android.common.isPreviewValid
 import com.serj.recommend.android.common.isRecommendationValid
 import com.serj.recommend.android.common.isRepostValid
+import com.serj.recommend.android.common.isUserItemValid
 import com.serj.recommend.android.model.collections.Banner
 import com.serj.recommend.android.model.collections.Category
 import com.serj.recommend.android.model.collections.Recommendation
 import com.serj.recommend.android.model.collections.User
 import com.serj.recommend.android.model.items.Post
-import com.serj.recommend.android.model.items.RecommendationPreview
+import com.serj.recommend.android.model.items.Preview
 import com.serj.recommend.android.model.items.UserItem
 import com.serj.recommend.android.model.subcollections.Comment
 import com.serj.recommend.android.model.subcollections.Like
@@ -33,7 +36,7 @@ import com.serj.recommend.android.services.GetCategoryResponse
 import com.serj.recommend.android.services.GetCommentsResponse
 import com.serj.recommend.android.services.GetFollowingRecommendationsIdsResponse
 import com.serj.recommend.android.services.GetPostResponse
-import com.serj.recommend.android.services.GetRecommendationPreviewResponse
+import com.serj.recommend.android.services.GetPreviewResponse
 import com.serj.recommend.android.services.GetRecommendationResponse
 import com.serj.recommend.android.services.GetRepostsResponse
 import com.serj.recommend.android.services.GetStorageReferenceFromUrlResponse
@@ -209,8 +212,7 @@ class StorageServiceImpl @Inject constructor(
                 .document(recommendationId)
                 .get()
                 .await()
-
-            val postData = Post(
+            val post = Post(
                 id = recommendationSnapshot.id,
                 uid = recommendationSnapshot.getString(UID_FIELD),
                 title = recommendationSnapshot.getString(TITLE_FIELD),
@@ -223,27 +225,27 @@ class StorageServiceImpl @Inject constructor(
                 backgroundUrl = recommendationSnapshot.get(BACKGROUND_URL_FIELD) as HashMap<String, String>
             )
 
-            if (postData != null) {
-                val coverType = getCoverType(postData.coversUrl)
-                if (postData.uid != null) {
-                    when (val userItemResponse = getUserItemByUid(postData.uid)) {
-                        is Success -> postData.userItem = userItemResponse.data
+            if (isPostValid(post)) {
+                val coverType = getCoverType(post.coversUrl)
+                if (post.uid != null) {
+                    when (val userItemResponse = getUserItemByUid(post.uid)) {
+                        is Success -> post.userItem = userItemResponse.data
                         else -> Failure(UserNotFoundException())
                     }
                 }
-                postData.coverType = coverType
-                postData.coverReference = postData.coversUrl[coverType]
+                post.coverType = coverType
+                post.coverReference = post.coversUrl[coverType]
                     ?.let { storage.getReferenceFromUrl(it) }
-                postData.backgroundImageReference = postData.backgroundUrl[BackgroundTypes.image.name]
+                post.backgroundImageReference = post.backgroundUrl[BackgroundTypes.image.name]
                     ?.let { storage.getReferenceFromUrl(it) }
-                postData.isLiked = currentUserLikedIds.contains(postData.id)
+                post.isLiked = currentUserLikedIds.contains(post.id)
 
                 val commentsResponse = getComments(recommendationId)
                 if (commentsResponse is Success && commentsResponse.data != null) {
-                    postData.comments.addAll(commentsResponse.data)
+                    post.comments.addAll(commentsResponse.data)
                 }
 
-                Success(postData)
+                Success(post)
             } else {
                 Failure(RecommendationIsNotValidException())
             }
@@ -252,26 +254,39 @@ class StorageServiceImpl @Inject constructor(
         }
     }
 
-    override suspend fun getRecommendationPreviewById(
+    override suspend fun getPreviewById(
         recommendationId: String,
         coverType: String
-    ): GetRecommendationPreviewResponse {
+    ): GetPreviewResponse {
         return try {
-            val recommendationPreviewSnapshot = firestore
+            val recommendationSnapshot = firestore
                 .collection(RECOMMENDATIONS_COLLECTION)
                 .document(recommendationId)
                 .get()
                 .await()
-            val data = recommendationPreviewSnapshot.toObject<RecommendationPreview>()
+            val preview = Preview(
+                id = recommendationSnapshot.id,
+                uid = recommendationSnapshot.getString(UID_FIELD),
+                title = recommendationSnapshot.getString(TITLE_FIELD),
+                creator = recommendationSnapshot.getString(CREATOR_FIELD),
+                type = recommendationSnapshot.getString(TYPE_FIELD),
+                tags = recommendationSnapshot.get(TAGS_FIELD) as List<String>,
+                coversUrl = recommendationSnapshot.get(COVERS_URL_FIELD) as HashMap<String, String>,
+            )
 
-            if (data != null) {
-                val availableCoverTypes = getAvailableCoverTypes(data.coversUrl)
-                val currentCoverType = if (availableCoverTypes.contains(coverType)) coverType
-                else getCoverType(data.coversUrl)
-                data.coverType = currentCoverType
-                data.coverReference = data.coversUrl[currentCoverType]
-                    ?.let { storage.getReferenceFromUrl(it) }
-                Success(data)
+            if (isPreviewValid(preview)) {
+                val availableCoverTypes = getAvailableCoverTypes(preview.coversUrl)
+                val currentCoverType =
+                    if (availableCoverTypes.contains(coverType))
+                        coverType
+                    else
+                        getCoverType(preview.coversUrl)
+                preview.coverType = currentCoverType
+                preview.coverReference = preview.coversUrl[currentCoverType]?.let {
+                    storage.getReferenceFromUrl(it)
+                }
+
+                Success(preview)
             } else {
                 Failure(RecommendationIsNotValidException())
             }
@@ -284,17 +299,23 @@ class StorageServiceImpl @Inject constructor(
         uid: String
     ): GetUserItemResponse {
         return try {
-            val recommendationPreviewSnapshot = firestore
+            val userSnapshot = firestore
                 .collection(USERS_COLLECTION)
                 .document(uid)
                 .get()
                 .await()
-            val data = recommendationPreviewSnapshot.toObject<UserItem>()
+            val userItem = UserItem(
+                uid = userSnapshot.id,
+                nickname = userSnapshot.getString(NICKNAME_FIELD),
+                photoUrl = userSnapshot.getString(PHOTO_URL_FIELD)
+            )
 
-            if (data != null) {
-                data.photoReference = data.photoUrl
-                    ?.let { storage.getReferenceFromUrl(it) }
-                Success(data)
+            if (isUserItemValid(userItem)) {
+                userItem.photoReference = userItem.photoUrl?.let {
+                    storage.getReferenceFromUrl(it)
+                }
+
+                Success(userItem)
             } else {
                 Failure(UserNotFoundException())
             }
@@ -718,6 +739,8 @@ class StorageServiceImpl @Inject constructor(
         private const val RECOMMENDATION_REPOSTS_SUBCOLLECTION = "reposts"
 
         private const val UID_FIELD = "uid"
+        private const val NICKNAME_FIELD = "nickname"
+        private const val PHOTO_URL_FIELD = "photoUrl"
         private const val TITLE_FIELD = "title"
         private const val CREATOR_FIELD = "creator"
         private const val TYPE_FIELD = "type"

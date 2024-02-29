@@ -2,7 +2,7 @@ package com.serj.recommend.android.model.collections
 
 import com.google.firebase.firestore.DocumentId
 import com.google.firebase.storage.StorageReference
-import com.serj.recommend.android.model.items.RecommendationPreview
+import com.serj.recommend.android.model.items.Preview
 import com.serj.recommend.android.ui.components.categories.CategoryTypes
 import com.serj.recommend.android.ui.components.recommendationPreviews.ItemsShapes
 import java.util.Date
@@ -21,5 +21,5 @@ data class Category(
     var backgroundVideoReference: StorageReference? = null,
 
     val recommendationsIds: ArrayList<String> = arrayListOf(),
-    val content: ArrayList<RecommendationPreview> = arrayListOf()
+    val content: ArrayList<Preview> = arrayListOf()
 )
