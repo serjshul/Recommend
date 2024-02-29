@@ -33,7 +33,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.serj.recommend.android.R
 import com.serj.recommend.android.model.subcollections.Comment
 import com.serj.recommend.android.model.collections.Recommendation
-import com.serj.recommend.android.model.items.RecommendationItem
+import com.serj.recommend.android.model.items.Post
 import com.serj.recommend.android.services.GetCategoryResponse
 import com.serj.recommend.android.services.model.Response
 import com.serj.recommend.android.services.model.Response.Failure
@@ -72,7 +72,7 @@ fun CategoryScreenContent(
     modifier: Modifier = Modifier,
     currentUid: String?,
     getCategoryResponse: GetCategoryResponse?,
-    currentRecommendations: List<MutableState<RecommendationItem>>,
+    currentRecommendations: List<MutableState<Post>>,
     recommendationsAmount: Int,
     openScreen: (String) -> Unit,
     popUpScreen: () -> Unit,

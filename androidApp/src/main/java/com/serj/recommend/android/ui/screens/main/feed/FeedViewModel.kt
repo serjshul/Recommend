@@ -11,7 +11,7 @@ import com.serj.recommend.android.RecommendRoutes
 import com.serj.recommend.android.common.Constants.RECOMMENDATION_ID
 import com.serj.recommend.android.model.collections.Recommendation
 import com.serj.recommend.android.model.collections.User
-import com.serj.recommend.android.model.items.RecommendationItem
+import com.serj.recommend.android.model.items.Post
 import com.serj.recommend.android.model.subcollections.Comment
 import com.serj.recommend.android.services.AccountService
 import com.serj.recommend.android.services.LogService
@@ -30,7 +30,7 @@ class FeedViewModel @Inject constructor(
 ) : RecommendViewModel(logService) {
 
     val currentUser = mutableStateOf<User?>(null)
-    val currentRecommendations = mutableStateListOf<RecommendationItem>()
+    val currentRecommendations = mutableStateListOf<Post>()
     val currentRecommendationsAmount = mutableIntStateOf(0)
 
 
@@ -59,7 +59,7 @@ class FeedViewModel @Inject constructor(
                         followingRecommendationsIdsResponse.data.size
                     for (followingId in followingRecommendationsIdsResponse.data) {
                         val recommendationItemResponse = storageService
-                            .getRecommendationItemById(followingId, arrayListOf())
+                            .getPostById(followingId, arrayListOf())
                         if (recommendationItemResponse is Response.Success &&
                             recommendationItemResponse.data != null) {
                             currentRecommendations.add(recommendationItemResponse.data)

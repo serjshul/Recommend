@@ -11,7 +11,7 @@ import com.serj.recommend.android.common.Constants.RECOMMENDATION_ID
 import com.serj.recommend.android.common.ext.idFromParameter
 import com.serj.recommend.android.model.collections.Category
 import com.serj.recommend.android.model.collections.Recommendation
-import com.serj.recommend.android.model.items.RecommendationItem
+import com.serj.recommend.android.model.items.Post
 import com.serj.recommend.android.services.AccountService
 import com.serj.recommend.android.services.GetCategoryResponse
 import com.serj.recommend.android.services.LogService
@@ -31,7 +31,7 @@ class CategoryViewModel @Inject constructor(
 
     val getCategoryResponse = mutableStateOf<GetCategoryResponse?>(null)
 
-    val currentRecommendations = mutableStateListOf<MutableState<RecommendationItem>>()
+    val currentRecommendations = mutableStateListOf<MutableState<Post>>()
     val currentRecommendationsAmount = mutableIntStateOf(0)
 
     val currentUid = mutableStateOf<String?>(null)
@@ -54,7 +54,7 @@ class CategoryViewModel @Inject constructor(
                         }
                         for (recommendationId in currentCategory?.recommendationsIds!!) {
                             val currentRecommendationItemResponse = storageService
-                                .getRecommendationItemById(recommendationId, arrayListOf())
+                                .getPostById(recommendationId, arrayListOf())
                             if (currentRecommendationItemResponse is Response.Success &&
                                 currentRecommendationItemResponse.data != null) {
                                 currentRecommendations.add(

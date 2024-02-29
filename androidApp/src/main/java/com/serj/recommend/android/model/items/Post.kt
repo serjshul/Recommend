@@ -6,7 +6,7 @@ import com.serj.recommend.android.model.subcollections.Comment
 import com.serj.recommend.android.ui.components.recommendationPreviews.ItemsShapes
 import java.util.Date
 
-data class RecommendationItem(
+data class Post(
     @DocumentId val id: String? = null,
     val uid: String? = null,
 

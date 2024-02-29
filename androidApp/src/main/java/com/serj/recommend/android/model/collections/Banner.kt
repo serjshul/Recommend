@@ -2,7 +2,7 @@ package com.serj.recommend.android.model.collections
 
 import com.google.firebase.firestore.DocumentId
 import com.google.firebase.storage.StorageReference
-import com.serj.recommend.android.model.items.RecommendationItem
+import com.serj.recommend.android.model.items.Post
 import java.util.Date
 
 data class Banner(
@@ -24,5 +24,5 @@ data class Banner(
     var backgroundVideoReference: StorageReference? = null,
 
     val recommendationIds: ArrayList<String>? = arrayListOf(),
-    val content: ArrayList<RecommendationItem>? = arrayListOf()
+    val content: ArrayList<Post>? = arrayListOf()
 )

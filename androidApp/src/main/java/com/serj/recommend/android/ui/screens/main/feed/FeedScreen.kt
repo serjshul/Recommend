@@ -30,7 +30,7 @@ import com.serj.recommend.android.R
 import com.serj.recommend.android.model.subcollections.Comment
 import com.serj.recommend.android.model.collections.Recommendation
 import com.serj.recommend.android.model.collections.User
-import com.serj.recommend.android.model.items.RecommendationItem
+import com.serj.recommend.android.model.items.Post
 import com.serj.recommend.android.services.model.Response
 import com.serj.recommend.android.ui.components.comments.CommentsBottomSheet
 import com.serj.recommend.android.ui.components.loadingIndicators.SmallLoadingIndicator
@@ -66,7 +66,7 @@ fun FeedScreen(
 fun FeedScreenContent(
     modifier: Modifier = Modifier,
     currentUser: User?,
-    currentRecommendations: List<RecommendationItem>,
+    currentRecommendations: List<Post>,
     recommendationsAmount: Int,
     bottomSheetComments: Map<Comment, Boolean>,
     showCommentsBottomSheet: Boolean,

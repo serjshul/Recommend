@@ -7,7 +7,7 @@ import com.serj.recommend.android.model.collections.Banner
 import com.serj.recommend.android.model.collections.Category
 import com.serj.recommend.android.model.collections.Recommendation
 import com.serj.recommend.android.model.collections.User
-import com.serj.recommend.android.model.items.RecommendationItem
+import com.serj.recommend.android.model.items.Post
 import com.serj.recommend.android.model.items.RecommendationPreview
 import com.serj.recommend.android.model.items.UserItem
 import com.serj.recommend.android.model.subcollections.Comment
@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.Flow
 typealias GetRecommendationResponse = Response<Recommendation?>
 typealias GetBannerResponse = Response<Banner?>
 typealias GetCategoryResponse = Response<Category?>
-typealias GetRecommendationItemResponse = Response<RecommendationItem?>
+typealias GetPostResponse = Response<Post?>
 typealias GetRecommendationPreviewResponse = Response<RecommendationPreview?>
 typealias GetUserItemResponse = Response<UserItem?>
 typealias GetFollowingRecommendationsIdsResponse = Response<List<String>>
@@ -51,10 +51,10 @@ interface StorageService {
         categoryId: String
     ): GetCategoryResponse
 
-    suspend fun getRecommendationItemById(
+    suspend fun getPostById(
         recommendationId: String,
         currentUserLikedIds: ArrayList<String>
-    ): GetRecommendationItemResponse
+    ): GetPostResponse
 
     suspend fun getRecommendationPreviewById(
         recommendationId: String,

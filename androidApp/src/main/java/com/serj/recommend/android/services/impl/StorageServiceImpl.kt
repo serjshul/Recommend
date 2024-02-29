@@ -22,7 +22,7 @@ import com.serj.recommend.android.model.collections.Banner
 import com.serj.recommend.android.model.collections.Category
 import com.serj.recommend.android.model.collections.Recommendation
 import com.serj.recommend.android.model.collections.User
-import com.serj.recommend.android.model.items.RecommendationItem
+import com.serj.recommend.android.model.items.Post
 import com.serj.recommend.android.model.items.RecommendationPreview
 import com.serj.recommend.android.model.items.UserItem
 import com.serj.recommend.android.model.subcollections.Comment
@@ -32,7 +32,7 @@ import com.serj.recommend.android.services.GetBannerResponse
 import com.serj.recommend.android.services.GetCategoryResponse
 import com.serj.recommend.android.services.GetCommentsResponse
 import com.serj.recommend.android.services.GetFollowingRecommendationsIdsResponse
-import com.serj.recommend.android.services.GetRecommendationItemResponse
+import com.serj.recommend.android.services.GetPostResponse
 import com.serj.recommend.android.services.GetRecommendationPreviewResponse
 import com.serj.recommend.android.services.GetRecommendationResponse
 import com.serj.recommend.android.services.GetRepostsResponse
@@ -199,10 +199,10 @@ class StorageServiceImpl @Inject constructor(
         }
     }
 
-    override suspend fun getRecommendationItemById(
+    override suspend fun getPostById(
         recommendationId: String,
         currentUserLikedIds: ArrayList<String>
-    ): GetRecommendationItemResponse {
+    ): GetPostResponse {
         return try {
             val recommendationSnapshot = firestore
                 .collection(RECOMMENDATIONS_COLLECTION)
@@ -210,40 +210,40 @@ class StorageServiceImpl @Inject constructor(
                 .get()
                 .await()
 
-            val recommendationData = RecommendationItem(
+            val postData = Post(
                 id = recommendationSnapshot.id,
-                uid = recommendationSnapshot.getString("uid"),
-                title = recommendationSnapshot.getString("title"),
-                creator = recommendationSnapshot.getString("creator"),
-                type = recommendationSnapshot.getString("type"),
-                tags = recommendationSnapshot.get("tags") as List<String>,
-                description = recommendationSnapshot.getString("description"),
-                date = recommendationSnapshot.getDate("date"),
-                coversUrl = recommendationSnapshot.get("coversUrl") as HashMap<String, String>,
-                backgroundUrl = recommendationSnapshot.get("backgroundUrl") as HashMap<String, String>
+                uid = recommendationSnapshot.getString(UID_FIELD),
+                title = recommendationSnapshot.getString(TITLE_FIELD),
+                creator = recommendationSnapshot.getString(CREATOR_FIELD),
+                type = recommendationSnapshot.getString(TYPE_FIELD),
+                tags = recommendationSnapshot.get(TAGS_FIELD) as List<String>,
+                description = recommendationSnapshot.getString(DESCRIPTION_FIELD),
+                date = recommendationSnapshot.getDate(DATE_FIELD),
+                coversUrl = recommendationSnapshot.get(COVERS_URL_FIELD) as HashMap<String, String>,
+                backgroundUrl = recommendationSnapshot.get(BACKGROUND_URL_FIELD) as HashMap<String, String>
             )
 
-            if (recommendationData != null) {
-                val coverType = getCoverType(recommendationData.coversUrl)
-                if (recommendationData.uid != null) {
-                    when (val userItemResponse = getUserItemByUid(recommendationData.uid)) {
-                        is Success -> recommendationData.userItem = userItemResponse.data
+            if (postData != null) {
+                val coverType = getCoverType(postData.coversUrl)
+                if (postData.uid != null) {
+                    when (val userItemResponse = getUserItemByUid(postData.uid)) {
+                        is Success -> postData.userItem = userItemResponse.data
                         else -> Failure(UserNotFoundException())
                     }
                 }
-                recommendationData.coverType = coverType
-                recommendationData.coverReference = recommendationData.coversUrl[coverType]
+                postData.coverType = coverType
+                postData.coverReference = postData.coversUrl[coverType]
                     ?.let { storage.getReferenceFromUrl(it) }
-                recommendationData.backgroundImageReference = recommendationData.backgroundUrl[BackgroundTypes.image.name]
+                postData.backgroundImageReference = postData.backgroundUrl[BackgroundTypes.image.name]
                     ?.let { storage.getReferenceFromUrl(it) }
-                recommendationData.isLiked = currentUserLikedIds.contains(recommendationData.id)
+                postData.isLiked = currentUserLikedIds.contains(postData.id)
 
                 val commentsResponse = getComments(recommendationId)
                 if (commentsResponse is Success && commentsResponse.data != null) {
-                    recommendationData.comments.addAll(commentsResponse.data)
+                    postData.comments.addAll(commentsResponse.data)
                 }
 
-                Success(recommendationData)
+                Success(postData)
             } else {
                 Failure(RecommendationIsNotValidException())
             }
@@ -718,6 +718,13 @@ class StorageServiceImpl @Inject constructor(
         private const val RECOMMENDATION_REPOSTS_SUBCOLLECTION = "reposts"
 
         private const val UID_FIELD = "uid"
+        private const val TITLE_FIELD = "title"
+        private const val CREATOR_FIELD = "creator"
+        private const val TYPE_FIELD = "type"
+        private const val TAGS_FIELD = "tags"
+        private const val DESCRIPTION_FIELD = "description"
         private const val DATE_FIELD = "date"
+        private const val COVERS_URL_FIELD = "coversUrl"
+        private const val BACKGROUND_URL_FIELD = "backgroundUrl"
     }
 }
