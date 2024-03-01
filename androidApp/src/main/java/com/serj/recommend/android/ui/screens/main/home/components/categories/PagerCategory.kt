@@ -1,4 +1,4 @@
-package com.serj.recommend.android.ui.components.categories
+package com.serj.recommend.android.ui.screens.main.home.components.categories
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable

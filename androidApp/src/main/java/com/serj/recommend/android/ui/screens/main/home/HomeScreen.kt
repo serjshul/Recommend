@@ -21,10 +21,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.serj.recommend.android.model.collections.Banner
 import com.serj.recommend.android.model.collections.Category
 import com.serj.recommend.android.model.collections.Recommendation
-import com.serj.recommend.android.ui.components.categories.CategoryTypes
-import com.serj.recommend.android.ui.components.categories.ExtendedCategory
-import com.serj.recommend.android.ui.components.categories.OrdinaryCategory
-import com.serj.recommend.android.ui.components.categories.PagerCategory
+import com.serj.recommend.android.ui.screens.main.home.components.categories.CategoryTypes
+import com.serj.recommend.android.ui.screens.main.home.components.categories.ExtendedCategory
+import com.serj.recommend.android.ui.screens.main.home.components.categories.OrdinaryCategory
+import com.serj.recommend.android.ui.screens.main.home.components.categories.PagerCategory
 import com.serj.recommend.android.ui.components.loadingIndicators.LargeLoadingIndicator
 import com.serj.recommend.android.ui.components.loadingIndicators.SmallLoadingIndicator
 import com.serj.recommend.android.ui.screens.main.home.components.Banner

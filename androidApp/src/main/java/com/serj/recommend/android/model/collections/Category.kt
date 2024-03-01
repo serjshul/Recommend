@@ -3,7 +3,7 @@ package com.serj.recommend.android.model.collections
 import com.google.firebase.firestore.DocumentId
 import com.google.firebase.storage.StorageReference
 import com.serj.recommend.android.model.items.RecommendationPreview
-import com.serj.recommend.android.ui.components.categories.CategoryTypes
+import com.serj.recommend.android.ui.screens.main.home.components.categories.CategoryTypes
 import com.serj.recommend.android.ui.components.recommendationPreviews.ItemsShapes
 import java.util.Date
 
